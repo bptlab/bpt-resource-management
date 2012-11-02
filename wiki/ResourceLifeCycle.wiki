@@ -1,5 +1,11 @@
 #summary This page describes the life cycle of one resource and intended actions that can be performed by different roles.
 
+= Roles =
+
+We distinguish two roles, *resource providers* and *moderators*. The former provide and manage content to the platform, whereas a provider may manage several resources. Moderators have the task to approve or deny requests, and have full control over what can be seen online.
+
+In any case, a *moderator* is always also a *provider*, that is, they can upload their own resources and control their visibility without the need to re-login as another role.
+
 = Life Cycle =
 
 [https://docs.google.com/drawings/d/11s59QdnkOflaT443zNGYQKYhGEiaK2zQhghjFViwzbc/edit https://docs.google.com/drawings/pub?id=11s59QdnkOflaT443zNGYQKYhGEiaK2zQhghjFViwzbc&w=960&h=720&nonsense.png]
