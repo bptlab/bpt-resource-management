@@ -1,13 +1,21 @@
 #summary This page describes the life cycle of one resource and intended actions that can be performed by different roles.
 
-= Introduction =
+= Life Cycle =
 
 Add your content here.
 
+= Actions = 
+'*' also applies to bpmai
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *provider* || *moderator* || *system* || *trigger* ||
+|| add resource`*` || || || notify moderator, request to publish or reject ||
+|| || publish`*` || || notify provider ||
+|| || reject`*`  || || notify provider || 
+|| update`*` || || || notify moderator, request to approve (do nothing) or reject ||
+|| unpublish`*` || || || notify moderator ||
+|| || unpublish`*` || || notify provider ||
+|| delete`*` || || || notify moderator ||
+|| || delete`*`(only bpmai) || || notify provider -- or do nothing ||
+|| || || check url || notify moderator and provider if issues exist ||
+|| || || check dates || notify moderator and provider if model will become outdated soon ||
+|| || || check dates || unpublish model, notify moderator and provider of timeout ||
