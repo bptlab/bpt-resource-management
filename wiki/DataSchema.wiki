@@ -1,0 +1,12 @@
+#summary Describes general data schema considerations and concrete implementations
+
+= Meta Model =
+
+Each resource has a *unique id*, and a set of *attributes*. The set of attributes can be arbitrary.
+
+Each attribute has the following *properties*
+|| data type || the actual data type ||
+|| private   || is the attribute hidden from anybody but the provider of the resource and the moderators ||
+|| searchable || shall the attribute be considered for search ||
+|| required || is the attribute required for input ||
+|| default || a default value for this attribute, may be empty ||
