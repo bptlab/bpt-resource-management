@@ -2,7 +2,9 @@
 
 = Life Cycle =
 
-Add your content here.
+[https://docs.google.com/drawings/d/11s59QdnkOflaT443zNGYQKYhGEiaK2zQhghjFViwzbc/edit https://docs.google.com/drawings/pub?id=11s59QdnkOflaT443zNGYQKYhGEiaK2zQhghjFViwzbc&w=960&h=720&nonsense.png]
+
+Source: 
 
 = Actions = 
 '*' also applies to bpmai
