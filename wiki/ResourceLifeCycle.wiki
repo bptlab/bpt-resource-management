@@ -10,7 +10,7 @@ Source:
 '*' also applies to bpmai
 
 || *provider* || *moderator* || *system* || *trigger* ||
-|| add resource`*` || || || notify moderator, request to publish or reject ||
+|| create`*` || || || notify moderator, request to publish or reject ||
 || || publish`*` || || notify provider ||
 || || reject`*`  || || notify provider || 
 || update`*` || || || notify moderator, request to approve (do nothing) or reject ||
