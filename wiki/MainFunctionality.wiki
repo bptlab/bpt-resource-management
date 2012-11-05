@@ -4,7 +4,7 @@
 
 ResourceLifeCycle describes the general operations that shall be carried out by resource providers and moderators of the platform to create, update, and manage the life cycle of such a resource.
 
-*'['Matthias']':* From my perspective, these oeprations can be included in the main functions #List_Entires, #Search_Entries, and #Show_Detail
+*'['Matthias']':* From my perspective, these oeprations can be included in the main functions [#List_Entires], #Search_Entries, and #Show_Detail
 
 = List Entries =
 
