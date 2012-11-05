@@ -4,7 +4,7 @@
 
 ResourceLifeCycle describes the general operations that shall be carried out by resource providers and moderators of the platform to create, update, and manage the life cycle of such a resource.
 
-*'['Matthias']':* From my perspective, these operations can be included in the main functions [#List_Entries], [#Search_Entries], and [#Show_Detail] for authorized providers (they can manage their own resources only) and moderators (they can manage all resources), according to their respective [ResourceLifeCycle rights].
+*Matthias:* From my perspective, these operations can be included in the main functions [#List_Entries], [#Search_Entries], and [#Show_Detail] for authorized providers (they can manage their own resources only) and moderators (they can manage all resources), according to their respective [ResourceLifeCycle rights].
 
 For each resource in a list view ([#List_Entries], [#Search_Entries]) links to atomic updates of the state of the resource shall be provided (edit, un-/publish, check) that are updated via PUT requests (REST). 
 
@@ -12,16 +12,16 @@ All possible operations shall be available to authorized providers and moderator
 
 = List Entries =
 
-* list all entries, sort by different attributes
-* requires list template
+  * list all entries, sort by different attributes
+  * requires list template
 
 = Search Entries =
 
-* search and filter entries by different attributes
-* provides a list of results
-* uses list template from [#List_Entries]
+  * search and filter entries by different attributes
+  * provides a list of results
+  * uses list template from [#List_Entries]
 
 = Show Detail =
 
-* provides detailed information for each resource
-* requires separate template
+  * provides detailed information for each resource
+  * requires separate template
