@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
-public class ContainerProvider {
+public class BPTContainerProvider {
 	
 	private static final String[] students = new String[] {"Tsun", "Benni", "Thommy", "Micha", "Susi"};
 	private static final String[] cakes = new String[] {"Kaese", "Schoko", "Apfel", "Kaese", "Kirsch-Schoko"};

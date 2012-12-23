@@ -10,7 +10,7 @@ public class BPTTable extends Table{
 		setSelectable(true);
 		setColumnReorderingAllowed(true);
         setColumnCollapsingAllowed(true);
-        setContainerDataSource(ContainerProvider.getContainer());
+        setContainerDataSource(BPTContainerProvider.getContainer());
         setWidth("100%");
 		
 	}
