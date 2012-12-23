@@ -10,7 +10,7 @@ public class BPTLoginComponent extends CustomComponent{
 		
 		HorizontalLayout layout = new HorizontalLayout();
 		setCompositionRoot(layout);
-		layout.addComponent(new Label("TROLOLOL"));
+		layout.addComponent(new Label("Willkommen"));
 	}
 
 }
