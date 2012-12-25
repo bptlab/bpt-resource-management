@@ -1,24 +1,35 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.ArrayList;
+
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Label;
 
 public class BPTSearchTagBox extends CustomComponent{
 	
-	private HorizontalLayout layout;
+	private BPTSearchComponent searchComponent;
+	private VerticalLayout layout;
+	private ArrayList<BPTSearchTag> searchTagList;
 
-	public BPTSearchTagBox() {
-		layout = new HorizontalLayout();
+	public BPTSearchTagBox(BPTSearchComponent searchComponent) {
+		this.searchComponent = searchComponent;
+		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
-		//TODO Komponente erweitern, so dass löschbare Tags angezeigt werden 
-		
+		searchTagList = new ArrayList();
 	};
 	public void addTag(String value){
-		layout.addComponent(new Label(value));
-		
+		BPTSearchTag searchTag = new BPTSearchTag(this, value);
+		searchTagList.add(searchTag);
+		layout.addComponent(searchTag);
 	}
-
+	
+	public void removeTag(BPTSearchTag searchTag){
+				searchTagList.remove(searchTag);
+				layout.removeComponent(searchTag);
+				searchComponent.addTag(searchTag);
+	}
+	
 }
