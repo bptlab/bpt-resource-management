@@ -23,7 +23,7 @@ public class BPTSearchComponent extends CustomComponent{
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		createSearchInputBox();
-		searchTagBox = new BPTSearchTagBox();
+		searchTagBox = new BPTSearchTagBox(this);
 		layout.addComponent(searchInput);
 		layout.addComponent(searchTagBox);
 		addListenerToSearchInputBox();
@@ -32,11 +32,13 @@ public class BPTSearchComponent extends CustomComponent{
 	private void addListenerToSearchInputBox() {
 		searchInput.addListener( new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
-				String value = (String) searchInput.getValue();
-				searchTagBox.addTag(value);
-				System.out.println(value);
+				Object value = searchInput.getValue();
+				if (value == null) return;
+				String valueString = (String) value;
+				searchTagBox.addTag(valueString);
+				System.out.println(valueString);
 				searchInput.setValue(null);
-				unselectedValues.remove(value);
+				unselectedValues.remove(valueString);
 				searchInput.removeAllItems();
 				
 				for (int i = 0; i < unselectedValues.size(); i++){
@@ -57,6 +59,16 @@ public class BPTSearchComponent extends CustomComponent{
 		searchInput.setImmediate(true);
 		unselectedValues = new ArrayList<String>(Arrays.asList(uniqueValues));
 		return searchInput;
+	}
+
+	public void addTag(BPTSearchTag searchTag) {
+		unselectedValues.add(searchTag.getValue());
+		searchInput.removeAllItems();
+		
+		for (int i = 0; i < unselectedValues.size(); i++){
+			searchInput.addItem(unselectedValues.get(i));
+		}
+		
 	}
 	
 	
