@@ -11,13 +11,15 @@ import com.vaadin.ui.VerticalLayout;
 
 public class BPTSearchComponent extends CustomComponent{
 	
+	private BPTSidebar sidebar;
 	private ComboBox searchInput;
 	private String[] uniqueValues = BPTContainerProvider.getUniqueValues();
 	private ArrayList<String> unselectedValues;
 	private BPTSearchTagBox searchTagBox;
 	private VerticalLayout layout;
 	
-	public BPTSearchComponent() {
+	public BPTSearchComponent(BPTSidebar sidebar) {
+		this.sidebar = sidebar;
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
@@ -40,7 +42,7 @@ public class BPTSearchComponent extends CustomComponent{
 				searchInput.setValue(null);
 				unselectedValues.remove(valueString);
 				searchInput.removeAllItems();
-				
+								
 				for (int i = 0; i < unselectedValues.size(); i++){
 					searchInput.addItem(unselectedValues.get(i));
 				}
@@ -68,6 +70,11 @@ public class BPTSearchComponent extends CustomComponent{
 		for (int i = 0; i < unselectedValues.size(); i++){
 			searchInput.addItem(unselectedValues.get(i));
 		}
+		
+	}
+
+	public void refresh(ArrayList<String> tagValues) {
+		sidebar.refresh(tagValues);
 		
 	}
 	
