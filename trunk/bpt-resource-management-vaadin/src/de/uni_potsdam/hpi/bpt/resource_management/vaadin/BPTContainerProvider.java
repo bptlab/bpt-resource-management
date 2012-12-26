@@ -8,7 +8,7 @@ import com.vaadin.data.util.IndexedContainer;
 public class BPTContainerProvider {
 	
 	private static final String[] students = new String[] {"Tsun", "Benni", "Thommy", "Micha", "Susi"};
-	private static final String[] cakes = new String[] {"Kaese", "Schoko", "Apfel", "Kaese", "Kirsch-Schoko"};
+	private static final String[] cakes = new String[] {"Kaese-Sahne", "Schoko", "Apfel", "Kaese", "Kirsch-Schoko"};
 	private static final String[] animals = new String[] {"Einhorn", "Katze", "Hund", "Vogel", "Mistkäfer", "Giraffe", "Koala"};
 
 	public static IndexedContainer getContainer(){
