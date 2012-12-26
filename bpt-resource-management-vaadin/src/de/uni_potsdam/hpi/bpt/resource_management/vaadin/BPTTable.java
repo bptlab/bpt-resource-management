@@ -32,8 +32,6 @@ public class BPTTable extends Table{
 	public void filterBy(ArrayList<String> tagValues) {
 		visibleColumns.removeAllItems();
 		for (Object rowId : dataSource.getItemIds()){
-			System.out.println(rowId);
-			System.out.println(dataSource.getItem(rowId));
 			Item row = dataSource.getItem(rowId);
 			if (columnShouldBeVisible(row, tagValues)){
 				Item item = visibleColumns.addItem(rowId);
@@ -47,9 +45,13 @@ public class BPTTable extends Table{
 	
 	private boolean columnShouldBeVisible(Item item, ArrayList<String> tagValues) {
 		
-		String itemAsString = item.toString();
+		ArrayList<String> itemAsArray = new ArrayList<String>();
+		for (Object propertyId : item.getItemPropertyIds()){
+			String property = item.getItemProperty(propertyId).getValue().toString();
+			itemAsArray.add(property);
+		}
 		for (int i = 0; i < tagValues.size(); i++){
-			if (!itemAsString.contains(tagValues.get(i))) return false;
+			if (!itemAsArray.contains(tagValues.get(i))) return false;
 		}
 		return true;
 	}
