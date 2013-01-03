@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -10,43 +11,43 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class BPTTool {
 	
 	@JsonProperty("_id")
-	private String name;
+	private String name = new String();
 	@JsonProperty("_rev")
 	private String revision; // CouchDB-specific, never shown on website
 	private final String type = "BPTTool";
 
-	private String description; // shall be rich text
-	private String provider;
+	private String description = new String(); // shall be rich text
+	private String provider = new String();
 	@JsonProperty("download_url")
-	private String downloadURL; // URL to be checked if valid
+	private String downloadURL = "http://www.example.org"; // URL to be checked if valid
 	@JsonProperty("documentation_url")
-	private String documentationURL; // URL to be checked if valid
+	private String documentationURL = "http://www.example.org"; // URL to be checked if valid
 	@JsonProperty("screencast_url")
-	private String screencastURL; // URL to be checked if valid
-	private Set<String> availabilities; 
+	private String screencastURL = "http://www.example.org"; // URL to be checked if valid
+	private Set<String> availabilities = new HashSet<String>(); 
 		/*
 		 * open source, freeware, shareware, free for academics, commercial, ...
 		 */
 	@JsonProperty("model_types")
-	private Set<String> modelTypes; 
+	private Set<String> modelTypes = new HashSet<String>(); 
 		/*
 		 * BPMN, EPC, Petri net, UML Activity Diagram, Workflow Net, YAWL, BPEL, ...
 		 */
-	private Set<String> platforms;
+	private Set<String> platforms = new HashSet<String>();
 		/*
 		 * Windows, Linux, Mac OSX, Android, iOS, ...
 		 */
 	@JsonProperty("supported_functionalities")
-	private Set<String> supportedFunctionalities;
+	private Set<String> supportedFunctionalities = new HashSet<String>();
 		/* 
 		 * graphical model editor, model repository, verification of model properties, 
 		 * enactment, runtime adaptation, process discovery based on event data, 
 		 * conformance checking based on event data
 		 */
 	@JsonProperty("contact_name")
-	private String contactName;
+	private String contactName = new String();
 	@JsonProperty("contact_mail")
-	private String contactMail; // email address
+	private String contactMail = "example@test.org"; // email address
 	@JsonProperty("date_created")
 	private Date dateCreated = new Date();
 	@JsonProperty("last_update")
