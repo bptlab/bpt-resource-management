@@ -19,7 +19,7 @@ public class BPTToolRepository extends CouchDbRepositorySupport<BPTTool> {
 	
 	@View(
 		name = "number_of_documents", 
-		map = "function(doc) { emit(\"count\", doc); }",
+		map = "function(doc) { emit(\"count\", 1); }",
 		reduce = "function(key, values, rereduce) { var count = 0; values.forEach(function(v) { count += 1; }); return count; }"
 		)
 	public int getNumberOfDocuments() {
