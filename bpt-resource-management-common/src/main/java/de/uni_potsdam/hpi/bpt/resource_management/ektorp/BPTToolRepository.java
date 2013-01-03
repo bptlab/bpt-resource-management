@@ -7,8 +7,8 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 
 @View(
-	name = "all", 
-	map = "function(doc) { if (doc.type == 'BPTTool') emit(null, doc._id); }"
+	name = "all_documents", 
+	map = "function(doc) { if (doc.type == 'BPTTool') emit(doc._id, doc); }"
 	)
 public class BPTToolRepository extends CouchDbRepositorySupport<BPTTool> {
 	
