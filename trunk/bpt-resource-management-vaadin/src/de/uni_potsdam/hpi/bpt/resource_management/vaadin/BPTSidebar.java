@@ -11,13 +11,15 @@ public class BPTSidebar extends CustomComponent{
 	
 	private VerticalLayout layout;
 	private BPTApplication application;
+	private BPTLoginComponent loginComponent;
+	
 	public BPTSidebar(BPTApplication application) {
 		this.application = application;
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
-		BPTLoginComponent loginComponent = new BPTLoginComponent();
+		loginComponent = new BPTLoginComponent(application.getUsername(), application.isLoggedIn());
 		BPTSearchComponent searchComponent = new BPTSearchComponent(this);
 		layout.addComponent(loginComponent);
 		layout.addComponent(searchComponent);
@@ -27,7 +29,6 @@ public class BPTSidebar extends CustomComponent{
 		application.refresh(tagValues);
 		
 	}
-	
 	
 
 }
