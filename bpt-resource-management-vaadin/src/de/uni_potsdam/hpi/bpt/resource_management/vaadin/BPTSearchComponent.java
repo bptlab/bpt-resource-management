@@ -13,7 +13,7 @@ public class BPTSearchComponent extends CustomComponent{
 	
 	private BPTSidebar sidebar;
 	private ComboBox searchInput;
-	private String[] uniqueValues = BPTContainerProvider.getUniqueValues();
+	private ArrayList<String> uniqueValues = BPTContainerProvider.getUniqueValues();
 	private ArrayList<String> unselectedValues;
 	private BPTSearchTagBox searchTagBox;
 	private VerticalLayout layout;
@@ -55,11 +55,11 @@ public class BPTSearchComponent extends CustomComponent{
 
 	private ComboBox createSearchInputBox(){
 		searchInput= new ComboBox();
-		for (int i = 0; i < uniqueValues.length; i++){
-			searchInput.addItem(uniqueValues[i]);
+		for (int i = 0; i < uniqueValues.size(); i++){
+			searchInput.addItem(uniqueValues.get(i));
 		}
 		searchInput.setImmediate(true);
-		unselectedValues = new ArrayList<String>(Arrays.asList(uniqueValues));
+		unselectedValues = uniqueValues;
 		return searchInput;
 	}
 
