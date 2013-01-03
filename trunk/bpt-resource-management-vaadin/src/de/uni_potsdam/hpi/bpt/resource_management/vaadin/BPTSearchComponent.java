@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -13,8 +14,8 @@ public class BPTSearchComponent extends CustomComponent{
 	
 	private BPTSidebar sidebar;
 	private ComboBox searchInput;
-	private ArrayList<String> uniqueValues = BPTContainerProvider.getUniqueValues();
-	private ArrayList<String> unselectedValues;
+	private Set<String> uniqueValues = BPTContainerProvider.getUniqueValues();
+	private Set<String> unselectedValues;
 	private BPTSearchTagBox searchTagBox;
 	private VerticalLayout layout;
 	
@@ -43,8 +44,8 @@ public class BPTSearchComponent extends CustomComponent{
 				unselectedValues.remove(valueString);
 				searchInput.removeAllItems();
 								
-				for (int i = 0; i < unselectedValues.size(); i++){
-					searchInput.addItem(unselectedValues.get(i));
+				for (String unselectedValue: unselectedValues){
+					searchInput.addItem(unselectedValue);
 				}
 				
 								
@@ -55,8 +56,8 @@ public class BPTSearchComponent extends CustomComponent{
 
 	private ComboBox createSearchInputBox(){
 		searchInput= new ComboBox();
-		for (int i = 0; i < uniqueValues.size(); i++){
-			searchInput.addItem(uniqueValues.get(i));
+		for (String uniqueValue: uniqueValues){
+			searchInput.addItem(uniqueValue);
 		}
 		searchInput.setImmediate(true);
 		unselectedValues = uniqueValues;
@@ -67,8 +68,8 @@ public class BPTSearchComponent extends CustomComponent{
 		unselectedValues.add(searchTag.getValue());
 		searchInput.removeAllItems();
 		
-		for (int i = 0; i < unselectedValues.size(); i++){
-			searchInput.addItem(unselectedValues.get(i));
+		for (String unselectedValue: unselectedValues){
+			searchInput.addItem(unselectedValue);
 		}
 		
 	}

@@ -17,6 +17,9 @@ public class BPTContainerProvider {
 	private static final String[] animals = new String[] {"Einhorn", "Katze", "Hund", "Vogel", "Mistkäfer", "Giraffe", "Koala"};
 	*/
 	
+	private static CouchDbConnector database = BPTDatabase.connect();
+	private static BPTToolRepository repository = new BPTToolRepository(database);
+	
 	// private static HashMap<String,Object[]> toolPropertiesAndAccess = new HashMap<String,String[]>();
 	// toolPropertiesAndAccess.put("name", {String.class, tool.getName()});
 	
@@ -39,9 +42,6 @@ public class BPTContainerProvider {
 		container.addContainerProperty("Contact mail", String.class, null);
 		container.addContainerProperty("Date created", Date.class, null);
 		container.addContainerProperty("Last update", Date.class, null);
-		
-		CouchDbConnector database = BPTDatabase.connect();
-		BPTToolRepository repository = new BPTToolRepository(database);
 		
 		List<BPTTool> tools = repository.getAll();
 		
@@ -93,10 +93,17 @@ public class BPTContainerProvider {
 		
 	}
 
-	public static ArrayList<String> getUniqueValues() {
-		ArrayList<String> uniqueValues = new ArrayList<String>();
+	public static Set<String> getUniqueValues() {
+		Set<String> uniqueValues = new HashSet<String>();
 		
-		// TODO: fetch unique values from availability, model types, platfor, supported functionality
+		List<BPTTool> tools = repository.getAll();
+		
+		for (BPTTool tool : tools) {
+			uniqueValues.addAll(tool.getAvailabilities());
+			uniqueValues.addAll(tool.getModelTypes());
+			uniqueValues.addAll(tool.getPlatforms());
+			uniqueValues.addAll(tool.getSupportedFunctionalities());
+		}
 		
 		/* 
 		String[] uniqueValues = new String[students.length + cakes.length + animals.length];
@@ -104,6 +111,7 @@ public class BPTContainerProvider {
 		for (int i = 0; i < cakes.length; i++) uniqueValues[i + students.length] = cakes[i];
 		for (int i = 0; i < animals.length; i++) uniqueValues[i + students.length + cakes.length] = animals[i];
 		*/
+		
 		return uniqueValues;
 	}
 }
