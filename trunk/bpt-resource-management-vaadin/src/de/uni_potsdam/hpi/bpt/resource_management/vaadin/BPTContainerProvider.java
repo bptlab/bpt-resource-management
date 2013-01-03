@@ -53,11 +53,11 @@ public class BPTContainerProvider {
 			item.getItemProperty("Provider").setValue(tool.getProvider());
 			item.getItemProperty("Download").setValue(tool.getDownloadURL());
 			item.getItemProperty("Documentation").setValue(tool.getDocumentationURL());
-			item.getItemProperty("Screncast").setValue(tool.getScreencastURL());
-			item.getItemProperty("Availability").setValue(tool.getAvailabilitiesAsString());
-			item.getItemProperty("Model type").setValue(tool.getModelTypesAsString());
-			item.getItemProperty("Platform").setValue(tool.getPlatformsAsString());
-			item.getItemProperty("Supported functionality").setValue(tool.getSupportedFunctionalitiesAsString());
+			item.getItemProperty("Screencast").setValue(tool.getScreencastURL());
+			item.getItemProperty("Availability").setValue(tool.getAvailabilities());
+			item.getItemProperty("Model type").setValue(tool.getModelTypes());
+			item.getItemProperty("Platform").setValue(tool.getPlatforms());
+			item.getItemProperty("Supported functionality").setValue(tool.getSupportedFunctionalities());
 			item.getItemProperty("Contact name").setValue(tool.getContactName());
 			item.getItemProperty("Contact mail").setValue(tool.getContactMail());
 			item.getItemProperty("Date created").setValue(tool.getDateCreated());

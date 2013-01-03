@@ -2,7 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -23,21 +23,21 @@ public class BPTTool {
 	private String documentationURL; // URL to be checked if valid
 	@JsonProperty("screencast_url")
 	private String screencastURL; // URL to be checked if valid
-	private List<String> availabilities; 
+	private Set<String> availabilities; 
 		/*
 		 * open source, freeware, shareware, free for academics, commercial, ...
 		 */
 	@JsonProperty("model_types")
-	private List<String> modelTypes; 
+	private Set<String> modelTypes; 
 		/*
 		 * BPMN, EPC, Petri net, UML Activity Diagram, Workflow Net, YAWL, BPEL, ...
 		 */
-	private List<String> platforms;
+	private Set<String> platforms;
 		/*
 		 * Windows, Linux, Mac OSX, Android, iOS, ...
 		 */
 	@JsonProperty("supported_functionalities")
-	private List<String> supportedFunctionalities;
+	private Set<String> supportedFunctionalities;
 		/* 
 		 * graphical model editor, model repository, verification of model properties, 
 		 * enactment, runtime adaptation, process discovery based on event data, 
@@ -115,55 +115,35 @@ public class BPTTool {
 			this.screencastURL = screencastURL;
 	}
 	
-	public List<String> getAvailabilities() {
+	public Set<String> getAvailabilities() {
 		return availabilities;
 	}
 	
-	@JsonIgnore
-	public String getAvailabilitiesAsString() {
-		return stringListToString(availabilities);
-	}
-	
-	public void setAvailabilities(List<String> availabilities) {
+	public void setAvailabilities(Set<String> availabilities) {
 		this.availabilities = availabilities;
 	}
 	
-	public List<String> getModelTypes() {
+	public Set<String> getModelTypes() {
 		return modelTypes;
 	}
 	
-	@JsonIgnore
-	public String getModelTypesAsString() {
-		return stringListToString(modelTypes);
-	}
-	
-	public void setModelTypes(List<String> modelTypes) {
+	public void setModelTypes(Set<String> modelTypes) {
 		this.modelTypes = modelTypes;
 	}
 	
-	public List<String> getPlatforms() {
+	public Set<String> getPlatforms() {
 		return platforms;
 	}
 	
-	@JsonIgnore
-	public String getPlatformsAsString() {
-		return stringListToString(platforms);
-	}
-	
-	public void setPlatforms(List<String> platforms) {
+	public void setPlatforms(Set<String> platforms) {
 		this.platforms = platforms;
 	}
 	
-	public List<String> getSupportedFunctionalities() {
+	public Set<String> getSupportedFunctionalities() {
 		return supportedFunctionalities;
 	}
 	
-	@JsonIgnore
-	public String getSupportedFunctionalitiesAsString() {
-		return stringListToString(supportedFunctionalities);
-	}
-	
-	public void setSupportedFunctionalities(List<String> supportedFunctionalities) {
+	public void setSupportedFunctionalities(Set<String> supportedFunctionalities) {
 		this.supportedFunctionalities = supportedFunctionalities;
 	}
 	
@@ -198,9 +178,5 @@ public class BPTTool {
 	
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
-	}
-	
-	private String stringListToString(List<String> list) {
-		return Arrays.toString(list.toArray());
 	}
 }
