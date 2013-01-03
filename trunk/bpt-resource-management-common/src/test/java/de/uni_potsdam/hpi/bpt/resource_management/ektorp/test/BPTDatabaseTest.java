@@ -67,7 +67,7 @@ public class BPTDatabaseTest {
 		exampleTool.setDescription("<b>ProM</b> is an <b>extensible</b> framework that supports a wide variety of process mining techniques in the form of plug-ins. It is <u>platform independent</u> as it is implemented in Java, and can be downloaded <u>free of charge</u>.");
 		exampleTool.setProvider("Eindhoven University of Technology");
 		exampleTool.setDocumentationURL("http://www.promtools.org/prom6/pack-docs.html");
-		exampleTool.setAvailability(new ArrayList<String>(Arrays.asList("open source", "freeware")));
+		exampleTool.setAvailabilities(new ArrayList<String>(Arrays.asList("open source", "freeware")));
 		exampleTool.setModelTypes(new ArrayList<String>(Arrays.asList("BPMN", "EPC", "Petri net")));
 		exampleTool.setPlatforms(new ArrayList<String>(Arrays.asList("Windows", "Linux", "Mac OSX")));
 		exampleTool.setSupportedFunctionalities(new ArrayList<String>(Arrays.asList("verification of model properties", "process discovery based on event data", "conformance checking based on event data")));

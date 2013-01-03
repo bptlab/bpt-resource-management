@@ -1,8 +1,10 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class BPTTool {
@@ -11,6 +13,7 @@ public class BPTTool {
 	private String name;
 	@JsonProperty("_rev")
 	private String revision; // CouchDB-specific, never shown on website
+	private final String type = "BPTTool";
 
 	private String description; // shall be rich text
 	private String provider;
@@ -20,7 +23,7 @@ public class BPTTool {
 	private String documentationURL; // URL to be checked if valid
 	@JsonProperty("screencast_url")
 	private String screencastURL; // URL to be checked if valid
-	private List<String> availability; 
+	private List<String> availabilities; 
 		/*
 		 * open source, freeware, shareware, free for academics, commercial, ...
 		 */
@@ -45,9 +48,9 @@ public class BPTTool {
 	@JsonProperty("contact_mail")
 	private String contactMail; // email address
 	@JsonProperty("date_created")
-	private Date dateCreated;
+	private Date dateCreated = new Date();
 	@JsonProperty("last_update")
-	private Date lastUpdate;
+	private Date lastUpdate = new Date();
 	
 	public String getName() {
 		return name;
@@ -63,6 +66,10 @@ public class BPTTool {
 
 	public void setRevision(String revision) {
 		this.revision = revision;
+	}
+
+	public String getType() {
+		return type;
 	}
 	
 	public String getDescription() {
@@ -108,16 +115,26 @@ public class BPTTool {
 			this.screencastURL = screencastURL;
 	}
 	
-	public List<String> getAvailability() {
-		return availability;
+	public List<String> getAvailabilities() {
+		return availabilities;
 	}
 	
-	public void setAvailability(List<String> availability) {
-		this.availability = availability;
+	@JsonIgnore
+	public String getAvailabilitiesAsString() {
+		return stringListToString(availabilities);
+	}
+	
+	public void setAvailabilities(List<String> availabilities) {
+		this.availabilities = availabilities;
 	}
 	
 	public List<String> getModelTypes() {
 		return modelTypes;
+	}
+	
+	@JsonIgnore
+	public String getModelTypesAsString() {
+		return stringListToString(modelTypes);
 	}
 	
 	public void setModelTypes(List<String> modelTypes) {
@@ -128,12 +145,22 @@ public class BPTTool {
 		return platforms;
 	}
 	
+	@JsonIgnore
+	public String getPlatformsAsString() {
+		return stringListToString(platforms);
+	}
+	
 	public void setPlatforms(List<String> platforms) {
 		this.platforms = platforms;
 	}
 	
 	public List<String> getSupportedFunctionalities() {
 		return supportedFunctionalities;
+	}
+	
+	@JsonIgnore
+	public String getSupportedFunctionalitiesAsString() {
+		return stringListToString(supportedFunctionalities);
 	}
 	
 	public void setSupportedFunctionalities(List<String> supportedFunctionalities) {
@@ -171,5 +198,9 @@ public class BPTTool {
 	
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+	
+	private String stringListToString(List<String> list) {
+		return Arrays.toString(list.toArray());
 	}
 }
