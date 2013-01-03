@@ -2,7 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.PasswordField;
@@ -12,30 +12,76 @@ import com.vaadin.ui.themes.BaseTheme;
 
 public class BPTLoginComponent extends CustomComponent{
 		
-	private Button loginButton;
+	private VerticalLayout layout;
+	private Button loginWindowButton;
+	private Button logoutButton;
+	private Button registerButton;
 	private Window subWindow;
+	private Label welcomeLabel;
+	private BPTNavigationBar navigationBar;
 	
-	public BPTLoginComponent(){
+	public BPTLoginComponent(String username, Boolean isLoggedIn){
 		
-		HorizontalLayout layout = new HorizontalLayout();
+		layout = new VerticalLayout();
 		setCompositionRoot(layout);
-		layout.addComponent(new Label("Willkommen"));
-		loginButton = new Button("Login");
-        loginButton.setStyleName(BaseTheme.BUTTON_LINK);
-        layout.addComponent(loginButton);
+		navigationBar = new BPTNavigationBar();
+		
+		if (isLoggedIn){
+			layout.addComponent(navigationBar);
+			addLogoutButton();
+		}
+		else {
+			welcomeLabel = new Label("Willkommen Gast");
+			layout.addComponent(welcomeLabel);
+			addLoginButton();
+			addRegisterButton();
+		}
+		
+	}
+
+	private void addRegisterButton() {
+		registerButton = new Button("Register");
+		registerButton.setStyleName(BaseTheme.BUTTON_LINK);
+		layout.addComponent(registerButton);
+		
+	}
+
+	private void addLoginButton() {
+		loginWindowButton = new Button("Login");
+        loginWindowButton.setStyleName(BaseTheme.BUTTON_LINK);
+        layout.addComponent(loginWindowButton);
         createSubWindow();
         
-        loginButton.addListener(new Button.ClickListener(){
+        loginWindowButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				getWindow().addWindow(subWindow);
 			}});
+		
+	}
+
+	private void addLogoutButton() {
+		logoutButton = new Button("Logout");
+        logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
+        layout.addComponent(logoutButton);
+        
+        logoutButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				BPTApplication application = (BPTApplication) getApplication();
+				application.setUsername("Guest");
+				application.setLoggedIn(false);
+				layout.removeAllComponents();
+				layout.addComponent(welcomeLabel);
+				addLoginButton();
+				addRegisterButton();
+			}});
+		
 	}
 
 	private void createSubWindow(){
 		subWindow = new Window("Login");
 		subWindow.setModal(true);
-		final TextField username = new TextField("Username");
-		subWindow.addComponent(username);
+		final TextField usernameField = new TextField("Username");
+		subWindow.addComponent(usernameField);
 		final PasswordField password = new PasswordField("Password");
 		subWindow.addComponent(password);
 		Button loginButton = new Button("Login");
@@ -48,14 +94,27 @@ public class BPTLoginComponent extends CustomComponent{
         
 		loginButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
+				BPTApplication application = (BPTApplication) getApplication();
+				String username = ((String) usernameField.getValue());
+				application.setUsername(username);
+				application.setLoggedIn(true);
+				usernameField.setValue("");
+				password.setValue("");
+				layout.removeAllComponents();
+				System.out.println(username);
+				layout.addComponent(navigationBar);
+				layout.addComponent(new Label(username));
+				addLogoutButton();
+				getWindow().removeWindow(subWindow);
 				
 			}});
 		
 		cancelButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				getWindow().removeWindow(subWindow);
-				username.setValue("");
+				usernameField.setValue("");
 				password.setValue("");
 			}});
 	}
+	
 }
