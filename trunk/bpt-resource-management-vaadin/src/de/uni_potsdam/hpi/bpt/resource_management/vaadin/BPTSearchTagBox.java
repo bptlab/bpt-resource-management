@@ -8,12 +8,10 @@ import com.vaadin.ui.Label;
 
 public class BPTSearchTagBox extends CustomComponent{
 	
-	private BPTSearchComponent searchComponent;
 	private VerticalLayout layout;
 	private ArrayList<BPTSearchTag> searchTagList;
 
-	public BPTSearchTagBox(BPTSearchComponent searchComponent) {
-		this.searchComponent = searchComponent;
+	public BPTSearchTagBox() {
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
@@ -30,11 +28,11 @@ public class BPTSearchTagBox extends CustomComponent{
 	public void removeTag(BPTSearchTag searchTag){
 				searchTagList.remove(searchTag);
 				layout.removeComponent(searchTag);
-				searchComponent.addTag(searchTag);
+				((BPTSearchComponent) getParent().getParent()).addTag(searchTag);
 				refresh();
 	}
 	private void refresh() {
-		searchComponent.refresh(getTagValues());
+		((BPTApplication) getApplication()).refresh(getTagValues());
 	}
 	public ArrayList<String> getTagValues(){
 		ArrayList<String> tagValues = new ArrayList<String>();
