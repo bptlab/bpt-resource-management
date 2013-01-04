@@ -5,13 +5,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.ektorp.CouchDbConnector;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDatabase;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTool;
 
 public class BPTTable extends Table{
 
@@ -77,15 +87,37 @@ public class BPTTable extends Table{
 
 			private void openPopupFor(Item item) {
 				Window popupWindow = new Window();
+				popupWindow.setWidth("600px");
 				String[] headers = getColumnHeaders();
-				ArrayList<String> itemAsArray = new ArrayList<String>();
+				ArrayList<Object> itemAsArray = new ArrayList<Object>();
 				for (Object propertyId : item.getItemPropertyIds()){
-					String property = item.getItemProperty(propertyId).getValue().toString();
+					Object property = item.getItemProperty(propertyId).getValue();
 					itemAsArray.add(property);
 				}
+				final String name = itemAsArray.get(0).toString();
 				for (int i = 0; i < headers.length; i++){
 					popupWindow.addComponent(new Label(headers[i] + ":"));
-					popupWindow.addComponent(new Label(itemAsArray.get(i)));
+					if (headers[i] == "Download" || headers[i] == "Documentation" || headers[i] == "Screencast") {
+						popupWindow.addComponent(new Link (((Link)itemAsArray.get(i)).getCaption(), new ExternalResource(((Link)itemAsArray.get(i)).getCaption())));
+						Link link = (((Link) itemAsArray.get(i)));
+//						popupWindow.addComponent(link);
+					}
+					else if (headers[i] == "Contact mail" ) {
+						popupWindow.addComponent(new Link (((Link)itemAsArray.get(i)).getCaption(), new ExternalResource("mailto:" + ((Link)itemAsArray.get(i)).getCaption())));
+						// popupWindow.addComponent(((Link) itemAsArray.get(i)));
+					}
+					else popupWindow.addComponent(new Label(itemAsArray.get(i).toString()));
+				}
+				if (((BPTApplication)getApplication()).isLoggedIn()){
+					
+					Button deleteButton = new Button("delete");
+					deleteButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							CouchDbConnector database = BPTDatabase.connect();
+							database.delete(database.get(BPTTool.class, name));
+						}
+					});
+					popupWindow.addComponent(deleteButton);
 				}
 				getWindow().addWindow(popupWindow);
 				
