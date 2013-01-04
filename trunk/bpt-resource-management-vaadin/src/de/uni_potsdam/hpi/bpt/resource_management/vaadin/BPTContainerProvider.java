@@ -70,15 +70,19 @@ public class BPTContainerProvider {
 		
 	}
 
-	public static Set<String> getUniqueValues() {
+	public static Set<String> getUniqueValues(String tagColumn) {
 		Set<String> uniqueValues = new HashSet<String>();
 		
 		List<BPTTool> tools = repository.getAll();
 		
 		for (BPTTool tool : tools) {
+			if (tagColumn == "all" || tagColumn == "availabilities")
 			uniqueValues.addAll(tool.getAvailabilities());
+			if (tagColumn == "all" || tagColumn == "modelTypes")
 			uniqueValues.addAll(tool.getModelTypes());
+			if (tagColumn == "all" || tagColumn == "platforms")
 			uniqueValues.addAll(tool.getPlatforms());
+			if (tagColumn == "all" || tagColumn == "supportedFunctionalities")
 			uniqueValues.addAll(tool.getSupportedFunctionalities());
 		}
 		

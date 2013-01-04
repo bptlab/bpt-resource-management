@@ -28,7 +28,7 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 	private TextField nameInput, providerInput, downloadInput, documentationInput, screencastInput;
 	private TextArea descriptionInput;
 	private Button finishUploadButton;
-	private BPTSearchComponent availabilityTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
+	private BPTSearchComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
 	
 	
 	public BPTUploader(){
@@ -59,20 +59,20 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 		screencastInput = new TextField();
 		layout.addComponent(screencastInput);
 		
-		layout.addComponent(new Label("Availability:"));
-		availabilityTagComponent = new BPTSearchComponent();
-		layout.addComponent(availabilityTagComponent);
+		layout.addComponent(new Label("Availabilities:"));
+		availabilitiesTagComponent = new BPTSearchComponent("availabilities", true);
+		layout.addComponent(availabilitiesTagComponent);
 		
 		layout.addComponent(new Label("Model Type:"));
-		modelTagComponent = new BPTSearchComponent();
+		modelTagComponent = new BPTSearchComponent("modelTypes", true);
 		layout.addComponent(modelTagComponent);
 		
 		layout.addComponent(new Label("Platform:"));
-		platformTagComponent = new BPTSearchComponent();
+		platformTagComponent = new BPTSearchComponent("platforms", true);
 		layout.addComponent(platformTagComponent);
 		
 		layout.addComponent(new Label("Supported functionality:"));
-		functionalityTagComponent = new BPTSearchComponent();
+		functionalityTagComponent = new BPTSearchComponent("supportedFunctionalities", true);
 		layout.addComponent(functionalityTagComponent);
 		
 		
@@ -117,7 +117,7 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 				newTool.setDescription((String) descriptionInput.getValue());
 				newTool.setProvider((String) providerInput.getValue());
 				newTool.setDocumentationURL((String) documentationInput.getValue());
-				newTool.setAvailabilities(new HashSet<String>(availabilityTagComponent.getTagValues()));
+				newTool.setAvailabilities(new HashSet<String>(availabilitiesTagComponent.getTagValues()));
 				newTool.setModelTypes(new HashSet<String>(modelTagComponent.getTagValues()));
 				newTool.setPlatforms(new HashSet<String>(platformTagComponent.getTagValues()));
 				newTool.setSupportedFunctionalities(new HashSet<String>(functionalityTagComponent.getTagValues()));
@@ -126,6 +126,7 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 				newTool.setDateCreated(new Date());
 				newTool.setLastUpdate(new Date());
 				database.create(newTool);
+				getWindow().showNotification("Upload Sucessful: " + name);
 				}
 				
 			}});
