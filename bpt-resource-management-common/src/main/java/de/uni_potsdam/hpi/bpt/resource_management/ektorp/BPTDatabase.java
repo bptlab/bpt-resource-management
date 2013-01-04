@@ -9,7 +9,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 
 public class BPTDatabase {
 
-	public static CouchDbConnector connect() {
+	public static CouchDbConnector connect(String table) {
 		HttpClient httpClient = new StdHttpClient.Builder()
 									.host("localhost")
 									.port(5984)
@@ -18,7 +18,7 @@ public class BPTDatabase {
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
-		CouchDbConnector database = new StdCouchDbConnector("bpt_resources", databaseInstance);
+		CouchDbConnector database = new StdCouchDbConnector(table, databaseInstance);
 		
 		database.createDatabaseIfNotExists();
 		
