@@ -19,14 +19,13 @@ public class BPTSearchComponent extends CustomComponent{
 	private BPTSearchTagBox searchTagBox;
 	private VerticalLayout layout;
 	
-	public BPTSearchComponent(BPTSidebar sidebar) {
-		this.sidebar = sidebar;
+	public BPTSearchComponent() {
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		createSearchInputBox();
-		searchTagBox = new BPTSearchTagBox(this);
+		searchTagBox = new BPTSearchTagBox();
 		layout.addComponent(searchInput);
 		layout.addComponent(searchTagBox);
 		addListenerToSearchInputBox();
@@ -73,13 +72,9 @@ public class BPTSearchComponent extends CustomComponent{
 		}
 		
 	}
-
-	public void refresh(ArrayList<String> tagValues) {
-		sidebar.refresh(tagValues);
+	public ArrayList<String> getTagValues(){
 		
+		return searchTagBox.getTagValues();
 	}
-	
-	
-	
-			
+
 }
