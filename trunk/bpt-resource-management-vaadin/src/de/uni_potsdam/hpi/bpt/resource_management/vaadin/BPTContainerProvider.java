@@ -54,10 +54,10 @@ public class BPTContainerProvider {
 			item.getItemProperty("Download").setValue(tool.getDownloadURL());
 			item.getItemProperty("Documentation").setValue(tool.getDocumentationURL());
 			item.getItemProperty("Screencast").setValue(tool.getScreencastURL());
-			item.getItemProperty("Availability").setValue(tool.getAvailabilities());
-			item.getItemProperty("Model type").setValue(tool.getModelTypes());
-			item.getItemProperty("Platform").setValue(tool.getPlatforms());
-			item.getItemProperty("Supported functionality").setValue(tool.getSupportedFunctionalities());
+			item.getItemProperty("Availability").setValue(asFormattedString(tool.getAvailabilities()));
+			item.getItemProperty("Model type").setValue(asFormattedString(tool.getModelTypes()));
+			item.getItemProperty("Platform").setValue(asFormattedString(tool.getPlatforms()));
+			item.getItemProperty("Supported functionality").setValue(asFormattedString(tool.getSupportedFunctionalities()));
 			item.getItemProperty("Contact name").setValue(tool.getContactName());
 			item.getItemProperty("Contact mail").setValue(tool.getContactMail());
 			item.getItemProperty("Date created").setValue(tool.getDateCreated());
@@ -113,5 +113,9 @@ public class BPTContainerProvider {
 		*/
 		
 		return uniqueValues;
+	}
+	
+	private static String asFormattedString(Set<String> stringSet) {
+		return stringSet.toString().replace("[", "").replace("]", "");
 	}
 }

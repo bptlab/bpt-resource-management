@@ -1,7 +1,9 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -51,9 +53,11 @@ public class BPTTable extends Table{
 	private boolean columnShouldBeVisible(Item item, ArrayList<String> tagValues) {
 		
 		ArrayList<String> itemAsArray = new ArrayList<String>();
-		for (Object propertyId : item.getItemPropertyIds()){
+		String[] relevantColumns = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
+		for (Object propertyId : relevantColumns){ // for (Object propertyId : item.getItemPropertyIds())
 			String property = item.getItemProperty(propertyId).getValue().toString();
-			itemAsArray.add(property);
+			List<String> tags = Arrays.asList(property.split("\\s*,\\s*"));
+			itemAsArray.addAll(tags);
 		}
 		for (int i = 0; i < tagValues.size(); i++){
 			if (!itemAsArray.contains(tagValues.get(i))) return false;
