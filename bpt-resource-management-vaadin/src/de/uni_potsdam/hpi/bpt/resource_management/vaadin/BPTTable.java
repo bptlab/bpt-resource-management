@@ -69,8 +69,10 @@ public class BPTTable extends Table{
 	private void addListenerToTable() {
 		this.addListener( new Table.ValueChangeListener() {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-						
-				openPopupFor(getItem(getValue()));				
+				if ((getItem(getValue()) != null)){
+					openPopupFor(getItem(getValue()));
+				}
+								
 			}
 
 			private void openPopupFor(Item item) {
