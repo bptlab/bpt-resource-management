@@ -58,8 +58,8 @@ public class BPTApplication extends Application {
 		mainFrame.add(uploader);
 	}
 	public void finder() {
+		table = new BPTTable();
 		mainFrame.add(table);
-		
 	}
 
 }
