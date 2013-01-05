@@ -8,20 +8,17 @@ import java.util.List;
 import org.ektorp.CouchDbConnector;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDatabase;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTool;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 
 public class BPTTable extends Table{
 
@@ -94,7 +91,7 @@ public class BPTTable extends Table{
 					Object property = item.getItemProperty(propertyId).getValue();
 					itemAsArray.add(property);
 				}
-				final String name = itemAsArray.get(0).toString();
+				final String id = itemAsArray.get(0).toString();
 				for (int i = 0; i < headers.length; i++){
 					popupWindow.addComponent(new Label(headers[i] + ":"));
 					if (headers[i] == "Download" || headers[i] == "Documentation" || headers[i] == "Screencast") {
@@ -113,8 +110,8 @@ public class BPTTable extends Table{
 					Button deleteButton = new Button("delete");
 					deleteButton.addListener(new Button.ClickListener(){
 						public void buttonClick(ClickEvent event) {
-							CouchDbConnector database = BPTDatabase.connect();
-							database.delete(database.get(BPTTool.class, name));
+							BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
+							toolRepository.deleteDocument(id);
 						}
 					});
 					popupWindow.addComponent(deleteButton);

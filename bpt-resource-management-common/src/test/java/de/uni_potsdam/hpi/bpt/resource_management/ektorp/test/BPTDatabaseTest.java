@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -13,13 +15,12 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDatabase;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 
 @FixMethodOrder(MethodSorters.JVM)
 public class BPTDatabaseTest {
 	
-	private CouchDbConnector database;
 	private BPTDocumentRepository repository;
 	private Map<String, Object> exampleToolFromDatabase;
 	private static int numberOfDocuments;
@@ -37,7 +38,9 @@ public class BPTDatabaseTest {
 		new HashSet<String>(Arrays.asList("Windows", "Linux", "Mac OSX")),
 		new HashSet<String>(Arrays.asList("verification of model properties", "process discovery based on event data", "conformance checking based on event data")),
 		"Eric Verbeek",
-		"h.m.w.verbeek@tunnel"
+		"h.m.w.verbeek@tunnel",
+		new Date(),
+		new Date()
 	};
 	private final Object[] secondTool = new Object[] {
 		"Activiti",
@@ -51,7 +54,9 @@ public class BPTDatabaseTest {
 		new HashSet<String>(Arrays.asList("Windows", "Linux", "Mac OSX")),
 		new HashSet<String>(Arrays.asList("graphical model editor", "model repository", "process engine")),
 		"Tijs Rademakers",
-		"test@example.org"
+		"test@example.org",
+		new Date(),
+		new Date()
 	};
 	private final Object[] thirdTool = new Object[] {
 		"Signavio Process Editor",
@@ -65,7 +70,9 @@ public class BPTDatabaseTest {
 		new HashSet<String>(),
 		new HashSet<String>(Arrays.asList("graphical model editor", "model repository", "verification of model properties")),
 		"Signavio GmbH",
-		"info@signavio.com"
+		"info@signavio.com",
+		new Date(),
+		new Date()
 	};
 	private final Object[] fourthTool = new Object[] {
 		"Yaoqiang BPMN Editor",
@@ -79,7 +86,9 @@ public class BPTDatabaseTest {
 		new HashSet<String>(Arrays.asList("Windows")),
 		new HashSet<String>(Arrays.asList("graphical model editor")),
 		"blenta",
-		"shi_yaoqiang@yahoo.com"
+		"shi_yaoqiang@yahoo.com",
+		new Date(),
+		new Date()
 	};
 	
 	private final Object[] fifthTool = new Object[] {
@@ -94,44 +103,54 @@ public class BPTDatabaseTest {
 		new HashSet<String>(Arrays.asList("Windows")),
 		new HashSet<String>(Arrays.asList("graphical model editor", "model repository")),
 		"IBM",
-		"test@example.org"
+		"test@example.org",
+		new Date(),
+		new Date()
 	};
 	
 	public BPTDatabaseTest(){
-		database = BPTDatabase.connect("bpt_resources");
-		repository = new BPTDocumentRepository(database);
+		repository = new BPTDocumentRepository("bpt_resources");
 		numberOfDocuments = repository.numberOfDocuments();
 	}
 	
 	@Test(expected = DocumentNotFoundException.class)
 	public void testDocumentNotFound() {
-		exampleToolFromDatabase = database.get(Map.class, "trololol");
+		exampleToolFromDatabase = repository.readDocument("trololol");
 	}
 	
 	@Test
 	public void testCreateDocument() {
-		toolIdentifiers[0] = repository.createDocument("BPTTool", new ArrayList<Object>(Arrays.asList(firstTool)));
-		toolIdentifiers[1] = repository.createDocument("BPTTool", new ArrayList<Object>(Arrays.asList(secondTool)));
-		assertEquals(repository.numberOfDocuments(), numberOfDocuments + 2);
-		toolIdentifiers[2] = repository.createDocument("BPTTool", new ArrayList<Object>(Arrays.asList(thirdTool)));
-		toolIdentifiers[3] = repository.createDocument("BPTTool", new ArrayList<Object>(Arrays.asList(fourthTool)));
-		toolIdentifiers[4] = repository.createDocument("BPTTool", new ArrayList<Object>(Arrays.asList(fifthTool)));
+		toolIdentifiers[0] = repository.createDocument("BPTTool", generateDocument(firstTool));
+		toolIdentifiers[1] = repository.createDocument("BPTTool", generateDocument(secondTool));
+		assertEquals(numberOfDocuments + 2, repository.numberOfDocuments());
+		toolIdentifiers[2] = repository.createDocument("BPTTool", generateDocument(thirdTool));
+		toolIdentifiers[3] = repository.createDocument("BPTTool", generateDocument(fourthTool));
+		toolIdentifiers[4] = repository.createDocument("BPTTool", generateDocument(fifthTool));
 	}
 	
+	private Map<String, Object> generateDocument(Object[] tool) {
+		Map<String, Object> document = new HashMap<String, Object>();
+		String[] keys = BPTDocumentTypes.getDocumentKeys("BPTTool");
+		for (int i = 0; i < keys.length; i++) {
+			document.put(keys[i], tool[i]);
+		}
+		return document;
+	}
+
 	@Test
 	public void testUpdateDocument() {
-		exampleToolFromDatabase = database.get(Map.class, toolIdentifiers[0]);
+		exampleToolFromDatabase = repository.readDocument(toolIdentifiers[0]);
 		exampleToolFromDatabase.put("download_url", "http://www.promtools.org");
-		database.update(exampleToolFromDatabase);
+		repository.updateDocument(exampleToolFromDatabase);
 	}
 	
 	@Test
 	public void testDeleteDocument() {
-		for (String id : toolIdentifiers) {
-			exampleToolFromDatabase = database.get(Map.class, id);
-			database.delete(exampleToolFromDatabase);
+		for (String _id : toolIdentifiers) {
+			exampleToolFromDatabase = repository.readDocument(_id);
+			repository.deleteDocument(_id);
 		}
-		assertEquals(repository.numberOfDocuments(), numberOfDocuments - 5);
+		assertEquals(numberOfDocuments - 5, repository.numberOfDocuments());
 	}
 
 }

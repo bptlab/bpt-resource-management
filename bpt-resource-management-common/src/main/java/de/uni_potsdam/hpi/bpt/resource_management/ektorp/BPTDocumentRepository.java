@@ -1,14 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
-import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
@@ -19,19 +12,17 @@ import org.ektorp.support.View;
 	map = "function(doc) { if (doc.type == 'BPTTool') emit(doc._id, doc); }"
 	)
 public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
-
-	private CouchDbConnector database;
 	
-	public BPTDocumentRepository(CouchDbConnector database) {
-        super(Map.class, database);
-        this.database = database;
+	public BPTDocumentRepository(String table) {
+		super(Map.class, BPTDatabase.connect(table));
         initStandardDesignDocument();
 	}
 	
 	@View(
 		name = "number_of_documents", 
-		map = "function(doc) { emit(\"count\", 1); }",
+		map = "function(doc) { if (!doc.deleted) emit(\"count\", 1); }",
 		reduce = "function(key, values, rereduce) { var count = 0; values.forEach(function(v) { count += 1; }); return count; }"
+		/* NOTE: deleted documents will not be counted here */
 		)
 	public int numberOfDocuments() {
 		ViewQuery query = createQuery("number_of_documents");
@@ -43,32 +34,57 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 	}
 	
-	public String createDocument(String type, ArrayList<Object> values) {
+	public String createDocument(String type, Map<String, Object> document) {
 		
-		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.visibleColumns(type);
-		String id;
+		Map<String, Object> databaseDocument = new HashMap<String, Object>();
+		String[] keys = BPTDocumentTypes.getDocumentKeys(type);
+		String _id;
 		
-		document.put("type", type);
-		document.put("date_created", new Date());
-		document.put("last_update", new Date());
-		document.put("published", false);
-		document.put("rejected", false);
-		document.put("deleted", false);
+		databaseDocument.put("type", type);
+		databaseDocument.put("published", false);
+		databaseDocument.put("rejected", false);
+		databaseDocument.put("deleted", false);
 		
-		for (int i = 0; i < keys.length; i++) {
-			document.put(keys[i], values.get(i));
+		for (String key : keys) {
+			databaseDocument.put(key, document.get(key));
 		}
 		
-		id = nextAvailableId().toString();
+		databaseDocument.put("date_created", new Date());
+		databaseDocument.put("last_update", new Date());
 		
-		database.create(id, document);
-		return id;
+		_id = nextAvailableId().toString();
+		
+		db.create(_id, databaseDocument);
+		return _id;
+	}
+
+	public Map<String, Object> readDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		return databaseDocument;
+	}
+	
+	public Map<String, Object> updateDocument(Map<String, Object> document) {
+		Map<String, Object> databaseDocument = db.get(Map.class, (String)document.get("_id"));
+		String[] keys = BPTDocumentTypes.getDocumentKeys((String)document.get("type"));
+		
+		for (String key : keys) {
+			databaseDocument.put(key, document.get(key));
+		}
+		
+		db.update(databaseDocument);
+		return databaseDocument;
+	}
+	
+	public Map<String, Object> deleteDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		databaseDocument.put("deleted", true);
+		db.update(databaseDocument);
+		return databaseDocument;
 	}
 	
 	private Integer nextAvailableId() {
 		
-		List<String> allDocIdsString = database.getAllDocIds();
+		List<String> allDocIdsString = db.getAllDocIds();
 		List<Integer> allDocIdsConverted = new ArrayList<Integer>();
 		int value, highestId;
 		
@@ -88,19 +104,6 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		};
 		
 		return highestId + 1;
-	}
-
-	public void readDocument(String id) {
-		Map<String, Object> document = database.get(Map.class, id);
-	}
-	
-	public void deleteDocument(String id) {
-		Map<String, Object> document = database.get(Map.class, id);
-		if (document.get(type) != null) {
-			document.put("deleted", true);
-			database.update(document);
-		}
-		
 	}
 
 }
