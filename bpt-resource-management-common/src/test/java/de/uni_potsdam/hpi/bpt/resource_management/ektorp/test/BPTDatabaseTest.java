@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
-import org.ektorp.CouchDbConnector;
 import org.ektorp.DocumentNotFoundException;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

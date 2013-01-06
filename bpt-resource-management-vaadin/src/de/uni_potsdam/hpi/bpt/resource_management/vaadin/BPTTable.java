@@ -4,21 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import org.ektorp.CouchDbConnector;
+import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDatabase;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTTable extends Table{
 
@@ -60,8 +59,8 @@ public class BPTTable extends Table{
 	private boolean columnShouldBeVisible(Item item, ArrayList<String> tagValues) {
 		
 		ArrayList<String> itemAsArray = new ArrayList<String>();
-		String[] relevantColumns = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
-		for (Object propertyId : relevantColumns){ // for (Object propertyId : item.getItemPropertyIds())
+		String[] relevantColumns = BPTVaadinResources.getRelevantColumnsForTags("BPTTool");
+		for (Object propertyId : relevantColumns) {
 			String property = item.getItemProperty(propertyId).getValue().toString();
 			List<String> tags = Arrays.asList(property.split("\\s*,\\s*"));
 			itemAsArray.addAll(tags);
@@ -74,7 +73,7 @@ public class BPTTable extends Table{
 	}
 	
 	private void addListenerToTable() {
-		this.addListener( new Table.ValueChangeListener() {
+		this.addListener(new Table.ValueChangeListener() {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				if ((getItem(getValue()) != null)){
 					openPopupFor(getItem(getValue()));
@@ -83,35 +82,29 @@ public class BPTTable extends Table{
 			}
 
 			private void openPopupFor(Item item) {
-				Window popupWindow = new Window();
+				final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 				popupWindow.setWidth("600px");
-				String[] headers = getColumnHeaders();
-				ArrayList<Object> itemAsArray = new ArrayList<Object>();
-				for (Object propertyId : item.getItemPropertyIds()){
-					Object property = item.getItemProperty(propertyId).getValue();
-					itemAsArray.add(property);
-				}
-				final String id = itemAsArray.get(0).toString();
-				for (int i = 0; i < headers.length; i++){
-					popupWindow.addComponent(new Label(headers[i] + ":"));
-					if (headers[i] == "Download" || headers[i] == "Documentation" || headers[i] == "Screencast") {
-						popupWindow.addComponent(new Link (((Link)itemAsArray.get(i)).getCaption(), new ExternalResource(((Link)itemAsArray.get(i)).getCaption())));
-						Link link = (((Link) itemAsArray.get(i)));
-//						popupWindow.addComponent(link);
+				
+				final String _id = item.getItemProperty("ID").getValue().toString();
+				Map<String, Object> tool = ((BPTApplication)getApplication()).getToolRepository().readDocument(_id);
+				
+				for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")){
+					popupWindow.addComponent(new Label(entry[1] + ":"));
+					Object value = BPTVaadinResources.generateComponent(tool, (String)entry[0], (BPTPropertyValueType)entry[3]);
+					if (entry[2] == Component.class) {
+						popupWindow.addComponent((Component)value);
+					} else {
+						popupWindow.addComponent(new Label(value.toString()));
 					}
-					else if (headers[i] == "Contact mail" ) {
-						popupWindow.addComponent(new Link (((Link)itemAsArray.get(i)).getCaption(), new ExternalResource("mailto:" + ((Link)itemAsArray.get(i)).getCaption())));
-						// popupWindow.addComponent(((Link) itemAsArray.get(i)));
-					}
-					else popupWindow.addComponent(new Label(itemAsArray.get(i).toString()));
 				}
+				
 				if (((BPTApplication)getApplication()).isLoggedIn()){
 					
 					Button deleteButton = new Button("delete");
 					deleteButton.addListener(new Button.ClickListener(){
 						public void buttonClick(ClickEvent event) {
-							BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
-							toolRepository.deleteDocument(id);
+							((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id);
+							getWindow().removeWindow(popupWindow);
 						}
 					});
 					popupWindow.addComponent(deleteButton);

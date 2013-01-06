@@ -1,14 +1,10 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-
-import org.ektorp.CouchDbConnector;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -18,12 +14,8 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDatabase;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTUploader extends CustomComponent implements Upload.Receiver{
 	
@@ -33,7 +25,6 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 	private TextArea descriptionInput;
 	private Button finishUploadButton;
 	private BPTSearchComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
-	
 	
 	public BPTUploader(){
 		layout = new VerticalLayout();
@@ -98,9 +89,7 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
-				BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
-				
-				toolRepository.createDocument("BPTTool", generateDocument(new Object[] {
+				((BPTApplication)getApplication()).getToolRepository().createDocument("BPTTool", generateDocument(new Object[] {
 					(String)nameInput.getValue(),
 					(String)descriptionInput.getValue(),
 					(String)providerInput.getValue(),

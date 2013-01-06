@@ -2,9 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
 
-import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class BPTSidebar extends CustomComponent{

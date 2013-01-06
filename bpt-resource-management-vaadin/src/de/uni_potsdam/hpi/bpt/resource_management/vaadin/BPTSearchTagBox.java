@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Label;
 
 public class BPTSearchTagBox extends CustomComponent{
 	
