@@ -1,13 +1,12 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
-
-import org.ektorp.CouchDbConnector;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.*;
@@ -26,8 +25,10 @@ public class BPTContainerProvider {
 		
 		for (int i = 0; i < tools.size(); i++) {
 			Map<String, Object> tool = tools.get(i);
-			Item item = container.addItem(i);
-			setItemPropertyValues(item, tool);
+			if (!(Boolean)tool.get("deleted")) {
+				Item item = container.addItem(i);
+				setItemPropertyValues(item, tool);
+			}
 		}
 		
 		return container;
@@ -69,7 +70,8 @@ public class BPTContainerProvider {
 		switch (valueType) {
 			case LINK : return asLink((String)tool.get(documentColumnName));
 			case EMAIL : return asEmailLink((String)tool.get(documentColumnName));
-			case SET : return asFormattedString((ArrayList<String>)tool.get(documentColumnName));
+			case LIST : return asFormattedString((ArrayList<String>)tool.get(documentColumnName));
+			case DATE : return asDate((String)tool.get(documentColumnName));
 			default : return tool.get(documentColumnName);
 		}
 	}
@@ -84,5 +86,14 @@ public class BPTContainerProvider {
 	
 	private static Link asEmailLink(String linkString) {
 		return new Link(linkString, new ExternalResource("mailto:" + linkString));
+	}
+	
+	private static Date asDate(String dateString) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(dateString);
+		} catch (ParseException e) {
+			return null;
+		}
+		
 	}
 }
