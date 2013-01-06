@@ -1,10 +1,12 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.Collection;
+
 import com.vaadin.Application;
-import com.vaadin.data.Item;
-import com.vaadin.ui.*;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Window;
+
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 
 public class BPTApplication extends Application {
 	private BPTTable table;
@@ -13,6 +15,7 @@ public class BPTApplication extends Application {
 	private String username;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
+	private BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
 	
 	@Override
 	public void init() {
@@ -32,34 +35,41 @@ public class BPTApplication extends Application {
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
-		
-		
-	
-		
 	}
+	
 	public void refresh(ArrayList<String> tagValues) {
 		
 		table.filterBy(tagValues);
 	}
+	
 	public Boolean isLoggedIn() {
 		return loggedIn;
 	}
+	
 	public void setLoggedIn(Boolean loggedIn) {
 		this.loggedIn = loggedIn;
 	}
+	
 	public String getUsername() {
 		return username;
 	}
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
 	public void uploader() {
 		uploader = new BPTUploader();
 		mainFrame.add(uploader);
 	}
+	
 	public void finder() {
 		table = new BPTTable();
 		mainFrame.add(table);
+	}
+	
+	public BPTDocumentRepository getToolRepository() {
+		return toolRepository;
 	}
 
 }

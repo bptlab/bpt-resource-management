@@ -1,10 +1,16 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 
 /**
  * Contains resources required by Vaadin to display various components.
@@ -18,7 +24,7 @@ public class BPTVaadinResources {
 	    { 
 	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE});
 	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE});
-	    	add(new Object[] {"description", "Description", String.class, BPTPropertyValueType.IGNORE});
+	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT});
 	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE});
 	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK});
 	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK});
@@ -55,7 +61,7 @@ public class BPTVaadinResources {
 	
 	/**
 	 * @param documentType the document type
-	 * @return attribute names under which the values are stored in CouchDB
+	 * @return attribute names under which the values are stored in the database
 	 * 
 	 */
 	public static ArrayList<String> getDocumentKeys(String documentType) {
@@ -112,4 +118,63 @@ public class BPTVaadinResources {
 		}
 		return values;
 	}
+	
+	/**
+	 * @param documentType the document type
+	 * @return columns (including lists) whose entries are relevant for searching by tags
+	 * 
+	 */
+	public static String[] getRelevantColumnsForTags(String documentType) {
+		String[] values = new String[0];
+		if (documentType.equals("BPTTool")) {
+			values = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
+		}
+		return values;
+	}
+	
+	/**
+	 * @param tool the database document as java.util.Map
+	 * @param documentColumnName the name of the attribute
+	 * @param valueType required to what type of Vaadin component will be generated - see return methods below
+	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
+	 * 
+	 */
+	public static Object generateComponent(Map<String, Object>tool, String documentColumnName, BPTPropertyValueType valueType) {
+		switch (valueType) {
+			case LINK : return asLink((String)tool.get(documentColumnName));
+			case EMAIL : return asEmailLink((String)tool.get(documentColumnName));
+			case LIST : return asFormattedString((ArrayList<String>)tool.get(documentColumnName));
+			case DATE : return asDate((String)tool.get(documentColumnName));
+			case RICH_TEXT: return asRichText((String)tool.get(documentColumnName));
+			default : return tool.get(documentColumnName);
+		}
+	}
+	
+	private static String asFormattedString(ArrayList<String> stringList) {
+		return stringList.toString().replace("[", "").replace("]", "");
+	}
+	
+	private static Link asLink(String linkString) {
+		return new Link(linkString, new ExternalResource(linkString));
+	}
+	
+	private static Link asEmailLink(String emailLinkString) {
+		return new Link(emailLinkString, new ExternalResource("mailto:" + emailLinkString));
+	}
+	
+	private static Date asDate(String dateString) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(dateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private static Label asRichText(String richTextString) {
+		Label richText = new Label(richTextString);
+	    richText.setContentMode(Label.CONTENT_XHTML);
+	    return richText;
+	}
+	
 }

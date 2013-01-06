@@ -1,7 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
 
 import com.vaadin.data.Property;
@@ -10,9 +9,10 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
+
 public class BPTSearchComponent extends CustomComponent{
 	
-	private BPTSidebar sidebar;
 	private ComboBox searchInput;
 	private Set<String> uniqueValues;
 	private Set<String> unselectedValues;
@@ -33,7 +33,7 @@ public class BPTSearchComponent extends CustomComponent{
 	}
 	
 	private void addListenerToSearchInputBox() {
-		searchInput.addListener( new Property.ValueChangeListener() {
+		searchInput.addListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				Object value = searchInput.getValue();
 				if (value == null) return;

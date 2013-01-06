@@ -1,21 +1,34 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Link;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.*;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.*;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 
+/**
+ * Provides data for the table and the search component.
+ * 
+ * public static IndexedContainer getContainer()
+ * public static Set<String> getUniqueValues(String tagColumn)
+ * 
+ * @author bu
+ * @author tw
+ *
+ */
 public class BPTContainerProvider {
 	
 	private static BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
 	
+	/**
+	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
+	 *
+	 */
 	public static IndexedContainer getContainer(){
 		IndexedContainer container = new IndexedContainer();
 		
@@ -34,12 +47,17 @@ public class BPTContainerProvider {
 		return container;
 		
 	}
-
+	
+	/**
+	 * @param tagColumn the colum(s) from which the unique values (= tags) shall be retrieved
+	 * @return the unique values (= tags)
+	 *
+	 */
 	public static Set<String> getUniqueValues(String tagColumn) {
 		Set<String> uniqueValues = new HashSet<String>();
-		
 		List<Map> tools = toolRepository.getAll();
 		
+		// TODO: refactor to have it generic
 		for (Map<String, Object> tool : tools) {
 			if (tagColumn == "all" || tagColumn == "availabilities")
 			uniqueValues.addAll(new HashSet<String>((ArrayList<String>)tool.get("availabilities"))); // hard_coded
@@ -62,38 +80,7 @@ public class BPTContainerProvider {
 	
 	private static void setItemPropertyValues(Item item, Map<String, Object> tool){
 		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")) {
-			item.getItemProperty(entry[1]).setValue(generateValue(tool, (String)entry[0], (BPTPropertyValueType)entry[3]));
+			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(tool, (String)entry[0], (BPTPropertyValueType)entry[3]));
 		}
-	}
-	
-	private static Object generateValue(Map<String, Object>tool, String documentColumnName, BPTPropertyValueType valueType) {
-		switch (valueType) {
-			case LINK : return asLink((String)tool.get(documentColumnName));
-			case EMAIL : return asEmailLink((String)tool.get(documentColumnName));
-			case LIST : return asFormattedString((ArrayList<String>)tool.get(documentColumnName));
-			case DATE : return asDate((String)tool.get(documentColumnName));
-			default : return tool.get(documentColumnName);
-		}
-	}
-	
-	private static String asFormattedString(ArrayList<String> stringList) {
-		return stringList.toString().replace("[", "").replace("]", "");
-	}
-	
-	private static Link asLink(String linkString) {
-		return new Link(linkString, new ExternalResource(linkString));
-	}
-	
-	private static Link asEmailLink(String linkString) {
-		return new Link(linkString, new ExternalResource("mailto:" + linkString));
-	}
-	
-	private static Date asDate(String dateString) {
-		try {
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(dateString);
-		} catch (ParseException e) {
-			return null;
-		}
-		
 	}
 }
