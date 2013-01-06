@@ -7,8 +7,23 @@ import org.ektorp.http.StdHttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 
+/**
+ * Provides a static method to connect to CouchDB.
+ * 
+ * public static CouchDbConnector connect(String table)
+ *
+ * @author tw
+ *
+ */
 public class BPTDatabase {
 
+	/**
+     * Connects to CouchDB.
+     * 
+     * @param table the name of the database to connect to
+     * @return the connection to the database
+     * 
+     */
 	public static CouchDbConnector connect(String table) {
 		HttpClient httpClient = new StdHttpClient.Builder()
 									.host("localhost")

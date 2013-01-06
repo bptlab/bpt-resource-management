@@ -7,17 +7,38 @@ import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 
+/**
+ * Provides querying methods based on CouchDB views.
+ * Provides methods for CRUD operations based on java.util.Map - may be directly used by front-end.
+ * 
+ * public int numberOfDocuments()
+ * public String createDocument(String type, Map<String, Object> document)
+ * public Map<String, Object> readDocument(String _id)
+ * public Map<String, Object> updateDocument(Map<String, Object> document)
+ * public Map<String, Object> deleteDocument(String _id)
+ *
+ * @author tw
+ *
+ */
 @View(
 	name = "all_documents", 
 	map = "function(doc) { if (doc.type == 'BPTTool') emit(doc._id, doc); }"
 	)
 public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	
+	/**
+     * @param table the name of the database to connect to
+     * 
+     */
 	public BPTDocumentRepository(String table) {
 		super(Map.class, BPTDatabase.connect(table));
         initStandardDesignDocument();
 	}
 	
+	/**
+     * @return the number of database documents that are not marked as deleted
+     * 
+     */
 	@View(
 		name = "number_of_documents", 
 		map = "function(doc) { if (!doc.deleted) emit(\"count\", 1); }",
@@ -34,6 +55,14 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 	}
 	
+	/**
+	 * Creates a new document in the database.
+	 * 
+     * @param type the type of the document to be stored
+     * @param document java.util.Map containing the attributes and their values to be stored
+     * @return the id of the stored document
+     * 
+     */
 	public String createDocument(String type, Map<String, Object> document) {
 		
 		Map<String, Object> databaseDocument = new HashMap<String, Object>();
@@ -49,20 +78,31 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 			databaseDocument.put(key, document.get(key));
 		}
 		
-		databaseDocument.put("date_created", new Date());
-		databaseDocument.put("last_update", new Date());
-		
 		_id = nextAvailableId().toString();
 		
 		db.create(_id, databaseDocument);
 		return _id;
 	}
 
+	/**
+	 * Fetches an existing document in the database.
+	 * 
+     * @param _id the id of the document to be fetched
+     * @return database document as java.util.Map
+     * 
+     */
 	public Map<String, Object> readDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		return databaseDocument;
 	}
 	
+	/**
+	 * Fetches an existing document in the database.
+	 * 
+     * @param java.util.Map with updated values
+     * @return updated database document as java.util.Map
+     * 
+     */
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = db.get(Map.class, (String)document.get("_id"));
 		String[] keys = BPTDocumentTypes.getDocumentKeys((String)document.get("type"));
@@ -75,6 +115,13 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		return databaseDocument;
 	}
 	
+	/**
+	 * Deletes a document by marking it as deleted but keeping it in the database.
+	 * 
+     * @param _id the id of the document to be deleted
+     * @return deleted database document as java.util.Map
+     * 
+     */
 	public Map<String, Object> deleteDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("deleted", true);

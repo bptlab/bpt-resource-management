@@ -1,7 +1,22 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+/**
+ * Class to define document type specific attributes.
+ * 
+ * public static String[] getDocumentKeys(String type)
+ *
+ * @author tw
+ *
+ */
 public class BPTDocumentTypes {
 	
+	/**
+	 * Returns document type specific attributes.
+	 * 
+	 * @param type the document type
+	 * @return attributes of the document type as a String array
+	 * 
+	 */
 	public static String[] getDocumentKeys(String type) {
 		if (type.equals("BPTTool")) {
 			return new String[] {
