@@ -21,42 +21,37 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 
 public class BPTTable extends Table{
 
-	private IndexedContainer visibleColumns;
-	private IndexedContainer dataSource;
+	private IndexedContainer dataSource, visibleRows;
 	private Collection<?> columnIds;
 	
 	public BPTTable(){
 		super();
+		dataSource = BPTContainerProvider.getContainer();
+        visibleRows = BPTContainerProvider.getContainer(); // TODO: "new IndexedContainer();" does not work (must add container properties before)
 		setImmediate(true);
 		setSelectable(true);
 		setColumnReorderingAllowed(true);
         setColumnCollapsingAllowed(true);
-        dataSource = BPTContainerProvider.getContainer();
         setContainerDataSource(dataSource);
         setWidth("100%");
-        visibleColumns = new IndexedContainer();
-        columnIds= dataSource.getContainerPropertyIds();
-        for (Object columnId : columnIds){
-        	visibleColumns.addContainerProperty(columnId, String.class, null);
-        	System.out.println(visibleColumns.getContainerPropertyIds());
-        }
         addListenerToTable();
 	}
+	
 	public void filterBy(ArrayList<String> tagValues) {
-		visibleColumns.removeAllItems();
+		visibleRows.removeAllItems();
 		for (Object rowId : dataSource.getItemIds()){
 			Item row = dataSource.getItem(rowId);
-			if (columnShouldBeVisible(row, tagValues)){
-				Item item = visibleColumns.addItem(rowId);
-				for (Object columnId : columnIds){
-					item.getItemProperty(columnId).setValue(row.getItemProperty(columnId).getValue());
+			if (rowShouldBeVisible(row, tagValues)){
+				Item item = visibleRows.addItem(rowId);
+				for (Object columnName : BPTVaadinResources.getColumnNames("BPTTool")) {
+					item.getItemProperty(columnName).setValue(row.getItemProperty(columnName).getValue());
 				}
 			}
-			setContainerDataSource(visibleColumns);
 		}
+		setContainerDataSource(visibleRows);
 	}
 	
-	private boolean columnShouldBeVisible(Item item, ArrayList<String> tagValues) {
+	private boolean rowShouldBeVisible(Item item, ArrayList<String> tagValues) {
 		
 		ArrayList<String> itemAsArray = new ArrayList<String>();
 		String[] relevantColumns = BPTVaadinResources.getRelevantColumnsForTags("BPTTool");
