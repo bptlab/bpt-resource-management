@@ -29,10 +29,9 @@ public class BPTContainerProvider {
 	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 	 *
 	 */
-	public static IndexedContainer getContainer(){
-		IndexedContainer container = new IndexedContainer();
+	public static IndexedContainer createContainerWithDatabaseData(){
 		
-		addContainerProperties(container);
+		IndexedContainer container = createContainerWithProperties();
 		
 		List<Map> tools = toolRepository.getAll();
 		
@@ -55,6 +54,7 @@ public class BPTContainerProvider {
 	 */
 	public static Set<String> getUniqueValues(String tagColumn) {
 		Set<String> uniqueValues = new HashSet<String>();
+		//TODO: avoid database access
 		List<Map> tools = toolRepository.getAll();
 		
 		// TODO: refactor to have it generic
@@ -72,10 +72,12 @@ public class BPTContainerProvider {
 		return uniqueValues;
 	}
 	
-	private static void addContainerProperties(IndexedContainer container) {
+	public static IndexedContainer createContainerWithProperties() {
+		IndexedContainer container = new IndexedContainer();
 		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")) {
 			container.addContainerProperty(entry[1], (Class<?>)entry[2], null);
 		}
+		return container;
 	}
 	
 	private static void setItemPropertyValues(Item item, Map<String, Object> tool){

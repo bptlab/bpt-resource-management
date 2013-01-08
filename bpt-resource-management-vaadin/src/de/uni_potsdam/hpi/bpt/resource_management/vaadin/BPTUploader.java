@@ -1,23 +1,34 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.FailedEvent;
+import com.vaadin.ui.Upload.FinishedEvent;
+import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 
-public class BPTUploader extends CustomComponent implements Upload.Receiver{
+public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	private VerticalLayout layout;
 	private Upload upload;
@@ -25,6 +36,9 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 	private TextArea descriptionInput;
 	private Button finishUploadButton;
 	private BPTSearchComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
+	private Panel imagePanel;
+	private File logo;
+	private final String[] supportedMimeTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
 	
 	public BPTUploader(){
 		layout = new VerticalLayout();
@@ -70,20 +84,24 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 		functionalityTagComponent = new BPTSearchComponent("supportedFunctionalities", true);
 		layout.addComponent(functionalityTagComponent);
 		
+		upload = new Upload("Upload a logo (*.jpg, *.gif, *.png supported):", this);
+		upload.setImmediate(false);
+		upload.setWidth("-1px");
+		upload.setHeight("-1px");
+		upload.addListener((Upload.SucceededListener) this);
+        upload.addListener((Upload.FailedListener) this);
+		layout.addComponent(upload);
 		
+		/*upload.addListener(new Upload.FinishedListener() {
+			public void uploadFinished(FinishedEvent event) {
+				getWindow().showNotification("Upload successful!");
+			}
+		});*/
 		
-//		upload = new Upload("Please upload a screencast", this);
-//		upload.setImmediate(false);
-//		upload.setWidth("-1px");
-//		upload.setHeight("-1px");
-//		layout.addComponent(upload);
-//		
-//		upload.addListener(new Upload.FinishedListener() {
-//			public void uploadFinished(FinishedEvent event) {
-//				
-//				System.out.println("upload finished");
-//			}
-//		});
+		imagePanel = new Panel("Logo");
+        imagePanel.addComponent(new Label("No image uploaded yet"));
+        layout.addComponent(imagePanel);
+
 		finishUploadButton = new Button("finish Upload");
 		layout.addComponent(finishUploadButton);
 		finishUploadButton.addListener(new Button.ClickListener(){
@@ -106,7 +124,9 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 					new Date()
 				}));
 				
-				getWindow().showNotification("Upload Sucessful: " + (String)nameInput.getValue());
+				// TODO: attach image to document for CouchDB
+				
+				getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
 				
 				/*String name = (String)nameInput.getValue();
 				
@@ -155,11 +175,43 @@ public class BPTUploader extends CustomComponent implements Upload.Receiver{
 		}
 		return document;
 	}
+	
+	@Override
+	public void uploadFailed(FailedEvent event) {
+		getWindow().showNotification(
+                "Upload failed :(",
+                "The type of the file you have submitted is not supported or the file was not found.",
+                Notification.TYPE_ERROR_MESSAGE);
 
-	public OutputStream receiveUpload(String filename, String mimeType) {
-		
-		System.out.println("output stream");
-		return null;
 	}
-
+	
+	@Override
+	public void uploadSucceeded(SucceededEvent event) {
+		final FileResource imageResource = new FileResource(logo, getApplication());
+        imagePanel.removeAllComponents();
+        imagePanel.addComponent(new Embedded(event.getFilename(), imageResource));
+        // TODO: Button to remove the image and delete it in the file system
+	}
+	
+	@Override
+	public OutputStream receiveUpload(String filename, String mimeType) {
+		FileOutputStream outputStream = null;
+		
+        if(System.getProperty("os.name").contains("Windows")) {
+			logo = new File("C:\\temp\\" + filename);
+		}
+		else {
+			logo = new File("/tmp/" + filename);
+		}
+        
+        try {
+        	if (Arrays.asList(supportedMimeTypes).contains(mimeType)) {
+        		outputStream = new FileOutputStream(logo);
+        	}
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        return outputStream;
+	}
 }
