@@ -22,7 +22,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 public class BPTTable extends Table {
 
 	private IndexedContainer dataSource, visibleRows;
-	private Collection<?> columnIds;
 	
 	public BPTTable(){
 		super();
@@ -72,8 +71,7 @@ public class BPTTable extends Table {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				if ((getItem(getValue()) != null)){
 					openPopupFor(getItem(getValue()));
-				}
-								
+				}		
 			}
 
 			private void openPopupFor(Item item) {

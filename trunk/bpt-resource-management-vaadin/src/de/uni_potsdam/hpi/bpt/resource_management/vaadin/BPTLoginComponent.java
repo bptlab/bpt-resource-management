@@ -20,7 +20,7 @@ public class BPTLoginComponent extends CustomComponent{
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
 	
-	public BPTLoginComponent(String username, Boolean isLoggedIn){
+	public BPTLoginComponent(String username, boolean isLoggedIn){
 		
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);

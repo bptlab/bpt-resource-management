@@ -9,11 +9,11 @@ public class BPTValidator {
 	private static UrlValidator urlValidator = new UrlValidator(schemes);
 	private static EmailValidator emailValidator = EmailValidator.getInstance();
 
-	public static Boolean isValidURL(String url) {
+	public static boolean isValidURL(String url) {
 		return urlValidator.isValid(url);
 	}
 	
-	public static Boolean isValidEmail(String email) {
+	public static boolean isValidEmail(String email) {
 		return emailValidator.isValid(email);
 	}
 	

@@ -11,7 +11,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 public class BPTApplication extends Application {
 	private BPTTable table;
 	private BPTSidebar sidebar;
-	private Boolean loggedIn;
+	private boolean loggedIn;
 	private String username;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
@@ -42,11 +42,11 @@ public class BPTApplication extends Application {
 		table.filterBy(tagValues);
 	}
 	
-	public Boolean isLoggedIn() {
+	public boolean isLoggedIn() {
 		return loggedIn;
 	}
 	
-	public void setLoggedIn(Boolean loggedIn) {
+	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
 	}
 	
