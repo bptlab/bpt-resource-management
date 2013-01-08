@@ -19,15 +19,15 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-public class BPTTable extends Table{
+public class BPTTable extends Table {
 
 	private IndexedContainer dataSource, visibleRows;
 	private Collection<?> columnIds;
 	
 	public BPTTable(){
 		super();
-		dataSource = BPTContainerProvider.getContainer();
-        visibleRows = BPTContainerProvider.getContainer(); // TODO: "new IndexedContainer();" does not work (must add container properties before)
+		dataSource = BPTContainerProvider.createContainerWithDatabaseData();
+        visibleRows = BPTContainerProvider.createContainerWithProperties(); 
 		setImmediate(true);
 		setSelectable(true);
 		setColumnReorderingAllowed(true);
