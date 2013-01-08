@@ -1,8 +1,11 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
@@ -26,6 +32,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.Notification;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 
 public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
@@ -34,11 +41,13 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private Upload upload;
 	private TextField nameInput, providerInput, downloadInput, documentationInput, screencastInput;
 	private TextArea descriptionInput;
-	private Button finishUploadButton;
+	private Button finishUploadButton, removeImageButton;
 	private BPTSearchComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
 	private Panel imagePanel;
 	private File logo;
-	private final String[] supportedMimeTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
+	private FileOutputStream outputStream;
+	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
+	private String documentId, imageName, imageType;
 	
 	public BPTUploader(){
 		layout = new VerticalLayout();
@@ -84,30 +93,21 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		functionalityTagComponent = new BPTSearchComponent("supportedFunctionalities", true);
 		layout.addComponent(functionalityTagComponent);
 		
-		upload = new Upload("Upload a logo (*.jpg, *.gif, *.png supported):", this);
-		upload.setImmediate(false);
-		upload.setWidth("-1px");
-		upload.setHeight("-1px");
-		upload.addListener((Upload.SucceededListener) this);
-        upload.addListener((Upload.FailedListener) this);
-		layout.addComponent(upload);
-		
-		/*upload.addListener(new Upload.FinishedListener() {
-			public void uploadFinished(FinishedEvent event) {
-				getWindow().showNotification("Upload successful!");
-			}
-		});*/
-		
 		imagePanel = new Panel("Logo");
+		
+		createUploadComponent(imagePanel);
+		
         imagePanel.addComponent(new Label("No image uploaded yet"));
         layout.addComponent(imagePanel);
 
-		finishUploadButton = new Button("finish Upload");
+		finishUploadButton = new Button("Submit");
 		layout.addComponent(finishUploadButton);
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
-				((BPTApplication)getApplication()).getToolRepository().createDocument("BPTTool", generateDocument(new Object[] {
+				BPTDocumentRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
+				
+				documentId = toolRepository.createDocument("BPTTool", generateDocument(new Object[] {
 					(String)nameInput.getValue(),
 					(String)descriptionInput.getValue(),
 					(String)providerInput.getValue(),
@@ -124,7 +124,12 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					new Date()
 				}));
 				
-				// TODO: attach image to document for CouchDB
+				if (logo != null) { // logo.exists()
+					Map<String, Object> document = toolRepository.readDocument(documentId);
+					String documentRevision = (String)document.get("_rev");
+					
+					toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
+				}
 				
 				getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
 				
@@ -164,9 +169,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				}
 				*/
 				
-			}});
+			}
+		});
 	}
-	
+
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
 		String[] keys = BPTDocumentTypes.getDocumentKeys("BPTTool");
@@ -176,26 +182,20 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		return document;
 	}
 	
-	@Override
-	public void uploadFailed(FailedEvent event) {
-		getWindow().showNotification(
-                "Upload failed :(",
-                "The type of the file you have submitted is not supported or the file was not found.",
-                Notification.TYPE_ERROR_MESSAGE);
-
-	}
-	
-	@Override
-	public void uploadSucceeded(SucceededEvent event) {
-		final FileResource imageResource = new FileResource(logo, getApplication());
-        imagePanel.removeAllComponents();
-        imagePanel.addComponent(new Embedded(event.getFilename(), imageResource));
-        // TODO: Button to remove the image and delete it in the file system
+	private void createUploadComponent(Panel parent) {
+		upload = new Upload("Upload a logo (*.jpg, *.gif, *.png supported):", this);
+		upload.setImmediate(false);
+		upload.setWidth("-1px");
+		upload.setHeight("-1px");
+		upload.addListener((Upload.SucceededListener)this);
+        upload.addListener((Upload.FailedListener)this);
+		parent.addComponent(upload);
 	}
 	
 	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		FileOutputStream outputStream = null;
+		imageName = filename;
+		imageType = mimeType;
 		
         if(System.getProperty("os.name").contains("Windows")) {
 			logo = new File("C:\\temp\\" + filename);
@@ -205,7 +205,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		}
         
         try {
-        	if (Arrays.asList(supportedMimeTypes).contains(mimeType)) {
+        	if (Arrays.asList(supportedImageTypes).contains(imageType)) {
         		outputStream = new FileOutputStream(logo);
         	}
         } catch (FileNotFoundException e) {
@@ -213,5 +213,35 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         }
         
         return outputStream;
+	}
+	
+	@Override
+	public void uploadSucceeded(final SucceededEvent event) {
+		final FileResource imageResource = new FileResource(logo, getApplication());
+        imagePanel.removeAllComponents();
+        imagePanel.addComponent(new Embedded(event.getFilename(), imageResource));
+        removeImageButton = new Button("Remove image");
+		imagePanel.addComponent(removeImageButton);
+		removeImageButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent clickEvent) {
+				outputStream = null;
+				imagePanel.removeAllComponents();
+				createUploadComponent(imagePanel);
+				imagePanel.addComponent(new Label("No image uploaded yet"));
+				boolean deletionSuccessful = logo.delete();
+				if (!deletionSuccessful) {
+					throw new IllegalArgumentException("Deletion of " + event.getFilename() + " failed.");
+				}
+				logo = null;
+			}
+		});
+	}
+	
+	@Override
+	public void uploadFailed(FailedEvent event) {
+		getWindow().showNotification(
+                "Upload failed :(",
+                "The type of the file you have submitted is not supported or the file was not found.",
+                Notification.TYPE_ERROR_MESSAGE);
 	}
 }

@@ -19,7 +19,7 @@ public class BPTSearchComponent extends CustomComponent{
 	private BPTSearchTagBox searchTagBox;
 	private VerticalLayout layout;
 	
-	public BPTSearchComponent(String tagColumns, Boolean newTagsAllowed) {
+	public BPTSearchComponent(String tagColumns, boolean newTagsAllowed) {
 		uniqueValues = BPTContainerProvider.getUniqueValues(tagColumns);
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
@@ -54,7 +54,7 @@ public class BPTSearchComponent extends CustomComponent{
 		
 	}
 
-	private ComboBox createSearchInputBox(Boolean newTagsAllowed){
+	private ComboBox createSearchInputBox(boolean newTagsAllowed){
 		searchInput= new ComboBox();
 		for (String uniqueValue: uniqueValues){
 			searchInput.addItem(uniqueValue);

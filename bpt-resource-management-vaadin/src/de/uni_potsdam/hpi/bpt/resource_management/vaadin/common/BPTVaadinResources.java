@@ -37,6 +37,7 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL});
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE});
+	    	// TODO: display image --- add(new Object[] {"_attachment", "Last update", Component.class, BPTPropertyValueType.IMAGE});
 	    }
 	};
 	
@@ -140,13 +141,15 @@ public class BPTVaadinResources {
 	 * 
 	 */
 	public static Object generateComponent(Map<String, Object>tool, String documentColumnName, BPTPropertyValueType valueType) {
+		Object value = tool.get(documentColumnName);
 		switch (valueType) {
-			case LINK : return asLink((String)tool.get(documentColumnName));
-			case EMAIL : return asEmailLink((String)tool.get(documentColumnName));
-			case LIST : return asFormattedString((ArrayList<String>)tool.get(documentColumnName));
-			case DATE : return asDate((String)tool.get(documentColumnName));
-			case RICH_TEXT: return asRichText((String)tool.get(documentColumnName));
-			default : return tool.get(documentColumnName);
+			case LINK : return asLink((String)value);
+			case EMAIL : return asEmailLink((String)value);
+			case LIST : return asFormattedString((ArrayList<String>)value);
+			case DATE : return asDate((String)value);
+			case RICH_TEXT : return asRichText((String)value);
+			 // TODO: display image --- case IMAGE : return asImage((InputStream)value);
+			default : return value;
 		}
 	}
 	
@@ -176,5 +179,12 @@ public class BPTVaadinResources {
 	    richText.setContentMode(Label.CONTENT_XHTML);
 	    return richText;
 	}
+	
+	// TODO: display image
+/*	private static Embedded asImage(InputStream inputStream) {
+		StreamResource imageresource = new StreamResource(inputStream, "myimage.png", this);
+		Embedded image = new Embedded("", imageresource);
+	    return richText;
+	}*/
 	
 }

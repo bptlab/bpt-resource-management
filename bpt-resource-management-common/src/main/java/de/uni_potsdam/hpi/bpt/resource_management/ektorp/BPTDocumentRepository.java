@@ -1,7 +1,13 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
+import org.ektorp.AttachmentInputStream;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
@@ -55,6 +61,23 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 	}
 	
+	public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType) {
+		String revision = new String();
+		
+		try {
+			InputStream inputStream = new FileInputStream(file);
+			inputStream.close();
+			AttachmentInputStream attachmentStream = new AttachmentInputStream(attachmentId, inputStream, contentType);
+			revision = db.createAttachment(_id, _rev, attachmentStream);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return revision;
+	}
+	
 	/**
 	 * Creates a new document in the database.
 	 * 
@@ -82,6 +105,12 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		
 		db.create(_id, databaseDocument);
 		return _id;
+	}
+	
+	 // TODO: display image
+	public InputStream readAttachment(String _id, String attachmentId) {
+		AttachmentInputStream inputStream = db.getAttachment(_id, attachmentId);
+		return inputStream;
 	}
 
 	/**
