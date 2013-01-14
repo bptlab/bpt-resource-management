@@ -66,9 +66,10 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		
 		try {
 			InputStream inputStream = new FileInputStream(file);
-			inputStream.close();
 			AttachmentInputStream attachmentStream = new AttachmentInputStream(attachmentId, inputStream, contentType);
 			revision = db.createAttachment(_id, _rev, attachmentStream);
+			inputStream.close();
+			attachmentStream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
