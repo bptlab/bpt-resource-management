@@ -105,6 +105,7 @@ public class BPTLoginComponent extends CustomComponent{
 				layout.addComponent(navigationBar);
 				layout.addComponent(new Label(username));
 				addLogoutButton();
+				layout.addComponent(new BPTBoxContainer());
 				getWindow().removeWindow(subWindow);
 				
 			}});

@@ -94,8 +94,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		String _id;
 		
 		databaseDocument.put("type", type);
-		databaseDocument.put("published", false);
-		databaseDocument.put("rejected", false);
+		databaseDocument.put("status", BPTDocumentStatus.Unpublished);
 		databaseDocument.put("deleted", false);
 		
 		for (String key : keys) {
@@ -155,6 +154,14 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	public Map<String, Object> deleteDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("deleted", true);
+		db.update(databaseDocument);
+		return databaseDocument;
+	}
+	
+	
+	public Map<String, Object> publishDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		databaseDocument.put("status", BPTDocumentStatus.Published);
 		db.update(databaseDocument);
 		return databaseDocument;
 	}
