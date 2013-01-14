@@ -15,6 +15,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
@@ -25,7 +26,9 @@ public class BPTTable extends Table {
 	
 	public BPTTable(){
 		super();
-		dataSource = BPTContainerProvider.createContainerWithDatabaseData();
+		BPTDocumentStatus[] statusArray = new BPTDocumentStatus[1];
+		statusArray[0] = BPTDocumentStatus.Published;
+		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray);
         visibleRows = BPTContainerProvider.createContainerWithProperties(); 
 		setImmediate(true);
 		setSelectable(true);
@@ -101,11 +104,25 @@ public class BPTTable extends Table {
 						}
 					});
 					popupWindow.addComponent(deleteButton);
+					
+					Button publishButton = new Button("publish");
+					publishButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
+							getWindow().removeWindow(popupWindow);
+						}
+					});
+					popupWindow.addComponent(publishButton);
+					
 				}
 				getWindow().addWindow(popupWindow);
 				
 			}
 			});
+	}
+	public void refreshContent(BPTDocumentStatus[] statusArray){
+		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray);
+		setContainerDataSource(dataSource);
 	}
 	
 }

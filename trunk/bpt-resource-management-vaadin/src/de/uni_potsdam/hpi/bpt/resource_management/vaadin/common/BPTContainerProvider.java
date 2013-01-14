@@ -10,6 +10,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
 
 /**
  * Provides data for the table and the search component.
@@ -29,7 +30,7 @@ public class BPTContainerProvider {
 	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 	 *
 	 */
-	public static IndexedContainer createContainerWithDatabaseData(){
+	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray){
 		
 		IndexedContainer container = createContainerWithProperties();
 		
@@ -38,8 +39,14 @@ public class BPTContainerProvider {
 		for (int i = 0; i < tools.size(); i++) {
 			Map<String, Object> tool = tools.get(i);
 			if (!(Boolean)tool.get("deleted")) {
-				Item item = container.addItem(i);
-				setItemPropertyValues(item, tool);
+				for (int j = 0; j < statusArray.length; j++){
+					System.out.println("Array:" + statusArray[j]);
+					System.out.println("db_status:" + tool.get("status"));
+					if ((statusArray[j].toString().equals(tool.get("status")))){
+						Item item = container.addItem(i);
+						setItemPropertyValues(item, tool);
+					}
+				}
 			}
 		}
 		

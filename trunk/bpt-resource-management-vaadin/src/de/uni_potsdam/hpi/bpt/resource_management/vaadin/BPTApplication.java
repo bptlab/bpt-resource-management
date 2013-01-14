@@ -71,5 +71,9 @@ public class BPTApplication extends Application {
 	public BPTDocumentRepository getToolRepository() {
 		return toolRepository;
 	}
+	
+	public BPTTable getTable(){
+		return table;
+	}
 
 }
