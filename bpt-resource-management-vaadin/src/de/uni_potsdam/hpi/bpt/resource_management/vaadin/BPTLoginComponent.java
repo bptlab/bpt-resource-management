@@ -19,9 +19,11 @@ public class BPTLoginComponent extends CustomComponent{
 	private Window subWindow;
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
+	private BPTSidebar sidebar;
 	
-	public BPTLoginComponent(String username, boolean isLoggedIn){
+	public BPTLoginComponent(String username, boolean isLoggedIn, BPTSidebar sidebar){
 		
+		this.sidebar = sidebar;
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
 		navigationBar = new BPTNavigationBar();
@@ -36,6 +38,7 @@ public class BPTLoginComponent extends CustomComponent{
 			addLoginButton();
 			addRegisterButton();
 		}
+		
 		
 	}
 
@@ -69,53 +72,63 @@ public class BPTLoginComponent extends CustomComponent{
 				BPTApplication application = (BPTApplication) getApplication();
 				application.setUsername("Guest");
 				application.setLoggedIn(false);
+				application.finder();
 				layout.removeAllComponents();
 				layout.addComponent(welcomeLabel);
 				addLoginButton();
 				addRegisterButton();
+				sidebar.logout();
 			}});
 		
 	}
 
 	private void createSubWindow(){
-		subWindow = new Window("Login");
-		subWindow.setModal(true);
-		final TextField usernameField = new TextField("Username");
-		subWindow.addComponent(usernameField);
-		final PasswordField password = new PasswordField("Password");
-		subWindow.addComponent(password);
-		Button loginButton = new Button("Login");
-		subWindow.addComponent(loginButton);
-		Button cancelButton = new Button("Cancel");
-		subWindow.addComponent(cancelButton);
-		Button registerButton = new Button("Not registered yet?");
-        registerButton.setStyleName(BaseTheme.BUTTON_LINK);
-		subWindow.addComponent(registerButton);
-        
-		loginButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				BPTApplication application = (BPTApplication) getApplication();
-				String username = ((String) usernameField.getValue());
-				application.setUsername(username);
-				application.setLoggedIn(true);
-				usernameField.setValue("");
-				password.setValue("");
-				layout.removeAllComponents();
-				System.out.println(username);
-				layout.addComponent(navigationBar);
-				layout.addComponent(new Label(username));
-				addLogoutButton();
-				layout.addComponent(new BPTBoxContainer());
-				getWindow().removeWindow(subWindow);
-				
-			}});
-		
-		cancelButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				getWindow().removeWindow(subWindow);
-				usernameField.setValue("");
-				password.setValue("");
-			}});
+		subWindow = new BPTLoginWindow("Login", this);
+//		subWindow.setModal(true);
+//		final TextField usernameField = new TextField("Username");
+//		subWindow.addComponent(usernameField);
+//		final PasswordField password = new PasswordField("Password");
+//		subWindow.addComponent(password);
+//		Button loginButton = new Button("Login");
+//		subWindow.addComponent(loginButton);
+//		Button cancelButton = new Button("Cancel");
+//		subWindow.addComponent(cancelButton);
+//		Button registerButton = new Button("Not registered yet?");
+//        registerButton.setStyleName(BaseTheme.BUTTON_LINK);
+//		subWindow.addComponent(registerButton);
+//        
+//		loginButton.addListener(new Button.ClickListener(){
+//			public void buttonClick(ClickEvent event) {
+//				BPTApplication application = (BPTApplication) getApplication();
+//				String username = ((String) usernameField.getValue());
+//				application.setUsername(username);
+//				application.setLoggedIn(true);
+//				usernameField.setValue("");
+//				password.setValue("");
+//				layout.removeAllComponents();
+//				System.out.println(username);
+//				layout.addComponent(navigationBar);
+//				layout.addComponent(new Label(username));
+//				addLogoutButton();
+//				sidebar.addBoxContainer();
+//				getWindow().removeWindow(subWindow);
+//				
+//			}});
+//		
+//		cancelButton.addListener(new Button.ClickListener(){
+//			public void buttonClick(ClickEvent event) {
+//				getWindow().removeWindow(subWindow);
+//				usernameField.setValue("");
+//				password.setValue("");
+//			}});
+	}
+	public void login(String username){
+		layout.removeAllComponents();
+		System.out.println(username);
+		layout.addComponent(navigationBar);
+		layout.addComponent(new Label(username));
+		addLogoutButton();
+		sidebar.login();
 	}
 	
 }
