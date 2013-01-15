@@ -42,7 +42,7 @@ public class BPTContainerProvider {
 				for (int j = 0; j < statusArray.length; j++){
 					System.out.println("Array:" + statusArray[j]);
 					System.out.println("db_status:" + tool.get("status"));
-					if ((statusArray[j].toString().equals(tool.get("status")))){
+					if ((statusArray[j] == BPTDocumentStatus.valueOf((String) (tool.get("status"))))){
 						Item item = container.addItem(i);
 						setItemPropertyValues(item, tool);
 					}

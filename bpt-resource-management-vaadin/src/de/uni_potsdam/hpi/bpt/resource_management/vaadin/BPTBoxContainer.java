@@ -71,7 +71,6 @@ public class BPTBoxContainer extends CustomComponent {
 		BPTDocumentStatus[] statusArray =  statusList.toArray(new BPTDocumentStatus[statusList.size()]);
 		
 		((BPTApplication)getApplication()).getTable().refreshContent(statusArray);
-		System.out.println("test1");
 	}
 
 }
