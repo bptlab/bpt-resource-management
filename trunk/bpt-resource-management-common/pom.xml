@@ -5,6 +5,14 @@
   <version>SNAPSHOT</version>
   <name>bpt-resource-management-common</name>
   <description>Commons of Management System for Various Resources from the BPT group</description>
+  <repositories>
+   <repository>
+         <id>openid4java snapshots repository</id>
+         <name>openid4java snapshots repository</name>
+         <url>https://oss.sonatype.org/content/repositories/openid4java-snapshots</url>
+    	  <snapshots />
+	  </repository>
+  </repositories>
   <dependencies>
   	<dependency>
   		<groupId>org.ektorp</groupId>
@@ -34,5 +42,17 @@
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
+    <dependency>
+    <groupId>org.openid4java</groupId>
+    	<artifactId>openid4java-consumer</artifactId>
+    	<!--artifactId>openid4java-server</artifactId-->
+    	<!--artifactId>openid4java-infocard</artifactId-->
+    	<!--artifactId>openid4java-xri</artifactId-->
+    	<!--artifactId>openid4java</artifactId-->
+    	<!--artifactId>openid4java-full</artifactId-->
+    	<version>0.9.7-SNAPSHOT</version>
+    	<type>pom</type>
+    </dependency>
+
   </dependencies>
 </project>

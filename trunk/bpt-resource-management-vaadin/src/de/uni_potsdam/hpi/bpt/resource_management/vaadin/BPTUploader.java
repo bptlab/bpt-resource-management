@@ -132,7 +132,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				}
 				
 				getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
-				
+				((BPTApplication)getApplication()).finder();
 				/*String name = (String)nameInput.getValue();
 				
 				if (database.contains(name)){

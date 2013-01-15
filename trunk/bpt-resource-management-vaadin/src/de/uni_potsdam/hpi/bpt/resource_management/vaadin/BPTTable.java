@@ -11,6 +11,7 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
@@ -96,6 +97,9 @@ public class BPTTable extends Table {
 				
 				if (((BPTApplication)getApplication()).isLoggedIn()){
 					
+					HorizontalLayout layout = new HorizontalLayout();
+					popupWindow.addComponent(layout);
+					
 					Button deleteButton = new Button("delete");
 					deleteButton.addListener(new Button.ClickListener(){
 						public void buttonClick(ClickEvent event) {
@@ -103,7 +107,7 @@ public class BPTTable extends Table {
 							getWindow().removeWindow(popupWindow);
 						}
 					});
-					popupWindow.addComponent(deleteButton);
+					layout.addComponent(deleteButton);
 					
 					BPTDocumentStatus actualState = ((BPTApplication)getApplication()).getToolRepository().getDocumentStatus(_id);
 					
@@ -116,7 +120,7 @@ public class BPTTable extends Table {
 								getWindow().removeWindow(popupWindow);
 							}
 						});
-						popupWindow.addComponent(publishButton);
+						layout.addComponent(publishButton);
 						
 						Button rejectButton = new Button("reject");
 						rejectButton.addListener(new Button.ClickListener(){
@@ -125,7 +129,7 @@ public class BPTTable extends Table {
 								getWindow().removeWindow(popupWindow);
 							}
 						});
-						popupWindow.addComponent(rejectButton);						
+						layout.addComponent(rejectButton);						
 						
 					}
 					else if (actualState == BPTDocumentStatus.Published) {
@@ -136,7 +140,7 @@ public class BPTTable extends Table {
 								getWindow().removeWindow(popupWindow);
 							}
 						});
-						popupWindow.addComponent(unpublishButton);	
+						layout.addComponent(unpublishButton);	
 					}
 					else {
 						Button proposeButton = new Button("propose");
@@ -146,7 +150,7 @@ public class BPTTable extends Table {
 								getWindow().removeWindow(popupWindow);
 							}
 						});
-						popupWindow.addComponent(proposeButton);	
+						layout.addComponent(proposeButton);	
 					}
 					
 				}

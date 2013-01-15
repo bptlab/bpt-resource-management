@@ -17,8 +17,6 @@ public class BPTNavigationBar extends CustomComponent{
 		layout.addComponent(findButton);
 		Button uploadButton = new Button("Upload");
 		layout.addComponent(uploadButton);
-		Button moderateButton = new Button("Moderate");
-		layout.addComponent(moderateButton);
 		
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {

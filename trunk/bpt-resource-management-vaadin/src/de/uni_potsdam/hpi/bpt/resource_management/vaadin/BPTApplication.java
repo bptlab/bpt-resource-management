@@ -61,11 +61,13 @@ public class BPTApplication extends Application {
 	public void uploader() {
 		uploader = new BPTUploader();
 		mainFrame.add(uploader);
+		sidebar.upload();
 	}
 	
 	public void finder() {
 		table = new BPTTable();
 		mainFrame.add(table);
+		sidebar.finder();
 	}
 	
 	public BPTDocumentRepository getToolRepository() {
