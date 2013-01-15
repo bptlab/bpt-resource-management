@@ -166,6 +166,25 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		return databaseDocument;
 	}
 	
+	public Map<String, Object> unpublishDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		databaseDocument.put("status", BPTDocumentStatus.Unpublished);
+		db.update(databaseDocument);
+		return databaseDocument;
+	}
+	
+	public Map<String, Object> rejectDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		databaseDocument.put("status", BPTDocumentStatus.Rejected);
+		db.update(databaseDocument);
+		return databaseDocument;
+	}
+	
+	public BPTDocumentStatus getDocumentStatus(String _id){
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		return BPTDocumentStatus.valueOf((String) databaseDocument.get("status"));
+	}
+	
 	private Integer nextAvailableId() {
 		
 		List<String> allDocIdsString = db.getAllDocIds();

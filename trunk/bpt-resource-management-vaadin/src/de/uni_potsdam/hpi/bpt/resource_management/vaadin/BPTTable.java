@@ -105,17 +105,53 @@ public class BPTTable extends Table {
 					});
 					popupWindow.addComponent(deleteButton);
 					
-					Button publishButton = new Button("publish");
-					publishButton.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
-							getWindow().removeWindow(popupWindow);
-						}
-					});
-					popupWindow.addComponent(publishButton);
+					BPTDocumentStatus actualState = ((BPTApplication)getApplication()).getToolRepository().getDocumentStatus(_id);
+					
+					if (actualState == BPTDocumentStatus.Unpublished){
+						
+						Button publishButton = new Button("publish");
+						publishButton.addListener(new Button.ClickListener(){
+							public void buttonClick(ClickEvent event) {
+								((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
+								getWindow().removeWindow(popupWindow);
+							}
+						});
+						popupWindow.addComponent(publishButton);
+						
+						Button rejectButton = new Button("reject");
+						rejectButton.addListener(new Button.ClickListener(){
+							public void buttonClick(ClickEvent event) {
+								((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
+								getWindow().removeWindow(popupWindow);
+							}
+						});
+						popupWindow.addComponent(rejectButton);						
+						
+					}
+					else if (actualState == BPTDocumentStatus.Published) {
+						Button unpublishButton = new Button("unpublish");
+						unpublishButton.addListener(new Button.ClickListener(){
+							public void buttonClick(ClickEvent event) {
+								((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
+								getWindow().removeWindow(popupWindow);
+							}
+						});
+						popupWindow.addComponent(unpublishButton);	
+					}
+					else {
+						Button proposeButton = new Button("propose");
+						proposeButton.addListener(new Button.ClickListener(){
+							public void buttonClick(ClickEvent event) {
+								((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
+								getWindow().removeWindow(popupWindow);
+							}
+						});
+						popupWindow.addComponent(proposeButton);	
+					}
 					
 				}
 				getWindow().addWindow(popupWindow);
+				
 				
 			}
 			});
