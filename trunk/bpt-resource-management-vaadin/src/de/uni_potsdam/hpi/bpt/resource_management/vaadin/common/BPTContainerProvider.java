@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
  * Provides data for the table and the search component.
@@ -30,7 +32,7 @@ public class BPTContainerProvider {
 	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 	 *
 	 */
-	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray){
+	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray, BPTApplication application){
 		
 		IndexedContainer container = createContainerWithProperties();
 		
@@ -44,7 +46,7 @@ public class BPTContainerProvider {
 					System.out.println("db_status:" + tool.get("status"));
 					if ((statusArray[j] == BPTDocumentStatus.valueOf((String) (tool.get("status"))))){
 						Item item = container.addItem(i);
-						setItemPropertyValues(item, tool);
+						setItemPropertyValues(item, tool, application);
 					}
 				}
 			}
@@ -87,9 +89,9 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private static void setItemPropertyValues(Item item, Map<String, Object> tool){
+	private static void setItemPropertyValues(Item item, Map<String, Object> tool, BPTApplication application){
 		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")) {
-			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(tool, (String)entry[0], (BPTPropertyValueType)entry[3]));
+			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application));
 		}
 	}
 }

@@ -1,5 +1,10 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,10 +12,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
  * Contains resources required by Vaadin to display various components.
@@ -22,22 +34,23 @@ public class BPTVaadinResources {
 	
 	private static List<Object[]> bptTools = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE});
-	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE});
-	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT});
-	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE});
-	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK});
-	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK});
-	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK});
-	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST});
-	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST});
-	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST});
-	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST});
-	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE});
-	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL});
-	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE});
-	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE});
-	    	// TODO: display image --- add(new Object[] {"_attachment", "Last update", Component.class, BPTPropertyValueType.IMAGE});
+	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null});
+	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null});
+	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null});
+	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null});
+	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null});
+	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null});
+	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null});
+	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null});
+	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null});
+	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null});
+	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null});
+	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null});
+	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null});
+	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null});
+	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null});
+	    	// TODO: display image --- 
+	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo"});
 	    }
 	};
 	
@@ -140,19 +153,25 @@ public class BPTVaadinResources {
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(Map<String, Object>tool, String documentColumnName, BPTPropertyValueType valueType) {
-		Object value = tool.get(documentColumnName);
+	public static Object generateComponent(BPTDocumentRepository toolRepository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName, BPTApplication application) {
+		Object value;
+		if (documentColumnName.equals("_attachments")) {
+			value = toolRepository.readAttachment((String)tool.get("_id"), attachmentName);
+		} else {
+			value = tool.get(documentColumnName);
+		}
+		System.out.println(documentColumnName + ": " + value + " trololol" + value.getClass());
 		switch (valueType) {
 			case LINK : return asLink((String)value);
 			case EMAIL : return asEmailLink((String)value);
 			case LIST : return asFormattedString((ArrayList<String>)value);
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
-			 // TODO: display image --- case IMAGE : return asImage((InputStream)value);
+			case IMAGE : return asImage((InputStream)value, tool, attachmentName, application);
 			default : return value;
 		}
 	}
-	
+
 	private static String asFormattedString(ArrayList<String> stringList) {
 		return stringList.toString().replace("[", "").replace("]", "");
 	}
@@ -180,11 +199,32 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	// TODO: display image
-/*	private static Embedded asImage(InputStream inputStream) {
-		StreamResource imageresource = new StreamResource(inputStream, "myimage.png", this);
-		Embedded image = new Embedded("", imageresource);
-	    return richText;
-	}*/
+	private static Embedded asImage(InputStream inputStream, Map<String, Object> tool, String attachmentName, BPTApplication application) {
+		String filename;
+		if(System.getProperty("os.name").contains("Windows")) {
+			filename = "C:\\temp\\" + (String)tool.get("_id") + "_logo.tmp";
+		} else {
+			filename = "/tmp/" + (String)tool.get("_id") + "_logo.tmp";
+		}
+		File logo = new File(filename);
+		try {
+			OutputStream out = new FileOutputStream(logo);
+			byte buffer[] = new byte[1024];
+			int length;
+			while((length = inputStream.read(buffer)) > 0) {
+				out.write(buffer, 0, length);
+			}
+			out.close();
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		ExternalResource imageResource = new ExternalResource(filename);
+		// TODO: line below too long
+		imageResource.setMIMEType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
+		Embedded image = new Embedded("", imageResource);
+	    return image;
+	}
 	
 }
