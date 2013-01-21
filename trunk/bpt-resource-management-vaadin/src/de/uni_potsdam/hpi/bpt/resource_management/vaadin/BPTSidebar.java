@@ -29,7 +29,7 @@ public class BPTSidebar extends CustomComponent{
 		
 	}
 	public void refresh(ArrayList<String> tagValues) {
-		application.refresh(tagValues);
+		application.getTable().filterBy(tagValues);
 		
 	}
 	public void login() {

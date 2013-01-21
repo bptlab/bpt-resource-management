@@ -37,11 +37,6 @@ public class BPTApplication extends Application {
 		setMainWindow(mainWindow);
 	}
 	
-	public void refresh(ArrayList<String> tagValues) {
-		
-		table.filterBy(tagValues);
-	}
-	
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
