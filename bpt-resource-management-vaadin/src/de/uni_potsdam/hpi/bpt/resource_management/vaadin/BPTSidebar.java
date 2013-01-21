@@ -43,6 +43,8 @@ public class BPTSidebar extends CustomComponent{
 		layout.removeComponent(spaceHolder);
 	}
 	public void finder() {
+		spaceHolder.removeAllComponents();
+		layout.removeComponent(spaceHolder);
 		layout.addComponent(spaceHolder);
 		if (application.isLoggedIn()) spaceHolder.addComponent(new BPTBoxContainer());
 		layout.addComponent(searchComponent);

@@ -208,5 +208,12 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		
 		return highestId + 1;
 	}
+	public Boolean containsName(String Name){
+		List<Map> Docs = getAll();
+		for (int i = 0; i < Docs.size(); i++){
+			if(Name.equals(Docs.get(i).get("name"))) return true;
+		}
+		return false;
+	}
 
 }
