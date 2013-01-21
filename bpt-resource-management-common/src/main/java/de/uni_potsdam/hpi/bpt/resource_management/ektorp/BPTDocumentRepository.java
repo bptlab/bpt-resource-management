@@ -106,8 +106,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		db.create(_id, databaseDocument);
 		return _id;
 	}
-	
-	 // TODO: display image
+
 	public InputStream readAttachment(String _id, String attachmentId) {
 		AttachmentInputStream inputStream = db.getAttachment(_id, attachmentId);
 		return inputStream;

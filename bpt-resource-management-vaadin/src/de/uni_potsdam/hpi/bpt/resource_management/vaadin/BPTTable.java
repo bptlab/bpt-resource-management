@@ -11,6 +11,7 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
@@ -29,7 +30,7 @@ public class BPTTable extends Table {
 		super();
 		BPTDocumentStatus[] statusArray = new BPTDocumentStatus[1];
 		statusArray[0] = BPTDocumentStatus.Published;
-		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray);
+		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray, (BPTApplication)getApplication());
         visibleRows = BPTContainerProvider.createContainerWithProperties(); 
 		setImmediate(true);
 		setSelectable(true);
@@ -87,9 +88,11 @@ public class BPTTable extends Table {
 				
 				for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")){
 					popupWindow.addComponent(new Label(entry[1] + ":"));
-					Object value = BPTVaadinResources.generateComponent(tool, (String)entry[0], (BPTPropertyValueType)entry[3]);
+					Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], (BPTApplication)getApplication());
 					if (entry[2] == Component.class) {
 						popupWindow.addComponent((Component)value);
+					} else if (entry[2] == Embedded.class) {
+						popupWindow.addComponent((Embedded)value);
 					} else {
 						popupWindow.addComponent(new Label(value.toString()));
 					}
@@ -161,7 +164,7 @@ public class BPTTable extends Table {
 			});
 	}
 	public void refreshContent(BPTDocumentStatus[] statusArray){
-		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray);
+		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray, (BPTApplication)getApplication());
 		setContainerDataSource(dataSource);
 	}
 	
