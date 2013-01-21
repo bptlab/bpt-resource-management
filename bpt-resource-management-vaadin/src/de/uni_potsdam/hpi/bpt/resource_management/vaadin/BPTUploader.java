@@ -129,6 +129,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					String documentRevision = (String)document.get("_rev");
 					
 					toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
+					
+					logo.delete();
 				}
 				
 				getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
