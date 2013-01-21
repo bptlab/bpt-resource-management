@@ -31,7 +31,7 @@ public class BPTSearchTagBox extends CustomComponent{
 				refresh();
 	}
 	private void refresh() {
-		((BPTApplication) getApplication()).refresh(getTagValues());
+		((BPTApplication) getApplication()).getTable().filterBy(getTagValues());
 	}
 	public ArrayList<String> getTagValues(){
 		ArrayList<String> tagValues = new ArrayList<String>();
