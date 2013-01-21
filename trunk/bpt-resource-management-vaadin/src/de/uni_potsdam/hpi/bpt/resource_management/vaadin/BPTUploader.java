@@ -30,6 +30,7 @@ import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
@@ -107,69 +108,69 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				
 				BPTDocumentRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
 				
-				documentId = toolRepository.createDocument("BPTTool", generateDocument(new Object[] {
-					(String)nameInput.getValue(),
-					(String)descriptionInput.getValue(),
-					(String)providerInput.getValue(),
-					(String)downloadInput.getValue(),
-					(String)documentationInput.getValue(),
-					(String)screencastInput.getValue(),
-					new ArrayList<String>(availabilitiesTagComponent.getTagValues()),
-					new ArrayList<String>(modelTagComponent.getTagValues()),
-					new ArrayList<String>(platformTagComponent.getTagValues()),
-					new ArrayList<String>(functionalityTagComponent.getTagValues()),
-					"Random name",
-					"random_address@example.org",
-					new Date(),
-					new Date()
-				}));
-				
-				if (logo != null) { // logo.exists()
-					Map<String, Object> document = toolRepository.readDocument(documentId);
-					String documentRevision = (String)document.get("_rev");
-					
-					toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
-					
-					logo.delete();
-				}
-				
-				getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
-				((BPTApplication)getApplication()).finder();
-				/*String name = (String)nameInput.getValue();
-				
-				if (database.contains(name)){
-					final Window subWindow = new Window("Name taken");
-					subWindow.setModal(true);
-					subWindow.addComponent(new Label("There is already a Tool with the chosen name!"));
-					getWindow().addWindow(subWindow);
-					Button okButton = new Button("OK");
-					subWindow.addComponent(okButton);
-					okButton.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							getWindow().removeWindow(subWindow);
-							
-						}
-				});
+				if(toolRepository.containsName((String)nameInput.getValue())) {
+					addWarningWindow(getWindow());
 				}
 				else{
+					finishUpload();
+					}
+				
+			}
+
+			private void finishUpload() {
+				BPTDocumentRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
+				documentId = toolRepository.createDocument("BPTTool", generateDocument(new Object[] {
+						(String)nameInput.getValue(),
+						(String)descriptionInput.getValue(),
+						(String)providerInput.getValue(),
+						(String)downloadInput.getValue(),
+						(String)documentationInput.getValue(),
+						(String)screencastInput.getValue(),
+						new ArrayList<String>(availabilitiesTagComponent.getTagValues()),
+						new ArrayList<String>(modelTagComponent.getTagValues()),
+						new ArrayList<String>(platformTagComponent.getTagValues()),
+						new ArrayList<String>(functionalityTagComponent.getTagValues()),
+						"Random name",
+						"random_address@example.org",
+						new Date(),
+						new Date()
+					}));
 					
-				BPTTool newTool = new BPTTool();
-				newTool.setName(name);
-				newTool.setDescription((String) descriptionInput.getValue());
-				newTool.setProvider((String) providerInput.getValue());
-				newTool.setDocumentationURL((String) documentationInput.getValue());
-				newTool.setAvailabilities();
-				newTool.setModelTypes(new HashSet<String>(modelTagComponent.getTagValues()));
-				newTool.setPlatforms(new HashSet<String>(platformTagComponent.getTagValues()));
-				newTool.setSupportedFunctionalities(new HashSet<String>(functionalityTagComponent.getTagValues()));
-				newTool.setContactName("Eric Verbeek");
-				newTool.setContactMail("h.m.w.verbeek@tunnel"); // invalid -> must not be included in the document later
-				newTool.setDateCreated(new Date());
-				newTool.setLastUpdate(new Date());
-				database.create(newTool);
-				getWindow().showNotification("Upload Sucessful: " + name);
-				}
-				*/
+					if (logo != null) { // logo.exists()
+						Map<String, Object> document = toolRepository.readDocument(documentId);
+						String documentRevision = (String)document.get("_rev");
+						
+						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
+						
+						logo.delete();
+					}
+					
+					getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
+					((BPTApplication)getApplication()).finder();
+				
+			}
+
+			private void addWarningWindow(final Window window) {
+				final Window warningWindow = new Window("Warning!");
+				warningWindow.setWidth("200px");
+				warningWindow.setModal(true);
+				warningWindow.addComponent(new Label("The Name you have choosen, is already taken - continue?"));
+				Button yesButton = new Button("yes");
+				Button cancelButton = new Button("cancel");
+				warningWindow.addComponent(yesButton);
+				warningWindow.addComponent(cancelButton);
+				cancelButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						window.removeWindow(warningWindow);
+					}
+				});
+				yesButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						window.removeWindow(warningWindow);
+						finishUpload();
+					}
+				});
+				window.addWindow(warningWindow);
 				
 			}
 		});
