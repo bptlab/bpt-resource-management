@@ -23,7 +23,7 @@ public class BPTDocumentTypes {
 				"name", "description", "provider", 
 				"download_url", "documentation_url", "screencast_url", 
 				"availabilities", "model_types", "platforms", "supported_functionalities", 
-				"contact_name", "contact_mail", "date_created", "last_update"
+				"contact_name", "contact_mail", "date_created", "last_update", "deleted", "status"
 			};
 		}
 		

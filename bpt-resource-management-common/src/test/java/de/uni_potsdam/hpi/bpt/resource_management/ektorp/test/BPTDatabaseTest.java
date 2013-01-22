@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 
 @FixMethodOrder(MethodSorters.JVM)
@@ -38,7 +39,9 @@ public class BPTDatabaseTest {
 		"Eric Verbeek",
 		"h.m.w.verbeek@tunnel",
 		new Date(),
-		new Date()
+		new Date(),
+		false,
+		BPTDocumentStatus.Unpublished
 	};
 	private final Object[] secondTool = new Object[] {
 		"Activiti",
@@ -54,7 +57,9 @@ public class BPTDatabaseTest {
 		"Tijs Rademakers",
 		"test@example.org",
 		new Date(),
-		new Date()
+		new Date(),
+		false,
+		BPTDocumentStatus.Unpublished
 	};
 	private final Object[] thirdTool = new Object[] {
 		"Signavio Process Editor",
@@ -70,7 +75,9 @@ public class BPTDatabaseTest {
 		"Signavio GmbH",
 		"info@signavio.com",
 		new Date(),
-		new Date()
+		new Date(),
+		false,
+		BPTDocumentStatus.Unpublished
 	};
 	private final Object[] fourthTool = new Object[] {
 		"Yaoqiang BPMN Editor",
@@ -86,7 +93,9 @@ public class BPTDatabaseTest {
 		"blenta",
 		"shi_yaoqiang@yahoo.com",
 		new Date(),
-		new Date()
+		new Date(),
+		false,
+		BPTDocumentStatus.Unpublished
 	};
 	
 	private final Object[] fifthTool = new Object[] {
@@ -103,7 +112,9 @@ public class BPTDatabaseTest {
 		"IBM",
 		"test@example.org",
 		new Date(),
-		new Date()
+		new Date(),
+		false,
+		BPTDocumentStatus.Unpublished
 	};
 	
 	public BPTDatabaseTest(){
