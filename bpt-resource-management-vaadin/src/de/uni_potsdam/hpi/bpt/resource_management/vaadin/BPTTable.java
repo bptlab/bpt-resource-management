@@ -15,6 +15,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
@@ -25,8 +26,10 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 public class BPTTable extends Table {
 
 	private IndexedContainer dataSource, visibleRows;
+	private VerticalLayout layout;
 	
 	public BPTTable(){
+		
 		super();
 		BPTDocumentStatus[] statusArray = new BPTDocumentStatus[1];
 		statusArray[0] = BPTDocumentStatus.Published;
@@ -57,15 +60,15 @@ public class BPTTable extends Table {
 	
 	private boolean rowShouldBeVisible(Item item, ArrayList<String> tagValues) {
 		
-		ArrayList<String> itemAsArray = new ArrayList<String>();
+		ArrayList<String> itemAsArrayList = new ArrayList<String>();
 		String[] relevantColumns = BPTVaadinResources.getRelevantColumnsForTags("BPTTool");
 		for (Object propertyId : relevantColumns) {
 			String property = item.getItemProperty(propertyId).getValue().toString();
 			List<String> tags = Arrays.asList(property.split("\\s*,\\s*"));
-			itemAsArray.addAll(tags);
+			itemAsArrayList.addAll(tags);
 		}
 		for (int i = 0; i < tagValues.size(); i++){
-			if (!itemAsArray.contains(tagValues.get(i))) return false;
+			if (!itemAsArrayList.contains(tagValues.get(i))) return false;
 			
 		}
 		return true;
@@ -75,11 +78,11 @@ public class BPTTable extends Table {
 		this.addListener(new Table.ValueChangeListener() {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				if ((getItem(getValue()) != null)){
-					openPopupFor(getItem(getValue()));
+					showSelectedEntry(getItem(getValue()));
 				}		
 			}
 
-			private void openPopupFor(Item item) {
+			private void showSelectedEntry(Item item) {
 				final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 				popupWindow.setWidth("600px");
 				
