@@ -32,7 +32,7 @@ import org.ektorp.support.View;
 	)
 public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	
-	private ArrayList<Map> tableEntries;
+	private List<Map> tableEntries;
 	/**
      * @param table the name of the database to connect to
      * 
@@ -40,6 +40,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	public BPTDocumentRepository(String table) {
 		super(Map.class, BPTDatabase.connect(table));
         initStandardDesignDocument();
+        tableEntries = getAll();
 	}
 	
 	/**
@@ -215,7 +216,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 		return false;
 	};
-	public ArrayList<Map> getItems(ArrayList<BPTDocumentStatus> states, ArrayList<String> tags){
+	public ArrayList<Map> getVisibleEntries(ArrayList<BPTDocumentStatus> states, ArrayList<String> tags){
 		ArrayList<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
 		for (int i = 0; i < tableEntries.size(); i++){
@@ -240,5 +241,5 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 		return true;
 	}
-
+	
 }

@@ -40,7 +40,7 @@ public abstract class BPTShowEntryComponent extends CustomComponent{
 		
 		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")){
 			popupWindow.addComponent(new Label(entry[1] + ":"));
-			Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], (BPTApplication)getApplication());
+			Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
 			if (entry[2] == Component.class) {
 				popupWindow.addComponent((Component)value);
 			} else if (entry[2] == Embedded.class) {
