@@ -46,7 +46,7 @@ public class BPTContainerProvider {
 					System.out.println("db_status:" + tool.get("status"));
 					if ((statusArray[j] == BPTDocumentStatus.valueOf((String) (tool.get("status"))))){
 						Item item = container.addItem(i);
-						setItemPropertyValues(item, tool, application);
+						setItemPropertyValues(item, tool);
 					}
 				}
 			}
@@ -89,9 +89,24 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private static void setItemPropertyValues(Item item, Map<String, Object> tool, BPTApplication application){
+	private static void setItemPropertyValues(Item item, Map<String, Object> tool){
 		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")) {
-			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application));
+			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
 		}
 	}
+	
+	public static IndexedContainer setVisibleEntries(ArrayList<BPTDocumentStatus> statusArray, ArrayList<String> tags){
+		List<Map> tools = toolRepository.getVisibleEntries(statusArray, tags);
+					
+			IndexedContainer container = createContainerWithProperties();
+			
+			for (int i = 0; i < tools.size(); i++) {
+				Map<String, Object> tool = tools.get(i);
+					for (int j = 0; j < statusArray.size(); j++){
+							Item item = container.addItem(i);
+							setItemPropertyValues(item, tool);
+					}
+				}
+			return container;
+		}
 }

@@ -153,7 +153,7 @@ public class BPTVaadinResources {
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(BPTDocumentRepository toolRepository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName, BPTApplication application) {
+	public static Object generateComponent(BPTDocumentRepository toolRepository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
 		Object value;
 		if (documentColumnName.equals("_attachments")) {
 			value = toolRepository.readAttachment((String)tool.get("_id"), attachmentName);
@@ -167,7 +167,7 @@ public class BPTVaadinResources {
 			case LIST : return asFormattedString((ArrayList<String>)value);
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
-			case IMAGE : return asImage((InputStream)value, tool, attachmentName, application);
+			case IMAGE : return asImage((InputStream)value, tool, attachmentName);
 			default : return value;
 		}
 	}
@@ -199,7 +199,7 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	private static Embedded asImage(InputStream inputStream, Map<String, Object> tool, String attachmentName, BPTApplication application) {
+	private static Embedded asImage(InputStream inputStream, Map<String, Object> tool, String attachmentName) {
 		String filename;
 		if(System.getProperty("os.name").contains("Windows")) {
 			filename = "C:\\temp\\" + (String)tool.get("_id") + "_logo.tmp";
