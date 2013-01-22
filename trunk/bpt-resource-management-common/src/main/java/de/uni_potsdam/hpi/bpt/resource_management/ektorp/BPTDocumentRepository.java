@@ -32,6 +32,7 @@ import org.ektorp.support.View;
 	)
 public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	
+	private ArrayList<Map> tableEntries;
 	/**
      * @param table the name of the database to connect to
      * 
@@ -213,6 +214,31 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 			if(Name.equals(Docs.get(i).get("name"))) return true;
 		}
 		return false;
+	};
+	public ArrayList<Map> getItems(ArrayList<BPTDocumentStatus> states, ArrayList<String> tags){
+		ArrayList<Map> newEntries = new ArrayList<Map>();
+		String[] tagAttributes = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
+		for (int i = 0; i < tableEntries.size(); i++){
+			Map entry = tableEntries.get(i);
+			if (states.contains(BPTDocumentStatus.valueOf((String) entry.get("status")))){
+				if (shouldBeVisible(entry, tags, tagAttributes)) newEntries.add(entry);
+			}
+		}
+		return newEntries;
+		
+	}
+
+	private boolean shouldBeVisible(Map map, ArrayList<String> tags, String[] tagAttributes) {
+		ArrayList<String> entryAsArrayList = new ArrayList<String>();
+		for (Object propertyId : tagAttributes) {
+			String property = map.get(propertyId).toString();
+			List<String> attributeTags = Arrays.asList(property.split("\\s*,\\s*"));
+			entryAsArrayList.addAll(attributeTags);
+		}
+		for (int i = 0; i < tags.size(); i++){
+			if (!entryAsArrayList.contains(tags.get(i))) return false;
+		}
+		return true;
 	}
 
 }

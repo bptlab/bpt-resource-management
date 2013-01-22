@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import com.vaadin.Application;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 
 public class BPTApplication extends Application {
 	private BPTTable table;
@@ -16,6 +18,7 @@ public class BPTApplication extends Application {
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
+	private BPTLoginManager loginManager;
 	
 	@Override
 	public void init() {
@@ -35,6 +38,8 @@ public class BPTApplication extends Application {
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
+	//	loginManager = new BPTLoginManager();
+		((WebApplicationContext) getContext()).getHttpSession().getServletContext();
 	}
 	
 	public boolean isLoggedIn() {

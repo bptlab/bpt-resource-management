@@ -11,6 +11,8 @@ import org.openid4java.message.*;
 import org.openid4java.OpenIDException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +33,7 @@ public class BPTLoginManager {
 	    }
 	    
 	 // --- placing the authentication request ---
-	    public String authRequest(String userSuppliedString, HttpServletRequest httpReq, HttpServletResponse httpResp)
+	    public String authRequest(String userSuppliedString, HttpServletRequest httpReq, HttpServletResponse httpResp, ServletContext servletContext)
 	            throws IOException
 	    {
 	        try
@@ -82,7 +84,7 @@ public class BPTLoginManager {
 	            {
 	                // Option 2: HTML FORM Redirection (Allows payloads >2048 bytes)
 
-	                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("formredirection.jsp");
+	                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("formredirection.jsp");
 	                httpReq.setAttribute("parameterMap", authReq.getParameterMap());
 	                httpReq.setAttribute("destinationUrl", authReq.getDestinationUrl(false));
 	                dispatcher.forward(httpReq, httpResp);
@@ -91,7 +93,10 @@ public class BPTLoginManager {
 	        catch (OpenIDException e)
 	        {
 	            // present error to the user
-	        }
+	        } catch (ServletException e) {
+				// TODO Auto-generated catch block
+				
+			}
 
 	        return null;
 	    }
