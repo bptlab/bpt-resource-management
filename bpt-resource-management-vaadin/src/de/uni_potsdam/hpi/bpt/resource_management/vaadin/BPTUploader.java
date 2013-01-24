@@ -43,7 +43,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private TextField nameInput, providerInput, downloadInput, documentationInput, screencastInput;
 	private TextArea descriptionInput;
 	private Button finishUploadButton, removeImageButton;
-	private BPTSearchComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
+	private BPTTagComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
 	private Panel imagePanel;
 	private File logo;
 	private FileOutputStream outputStream;
@@ -79,19 +79,19 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		layout.addComponent(screencastInput);
 		
 		layout.addComponent(new Label("Availabilities:"));
-		availabilitiesTagComponent = new BPTSearchComponent("availabilities", true);
+		availabilitiesTagComponent = new BPTTagComponent("availabilities", true);
 		layout.addComponent(availabilitiesTagComponent);
 		
 		layout.addComponent(new Label("Model Type:"));
-		modelTagComponent = new BPTSearchComponent("modelTypes", true);
+		modelTagComponent = new BPTTagComponent("modelTypes", true);
 		layout.addComponent(modelTagComponent);
 		
 		layout.addComponent(new Label("Platform:"));
-		platformTagComponent = new BPTSearchComponent("platforms", true);
+		platformTagComponent = new BPTTagComponent("platforms", true);
 		layout.addComponent(platformTagComponent);
 		
 		layout.addComponent(new Label("Supported functionality:"));
-		functionalityTagComponent = new BPTSearchComponent("supportedFunctionalities", true);
+		functionalityTagComponent = new BPTTagComponent("supportedFunctionalities", true);
 		layout.addComponent(functionalityTagComponent);
 		
 		imagePanel = new Panel("Logo");

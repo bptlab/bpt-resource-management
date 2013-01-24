@@ -216,22 +216,23 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 		return false;
 	};
-	public ArrayList<Map> getVisibleEntries(ArrayList<BPTDocumentStatus> states, ArrayList<String> tags){
+	public ArrayList<Map> getVisibleEntries(List<BPTDocumentStatus> states, ArrayList<String> tags){
 		ArrayList<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
+		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (int i = 0; i < tableEntries.size(); i++){
 			Map entry = tableEntries.get(i);
 			if (states.contains(BPTDocumentStatus.valueOf((String) entry.get("status")))){
-				if (shouldBeVisible(entry, tags, tagAttributes)) newEntries.add(entry);
+				if (containsAllTags(entry, tags, tagAttributes)) newEntries.add(entry);
 			}
 		}
 		return newEntries;
 		
 	}
 
-	private boolean shouldBeVisible(Map map, ArrayList<String> tags, String[] tagAttributes) {
+	private boolean containsAllTags(Map map, ArrayList<String> tags, String[] tagAttributes) {
 		ArrayList<String> entryAsArrayList = new ArrayList<String>();
-		for (Object propertyId : tagAttributes) {
+		for (String propertyId : tagAttributes) {
+			System.out.println(propertyId);
 			String property = map.get(propertyId).toString();
 			List<String> attributeTags = Arrays.asList(property.split("\\s*,\\s*"));
 			entryAsArrayList.addAll(attributeTags);

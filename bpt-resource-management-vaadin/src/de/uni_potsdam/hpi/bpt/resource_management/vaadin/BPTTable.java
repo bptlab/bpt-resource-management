@@ -31,9 +31,9 @@ public class BPTTable extends Table {
 	public BPTTable(){
 		
 		super();
-		BPTDocumentStatus[] statusArray = new BPTDocumentStatus[1];
-		statusArray[0] = BPTDocumentStatus.Published;
-		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray, (BPTApplication)getApplication());
+		ArrayList<BPTDocumentStatus> statusList = new ArrayList<BPTDocumentStatus>();
+		statusList.add(BPTDocumentStatus.Published);
+		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>());
         visibleRows = BPTContainerProvider.createContainerWithProperties(); 
 		setImmediate(true);
 		setSelectable(true);
@@ -166,9 +166,17 @@ public class BPTTable extends Table {
 			}
 			});
 	}
-	public void refreshContent(BPTDocumentStatus[] statusArray){
-		dataSource = BPTContainerProvider.createContainerWithDatabaseData(statusArray, (BPTApplication)getApplication());
+	public void setContent(IndexedContainer newDataSource){
+		dataSource = newDataSource;
+		setContainerDataSource(dataSource);
+	}	
+	
+	public void refreshContent(ArrayList<BPTDocumentStatus> statusList){
+		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>());
 		setContainerDataSource(dataSource);
 	}
 	
+	private void show(){
+		 setContainerDataSource(dataSource);
+	}
 }

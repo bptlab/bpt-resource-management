@@ -27,11 +27,11 @@ public class BPTSearchTagBox extends CustomComponent{
 	public void removeTag(BPTSearchTag searchTag){
 				searchTagList.remove(searchTag);
 				layout.removeComponent(searchTag);
-				((BPTSearchComponent) getParent().getParent()).addTag(searchTag);
+				((BPTTagComponent) getParent().getParent()).addTag(searchTag);
 				refresh();
 	}
 	private void refresh() {
-		((BPTApplication) getApplication()).getTable().filterBy(getTagValues());
+		((BPTTagComponent) getParent().getParent()).refresh();
 	}
 	public ArrayList<String> getTagValues(){
 		ArrayList<String> tagValues = new ArrayList<String>();
