@@ -68,9 +68,15 @@ public class BPTBoxContainer extends CustomComponent {
 		if ((Boolean) published.getValue()) statusList.add(BPTDocumentStatus.Published);
 		if ((Boolean) unpublished.getValue()) statusList.add(BPTDocumentStatus.Unpublished);
 		if ((Boolean) rejected.getValue()) statusList.add(BPTDocumentStatus.Rejected);
-		BPTDocumentStatus[] statusArray =  statusList.toArray(new BPTDocumentStatus[statusList.size()]);
 		
-		((BPTApplication)getApplication()).getTable().refreshContent(statusArray);
+		((BPTApplication)getApplication()).getTable().refreshContent(statusList);
 	}
 
+	public ArrayList<BPTDocumentStatus> getSelectedStates(){
+		ArrayList<BPTDocumentStatus> statusList = new ArrayList<BPTDocumentStatus>();
+		if ((Boolean) published.getValue()) statusList.add(BPTDocumentStatus.Published);
+		if ((Boolean) unpublished.getValue()) statusList.add(BPTDocumentStatus.Unpublished);
+		if ((Boolean) rejected.getValue()) statusList.add(BPTDocumentStatus.Rejected);
+		return statusList;
+	}
 }

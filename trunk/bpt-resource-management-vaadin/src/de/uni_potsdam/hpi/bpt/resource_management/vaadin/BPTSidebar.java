@@ -12,7 +12,6 @@ public class BPTSidebar extends CustomComponent{
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
-	private VerticalLayout spaceHolder;
 	
 	public BPTSidebar(BPTApplication application) {
 		this.application = application;
@@ -21,10 +20,8 @@ public class BPTSidebar extends CustomComponent{
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		loginComponent = new BPTLoginComponent(application.getUsername(), application.isLoggedIn(), this);
-		spaceHolder = new VerticalLayout();
 		searchComponent = new BPTSearchComponent("all", false);
 		layout.addComponent(loginComponent);
-		layout.addComponent(spaceHolder);
 		layout.addComponent(searchComponent);
 		
 	}
@@ -33,25 +30,19 @@ public class BPTSidebar extends CustomComponent{
 		
 	}
 	public void login() {
-		spaceHolder.addComponent(new BPTBoxContainer());
+		searchComponent.login();
 		
 	}
 	
 	public void upload(){
 		layout.removeComponent(searchComponent);
-		spaceHolder.removeAllComponents();
-		layout.removeComponent(spaceHolder);
 	}
 	public void finder() {
-		spaceHolder.removeAllComponents();
-		layout.removeComponent(spaceHolder);
-		layout.addComponent(spaceHolder);
-		if (application.isLoggedIn()) spaceHolder.addComponent(new BPTBoxContainer());
 		layout.addComponent(searchComponent);
 	}
 	
 	public void logout(){
-		spaceHolder.removeAllComponents();
+		searchComponent.logout();
 	}
 
 }

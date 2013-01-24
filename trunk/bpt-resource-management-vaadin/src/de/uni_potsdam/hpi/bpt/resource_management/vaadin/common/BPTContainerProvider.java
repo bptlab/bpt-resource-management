@@ -1,6 +1,8 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,29 +34,29 @@ public class BPTContainerProvider {
 	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 	 *
 	 */
-	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray, BPTApplication application){
-		
-		IndexedContainer container = createContainerWithProperties();
-		
-		List<Map> tools = toolRepository.getAll();
-		
-		for (int i = 0; i < tools.size(); i++) {
-			Map<String, Object> tool = tools.get(i);
-			if (!(Boolean)tool.get("deleted")) {
-				for (int j = 0; j < statusArray.length; j++){
-					System.out.println("Array:" + statusArray[j]);
-					System.out.println("db_status:" + tool.get("status"));
-					if ((statusArray[j] == BPTDocumentStatus.valueOf((String) (tool.get("status"))))){
-						Item item = container.addItem(i);
-						setItemPropertyValues(item, tool);
-					}
-				}
-			}
-		}
-		
-		return container;
-		
-	}
+//	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray){
+//		
+//		IndexedContainer container = createContainerWithProperties();
+//		
+//		List<Map> tools = toolRepository.getAll();
+//		
+//		for (int i = 0; i < tools.size(); i++) {
+//			Map<String, Object> tool = tools.get(i);
+//			if (!(Boolean)tool.get("deleted")) {
+//				for (int j = 0; j < statusArray.length; j++){
+//					System.out.println("Array:" + statusArray[j]);
+//					System.out.println("db_status:" + tool.get("status"));
+//					if ((statusArray[j] == BPTDocumentStatus.valueOf((String) (tool.get("status"))))){
+//						Item item = container.addItem(i);
+//						setItemPropertyValues(item, tool);
+//					}
+//				}
+//			}
+//		}
+//		
+//		return container;
+//		
+//	}
 	
 	/**
 	 * @param tagColumn the colum(s) from which the unique values (= tags) shall be retrieved
@@ -95,18 +97,17 @@ public class BPTContainerProvider {
 		}
 	}
 	
-	public static IndexedContainer setVisibleEntries(ArrayList<BPTDocumentStatus> statusArray, ArrayList<String> tags){
-		List<Map> tools = toolRepository.getVisibleEntries(statusArray, tags);
-					
-			IndexedContainer container = createContainerWithProperties();
-			
+	public static IndexedContainer getVisibleEntries(ArrayList<BPTDocumentStatus> statusList, ArrayList<String> tags){
+		IndexedContainer container = createContainerWithProperties();
+		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags);
 			for (int i = 0; i < tools.size(); i++) {
 				Map<String, Object> tool = tools.get(i);
-					for (int j = 0; j < statusArray.size(); j++){
-							Item item = container.addItem(i);
-							setItemPropertyValues(item, tool);
-					}
-				}
+				Item item = container.addItem(i);
+				System.out.println("print map here" + tool);
+				System.out.println("print item here" + item);							
+				setItemPropertyValues(item, tool);
+				
+			}
 			return container;
 		}
 }
