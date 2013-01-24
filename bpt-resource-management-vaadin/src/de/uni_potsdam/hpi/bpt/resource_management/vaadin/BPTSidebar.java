@@ -25,10 +25,7 @@ public class BPTSidebar extends CustomComponent{
 		layout.addComponent(searchComponent);
 		
 	}
-	public void refresh(ArrayList<String> tagValues) {
-		application.getTable().filterBy(tagValues);
-		
-	}
+
 	public void login() {
 		searchComponent.login();
 		

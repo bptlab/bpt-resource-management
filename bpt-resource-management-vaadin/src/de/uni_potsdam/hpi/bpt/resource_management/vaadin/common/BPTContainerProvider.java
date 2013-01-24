@@ -110,4 +110,7 @@ public class BPTContainerProvider {
 			}
 			return container;
 		}
+	public static void refreshFromDatabase(){
+		toolRepository.refreshData();
+	}
 }

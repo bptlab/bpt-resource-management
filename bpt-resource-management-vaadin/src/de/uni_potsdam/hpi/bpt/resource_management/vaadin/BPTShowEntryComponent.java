@@ -6,32 +6,38 @@ import java.util.Map;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-public abstract class BPTShowEntryComponent extends CustomComponent{
+public abstract class BPTShowEntryComponent extends VerticalLayout{
 	
-	private IndexedContainer dataSource;
+	protected IndexedContainer dataSource;
+	
+	public BPTShowEntryComponent(){
+		ArrayList<BPTDocumentStatus> statusList = new ArrayList<BPTDocumentStatus>();
+		statusList.add(BPTDocumentStatus.Published);
+		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>());
+	}
 	
 	public void showEntries(IndexedContainer dataSource) {
 		this.dataSource = dataSource;
 		show(dataSource);
 	}
-	
+//to overwrite in subclass
 	protected abstract void show(IndexedContainer tableEntries); 
 	
-
-	private void showSelectedEntry(Item item) {
+//default-solution (show in popup) can be overwritten in Subclasses
+	protected void showSelectedEntry(Item item) {
 		final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 		popupWindow.setWidth("600px");
 		
@@ -59,6 +65,7 @@ public abstract class BPTShowEntryComponent extends CustomComponent{
 			deleteButton.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id);
+					BPTContainerProvider.refreshFromDatabase();
 					getWindow().removeWindow(popupWindow);
 				}
 			});
@@ -72,6 +79,7 @@ public abstract class BPTShowEntryComponent extends CustomComponent{
 				publishButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
+						BPTContainerProvider.refreshFromDatabase();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
@@ -81,6 +89,7 @@ public abstract class BPTShowEntryComponent extends CustomComponent{
 				rejectButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
+						BPTContainerProvider.refreshFromDatabase();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
@@ -92,6 +101,7 @@ public abstract class BPTShowEntryComponent extends CustomComponent{
 				unpublishButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
+						BPTContainerProvider.refreshFromDatabase();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
@@ -102,6 +112,7 @@ public abstract class BPTShowEntryComponent extends CustomComponent{
 				proposeButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
+						BPTContainerProvider.refreshFromDatabase();
 						getWindow().removeWindow(popupWindow);
 					}
 				});

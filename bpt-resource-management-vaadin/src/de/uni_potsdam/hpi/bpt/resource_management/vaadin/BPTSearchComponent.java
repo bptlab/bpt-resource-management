@@ -29,15 +29,10 @@ public class BPTSearchComponent extends BPTTagComponent{
 		boxLayout.removeComponent(box);
 	}
 	
-	public void refreshContent(){
-		((BPTApplication) getApplication()).getTable().setContent(BPTContainerProvider.getVisibleEntries(box.getSelectedStates(), searchTagBox.getTagValues()));
-	}
-	
+
 	@Override
 	public void refresh(){
-		if (!(((BPTApplication) getApplication()).getTable() == null)){
-		((BPTApplication) getApplication()).getTable().setContent(BPTContainerProvider.getVisibleEntries(box.getSelectedStates(), searchTagBox.getTagValues()));
-		}
+		((BPTApplication) getApplication()).getTable().showEntries(BPTContainerProvider.getVisibleEntries(box.getSelectedStates(), searchTagBox.getTagValues()));
 	}
 
 }

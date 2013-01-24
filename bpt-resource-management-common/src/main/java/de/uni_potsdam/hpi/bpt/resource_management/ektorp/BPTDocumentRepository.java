@@ -247,5 +247,8 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 		return true;
 	}
+	public void refreshData(){
+		tableEntries = getAll();
+	}
 	
 }

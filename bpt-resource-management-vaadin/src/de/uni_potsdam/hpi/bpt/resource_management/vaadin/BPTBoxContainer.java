@@ -46,30 +46,25 @@ public class BPTBoxContainer extends CustomComponent {
 		published.addListener(new Property.ValueChangeListener() {
 		    public void valueChange(ValueChangeEvent event) {
 		    	
-		    	refreshTable();
+		    	refresh();
 		    }
 		});
 		unpublished.addListener(new Property.ValueChangeListener() {
 		    public void valueChange(ValueChangeEvent event) {
 		    	
-		    	refreshTable();
+		    	refresh();
 		    }
 		});
 		rejected.addListener(new Property.ValueChangeListener() {
 		    public void valueChange(ValueChangeEvent event) {
 		    	
-		    	refreshTable();
+		    	refresh();
 		    }
 		});
 	}
 	
-	private void refreshTable(){
-		ArrayList<BPTDocumentStatus> statusList = new ArrayList<BPTDocumentStatus>();
-		if ((Boolean) published.getValue()) statusList.add(BPTDocumentStatus.Published);
-		if ((Boolean) unpublished.getValue()) statusList.add(BPTDocumentStatus.Unpublished);
-		if ((Boolean) rejected.getValue()) statusList.add(BPTDocumentStatus.Rejected);
-		
-		((BPTApplication)getApplication()).getTable().refreshContent(statusList);
+	private void refresh(){
+		((BPTTagComponent) getParent().getParent().getParent()).refresh();
 	}
 
 	public ArrayList<BPTDocumentStatus> getSelectedStates(){
