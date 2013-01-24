@@ -17,11 +17,11 @@ public class BPTSearchComponent extends BPTTagComponent{
 	protected void addElements(boolean newTagsAllowed) {
 		boxLayout = new HorizontalLayout();
 		layout.addComponent(boxLayout);
+		box = new BPTBoxContainer();
 		super.addElements(newTagsAllowed);
 	}
 	
 	public void login(){
-		box = new BPTBoxContainer();
 		boxLayout.addComponent(box);
 	}
 	
@@ -35,7 +35,9 @@ public class BPTSearchComponent extends BPTTagComponent{
 	
 	@Override
 	public void refresh(){
+		if (!(((BPTApplication) getApplication()).getTable() == null)){
 		((BPTApplication) getApplication()).getTable().setContent(BPTContainerProvider.getVisibleEntries(box.getSelectedStates(), searchTagBox.getTagValues()));
+		}
 	}
 
 }

@@ -229,13 +229,18 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		
 	}
 
-	private boolean containsAllTags(Map map, ArrayList<String> tags, String[] tagAttributes) {
+	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {
 		ArrayList<String> entryAsArrayList = new ArrayList<String>();
 		for (String propertyId : tagAttributes) {
 			System.out.println(propertyId);
-			String property = map.get(propertyId).toString();
-			List<String> attributeTags = Arrays.asList(property.split("\\s*,\\s*"));
-			entryAsArrayList.addAll(attributeTags);
+			String property = entry.get(propertyId).toString();
+			String cutProperty = property.substring(1, property.length() -1);
+			List<String> attributeTags = Arrays.asList(cutProperty.split("\\s*,\\s*"));
+			System.out.println("attribut: " + attributeTags);
+			for(int i = 0; i < attributeTags.size(); i++){
+				entryAsArrayList.add(attributeTags.get(i));
+				System.out.println("all entry tags: " + entryAsArrayList);
+			}
 		}
 		for (int i = 0; i < tags.size(); i++){
 			if (!entryAsArrayList.contains(tags.get(i))) return false;
