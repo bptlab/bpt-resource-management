@@ -1,11 +1,10 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class BPTLoginWindow extends Window {
@@ -38,6 +37,7 @@ public class BPTLoginWindow extends Window {
 				password.setValue("");
 				component.getWindow().removeWindow(window);
 				component.login(username);
+				((BPTApplication) getApplication()).loginRequest(username);
 			}});
 		
 		cancelButton.addListener(new Button.ClickListener(){

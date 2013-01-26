@@ -2,6 +2,8 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
 
+import javax.servlet.ServletContext;
+
 import com.vaadin.Application;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
@@ -11,7 +13,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 
 public class BPTApplication extends Application {
-	private BPTTable table;
+	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn;
 	private String username;
@@ -28,18 +30,18 @@ public class BPTApplication extends Application {
 		layout.setHeight("100%");
 		setLoggedIn(false);
 		setUsername("Guest");
-		table = new BPTTable();
-		mainFrame = new BPTMainFrame(table);
+		entryComponent = new BPTTable();
+		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
 		layout.addComponent(mainFrame);
 		layout.addComponent(sidebar);
-		mainFrame.add(table);
+		mainFrame.add(entryComponent);
 		layout.setExpandRatio(mainFrame, 7);
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
-	//	loginManager = new BPTLoginManager();
-		((WebApplicationContext) getContext()).getHttpSession().getServletContext();
+		loginManager = new BPTLoginManager();
+					
 	}
 	
 	public boolean isLoggedIn() {
@@ -65,8 +67,8 @@ public class BPTApplication extends Application {
 	}
 	
 	public void finder() {
-		table = new BPTTable();
-		mainFrame.add(table);
+		entryComponent = new BPTTable();
+		mainFrame.add(entryComponent);
 		sidebar.finder();
 	}
 	
@@ -74,8 +76,13 @@ public class BPTApplication extends Application {
 		return toolRepository;
 	}
 	
-	public BPTTable getTable(){
-		return table;
+	public BPTShowEntryComponent getTable(){
+		return entryComponent;
+	}
+	
+	public void loginRequest(String userSupportedString){
+		ServletContext context = ((WebApplicationContext) getContext()).getHttpSession().getServletContext();
+		loginManager.loginRequest(userSupportedString, context);
 	}
 
 }
