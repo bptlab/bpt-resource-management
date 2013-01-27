@@ -103,10 +103,9 @@ public class BPTContainerProvider {
 			for (int i = 0; i < tools.size(); i++) {
 				Map<String, Object> tool = tools.get(i);
 				Item item = container.addItem(i);
-				System.out.println("print map here" + tool);
-				System.out.println("print item here" + item);							
+				System.out.println("print map here: " + tool);
 				setItemPropertyValues(item, tool);
-				
+				System.out.println("print item here: " + item);
 			}
 			return container;
 		}

@@ -40,8 +40,6 @@ public class BPTDatabaseTest {
 		"h.m.w.verbeek@tunnel",
 		new Date(),
 		new Date(),
-		false,
-		BPTDocumentStatus.Unpublished
 	};
 	private final Object[] secondTool = new Object[] {
 		"Activiti",
@@ -58,8 +56,6 @@ public class BPTDatabaseTest {
 		"test@example.org",
 		new Date(),
 		new Date(),
-		false,
-		BPTDocumentStatus.Unpublished
 	};
 	private final Object[] thirdTool = new Object[] {
 		"Signavio Process Editor",
@@ -76,8 +72,6 @@ public class BPTDatabaseTest {
 		"info@signavio.com",
 		new Date(),
 		new Date(),
-		false,
-		BPTDocumentStatus.Unpublished
 	};
 	private final Object[] fourthTool = new Object[] {
 		"Yaoqiang BPMN Editor",
@@ -94,8 +88,6 @@ public class BPTDatabaseTest {
 		"shi_yaoqiang@yahoo.com",
 		new Date(),
 		new Date(),
-		false,
-		BPTDocumentStatus.Unpublished
 	};
 	
 	private final Object[] fifthTool = new Object[] {
@@ -113,8 +105,6 @@ public class BPTDatabaseTest {
 		"test@example.org",
 		new Date(),
 		new Date(),
-		false,
-		BPTDocumentStatus.Unpublished
 	};
 	
 	public BPTDatabaseTest(){

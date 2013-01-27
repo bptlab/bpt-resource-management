@@ -35,6 +35,7 @@ import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
@@ -178,7 +179,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys("BPTTool");
+		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys("BPTTool", true);
+		String[] keys = keysList.toArray(new String[keysList.size()]);
 		for(int i = 0; i < keys.length; i++) {
 			document.put(keys[i], values[i]);
 		}
