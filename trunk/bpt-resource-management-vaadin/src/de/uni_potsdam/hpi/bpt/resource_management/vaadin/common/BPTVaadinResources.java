@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.ektorp.DocumentNotFoundException;
+
 import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.FileResource;
@@ -34,23 +36,23 @@ public class BPTVaadinResources {
 	
 	private static List<Object[]> bptTools = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null});
-	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null});
-	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null});
-	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null});
-	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null});
-	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null});
-	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null});
-	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null});
-	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null});
-	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null});
-	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null});
-	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null});
-	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null});
-	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null});
-	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null});
+	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false});
+	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true});
+	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true});
+	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true});
+	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true});
+	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null, true});
+	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null, true});
+	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true});
+	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true});
+	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true});
+	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null, true});
+	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true});
+	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true});
+	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true});
+	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true});
 	    	// TODO: display image --- 
-	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo"});
+	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false});
 	    }
 	};
 	
@@ -64,6 +66,8 @@ public class BPTVaadinResources {
 	 * array element #1: attribute name displayed in Vaadin
 	 * array element #2: property data type for Vaadin table
 	 * array element #3: BPTPropertyValueType enum type to identify how to generate the specific Vaadin components that are shown
+	 * array element #4: attachment file name
+	 * array element #5: true if attribute is modifiable by user (attachments to be handled separately)
 	 * 
 	 */
 	public static List<Object[]> getEntries(String documentType) {
@@ -78,12 +82,14 @@ public class BPTVaadinResources {
 	 * @return attribute names under which the values are stored in the database
 	 * 
 	 */
-	public static ArrayList<String> getDocumentKeys(String documentType) {
+	public static ArrayList<String> getDocumentKeys(String documentType, boolean modifiableOnly) {
 		ArrayList<String> values = new ArrayList<String>();
 		if (documentType.equals("BPTTool")) {
 			for (Object[] entry : bptTools) {
-				values.add((String)entry[0]);
-			}
+				if (!modifiableOnly || (Boolean)entry[5]) {
+					values.add((String)entry[0]);
+				}
+			}	
 		}
 		return values;
 	}
@@ -156,7 +162,11 @@ public class BPTVaadinResources {
 	public static Object generateComponent(BPTDocumentRepository toolRepository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
 		Object value;
 		if (documentColumnName.equals("_attachments")) {
-			value = toolRepository.readAttachment((String)tool.get("_id"), attachmentName);
+			try {
+				value = toolRepository.readAttachment((String)tool.get("_id"), attachmentName);
+			} catch (DocumentNotFoundException e) {
+				value = new Object();
+			}
 		} else {
 			value = tool.get(documentColumnName);
 		}
@@ -167,7 +177,7 @@ public class BPTVaadinResources {
 			case LIST : return asFormattedString((ArrayList<String>)value);
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
-			case IMAGE : return asImage((InputStream)value, tool, attachmentName);
+			case IMAGE : return asImage(value, tool, attachmentName);
 			default : return value;
 		}
 	}
@@ -199,14 +209,24 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	private static Embedded asImage(InputStream inputStream, Map<String, Object> tool, String attachmentName) {
+	private static Embedded asImage(Object input, Map<String, Object> tool, String attachmentName) {
 		String filename;
-		if(System.getProperty("os.name").contains("Windows")) {
+		InputStream inputStream;
+		
+		try {
+			inputStream = (InputStream)input; 
+		} catch (ClassCastException e) {
+			return new Embedded();
+		}
+		
+		// TODO: images only visible in eclipse browser, not in Firefox etc. - cause might be below
+		if (System.getProperty("os.name").contains("Windows")) {
 			filename = "C:\\temp\\" + (String)tool.get("_id") + "_logo.tmp";
 		} else {
 			filename = "/tmp/" + (String)tool.get("_id") + "_logo.tmp";
 		}
 		File logo = new File(filename);
+		
 		try {
 			OutputStream out = new FileOutputStream(logo);
 			byte buffer[] = new byte[1024];
@@ -224,6 +244,10 @@ public class BPTVaadinResources {
 		// TODO: line below too long
 		imageResource.setMIMEType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
 		Embedded image = new Embedded("", imageResource);
+		image.setType(Embedded.TYPE_IMAGE);
+		// TODO: image size in component that shows all entries ... putting the code here would resize it everywhere
+		// image.setWidth("50px");
+		// image.setHeight("50px");
 	    return image;
 	}
 	

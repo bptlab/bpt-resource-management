@@ -40,7 +40,6 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	public BPTDocumentRepository(String table) {
 		super(Map.class, BPTDatabase.connect(table));
         initStandardDesignDocument();
-        tableEntries = getAll();
 	}
 	
 	/**
@@ -61,6 +60,16 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		} catch (IndexOutOfBoundsException e) {
 			return 0;
 		}
+	}
+	
+	@View(
+			name = "not_deleted_documents", 
+			map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted) emit(doc._id, doc); }"
+			)
+	public List<Map> getNotDeletedDocuments() {
+		ViewQuery query = createQuery("not_deleted_documents");
+		List<Map> result = db.queryView(query, Map.class);	
+		return result;
 	}
 	
 	public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType) {
@@ -217,11 +226,12 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		return false;
 	};
 	public ArrayList<Map> getVisibleEntries(List<BPTDocumentStatus> states, ArrayList<String> tags){
+		tableEntries = getNotDeletedDocuments();
 		ArrayList<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (int i = 0; i < tableEntries.size(); i++){
-			Map entry = tableEntries.get(i);
-			if (states.contains(BPTDocumentStatus.valueOf((String) entry.get("status")))){
+			Map<String, Object> entry = tableEntries.get(i);
+			if (states.contains(BPTDocumentStatus.valueOf((String)entry.get("status")))){
 				if (containsAllTags(entry, tags, tagAttributes)) newEntries.add(entry);
 			}
 		}
