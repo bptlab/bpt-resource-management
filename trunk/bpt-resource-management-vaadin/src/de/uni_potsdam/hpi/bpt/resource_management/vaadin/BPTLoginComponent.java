@@ -16,8 +16,8 @@ public class BPTLoginComponent extends CustomComponent{
 	private Button loginWindowButton;
 	private Button logoutButton;
 	private Button registerButton;
-	private Window subWindow;
 	private Label welcomeLabel;
+	private Window subWindow;
 	private BPTNavigationBar navigationBar;
 	private BPTSidebar sidebar;
 	
@@ -28,24 +28,14 @@ public class BPTLoginComponent extends CustomComponent{
 		setCompositionRoot(layout);
 		navigationBar = new BPTNavigationBar();
 		
-		if (isLoggedIn){
+		if (isLoggedIn) {
 			layout.addComponent(navigationBar);
 			addLogoutButton();
 		}
 		else {
-			welcomeLabel = new Label("Willkommen Gast");
-			layout.addComponent(welcomeLabel);
 			addLoginButton();
-			addRegisterButton();
 		}
 		
-		
-	}
-
-	private void addRegisterButton() {
-		registerButton = new Button("Register");
-		registerButton.setStyleName(BaseTheme.BUTTON_LINK);
-		layout.addComponent(registerButton);
 		
 	}
 
@@ -74,9 +64,7 @@ public class BPTLoginComponent extends CustomComponent{
 				application.setLoggedIn(false);
 				application.finder();
 				layout.removeAllComponents();
-				layout.addComponent(welcomeLabel);
 				addLoginButton();
-				addRegisterButton();
 				sidebar.logout();
 			}});
 		
@@ -90,7 +78,8 @@ public class BPTLoginComponent extends CustomComponent{
 		layout.removeAllComponents();
 		System.out.println(username);
 		layout.addComponent(navigationBar);
-		layout.addComponent(new Label(username));
+		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getUsername() + "!");
+		layout.addComponent(welcomeLabel);
 		addLogoutButton();
 		sidebar.login();
 	}
