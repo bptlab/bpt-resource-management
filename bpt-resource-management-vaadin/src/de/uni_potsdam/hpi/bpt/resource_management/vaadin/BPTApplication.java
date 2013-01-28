@@ -17,6 +17,7 @@ public class BPTApplication extends Application {
 	private BPTSidebar sidebar;
 	private boolean loggedIn;
 	private String username;
+	private String mailAddress;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
@@ -60,6 +61,14 @@ public class BPTApplication extends Application {
 		this.username = username;
 	}
 	
+	public String getMailAddress() {
+		return mailAddress;
+	}
+
+	public void setMailAddress(String mailAddress) {
+		this.mailAddress = mailAddress;
+	}
+
 	public void uploader() {
 		uploader = new BPTUploader();
 		mainFrame.add(uploader);

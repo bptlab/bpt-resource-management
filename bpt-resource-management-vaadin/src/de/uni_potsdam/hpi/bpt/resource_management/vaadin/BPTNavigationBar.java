@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class BPTNavigationBar extends CustomComponent{

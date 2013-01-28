@@ -131,8 +131,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						new ArrayList<String>(modelTagComponent.getTagValues()),
 						new ArrayList<String>(platformTagComponent.getTagValues()),
 						new ArrayList<String>(functionalityTagComponent.getTagValues()),
-						"Random name",
-						"random_address@example.org",
+						((BPTApplication)getApplication()).getUsername(), 
+						((BPTApplication)getApplication()).getMailAddress(), 
 						new Date(),
 						new Date()
 					}));
@@ -152,10 +152,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 			}
 
 			private void addWarningWindow(final Window window) {
-				final Window warningWindow = new Window("Warning!");
-				warningWindow.setWidth("200px");
+				final Window warningWindow = new Window("Warning");
+				warningWindow.setWidth("400px");
 				warningWindow.setModal(true);
-				warningWindow.addComponent(new Label("The Name you have choosen, is already taken - continue?"));
+				warningWindow.addComponent(new Label("The name you have chosen is already taken - continue?"));
 				Button yesButton = new Button("yes");
 				Button cancelButton = new Button("cancel");
 				warningWindow.addComponent(yesButton);

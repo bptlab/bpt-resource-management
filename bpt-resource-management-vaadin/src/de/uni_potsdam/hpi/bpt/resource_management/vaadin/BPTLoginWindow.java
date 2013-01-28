@@ -9,42 +9,47 @@ import com.vaadin.ui.themes.BaseTheme;
 
 public class BPTLoginWindow extends Window {
 
-	private BPTLoginWindow window;
+	private BPTLoginWindow loginWindow;
 	
 	public BPTLoginWindow(String title, final BPTLoginComponent component){
 		super(title);
-		window = this;
+		loginWindow = this;
+		setWidth("400px");
 		setModal(true);
-		final TextField usernameField = new TextField("Username");
+		final TextField usernameField = new TextField("Name");
 		addComponent(usernameField);
-		final PasswordField password = new PasswordField("Password");
-		addComponent(password);
+		final TextField mailAddressField = new TextField("Mail");
+		addComponent(mailAddressField);
+//		final PasswordField password = new PasswordField("Password");
+//		addComponent(password);
 		Button loginButton = new Button("Login");
 		addComponent(loginButton);
-		Button cancelButton = new Button("Cancel");
-		addComponent(cancelButton);
-		Button registerButton = new Button("Not registered yet?");
-        registerButton.setStyleName(BaseTheme.BUTTON_LINK);
-		addComponent(registerButton);
+//		Button cancelButton = new Button("Cancel");
+//		addComponent(cancelButton);
+//		Button registerButton = new Button("Not registered yet?");
+//		registerButton.setStyleName(BaseTheme.BUTTON_LINK);
+// 		addComponent(registerButton);
         
 		loginButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				BPTApplication application = (BPTApplication) getApplication();
 				String username = ((String) usernameField.getValue());
+				String mailAddress = ((String) mailAddressField.getValue());
 				application.setUsername(username);
+				application.setMailAddress(mailAddress);
 				application.setLoggedIn(true);
 				usernameField.setValue("");
-				password.setValue("");
-				component.getWindow().removeWindow(window);
+				mailAddressField.setValue("");
+				component.getWindow().removeWindow(loginWindow);
 				component.login(username);
-				((BPTApplication) getApplication()).loginRequest(username);
+				application.loginRequest(username);
 			}});
 		
-		cancelButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				component.getWindow().removeWindow(window);
-				usernameField.setValue("");
-				password.setValue("");
-			}});
+//		cancelButton.addListener(new Button.ClickListener(){
+//			public void buttonClick(ClickEvent event) {
+//				component.getWindow().removeWindow(loginWindow);
+//				usernameField.setValue("");
+//				mailAddressField.setValue("");
+//			}});
 	}
 }
