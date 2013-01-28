@@ -19,8 +19,8 @@ public class BPTSidebar extends CustomComponent{
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
-		loginComponent = new BPTLoginComponent(application.getUsername(), application.isLoggedIn(), this);
-		searchComponent = new BPTSearchComponent("all", false);
+		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
+		searchComponent = new BPTSearchComponent(application, "all", false);
 		layout.addComponent(loginComponent);
 		layout.addComponent(searchComponent);
 		

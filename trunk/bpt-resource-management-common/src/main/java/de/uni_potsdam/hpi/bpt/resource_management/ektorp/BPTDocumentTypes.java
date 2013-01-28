@@ -26,7 +26,11 @@ public class BPTDocumentTypes {
 				"contact_name", "contact_mail", "date_created", "last_update"
 			};
 		}
-		
+		if (type.equals("bpt_resources_users")) {
+			return new String[] {
+				"name", "mail_address"
+			};
+		}		
 		return null;
 	}
 }

@@ -21,7 +21,7 @@ public class BPTLoginComponent extends CustomComponent{
 	private BPTNavigationBar navigationBar;
 	private BPTSidebar sidebar;
 	
-	public BPTLoginComponent(String username, boolean isLoggedIn, BPTSidebar sidebar){
+	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar){
 		
 		this.sidebar = sidebar;
 		layout = new VerticalLayout();
@@ -60,7 +60,8 @@ public class BPTLoginComponent extends CustomComponent{
         logoutButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				BPTApplication application = (BPTApplication) getApplication();
-				application.setUsername("Guest");
+				application.setUsername("");
+				application.setMailAddress("");
 				application.setLoggedIn(false);
 				application.finder();
 				layout.removeAllComponents();

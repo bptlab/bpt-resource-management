@@ -28,7 +28,7 @@ import org.ektorp.support.Views;
  * @author tw
  *
  */
-public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
+public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	
 	private String tableName;
 	private List<Map> tableEntries = new ArrayList<Map>();

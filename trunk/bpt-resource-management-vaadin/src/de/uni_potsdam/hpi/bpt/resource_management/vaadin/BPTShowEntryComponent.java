@@ -59,7 +59,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			}
 		}
 		
-		if (((BPTApplication)getApplication()).isLoggedIn()){
+		if ((((BPTApplication)getApplication()).isLoggedIn() && (((BPTApplication)getApplication()).getUsername().equals(tool.get("contact_name"))) && (((BPTApplication)getApplication()).getMailAddress().equals(tool.get("contact_mail")))) || ((BPTApplication)getApplication()).isModerator()){
 			
 			HorizontalLayout layout = new HorizontalLayout();
 			popupWindow.addComponent(layout);
@@ -76,7 +76,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			
 			BPTToolStatus actualState = ((BPTApplication)getApplication()).getToolRepository().getDocumentStatus(_id);
 			
-			if (actualState == BPTToolStatus.Unpublished){
+			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerator()){
 				
 				Button publishButton = new Button("publish");
 				publishButton.addListener(new Button.ClickListener(){
