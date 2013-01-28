@@ -18,7 +18,7 @@ public class BPTDocumentTypes {
 	 * 
 	 */
 	public static String[] getDocumentKeys(String type) {
-		if (type.equals("BPTTool")) {
+		if (type.equals("bpt_resources_tools")) {
 			return new String[] {
 				"name", "description", "provider", 
 				"download_url", "documentation_url", "screencast_url", 

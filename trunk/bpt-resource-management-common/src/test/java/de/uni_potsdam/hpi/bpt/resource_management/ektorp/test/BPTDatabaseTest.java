@@ -13,14 +13,14 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 
 @FixMethodOrder(MethodSorters.JVM)
 public class BPTDatabaseTest {
 	
-	private BPTDocumentRepository repository;
+	private BPTToolRepository repository;
 	private Map<String, Object> exampleToolFromDatabase;
 	private static int numberOfDocuments;
 	private static String[] toolIdentifiers = new String[5];
@@ -108,7 +108,7 @@ public class BPTDatabaseTest {
 	};
 	
 	public BPTDatabaseTest(){
-		repository = new BPTDocumentRepository("bpt_resources");
+		repository = new BPTToolRepository();
 		numberOfDocuments = repository.numberOfDocuments();
 	}
 	
@@ -119,17 +119,17 @@ public class BPTDatabaseTest {
 	
 	@Test
 	public void testCreateDocument() {
-		toolIdentifiers[0] = repository.createDocument("BPTTool", generateDocument(firstTool));
-		toolIdentifiers[1] = repository.createDocument("BPTTool", generateDocument(secondTool));
+		toolIdentifiers[0] = repository.createDocument(generateDocument(firstTool));
+		toolIdentifiers[1] = repository.createDocument(generateDocument(secondTool));
 		assertEquals(numberOfDocuments + 2, repository.numberOfDocuments());
-		toolIdentifiers[2] = repository.createDocument("BPTTool", generateDocument(thirdTool));
-		toolIdentifiers[3] = repository.createDocument("BPTTool", generateDocument(fourthTool));
-		toolIdentifiers[4] = repository.createDocument("BPTTool", generateDocument(fifthTool));
+		toolIdentifiers[2] = repository.createDocument(generateDocument(thirdTool));
+		toolIdentifiers[3] = repository.createDocument(generateDocument(fourthTool));
+		toolIdentifiers[4] = repository.createDocument(generateDocument(fifthTool));
 	}
 	
 	private Map<String, Object> generateDocument(Object[] tool) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys("BPTTool");
+		String[] keys = BPTDocumentTypes.getDocumentKeys("bpt_resources_tools");
 		for (int i = 0; i < keys.length; i++) {
 			document.put(keys[i], tool[i]);
 		}

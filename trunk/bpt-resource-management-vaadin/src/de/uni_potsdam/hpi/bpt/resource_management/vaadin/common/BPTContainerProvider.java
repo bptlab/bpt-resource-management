@@ -12,8 +12,8 @@ import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
@@ -28,7 +28,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
  */
 public class BPTContainerProvider {
 	
-	private static BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
+	private static BPTToolRepository toolRepository = new BPTToolRepository();
 	
 	/**
 	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
@@ -85,19 +85,19 @@ public class BPTContainerProvider {
 	
 	public static IndexedContainer createContainerWithProperties() {
 		IndexedContainer container = new IndexedContainer();
-		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")) {
+		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			container.addContainerProperty(entry[1], (Class<?>)entry[2], null);
 		}
 		return container;
 	}
 	
 	private static void setItemPropertyValues(Item item, Map<String, Object> tool){
-		for (Object[] entry : BPTVaadinResources.getEntries("BPTTool")) {
+		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
 		}
 	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTDocumentStatus> statusList, ArrayList<String> tags){
+	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags){
 		IndexedContainer container = createContainerWithProperties();
 		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags);
 			for (int i = 0; i < tools.size(); i++) {

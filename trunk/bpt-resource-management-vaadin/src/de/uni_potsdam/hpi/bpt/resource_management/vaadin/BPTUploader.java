@@ -33,8 +33,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
@@ -107,7 +107,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
-				BPTDocumentRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
+				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
 				
 				if(toolRepository.containsName((String)nameInput.getValue())) {
 					addWarningWindow(getWindow());
@@ -119,8 +119,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 			}
 
 			private void finishUpload() {
-				BPTDocumentRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
-				documentId = toolRepository.createDocument("BPTTool", generateDocument(new Object[] {
+				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
+				documentId = toolRepository.createDocument(generateDocument(new Object[] {
 						(String)nameInput.getValue(),
 						(String)descriptionInput.getValue(),
 						(String)providerInput.getValue(),
@@ -179,7 +179,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys("BPTTool", true);
+		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true);
 		String[] keys = keysList.toArray(new String[keysList.size()]);
 		for(int i = 0; i < keys.length; i++) {
 			document.put(keys[i], values[i]);
