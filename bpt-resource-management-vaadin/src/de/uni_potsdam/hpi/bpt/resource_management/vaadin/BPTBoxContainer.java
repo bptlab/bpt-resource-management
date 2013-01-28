@@ -17,7 +17,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 
 public class BPTBoxContainer extends CustomComponent {
 
@@ -67,11 +67,11 @@ public class BPTBoxContainer extends CustomComponent {
 		((BPTTagComponent) getParent().getParent().getParent()).refresh();
 	}
 
-	public ArrayList<BPTDocumentStatus> getSelectedStates(){
-		ArrayList<BPTDocumentStatus> statusList = new ArrayList<BPTDocumentStatus>();
-		if ((Boolean) published.getValue()) statusList.add(BPTDocumentStatus.Published);
-		if ((Boolean) unpublished.getValue()) statusList.add(BPTDocumentStatus.Unpublished);
-		if ((Boolean) rejected.getValue()) statusList.add(BPTDocumentStatus.Rejected);
+	public ArrayList<BPTToolStatus> getSelectedStates(){
+		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+		if ((Boolean) published.getValue()) statusList.add(BPTToolStatus.Published);
+		if ((Boolean) unpublished.getValue()) statusList.add(BPTToolStatus.Unpublished);
+		if ((Boolean) rejected.getValue()) statusList.add(BPTToolStatus.Rejected);
 		return statusList;
 	}
 }

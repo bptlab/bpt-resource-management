@@ -14,6 +14,7 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 
 public class BPTApplication extends Application implements HttpServletRequestListener{
 	private BPTShowEntryComponent entryComponent;
@@ -23,7 +24,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private String mailAddress;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
-	private BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
+	private BPTToolRepository toolRepository = new BPTToolRepository();
 	private BPTLoginManager loginManager;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -86,7 +87,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		sidebar.finder();
 	}
 	
-	public BPTDocumentRepository getToolRepository() {
+	public BPTToolRepository getToolRepository() {
 		return toolRepository;
 	}
 	

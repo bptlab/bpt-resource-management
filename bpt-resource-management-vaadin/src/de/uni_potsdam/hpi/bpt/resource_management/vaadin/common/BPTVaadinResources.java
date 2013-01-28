@@ -34,7 +34,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
  */
 public class BPTVaadinResources {
 	
-	private static List<Object[]> bptTools = new ArrayList<Object[]>() {
+	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
 	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false});
 	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true});
@@ -70,11 +70,8 @@ public class BPTVaadinResources {
 	 * array element #5: true if attribute is modifiable by user (attachments to be handled separately)
 	 * 
 	 */
-	public static List<Object[]> getEntries(String documentType) {
-		if (documentType.equals("BPTTool")) {
-			return bptTools;
-		}
-		return new ArrayList<Object[]>();
+	public static List<Object[]> getEntries() {
+		return propertiesOfVisibleItems;
 	}
 	
 	/**
@@ -82,15 +79,13 @@ public class BPTVaadinResources {
 	 * @return attribute names under which the values are stored in the database
 	 * 
 	 */
-	public static ArrayList<String> getDocumentKeys(String documentType, boolean modifiableOnly) {
+	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly) {
 		ArrayList<String> values = new ArrayList<String>();
-		if (documentType.equals("BPTTool")) {
-			for (Object[] entry : bptTools) {
-				if (!modifiableOnly || (Boolean)entry[5]) {
-					values.add((String)entry[0]);
-				}
-			}	
-		}
+		for (Object[] entry : propertiesOfVisibleItems) {
+			if (!modifiableOnly || (Boolean)entry[5]) {
+				values.add((String)entry[0]);
+			}
+		}	
 		return values;
 	}
 	
@@ -99,12 +94,10 @@ public class BPTVaadinResources {
 	 * @return attribute names displayed in Vaadin
 	 * 
 	 */
-	public static ArrayList<String> getColumnNames(String documentType) {
+	public static ArrayList<String> getColumnNames() {
 		ArrayList<String> values = new ArrayList<String>();
-		if (documentType.equals("BPTTool")) {
-			for (Object[] entry : bptTools) {
-				values.add((String)entry[1]);
-			}
+		for (Object[] entry : propertiesOfVisibleItems) {
+			values.add((String)entry[1]);
 		}
 		return values;
 	}
@@ -114,12 +107,10 @@ public class BPTVaadinResources {
 	 * @return property data type for Vaadin table
 	 * 
 	 */
-	public static ArrayList<Class<?>> getPropertyDataTypes(String documentType) {
+	public static ArrayList<Class<?>> getPropertyDataTypes() {
 		ArrayList<Class<?>> values = new ArrayList<Class<?>>();
-		if (documentType.equals("BPTTool")) {
-			for (Object[] entry : bptTools) {
-				values.add((Class<?>)entry[2]);
-			}
+		for (Object[] entry : propertiesOfVisibleItems) {
+			values.add((Class<?>)entry[2]);
 		}
 		return values;
 	}
@@ -129,12 +120,10 @@ public class BPTVaadinResources {
 	 * @return BPTPropertyValueType enum type to identify how to generate the specific Vaadin components that are shown
 	 * 
 	 */
-	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes(String documentType) {
+	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes() {
 		ArrayList<BPTPropertyValueType> values = new ArrayList<BPTPropertyValueType>();
-		if (documentType.equals("BPTTool")) {
-			for (Object[] entry : bptTools) {
-				values.add((BPTPropertyValueType)entry[3]);
-			}
+		for (Object[] entry : propertiesOfVisibleItems) {
+			values.add((BPTPropertyValueType)entry[3]);
 		}
 		return values;
 	}
@@ -144,12 +133,8 @@ public class BPTVaadinResources {
 	 * @return columns (including lists) whose entries are relevant for searching by tags
 	 * 
 	 */
-	public static String[] getRelevantColumnsForTags(String documentType) {
-		String[] values = new String[0];
-		if (documentType.equals("BPTTool")) {
-			values = new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
-		}
-		return values;
+	public static String[] getColumnsWithTags() {
+		return new String[] {"Availability", "Model type", "Platform", "Supported functionality"};
 	}
 	
 	/**

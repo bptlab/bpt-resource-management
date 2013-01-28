@@ -43,50 +43,6 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
         initStandardDesignDocument();
 	}
 	
-	/**
-     * @return the number of database documents that are not marked as deleted
-     * 
-     */
-	@View(
-		name = "number_of_documents", 
-		map = "function(doc) { if (!doc.deleted) emit(\"count\", 1); }",
-		reduce = "function(key, values, rereduce) { var count = 0; values.forEach(function(v) { count += 1; }); return count; }"
-		/* NOTE: deleted documents will not be counted here */
-		)
-	public int numberOfDocuments() {
-		ViewQuery query = createQuery("number_of_documents");
-		ViewResult result = db.queryView(query);
-		try {
-			return result.getRows().get(0).getValueAsInt();
-		} catch (IndexOutOfBoundsException e) {
-			return 0;
-		}
-	}
-	
-	@Views({
-	    @View(
-	    	name = "all_documents", 
-			map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted) emit(doc._id, doc); }"
-	    	), 
-	    @View(
-	       	name = "published_documents", 
-	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Published') emit(doc._id, doc); }"
-	       	), 
-	   	@View(
-	   		name = "unpublished_documents", 
-	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Unpublished') emit(doc._id, doc); }"
-	    	), 
-	    @View(
-	    	name = "rejected_documents", 
-	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Rejected') emit(doc._id, doc); }"
-	    	)
-	    })
-	public List<Map> getDocuments(String status) {
-		ViewQuery query = createQuery(status + "_documents");
-		List<Map> result = db.queryView(query, Map.class);	
-		return result;
-	}
-	
 	public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType) {
 		String revision = new String();
 		
@@ -113,15 +69,13 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
      * @return the id of the stored document
      * 
      */
-	public String createDocument(String type, Map<String, Object> document) {
+	public String createDocument(Map<String, Object> document) {
 		
 		Map<String, Object> databaseDocument = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys(type);
 		String _id;
+		String[] keys = BPTDocumentTypes.getDocumentKeys(tableName);
 		
-		databaseDocument.put("type", type);
-		databaseDocument.put("status", BPTDocumentStatus.Unpublished);
-		databaseDocument.put("deleted", false);
+		databaseDocument = setDefaultValues(databaseDocument);
 		
 		for (String key : keys) {
 			databaseDocument.put(key, document.get(key));
@@ -131,6 +85,10 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		
 		db.create(_id, databaseDocument);
 		return _id;
+	}
+
+	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
+		return databaseDocument;
 	}
 
 	public InputStream readAttachment(String _id, String attachmentId) {
@@ -169,7 +127,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
      */
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = db.get(Map.class, (String)document.get("_id"));
-		String[] keys = BPTDocumentTypes.getDocumentKeys((String)document.get("type"));
+		String[] keys = BPTDocumentTypes.getDocumentKeys(tableName);
 		
 		for (String key : keys) {
 			databaseDocument.put(key, document.get(key));
@@ -191,33 +149,6 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		databaseDocument.put("deleted", true);
 		db.update(databaseDocument);
 		return databaseDocument;
-	}
-	
-	
-	public Map<String, Object> publishDocument(String _id) {
-		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTDocumentStatus.Published);
-		db.update(databaseDocument);
-		return databaseDocument;
-	}
-	
-	public Map<String, Object> unpublishDocument(String _id) {
-		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTDocumentStatus.Unpublished);
-		db.update(databaseDocument);
-		return databaseDocument;
-	}
-	
-	public Map<String, Object> rejectDocument(String _id) {
-		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTDocumentStatus.Rejected);
-		db.update(databaseDocument);
-		return databaseDocument;
-	}
-	
-	public BPTDocumentStatus getDocumentStatus(String _id){
-		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		return BPTDocumentStatus.valueOf((String) databaseDocument.get("status"));
 	}
 	
 	private Integer nextAvailableId() {
@@ -242,52 +173,6 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		};
 		
 		return highestId + 1;
-	}
-	public Boolean containsName(String Name){
-		List<Map> Docs = getAll();
-		for (int i = 0; i < Docs.size(); i++){
-			if(Name.equals(Docs.get(i).get("name"))) return true;
-		}
-		return false;
-	};
-	public ArrayList<Map> getVisibleEntries(List<BPTDocumentStatus> states, ArrayList<String> tags){
-		tableEntries.clear();
-		for (BPTDocumentStatus status : states) {
-			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
-		}
-		ArrayList<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
-		for (Map<String, Object> entry : tableEntries){
-			if (containsAllTags(entry, tags, tagAttributes)) {
-				newEntries.add(entry);
-			}
-		}
-		return newEntries;
-		
-	}
-
-	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {
-		ArrayList<String> entryAsArrayList = new ArrayList<String>();
-		for (String propertyId : tagAttributes) {
-			System.out.println(propertyId);
-			String property = entry.get(propertyId).toString();
-			String cutProperty = property.substring(1, property.length() -1);
-			List<String> attributeTags = Arrays.asList(cutProperty.split("\\s*,\\s*"));
-			System.out.println("attribut: " + attributeTags);
-			for(int i = 0; i < attributeTags.size(); i++){
-				entryAsArrayList.add(attributeTags.get(i));
-				System.out.println("all entry tags: " + entryAsArrayList);
-			}
-		}
-		for (int i = 0; i < tags.size(); i++){
-			if (!entryAsArrayList.contains(tags.get(i))) return false;
-		}
-		return true;
-	}
-	
-	// TODO: should not get all documents when refreshing
-	public void refreshData(){
-		tableEntries = getDocuments("all");
 	}
 	
 	public String getDatabaseAddress() {
