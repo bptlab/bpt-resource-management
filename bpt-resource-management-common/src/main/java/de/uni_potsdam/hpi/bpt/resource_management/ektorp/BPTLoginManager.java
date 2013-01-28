@@ -3,6 +3,8 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.openid4java.consumer.ConsumerException;
 
@@ -23,13 +25,14 @@ public class BPTLoginManager {
 	    	
 	    }
 	    
-	    public void loginRequest(String userSupportedString, ServletContext context){ 
+	    public void loginRequest(String userSupportedString, ServletContext context, HttpServletRequest request, HttpServletResponse response){ 
 	    	try {
-				loginConsumer.authRequest(userSupportedString, null, null, context);
+				loginConsumer.authRequest(userSupportedString, request, response, context);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	    	loginConsumer.verifyResponse(request);
 	    }
 	    
 

@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
+import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.message.ax.FetchRequest;
@@ -40,7 +41,7 @@ public class BPTLoginConsumer {
 	        {
 	            // configure the return_to URL where your application will receive
 	            // the authentication responses from the OpenID provider
-	            String returnToUrl = "http://example.com/openid";
+	            String returnToUrl = "/localhost:8080/bpt-resource-management-vaadin/returnOpenId";
 
 	            // --- Forward proxy setup (only if needed) ---
 	            // ProxyProperties proxyProps = new ProxyProperties();
@@ -100,5 +101,59 @@ public class BPTLoginConsumer {
 
 	        return null;
 	    }
+	    
+	    // --- processing the authentication response ---
+	    public Identifier verifyResponse(HttpServletRequest httpReq)
+	    {
+	        try
+	        {
+	            // extract the parameters from the authentication response
+	            // (which comes in as a HTTP request from the OpenID provider)
+	            ParameterList response =
+	                    new ParameterList(httpReq.getParameterMap());
+
+	            // retrieve the previously stored discovery information
+	            DiscoveryInformation discovered = (DiscoveryInformation)
+	                    httpReq.getSession().getAttribute("openid-disc");
+
+	            // extract the receiving URL from the HTTP request
+	            StringBuffer receivingURL = httpReq.getRequestURL();
+	            String queryString = httpReq.getQueryString();
+	            if (queryString != null && queryString.length() > 0)
+	                receivingURL.append("?").append(httpReq.getQueryString());
+
+	            // verify the response; ConsumerManager needs to be the same
+	            // (static) instance used to place the authentication request
+	            VerificationResult verification = manager.verify(
+	                    receivingURL.toString(),
+	                    response, discovered);
+
+	            // examine the verification result and extract the verified identifier
+	            Identifier verified = verification.getVerifiedId();
+	            if (verified != null)
+	            {
+	                AuthSuccess authSuccess =
+	                        (AuthSuccess) verification.getAuthResponse();
+
+	                if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX))
+	                {
+	                    FetchResponse fetchResp = (FetchResponse) authSuccess
+	                            .getExtension(AxMessage.OPENID_NS_AX);
+
+	                    List emails = fetchResp.getAttributeValues("email");
+	                    String email = (String) emails.get(0);
+	                }
+
+	                return verified;  // success
+	            }
+	        }
+	        catch (OpenIDException e)
+	        {
+	            // present error to the user
+	        }
+
+	        return null;
+	    }
+
 
 }
