@@ -3,16 +3,19 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.vaadin.Application;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 
-public class BPTApplication extends Application {
+public class BPTApplication extends Application implements HttpServletRequestListener{
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn;
@@ -22,6 +25,8 @@ public class BPTApplication extends Application {
 	private BPTUploader uploader;
 	private BPTDocumentRepository toolRepository = new BPTDocumentRepository("bpt_resources");
 	private BPTLoginManager loginManager;
+	private HttpServletRequest request;
+	private HttpServletResponse response;
 	
 	@Override
 	public void init() {
@@ -90,8 +95,32 @@ public class BPTApplication extends Application {
 	}
 	
 	public void loginRequest(String userSupportedString){
+		// userSupportedString = https://www.google.com/accounts/o8/id
 		ServletContext context = ((WebApplicationContext) getContext()).getHttpSession().getServletContext();
-		loginManager.loginRequest(userSupportedString, context);
+		loginManager.loginRequest(userSupportedString, context, request, response);
+	}
+
+	@Override
+	public void onRequestStart(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		System.out.println("-------------------------------START---------------------------------");
+		this.request = request;
+		this.response = response;
+		System.out.println(request.getPathInfo());
+		System.out.println(request.getRequestURL());
+		System.out.println(request.getRequestURI());
+		
+	}
+
+	@Override
+	public void onRequestEnd(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("-------------------------------ENDE---------------------------------");
+		this.request = request;
+		this.response = response;
 	}
 
 }
