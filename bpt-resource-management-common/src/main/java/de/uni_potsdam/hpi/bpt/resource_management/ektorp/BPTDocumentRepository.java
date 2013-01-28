@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.ektorp.AttachmentInputStream;
+import org.ektorp.DocumentNotFoundException;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
+import org.ektorp.support.Views;
 
 /**
  * Provides querying methods based on CouchDB views.
@@ -26,19 +28,18 @@ import org.ektorp.support.View;
  * @author tw
  *
  */
-@View(
-	name = "all_documents", 
-	map = "function(doc) { if (doc.type == 'BPTTool') emit(doc._id, doc); }"
-	)
 public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	
 	private List<Map> tableEntries;
+	private String tableName;
+	
 	/**
      * @param table the name of the database to connect to
      * 
      */
-	public BPTDocumentRepository(String table) {
-		super(Map.class, BPTDatabase.connect(table));
+	public BPTDocumentRepository(String tableName) {
+		super(Map.class, BPTDatabase.connect(tableName));
+		this.tableName = tableName;
         initStandardDesignDocument();
 	}
 	
@@ -62,12 +63,26 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 	}
 	
-	@View(
-			name = "not_deleted_documents", 
+	@Views({
+	    @View(
+	    	name = "all_documents", 
 			map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted) emit(doc._id, doc); }"
-			)
-	public List<Map> getNotDeletedDocuments() {
-		ViewQuery query = createQuery("not_deleted_documents");
+	    	), 
+	    @View(
+	       	name = "published_documents", 
+	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Published') emit(doc._id, doc); }"
+	       	), 
+	   	@View(
+	   		name = "unpublished_documents", 
+	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Unublished') emit(doc._id, doc); }"
+	    	), 
+	    @View(
+	    	name = "rejected_documents", 
+	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Rejected') emit(doc._id, doc); }"
+	    	)
+	    })
+	public List<Map> getDocuments(String status) {
+		ViewQuery query = createQuery(status + "_documents");
 		List<Map> result = db.queryView(query, Map.class);	
 		return result;
 	}
@@ -119,7 +134,17 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	}
 
 	public InputStream readAttachment(String _id, String attachmentId) {
-		AttachmentInputStream inputStream = db.getAttachment(_id, attachmentId);
+		AttachmentInputStream inputStream = new AttachmentInputStream("null", null, "image/jpeg"); // default initialization
+		try {
+			inputStream = db.getAttachment(_id, attachmentId);
+		} catch (DocumentNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return inputStream;
 	}
 
@@ -226,13 +251,14 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		return false;
 	};
 	public ArrayList<Map> getVisibleEntries(List<BPTDocumentStatus> states, ArrayList<String> tags){
-		tableEntries = getNotDeletedDocuments();
+		for (BPTDocumentStatus status : states) {
+			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
+		}
 		ArrayList<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
-		for (int i = 0; i < tableEntries.size(); i++){
-			Map<String, Object> entry = tableEntries.get(i);
-			if (states.contains(BPTDocumentStatus.valueOf((String)entry.get("status")))){
-				if (containsAllTags(entry, tags, tagAttributes)) newEntries.add(entry);
+		for (Map<String, Object> entry : tableEntries){
+			if (containsAllTags(entry, tags, tagAttributes)) {
+				newEntries.add(entry);
 			}
 		}
 		return newEntries;
@@ -257,8 +283,16 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		}
 		return true;
 	}
+	
 	public void refreshData(){
 		tableEntries = getAll();
 	}
 	
+	public String getDatabaseAddress() {
+		return "http://" + BPTDatabase.getHost() + ":" + BPTDatabase.getPort() + "/";
+	}
+	
+	public String getTableName() {
+		return tableName;
+	}
 }

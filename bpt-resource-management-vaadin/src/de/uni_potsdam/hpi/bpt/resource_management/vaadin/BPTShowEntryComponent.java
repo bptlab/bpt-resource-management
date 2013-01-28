@@ -50,7 +50,10 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			if (entry[2] == Component.class) {
 				popupWindow.addComponent((Component)value);
 			} else if (entry[2] == Embedded.class) {
-				popupWindow.addComponent((Embedded)value);
+				Embedded image = (Embedded)value;
+				image.setWidth("");
+				image.setHeight("");
+				popupWindow.addComponent(image);
 			} else {
 				popupWindow.addComponent(new Label(value.toString()));
 			}
