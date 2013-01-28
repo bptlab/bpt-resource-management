@@ -159,25 +159,15 @@ public class BPTVaadinResources {
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(BPTDocumentRepository toolRepository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
-		Object value;
-		if (documentColumnName.equals("_attachments")) {
-			try {
-				value = toolRepository.readAttachment((String)tool.get("_id"), attachmentName);
-			} catch (DocumentNotFoundException e) {
-				value = new Object();
-			}
-		} else {
-			value = tool.get(documentColumnName);
-		}
-		System.out.println(documentColumnName + ": " + value + " trololol" + value.getClass());
+	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
+		Object value = tool.get(documentColumnName);
 		switch (valueType) {
 			case LINK : return asLink((String)value);
 			case EMAIL : return asEmailLink((String)value);
 			case LIST : return asFormattedString((ArrayList<String>)value);
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
-			case IMAGE : return asImage(value, tool, attachmentName);
+			case IMAGE : return asImage(repository, tool, attachmentName);
 			default : return value;
 		}
 	}
@@ -209,45 +199,20 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	private static Embedded asImage(Object input, Map<String, Object> tool, String attachmentName) {
-		String filename;
-		InputStream inputStream;
-		
+	private static Embedded asImage(BPTDocumentRepository repository, Map<String, Object> tool, String attachmentName) {
+		String imageType;
 		try {
-			inputStream = (InputStream)input; 
-		} catch (ClassCastException e) {
+			imageType = (String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type");
+		} catch (NullPointerException e) {
 			return new Embedded();
 		}
 		
-		// TODO: images only visible in eclipse browser, not in Firefox etc. - cause might be below
-		if (System.getProperty("os.name").contains("Windows")) {
-			filename = "C:\\temp\\" + (String)tool.get("_id") + "_logo.tmp";
-		} else {
-			filename = "/tmp/" + (String)tool.get("_id") + "_logo.tmp";
-		}
-		File logo = new File(filename);
-		
-		try {
-			OutputStream out = new FileOutputStream(logo);
-			byte buffer[] = new byte[1024];
-			int length;
-			while((length = inputStream.read(buffer)) > 0) {
-				out.write(buffer, 0, length);
-			}
-			out.close();
-			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		ExternalResource imageResource = new ExternalResource(filename);
-		// TODO: line below too long
-		imageResource.setMIMEType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
+		ExternalResource imageResource = new ExternalResource(repository.getDatabaseAddress() + repository.getTableName() + "/" + tool.get("_id") + "/" + attachmentName, imageType);
 		Embedded image = new Embedded("", imageResource);
 		image.setType(Embedded.TYPE_IMAGE);
-		// TODO: image size in component that shows all entries ... putting the code here would resize it everywhere
-		// image.setWidth("50px");
-		// image.setHeight("50px");
+		// default image size is icon size
+		image.setWidth("50px");
+		image.setHeight("50px");
 	    return image;
 	}
 	

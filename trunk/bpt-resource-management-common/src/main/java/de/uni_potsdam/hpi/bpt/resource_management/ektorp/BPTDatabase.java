@@ -16,6 +16,11 @@ import org.ektorp.impl.StdCouchDbInstance;
  *
  */
 public class BPTDatabase {
+	
+	private static String host = "localhost";
+	private static int port = 5984;
+//	private static String username = "";
+//	private static String password = "";
 
 	/**
      * Connects to CouchDB.
@@ -26,10 +31,10 @@ public class BPTDatabase {
      */
 	public static CouchDbConnector connect(String table) {
 		HttpClient httpClient = new StdHttpClient.Builder()
-									.host("localhost")
-									.port(5984)
-								// 	.username("")
-								// 	.password("")
+									.host(host)
+									.port(port)
+								// 	.username(username)
+								// 	.password(password)
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
@@ -39,6 +44,22 @@ public class BPTDatabase {
 		
 		return database;
 		
+	}
+
+	public static String getHost() {
+		return host;
+	}
+
+	public static void setHost(String host) {
+		BPTDatabase.host = host;
+	}
+
+	public static int getPort() {
+		return port;
+	}
+
+	public static void setPort(int port) {
+		BPTDatabase.port = port;
 	}
 	
 }

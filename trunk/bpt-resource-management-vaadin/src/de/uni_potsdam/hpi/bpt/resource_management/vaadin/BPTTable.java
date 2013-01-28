@@ -37,7 +37,6 @@ public class BPTTable extends BPTShowEntryComponent {
 
 	@Override
 	protected void show(IndexedContainer tableEntries) {
-		// TODO Auto-generated method stub
 		table.setContainerDataSource(dataSource);
 	}
 }
