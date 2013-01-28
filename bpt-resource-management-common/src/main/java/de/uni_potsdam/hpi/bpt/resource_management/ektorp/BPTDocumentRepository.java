@@ -30,8 +30,8 @@ import org.ektorp.support.Views;
  */
 public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	
-	private List<Map> tableEntries;
 	private String tableName;
+	private List<Map> tableEntries = new ArrayList<Map>();
 	
 	/**
      * @param table the name of the database to connect to
@@ -74,7 +74,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 	       	), 
 	   	@View(
 	   		name = "unpublished_documents", 
-	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Unublished') emit(doc._id, doc); }"
+	    	map = "function(doc) { if (doc.type == 'BPTTool' && !doc.deleted && doc.status == 'Unpublished') emit(doc._id, doc); }"
 	    	), 
 	    @View(
 	    	name = "rejected_documents", 
@@ -251,6 +251,7 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		return false;
 	};
 	public ArrayList<Map> getVisibleEntries(List<BPTDocumentStatus> states, ArrayList<String> tags){
+		tableEntries.clear();
 		for (BPTDocumentStatus status : states) {
 			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
 		}
@@ -284,8 +285,9 @@ public class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 		return true;
 	}
 	
+	// TODO: should not get all documents when refreshing
 	public void refreshData(){
-		tableEntries = getAll();
+		tableEntries = getDocuments("all");
 	}
 	
 	public String getDatabaseAddress() {
