@@ -1,11 +1,14 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
+
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
 public class BPTLoginWindow extends Window {
 
@@ -23,9 +26,8 @@ public class BPTLoginWindow extends Window {
 //		final PasswordField password = new PasswordField("Password");
 //		addComponent(password);
 		Button loginButton = new Button("Login");
+		loginButton.setClickShortcut(KeyCode.ENTER);
 		addComponent(loginButton);
-//		Button cancelButton = new Button("Cancel");
-//		addComponent(cancelButton);
 //		Button registerButton = new Button("Not registered yet?");
 //		registerButton.setStyleName(BaseTheme.BUTTON_LINK);
 // 		addComponent(registerButton);
@@ -33,23 +35,23 @@ public class BPTLoginWindow extends Window {
 		loginButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				BPTApplication application = (BPTApplication) getApplication();
+				BPTUserRepository userRepository = application.getUserRepository();
+				
 				String username = ((String) usernameField.getValue());
 				String mailAddress = ((String) mailAddressField.getValue());
 				application.setUsername(username);
 				application.setMailAddress(mailAddress);
 				application.setLoggedIn(true);
+				
+				application.setModerator(userRepository.isModerator(username, mailAddress));
+				System.out.println("LoginWindow: " + application.isModerator());
 				usernameField.setValue("");
 				mailAddressField.setValue("");
+				
 				component.getWindow().removeWindow(loginWindow);
 				component.login(username);
 				application.loginRequest(username);
 			}});
-		
-//		cancelButton.addListener(new Button.ClickListener(){
-//			public void buttonClick(ClickEvent event) {
-//				component.getWindow().removeWindow(loginWindow);
-//				usernameField.setValue("");
-//				mailAddressField.setValue("");
-//			}});
+
 	}
 }

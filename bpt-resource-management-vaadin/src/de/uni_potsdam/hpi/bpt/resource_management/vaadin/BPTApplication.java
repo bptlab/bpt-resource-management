@@ -15,16 +15,17 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
 public class BPTApplication extends Application implements HttpServletRequestListener{
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
-	private boolean loggedIn;
-	private String username;
-	private String mailAddress;
+	private boolean loggedIn, moderator;
+	private String username, mailAddress;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTToolRepository toolRepository = new BPTToolRepository();
+	private BPTUserRepository userRepository = new BPTUserRepository();
 	private BPTLoginManager loginManager;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -59,6 +60,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.loggedIn = loggedIn;
 	}
 	
+	public boolean isModerator() {
+		return moderator;
+	}
+	
+	public void setModerator(boolean moderator) {
+		this.moderator = moderator;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -89,6 +98,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public BPTToolRepository getToolRepository() {
 		return toolRepository;
+	}
+	
+	public BPTUserRepository getUserRepository() {
+		return userRepository;
 	}
 	
 	public BPTShowEntryComponent getTable(){

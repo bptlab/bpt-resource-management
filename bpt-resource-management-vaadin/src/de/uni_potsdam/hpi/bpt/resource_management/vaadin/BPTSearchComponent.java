@@ -7,10 +7,11 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 
 public class BPTSearchComponent extends BPTTagComponent{
 
+	private BPTApplication application;
 	private BPTBoxContainer box;
 	private HorizontalLayout boxLayout;
 	
-	public BPTSearchComponent(String tagColumns, boolean newTagsAllowed) {
+	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		super(tagColumns, newTagsAllowed);
 	}
 	@Override
@@ -22,7 +23,15 @@ public class BPTSearchComponent extends BPTTagComponent{
 	}
 	
 	public void login(){
-		boxLayout.addComponent(box);
+		/*  TODO: 
+		 *  non-moderators should not see checkboxes 
+		 *  or should only see the non-published documents they have submitted 
+		 *  plus all published documents when clicking on checkboxes
+		 */
+//		System.out.println("SearchComponent: " + application.isModerator());
+//		if (application.isModerator()) {
+			boxLayout.addComponent(box);
+//		}
 	}
 	
 	public void logout(){
