@@ -41,7 +41,8 @@ public class BPTLoginConsumer {
 	        {
 	            // configure the return_to URL where your application will receive
 	            // the authentication responses from the OpenID provider
-	            String returnToUrl = "/localhost:8080/bpt-resource-management-vaadin/returnOpenId";
+	        	System.out.println( "/localhost:8080/bpt-resource-management-vaadin/returnOpenId");
+	        	String returnToUrl = httpReq.getRequestURL().toString();
 
 	            // --- Forward proxy setup (only if needed) ---
 	            // ProxyProperties proxyProps = new ProxyProperties();
@@ -85,7 +86,8 @@ public class BPTLoginConsumer {
 	            {
 	                // Option 2: HTML FORM Redirection (Allows payloads >2048 bytes)
 
-	                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("formredirection.jsp");
+	                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/" + httpReq.getRequestURL().toString());
+	                //"formredirection.jsp"
 	                httpReq.setAttribute("parameterMap", authReq.getParameterMap());
 	                httpReq.setAttribute("destinationUrl", authReq.getDestinationUrl(false));
 	                dispatcher.forward(httpReq, httpResp);
