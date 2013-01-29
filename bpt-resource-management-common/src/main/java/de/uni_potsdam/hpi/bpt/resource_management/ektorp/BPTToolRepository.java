@@ -11,19 +11,19 @@ import org.ektorp.support.View;
 import org.ektorp.support.Views;
 
 public class BPTToolRepository extends BPTDocumentRepository {
-	
-	private List<Map> tableEntries = new ArrayList<Map>();
 
+	private List<Map> tableEntries = new ArrayList<Map>();
+	
 	public BPTToolRepository() {
 		super("bpt_resources_tools");
 	}
 	
 	/**
-	* @return the number of database documents that are not marked as deleted
-	*
-	*/
+     * @return the number of database documents that are not marked as deleted
+     * 
+     */
 	@View(
-		name = "number_of_documents",
+		name = "number_of_documents", 
 		map = "function(doc) { if (!doc.deleted) emit(\"count\", 1); }",
 		reduce = "function(key, values, rereduce) { var count = 0; values.forEach(function(v) { count += 1; }); return count; }"
 		/* NOTE: deleted documents will not be counted here */
@@ -37,28 +37,28 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			return 0;
 		}
 	}
-
+	
 	@Views({
-		@View(
-			name = "all_documents",
+	    @View(
+	    	name = "all_tools", 
 			map = "function(doc) { if (!doc.deleted) emit(doc._id, doc); }"
-		),
-		@View(
-			name = "published_documents",
-			map = "function(doc) { if (!doc.deleted && doc.status == 'Published') emit(doc._id, doc); }"
-		),
-		@View(
-			name = "unpublished_documents",
-			map = "function(doc) { if (!doc.deleted && doc.status == 'Unpublished') emit(doc._id, doc); }"
-		),
-		@View(
-			name = "rejected_documents",
-			map = "function(doc) { if (!doc.deleted && doc.status == 'Rejected') emit(doc._id, doc); }"
-		)
-	})
+	    	), 
+	    @View(
+	       	name = "published_tools", 
+	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Published') emit(doc._id, doc); }"
+	       	), 
+	   	@View(
+	   		name = "unpublished_tools", 
+	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Unpublished') emit(doc._id, doc); }"
+	    	), 
+	    @View(
+	    	name = "rejected_tools", 
+	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Rejected') emit(doc._id, doc); }"
+	    	)
+	    })
 	public List<Map> getDocuments(String status) {
-		ViewQuery query = createQuery(status + "_documents");
-		List<Map> result = db.queryView(query, Map.class);      
+		ViewQuery query = createQuery(status + "_tools");
+		List<Map> result = db.queryView(query, Map.class);	
 		return result;
 	}
 	
@@ -75,35 +75,33 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		db.update(databaseDocument);
 		return databaseDocument;
 	}
-
+	
 	public Map<String, Object> unpublishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Unpublished);
 		db.update(databaseDocument);
 		return databaseDocument;
 	}
-
+	
 	public Map<String, Object> rejectDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Rejected);
 		db.update(databaseDocument);
 		return databaseDocument;
 	}
-
+	
 	public BPTToolStatus getDocumentStatus(String _id){
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		return BPTToolStatus.valueOf((String) databaseDocument.get("status"));
 	}
 	
-	public Boolean containsName(String Name){
+	public Boolean containsName(String name){
 		List<Map> Docs = getAll();
 		for (int i = 0; i < Docs.size(); i++){
-        	if (Name.equals(Docs.get(i).get("name"))) {
-        		return true;
-        	}
+			if(name.equals(Docs.get(i).get("name"))) return true;
 		}
 		return false;
-	}
+	};
 	
 	public ArrayList<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags){
 		tableEntries.clear();
@@ -112,7 +110,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		}
 		ArrayList<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
-		for (Map<String, Object> entry : tableEntries) {
+		for (Map<String, Object> entry : tableEntries){
 			if (containsAllTags(entry, tags, tagAttributes)) {
 				newEntries.add(entry);
 			}
