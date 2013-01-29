@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BPTUserRepository extends BPTDocumentRepository{
-
+public class BPTUserRepository extends BPTDocumentRepository {
+	
 	public BPTUserRepository() {
 		super("bpt_resources_users");
 	}
@@ -18,14 +18,14 @@ public class BPTUserRepository extends BPTDocumentRepository{
 		return databaseDocument;
 	}
 	
-	public boolean isModerator(String name, String mailAddress) {
+	public boolean isModerator(String username, String mailAddress) {
 		List<Map> users = getAll();
-		for (Map<String, Object> user : users) {
-			if ((name.equals((String) user.get("name"))) && (mailAddress.equals((String) user.get("mail_address")))){
-				return (Boolean) user.get("is_moderator");
+		for(Map<String, Object> user : users) {
+			if (username.equals((String)user.get("name")) && mailAddress.equals((String)user.get("mail_address"))) {
+				return (Boolean)user.get("is_moderator");
 			}
 		}
-		createDocument(generateDocument(new Object[] {name, mailAddress}));
+		createDocument(generateDocument(new Object[] {username, mailAddress}));
 		return false;
 	}
 	
@@ -37,4 +37,5 @@ public class BPTUserRepository extends BPTDocumentRepository{
 		}
 		return document;
 	}
+	
 }
