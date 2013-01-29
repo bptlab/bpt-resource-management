@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openid4java.consumer.ConsumerException;
+import org.openid4java.discovery.Identifier;
+import org.openid4java.message.AuthRequest;
 
 
 public class BPTLoginManager {
@@ -25,14 +27,21 @@ public class BPTLoginManager {
 	    	
 	    }
 	    
-	    public void loginRequest(String userSupportedString, ServletContext context, HttpServletRequest request, HttpServletResponse response){ 
+	    public String loginRequest(String userSupportedString, ServletContext context, HttpServletRequest request, HttpServletResponse response){
+	    	String authRequest = null;
 	    	try {
-				loginConsumer.authRequest(userSupportedString, request, response, context);
+	    		System.out.println("Identifier" + request.getParameter("identifier"));
+				authRequest = loginConsumer.authRequest(userSupportedString, request, response, context);
+	    		System.out.println(request);
+	    		System.out.println(response);
+				System.out.println(authRequest);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	    	loginConsumer.verifyResponse(request);
+	    	return authRequest;
+//	    	Identifier identifier = loginConsumer.verifyResponse(request);
+//	    	System.out.println("identifier: " + identifier);
 	    }
 	    
 

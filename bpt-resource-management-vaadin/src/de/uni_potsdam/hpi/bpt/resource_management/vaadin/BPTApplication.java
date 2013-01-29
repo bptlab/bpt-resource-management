@@ -1,6 +1,8 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.Application;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.service.ApplicationContext;
+import com.vaadin.service.ApplicationContext.TransactionListener;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
@@ -17,7 +21,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
-public class BPTApplication extends Application implements HttpServletRequestListener{
+public class BPTApplication extends Application implements HttpServletRequestListener, TransactionListener{
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn, moderator;
@@ -29,6 +33,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private BPTLoginManager loginManager;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
+	private WebApplicationContext webAppCtx;
 	
 	@Override
 	public void init() {
@@ -49,6 +54,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
 		loginManager = new BPTLoginManager();
+		
+		ApplicationContext ctx = this.getContext();
+		this.webAppCtx = (WebApplicationContext) ctx;
+		ctx.addTransactionListener(this);
 					
 	}
 	
@@ -110,8 +119,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void loginRequest(String userSupportedString){
 		// userSupportedString = https://www.google.com/accounts/o8/id
+		// http://novell.com/openid ?
+		// https://me.yahoo.com
 		ServletContext context = ((WebApplicationContext) getContext()).getHttpSession().getServletContext();
-		loginManager.loginRequest(userSupportedString, context, request, response);
+		String x = loginManager.loginRequest(userSupportedString, context, request, response);
+		System.out.println(x);
 	}
 
 	@Override
@@ -125,6 +137,15 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		System.out.println(request.getRequestURL());
 		System.out.println(request.getRequestURI());
 		
+		Map<String, String[]> map = request.getParameterMap();
+		for (Map.Entry<String, String[]> entry : map.entrySet()) {
+		    System.out.println("Key = " + entry.getKey());
+		    System.out.println("Values:");
+		    for(int i = 0; i < entry.getValue().length; i++){
+		    	System.out.println(entry.getValue()[i].toString());
+		    }
+		    
+		}
 	}
 
 	@Override
@@ -136,5 +157,30 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.request = request;
 		this.response = response;
 	}
+
+	@Override
+	public void transactionStart(Application application, Object transactionData) {
+		// TODO Auto-generated method stub
+		System.out.println("Transaction start");
+		System.out.println(transactionData);
+		HttpServletRequest request = (HttpServletRequest)transactionData;
+		Map<String, String[]> map = request.getParameterMap();
+		for (Map.Entry<String, String[]> entry : map.entrySet()) {
+		    System.out.println("Key = " + entry.getKey());
+		    System.out.println("Values:");
+		    for(int i = 0; i < entry.getValue().length; i++){
+		    	System.out.println(entry.getValue()[i].toString());
+		    }
+		}
+		
+	}
+
+	@Override
+	public void transactionEnd(Application application, Object transactionData) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 }
