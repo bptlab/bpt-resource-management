@@ -136,7 +136,6 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
 		layout.addComponent(welcomeLabel);
 		addLogoutButton();
-		sidebar.login();
 	}
 	
 	private void redirectToOpenIDProvider() throws IOException {

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.Application;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.data.Item;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.service.ApplicationContext.TransactionListener;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -19,7 +20,9 @@ import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	private BPTShowEntryComponent entryComponent;
@@ -102,7 +105,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 
 	public void uploader() {
-		uploader = new BPTUploader();
+		uploader = new BPTUploader(null);
 		mainFrame.add(uploader);
 		sidebar.upload();
 	}
@@ -150,7 +153,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			}
 			moderated = userRepository.isModerator(_id, name, mailAddress);
 			loggedIn = true;
-			sidebar.getLoginComponent().login(name);
+			sidebar.login(name);
 			
 		} catch (NullPointerException e) {
 			return;
@@ -199,4 +202,15 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 //		
 //	}
 
+	public void edit(Item item) {
+		uploader = new BPTUploader(item);
+		mainFrame.add(uploader);
+		sidebar.upload();
+	}
+	
+	public void refresh(){
+		ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
+		ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
+		entryComponent.showEntries(BPTContainerProvider.getVisibleEntries(states, selectedTags));
+	}
 }

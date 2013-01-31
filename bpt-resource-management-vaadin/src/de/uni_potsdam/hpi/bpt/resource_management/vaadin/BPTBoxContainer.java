@@ -64,7 +64,7 @@ public class BPTBoxContainer extends CustomComponent {
 	}
 	
 	private void refresh(){
-		((BPTTagComponent) getParent().getParent().getParent()).refresh();
+		((BPTApplication) getApplication()).refresh();
 	}
 
 	public ArrayList<BPTToolStatus> getSelectedStates(){

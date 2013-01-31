@@ -130,7 +130,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map
 		String[] keys = BPTDocumentTypes.getDocumentKeys(tableName);
 		
 		for (String key : keys) {
-			databaseDocument.put(key, document.get(key));
+			if(!(document.get(key) == null)) databaseDocument.put(key, document.get(key));
 		}
 		
 		db.update(databaseDocument);

@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import com.vaadin.data.Item;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractLayout;
@@ -22,6 +24,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -50,10 +53,13 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private FileOutputStream outputStream;
 	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
 	private String documentId, imageName, imageType;
+	private Date creationDate;
 	
-	public BPTUploader(){
+	public BPTUploader(Item item){
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
+		
+		documentId = null;
 		
 		layout.addComponent(new Label("Name:"));
 		nameInput = new TextField();
@@ -101,6 +107,42 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		
         imagePanel.addComponent(new Label("No image uploaded yet"));
         layout.addComponent(imagePanel);
+        
+        if(!(item == null)){
+        	//TODO: Bild einfügen
+        	
+        	documentId = item.getItemProperty("ID").toString();
+        	creationDate = (Date) item.getItemProperty("Date created").getValue();
+        	nameInput.setValue((item.getItemProperty("Name").getValue()));
+        	descriptionInput.setValue((item.getItemProperty("Description").getValue()));
+        	providerInput.setValue(item.getItemProperty("Provider").getValue());
+        	downloadInput.setValue(((Link)(item.getItemProperty("Download").getValue())).getCaption());
+        	documentationInput.setValue(((Link)(item.getItemProperty("Documentation").getValue())).getCaption());
+        	screencastInput.setValue(((Link)(item.getItemProperty("Screencast").getValue())).getCaption());
+        	if(!(item.getItemProperty("Availability").getValue().toString().equals(""))){
+        		String[] availability = ((String) item.getItemProperty("Availability").getValue()).split(",");
+        		for(int i = 0; i < availability.length; i++) availabilitiesTagComponent.addChosenTag(availability[i]);
+        	}
+        	if(!(item.getItemProperty("Model type").getValue().toString().equals(""))){
+        		String[] model_type = ((String) item.getItemProperty("Model type").getValue()).split(",");
+        		for(int i = 0; i < model_type.length; i++) modelTagComponent.addChosenTag(model_type[i]);
+        	}
+        	if(!(item.getItemProperty("Platform").getValue().toString().equals(""))){
+        		String[] platform = ((String) item.getItemProperty("Platform").getValue()).split(",");
+        		for(int i = 0; i < platform.length; i++) platformTagComponent.addChosenTag(platform[i]);
+        	}
+        	if(!(item.getItemProperty("Supported functionality").getValue().toString().equals(""))){
+        		String[] supported_functionality = ((String) item.getItemProperty("Supported functionality").getValue()).split(",");
+        		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i]);
+        	}
+        	
+        	System.out.println(item.getItemProperty("Logo").getValue());
+        	Embedded image = (Embedded) item.getItemProperty("Logo").getValue();
+        	System.out.println(image.getClass());
+//        	image.setWidth("");
+//        	image.setHeight("");
+//        	layout.addComponent(image);
+        }
 
 		finishUploadButton = new Button("Submit");
 		layout.addComponent(finishUploadButton);
@@ -109,7 +151,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
 				
-				if(toolRepository.containsName((String)nameInput.getValue())) {
+				if(toolRepository.containsName((String)nameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
 				}
 				else{
@@ -120,34 +162,56 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 
 			private void finishUpload() {
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
-				documentId = toolRepository.createDocument(generateDocument(new Object[] {
-						(String)nameInput.getValue(),
-						(String)descriptionInput.getValue(),
-						(String)providerInput.getValue(),
-						(String)downloadInput.getValue(),
-						(String)documentationInput.getValue(),
-						(String)screencastInput.getValue(),
-						new ArrayList<String>(availabilitiesTagComponent.getTagValues()),
-						new ArrayList<String>(modelTagComponent.getTagValues()),
-						new ArrayList<String>(platformTagComponent.getTagValues()),
-						new ArrayList<String>(functionalityTagComponent.getTagValues()),
-						((BPTApplication)getApplication()).getName(), 
-						((BPTApplication)getApplication()).getMailAddress(), 
-						new Date(),
-						new Date()
-					}));
-					
-					if (logo != null) { // logo.exists()
-						Map<String, Object> document = toolRepository.readDocument(documentId);
-						String documentRevision = (String)document.get("_rev");
+				//TODO: if(!(item == null)) { updaten statt neuer eintrag
+				if(documentId == null){
+				
+					documentId = toolRepository.createDocument(generateDocument(new Object[] {
+							(String)nameInput.getValue(),
+							(String)descriptionInput.getValue(),
+							(String)providerInput.getValue(),
+							(String)downloadInput.getValue(),
+							(String)documentationInput.getValue(),
+							(String)screencastInput.getValue(),
+							new ArrayList<String>(availabilitiesTagComponent.getTagValues()),
+							new ArrayList<String>(modelTagComponent.getTagValues()),
+							new ArrayList<String>(platformTagComponent.getTagValues()),
+							new ArrayList<String>(functionalityTagComponent.getTagValues()),
+							((BPTApplication)getApplication()).getName(), 
+							((BPTApplication)getApplication()).getMailAddress(), 
+							new Date(),
+							new Date()
+						}));
 						
-						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
+						if (logo != null) { // logo.exists()
+							Map<String, Object> document = toolRepository.readDocument(documentId);
+							String documentRevision = (String)document.get("_rev");
+							
+							toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
+							
+							logo.delete();
+						}
 						
-						logo.delete();
-					}
+						getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
+						
 					
-					getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
-					((BPTApplication)getApplication()).finder();
+				}
+				else{
+					System.out.println(descriptionInput.getValue().getClass());
+					Map<String, Object> newValues = new HashMap<String, Object>();
+					newValues.put("_id", documentId);
+					newValues.put("description", descriptionInput.getValue().toString());
+					newValues.put("provider", providerInput.getValue().toString());
+					newValues.put("download_url", downloadInput.getValue().toString());
+					newValues.put("documentation_url", documentationInput.getValue().toString());
+					newValues.put("screencast_url", screencastInput.getValue().toString());
+					newValues.put("availabilities", new ArrayList<String>(availabilitiesTagComponent.getTagValues()));
+					newValues.put("model_types", new ArrayList<String>(modelTagComponent.getTagValues()));
+					newValues.put("platforms", new ArrayList<String>(platformTagComponent.getTagValues()));
+					newValues.put("supported_functionalities", new ArrayList<String>(functionalityTagComponent.getTagValues()));
+					toolRepository.updateDocument(newValues);
+					
+				}
+				((BPTApplication)getApplication()).finder();
 				
 			}
 
