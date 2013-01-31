@@ -21,19 +21,20 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
-public class BPTApplication extends Application implements HttpServletRequestListener, TransactionListener{
+public class BPTApplication extends Application implements HttpServletRequestListener {
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
-	private boolean loggedIn, moderator;
-	private String username, mailAddress;
+	private boolean loggedIn, moderated;
+	private String _id, name, mailAddress;
+	private String openIdProvider = "Google"; // TODO: hard coded
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTToolRepository toolRepository = new BPTToolRepository();
 	private BPTUserRepository userRepository = new BPTUserRepository();
-	private BPTLoginManager loginManager;
-	private HttpServletRequest request;
-	private HttpServletResponse response;
-	private WebApplicationContext webAppCtx;
+//	private BPTLoginManager loginManager;
+//	private HttpServletRequest request;
+//	private HttpServletResponse response;
+//	private WebApplicationContext webAppCtx;
 	
 	@Override
 	public void init() {
@@ -42,7 +43,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setLoggedIn(false);
-		setUsername("Guest");
 		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
@@ -53,11 +53,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
-		loginManager = new BPTLoginManager();
+//		loginManager = new BPTLoginManager();
 		
-		ApplicationContext ctx = this.getContext();
-		this.webAppCtx = (WebApplicationContext) ctx;
-		ctx.addTransactionListener(this);
+//		ApplicationContext ctx = this.getContext();
+//		this.webAppCtx = (WebApplicationContext) ctx;
+//		ctx.addTransactionListener(this);
 					
 	}
 	
@@ -69,20 +69,20 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.loggedIn = loggedIn;
 	}
 	
-	public boolean isModerator() {
-		return moderator;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isModerated() {
+		return moderated;
 	}
 	
-	public void setModerator(boolean moderator) {
-		this.moderator = moderator;
-	}
-	
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
+	public void setModerated(boolean moderated) {
+		this.moderated = moderated;
 	}
 	
 	public String getMailAddress() {
@@ -91,6 +91,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 
 	public void setMailAddress(String mailAddress) {
 		this.mailAddress = mailAddress;
+	}
+
+	public String getOpenIdProvider() {
+		return openIdProvider;
+	}
+
+	public void setOpenIdProvider(String openIdProvider) {
+		this.openIdProvider = openIdProvider;
 	}
 
 	public void uploader() {
@@ -121,50 +129,35 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		// userSupportedString = https://www.google.com/accounts/o8/id
 		// http://novell.com/openid ?
 		// https://me.yahoo.com
-		ServletContext context = ((WebApplicationContext) getContext()).getHttpSession().getServletContext();
-		String x = loginManager.loginRequest(userSupportedString, context, request, response);
-		System.out.println(x);
+//		ServletContext context = ((WebApplicationContext) getContext()).getHttpSession().getServletContext();
+//		String x = loginManager.loginRequest(userSupportedString, context, request, response);
+//		System.out.println(x);
 	}
 
 	@Override
-	public void onRequestStart(HttpServletRequest request,
-			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, String[]> map = request.getParameterMap();
+		
+		try {
+			_id = map.get("openid.identity")[0];
+			System.out.println("The OpenID identifier: " + _id);
+			if (openIdProvider.equals("Google")) {
+				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0]; 
+				mailAddress = map.get("openid.ext1.value.email")[0];
+			} else { // openIdProvider.equals("Yahoo")
+				name = map.get("openid.ax.value.fullname")[0]; 
+				mailAddress = map.get("openid.ax.value.email")[0];
+			}
+			moderated = userRepository.isModerator(_id, name, mailAddress);
+			loggedIn = true;
+			sidebar.getLoginComponent().login(name);
+			
+		} catch (NullPointerException e) {
+			return;
+		}
+		
 		System.out.println("-------------------------------START---------------------------------");
-		this.request = request;
-		this.response = response;
-		System.out.println(request.getPathInfo());
-		System.out.println(request.getRequestURL());
-		System.out.println(request.getRequestURI());
 		
-		Map<String, String[]> map = request.getParameterMap();
-		for (Map.Entry<String, String[]> entry : map.entrySet()) {
-		    System.out.println("Key = " + entry.getKey());
-		    System.out.println("Values:");
-		    for(int i = 0; i < entry.getValue().length; i++){
-		    	System.out.println(entry.getValue()[i].toString());
-		    }
-		    
-		}
-	}
-
-	@Override
-	public void onRequestEnd(HttpServletRequest request,
-			HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
-		System.out.println("-------------------------------ENDE---------------------------------");
-		this.request = request;
-		this.response = response;
-	}
-
-	@Override
-	public void transactionStart(Application application, Object transactionData) {
-		// TODO Auto-generated method stub
-		System.out.println("Transaction start");
-		System.out.println(transactionData);
-		HttpServletRequest request = (HttpServletRequest)transactionData;
-		Map<String, String[]> map = request.getParameterMap();
 		for (Map.Entry<String, String[]> entry : map.entrySet()) {
 		    System.out.println("Key = " + entry.getKey());
 		    System.out.println("Values:");
@@ -173,14 +166,37 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		    }
 		}
 		
+		System.out.println("-------------------------------END---------------------------------");
+		System.out.println();
+		
 	}
 
 	@Override
-	public void transactionEnd(Application application, Object transactionData) {
-		// TODO Auto-generated method stub
+	public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
 		
 	}
-	
-	
+
+//	@Override
+//	public void transactionStart(Application application, Object transactionData) {
+//		// TODO Auto-generated method stub
+//		System.out.println("Transaction start");
+//		System.out.println(transactionData);
+//		HttpServletRequest request = (HttpServletRequest)transactionData;
+//		Map<String, String[]> map = request.getParameterMap();
+//		for (Map.Entry<String, String[]> entry : map.entrySet()) {
+//		    System.out.println("Key = " + entry.getKey());
+//		    System.out.println("Values:");
+//		    for(int i = 0; i < entry.getValue().length; i++){
+//		    	System.out.println(entry.getValue()[i].toString());
+//		    }
+//		}
+//		
+//	}
+//
+//	@Override
+//	public void transactionEnd(Application application, Object transactionData) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 }

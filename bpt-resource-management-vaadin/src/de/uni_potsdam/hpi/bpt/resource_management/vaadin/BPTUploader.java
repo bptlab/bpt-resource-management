@@ -131,7 +131,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						new ArrayList<String>(modelTagComponent.getTagValues()),
 						new ArrayList<String>(platformTagComponent.getTagValues()),
 						new ArrayList<String>(functionalityTagComponent.getTagValues()),
-						((BPTApplication)getApplication()).getUsername(), 
+						((BPTApplication)getApplication()).getName(), 
 						((BPTApplication)getApplication()).getMailAddress(), 
 						new Date(),
 						new Date()
