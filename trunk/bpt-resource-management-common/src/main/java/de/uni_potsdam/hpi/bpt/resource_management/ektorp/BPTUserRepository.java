@@ -18,17 +18,25 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
-	public boolean isModerator(String username, String mailAddress) {
+	public boolean isModerator(String _id, String name, String mailAddress) {
 		List<Map> users = getAll();
 		for(Map<String, Object> user : users) {
-			if (username.equals((String)user.get("name")) && mailAddress.equals((String)user.get("mail_address"))) {
+			if (_id.equals((String)user.get("_id"))) {
 				return (Boolean)user.get("is_moderator");
 			}
 		}
-		createDocument(generateDocument(new Object[] {username, mailAddress}));
+		createDocument(generateDocument(new Object[] {_id, name, mailAddress}));
 		return false;
 	}
 	
+	@Override
+	public String createDocument(Map<String, Object> document) {
+		String _id = (String) document.get("_id");
+		document = setDefaultValues(document);
+		db.create(_id, document);
+		return _id;
+	}
+
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
 		String[] keys = BPTDocumentTypes.getDocumentKeys("bpt_resources_users");

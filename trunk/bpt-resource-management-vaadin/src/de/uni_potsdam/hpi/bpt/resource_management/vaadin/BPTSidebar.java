@@ -9,6 +9,7 @@ import com.vaadin.ui.VerticalLayout;
 public class BPTSidebar extends CustomComponent{
 	
 	private VerticalLayout layout;
+
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
@@ -24,6 +25,10 @@ public class BPTSidebar extends CustomComponent{
 		layout.addComponent(loginComponent);
 		layout.addComponent(searchComponent);
 		
+	}
+
+	public BPTLoginComponent getLoginComponent() {
+		return loginComponent;
 	}
 
 	public void login() {

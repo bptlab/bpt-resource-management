@@ -28,7 +28,7 @@ public class BPTDocumentTypes {
 		}
 		if (type.equals("bpt_resources_users")) {
 			return new String[] {
-				"name", "mail_address"
+				"_id", "name", "mail_address"
 			};
 		}		
 		return null;
