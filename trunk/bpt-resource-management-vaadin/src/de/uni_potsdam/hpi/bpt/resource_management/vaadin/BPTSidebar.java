@@ -9,7 +9,6 @@ import com.vaadin.ui.VerticalLayout;
 public class BPTSidebar extends CustomComponent{
 	
 	private VerticalLayout layout;
-
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
@@ -21,30 +20,36 @@ public class BPTSidebar extends CustomComponent{
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
-		searchComponent = new BPTSearchComponent(application, "all", false);
+		setSearchComponent(new BPTSearchComponent(application, "all", false));
 		layout.addComponent(loginComponent);
-		layout.addComponent(searchComponent);
+		layout.addComponent(getSearchComponent());
 		
 	}
 
-	public BPTLoginComponent getLoginComponent() {
-		return loginComponent;
-	}
-
-	public void login() {
-		searchComponent.login();
-		
+	public void login(String name) {
+		getSearchComponent().login();
+		loginComponent.login(name);
 	}
 	
 	public void upload(){
-		layout.removeComponent(searchComponent);
+		layout.removeComponent(getSearchComponent());
 	}
 	public void finder() {
-		layout.addComponent(searchComponent);
+		setSearchComponent(new BPTSearchComponent(application, "all", false));
+		layout.addComponent(getSearchComponent());
+		if(application.isLoggedIn()) getSearchComponent().login();
 	}
 	
 	public void logout(){
-		searchComponent.logout();
+		getSearchComponent().logout();
+	}
+
+	public BPTSearchComponent getSearchComponent() {
+		return searchComponent;
+	}
+
+	private void setSearchComponent(BPTSearchComponent searchComponent) {
+		this.searchComponent = searchComponent;
 	}
 
 }

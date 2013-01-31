@@ -1,8 +1,11 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.ArrayList;
+
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 public class BPTSearchComponent extends BPTTagComponent{
@@ -41,7 +44,20 @@ public class BPTSearchComponent extends BPTTagComponent{
 
 	@Override
 	public void refresh(){
-		((BPTApplication) getApplication()).getTable().showEntries(BPTContainerProvider.getVisibleEntries(box.getSelectedStates(), searchTagBox.getTagValues()));
+		((BPTApplication) getApplication()).refresh();
+	}
+	
+	public ArrayList<BPTToolStatus> getSelectedStates(){
+		return box.getSelectedStates();
+	}
+	
+	public ArrayList<String> getSelectedTags(){
+		return searchTagBox.getTagValues();
+	}
+	
+	@Override
+	public void addChosenTag(String value){
+		searchTagBox.addTag(value);
 	}
 
 }

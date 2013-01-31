@@ -37,7 +37,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 	protected abstract void show(IndexedContainer tableEntries); 
 	
 	// default solution (entries will be shown in popup), can be overwritten in Subclasses
-	protected void showSelectedEntry(Item item) {
+	protected void showSelectedEntry(final Item item) {
 		final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 		popupWindow.setWidth("600px");
 		
@@ -70,20 +70,34 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 				public void buttonClick(ClickEvent event) {
 					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id);
 					BPTContainerProvider.refreshFromDatabase();
+					((BPTApplication) getApplication()).refresh();
 					getWindow().removeWindow(popupWindow);
 				}
 			});
 			layout.addComponent(deleteButton);
 			
+			if (((BPTApplication)getApplication()).isLoggedIn() && (((BPTApplication)getApplication()).getName().equals(tool.get("contact_name"))) && (((BPTApplication)getApplication()).getMailAddress().equals(tool.get("contact_mail")))){
+				Button editButton = new Button("edit");
+				editButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						getWindow().removeWindow(popupWindow);
+						((BPTApplication)getApplication()).edit(item);
+					}
+				});
+				layout.addComponent(editButton);
+			}
 			BPTToolStatus actualState = ((BPTApplication)getApplication()).getToolRepository().getDocumentStatus(_id);
 			
-			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
+			if(((BPTApplication)getApplication()).isModerated()){
+				
+			if (actualState == BPTToolStatus.Unpublished){
 				
 				Button publishButton = new Button("publish");
 				publishButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
 						BPTContainerProvider.refreshFromDatabase();
+						((BPTApplication) getApplication()).refresh();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
@@ -94,6 +108,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
 						BPTContainerProvider.refreshFromDatabase();
+						((BPTApplication) getApplication()).refresh();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
@@ -106,6 +121,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
 						BPTContainerProvider.refreshFromDatabase();
+						((BPTApplication) getApplication()).refresh();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
@@ -117,10 +133,12 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 					public void buttonClick(ClickEvent event) {
 						((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
 						BPTContainerProvider.refreshFromDatabase();
+						((BPTApplication) getApplication()).refresh();
 						getWindow().removeWindow(popupWindow);
 					}
 				});
 				layout.addComponent(proposeButton);	
+			}
 			}
 			
 		}

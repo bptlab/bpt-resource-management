@@ -89,5 +89,9 @@ public class BPTTagComponent extends CustomComponent{
 		
 		
 	}
+	
+	public void addChosenTag(String value){
+		searchTagBox.addTag(value);
+	}
 
 }
