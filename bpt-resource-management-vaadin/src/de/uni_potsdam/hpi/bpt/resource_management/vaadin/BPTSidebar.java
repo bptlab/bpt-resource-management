@@ -44,6 +44,7 @@ public class BPTSidebar extends CustomComponent{
 	
 	public void logout(){
 		getSearchComponent().logout();
+		application.close();
 	}
 
 	public BPTSearchComponent getSearchComponent() {
