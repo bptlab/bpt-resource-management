@@ -97,6 +97,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map
 			inputStream = db.getAttachment(_id, attachmentId);
 		} catch (DocumentNotFoundException e) {
 			e.printStackTrace();
+			return null;
 		}
 		try {
 			inputStream.close();

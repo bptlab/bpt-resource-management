@@ -35,6 +35,8 @@ public class BPTSidebar extends CustomComponent{
 		layout.removeComponent(getSearchComponent());
 	}
 	public void finder() {
+		layout.removeAllComponents();
+		layout.addComponent(loginComponent);
 		setSearchComponent(new BPTSearchComponent(application, "all", false));
 		layout.addComponent(getSearchComponent());
 		if(application.isLoggedIn()) getSearchComponent().login();

@@ -46,7 +46,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setLoggedIn(false);
-		entryComponent = new BPTTable();
+		entryComponent = new BPTEntryCards(this);
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
 		layout.addComponent(mainFrame);
@@ -56,6 +56,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
+		setTheme("bpt_theme");
 //		loginManager = new BPTLoginManager();
 		
 //		ApplicationContext ctx = this.getContext();
@@ -105,7 +106,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 
 	public void uploader() {
-		uploader = new BPTUploader(null);
+		uploader = new BPTUploader(null, this);
 		mainFrame.add(uploader);
 		sidebar.upload();
 	}
@@ -203,7 +204,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 //	}
 
 	public void edit(Item item) {
-		uploader = new BPTUploader(item);
+		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
 		sidebar.upload();
 	}
