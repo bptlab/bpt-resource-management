@@ -44,7 +44,7 @@ public class BPTLoginWindow extends Window {
 				application.setLoggedIn(true);
 				
 //				application.setModerator(userRepository.isModerator(username, mailAddress));
-				System.out.println("LoginWindow: " + application.isModerated());
+//				System.out.println("LoginWindow: " + application.isModerated());
 				usernameField.setValue("");
 				mailAddressField.setValue("");
 				

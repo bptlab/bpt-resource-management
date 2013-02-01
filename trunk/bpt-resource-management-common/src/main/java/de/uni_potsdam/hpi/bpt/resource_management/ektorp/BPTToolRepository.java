@@ -121,14 +121,14 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {
 		ArrayList<String> entryAsArrayList = new ArrayList<String>();
 		for (String propertyId : tagAttributes) {
-			System.out.println(propertyId);
+//			System.out.println(propertyId);
 			String property = entry.get(propertyId).toString();
 			String cutProperty = property.substring(1, property.length() -1);
 			List<String> attributeTags = Arrays.asList(cutProperty.split("\\s*,\\s*"));
-			System.out.println("attribut: " + attributeTags);
+//			System.out.println("attribut: " + attributeTags);
 			for(int i = 0; i < attributeTags.size(); i++){
 				entryAsArrayList.add(attributeTags.get(i));
-				System.out.println("all entry tags: " + entryAsArrayList);
+//				System.out.println("all entry tags: " + entryAsArrayList);
 			}
 		}
 		for (int i = 0; i < tags.size(); i++){

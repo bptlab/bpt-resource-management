@@ -4,6 +4,8 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
+
 public class BPTTable extends BPTShowEntryComponent {
 
 	private VerticalLayout layout;
@@ -16,7 +18,6 @@ public class BPTTable extends BPTShowEntryComponent {
 		table.setSelectable(true);
 		table.setColumnReorderingAllowed(true);
         table.setColumnCollapsingAllowed(true);
-        table.setContainerDataSource(dataSource);
         table.setWidth("100%");
         addComponent(table);
         addListenerToTable();
@@ -38,5 +39,6 @@ public class BPTTable extends BPTShowEntryComponent {
 	@Override
 	protected void show(IndexedContainer tableEntries) {
 		table.setContainerDataSource(dataSource);
+		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes());
 	}
 }

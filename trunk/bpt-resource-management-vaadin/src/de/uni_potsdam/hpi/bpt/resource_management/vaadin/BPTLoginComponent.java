@@ -116,7 +116,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				application.setMailAddress("");
 				application.setLoggedIn(false);
 				application.setModerated(false);
-				application.setOpenIdProvider("");
+				application.setOpenIdProvider(openIdProviders[0]);
 				application.finder();
 				layout.removeAllComponents();
 				addLoginButton();
@@ -131,7 +131,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	
 	public void login(String name){
 		layout.removeAllComponents();
-		System.out.println(name);
+//		System.out.println(name);
 		layout.addComponent(navigationBar);
 		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
 		layout.addComponent(welcomeLabel);
@@ -144,11 +144,11 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
         manager.setRealm("http://localhost:8080/");
 		manager.setTimeOut(10000);
         Endpoint endpoint = manager.lookupEndpoint(openIdProvider);
-        System.out.println(endpoint);
+//        System.out.println(endpoint);
         Association association = manager.lookupAssociation(endpoint);
-        System.out.println(association);
+//        System.out.println(association);
         String url = manager.getAuthenticationUrl(endpoint, association);
-        System.out.println("Copy the authentication URL in browser:\n" + url);
+//        System.out.println("Copy the authentication URL in browser:\n" + url);
         ((BPTApplication) getApplication()).getMainWindow().open(new ExternalResource(url), "_self");
 //        System.out.println("After successfully sign on in browser, enter the URL of address bar in browser:");
 //        String ret = readLine();
