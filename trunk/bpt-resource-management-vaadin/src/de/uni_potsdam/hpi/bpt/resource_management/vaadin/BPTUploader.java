@@ -38,6 +38,7 @@ import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
@@ -54,8 +55,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
 	private String documentId, imageName, imageType;
 	private Date creationDate;
+	private BPTApplication application;
 	
-	public BPTUploader(Item item){
+	public BPTUploader(Item item, BPTApplication application){
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
 		
@@ -135,13 +137,11 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         		String[] supported_functionality = ((String) item.getItemProperty("Supported functionality").getValue()).split(",");
         		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i]);
         	}
-        	
-        	System.out.println(item.getItemProperty("Logo").getValue());
-        	Embedded image = (Embedded) item.getItemProperty("Logo").getValue();
-        	System.out.println(image.getClass());
-//        	image.setWidth("");
-//        	image.setHeight("");
-//        	layout.addComponent(image);
+        	BPTToolRepository toolRepository = application.getToolRepository();
+        	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
+			image.setWidth("");
+			image.setHeight("");
+			addImageToPanel(image);
         }
 
 		finishUploadButton = new Button("Submit");
@@ -208,8 +208,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("model_types", new ArrayList<String>(modelTagComponent.getTagValues()));
 					newValues.put("platforms", new ArrayList<String>(platformTagComponent.getTagValues()));
 					newValues.put("supported_functionalities", new ArrayList<String>(functionalityTagComponent.getTagValues()));
+					newValues.put("last_update", new Date());
 					toolRepository.updateDocument(newValues);
 					
+					getWindow().showNotification("Updated Entry: " + (String)nameInput.getValue());
 				}
 				((BPTApplication)getApplication()).finder();
 				
@@ -287,8 +289,14 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource imageResource = new FileResource(logo, getApplication());
-        imagePanel.removeAllComponents();
-        imagePanel.addComponent(new Embedded(event.getFilename(), imageResource));
+		Embedded image = new Embedded(event.getFilename(), imageResource);
+		
+        addImageToPanel(image);
+	}
+
+	private void addImageToPanel(Embedded image) {
+		imagePanel.removeAllComponents();
+        imagePanel.addComponent(image);
         removeImageButton = new Button("Remove image");
 		imagePanel.addComponent(removeImageButton);
 		removeImageButton.addListener(new Button.ClickListener(){
@@ -299,7 +307,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				imagePanel.addComponent(new Label("No image uploaded yet"));
 				boolean deletionSuccessful = logo.delete();
 				if (!deletionSuccessful) {
-					throw new IllegalArgumentException("Deletion of " + event.getFilename() + " failed.");
+					throw new IllegalArgumentException("Deletion of picture failed.");
 				}
 				logo = null;
 			}
