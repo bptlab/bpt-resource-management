@@ -28,11 +28,9 @@ Tags must receive special care: While their name may change over time, the links
 || screencast    || URL         || yes || no || yes || || ||
 || availability  || multi choice + free text'*' || yes || no || no || || open source, freeware, shareware, free for academics, commercial, other'*' ||
 || model types   || multi choice + free text'*' || yes || no || no || || BPMN, EPC, Petri net, UML Activity Diagram, Workflow Net, YAWL, BPEL, other'*'||
-|| platform      || multi choice + free text'*' || yes || no || no || || Windows, Linux, Mac OSX, Android, iOS, other'*'||
+|| platform      || multi choice + free text'*' || yes || no || no || || SaaS, Windows, Linux, Mac OSX, Android, iOS, other'*'||
 || supported functionality || multi choice + free text'*' || yes || no || no || [#Tags] || graphical model editor, model repository, verification of model properties, enactment, runtime adaptation, process discovery based on event data, conformance checking based on event data, other'*  ||
 || contact name || string       || yes || no || yes || || ||
 || contact mail || emailaddress || yes || yes || no || || ||
 || lastupdate   || date         || yes || no || no || set automatically on create/update || ||
-
-
 
