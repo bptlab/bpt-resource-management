@@ -121,6 +121,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				layout.removeAllComponents();
 				addLoginButton();
 				sidebar.logout();
+	
 			}});
 		
 	}

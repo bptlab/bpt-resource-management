@@ -66,7 +66,7 @@ public class BPTDatabaseTest {
 		"http://www.example.org",
 		new ArrayList<String>(Arrays.asList("free for academics", "commercial")),
 		new ArrayList<String>(Arrays.asList("BPMN", "EPC", "Petri Net", "UML Activity Diagram", "Workflow Net")),
-		new ArrayList<String>(),
+		new ArrayList<String>(Arrays.asList("SaaS")),
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository", "verification of model properties")),
 		"Signavio GmbH",
 		"info@signavio.com",

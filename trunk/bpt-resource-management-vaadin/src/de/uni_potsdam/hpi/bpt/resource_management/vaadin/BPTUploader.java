@@ -38,6 +38,7 @@ import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
@@ -215,6 +216,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("model_types", new ArrayList<String>(modelTagComponent.getTagValues()));
 					newValues.put("platforms", new ArrayList<String>(platformTagComponent.getTagValues()));
 					newValues.put("supported_functionalities", new ArrayList<String>(functionalityTagComponent.getTagValues()));
+					if (BPTToolStatus.Rejected == BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"))) {
+						newValues.put("status", BPTToolStatus.Unpublished);
+					}
 					newValues.put("last_update", new Date());
 					toolRepository.updateDocument(newValues);
 					
