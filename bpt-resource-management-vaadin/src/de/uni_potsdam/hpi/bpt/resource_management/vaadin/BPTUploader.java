@@ -38,6 +38,7 @@ import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
@@ -151,12 +152,18 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
 				
-				if(toolRepository.containsName((String)nameInput.getValue()) && documentId == null) {
+				if (toolRepository.containsName((String)nameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
+				} else if (!BPTValidator.isValidURL((String)downloadInput.getValue())) {
+					getWindow().showNotification("Invalid URL", "in field 'Download': " + (String)downloadInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+				} else if (!((String)documentationInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)documentationInput.getValue())) {
+					getWindow().showNotification("Invalid URL", "in field 'Documentation': " + (String)downloadInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+				} else if (!((String)screencastInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)screencastInput.getValue())) {
+					getWindow().showNotification("Invalid URL", "in field 'Screencast': " + (String)downloadInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				}
-				else{
+				else {
 					finishUpload();
-					}
+				}
 				
 			}
 
@@ -196,7 +203,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					
 				}
 				else{
-					System.out.println(descriptionInput.getValue().getClass());
+//					System.out.println(descriptionInput.getValue().getClass());
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
 					newValues.put("description", descriptionInput.getValue().toString());

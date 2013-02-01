@@ -142,6 +142,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> map = request.getParameterMap();
 		
+		
 		try {
 			_id = map.get("openid.identity")[0];
 			System.out.println("The OpenID identifier: " + _id);
@@ -160,19 +161,19 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			return;
 		}
 		
-		System.out.println("-------------------------------START---------------------------------");
-		
-		for (Map.Entry<String, String[]> entry : map.entrySet()) {
-		    System.out.println("Key = " + entry.getKey());
-		    System.out.println("Values:");
-		    for(int i = 0; i < entry.getValue().length; i++){
-		    	System.out.println(entry.getValue()[i].toString());
-		    }
-		}
-		
-		System.out.println("-------------------------------END---------------------------------");
-		System.out.println();
-		
+//		System.out.println("-------------------------------START---------------------------------");
+//		
+//		for (Map.Entry<String, String[]> entry : map.entrySet()) {
+//		    System.out.println("Key = " + entry.getKey());
+//		    System.out.println("Values:");
+//		    for(int i = 0; i < entry.getValue().length; i++){
+//		    	System.out.println(entry.getValue()[i].toString());
+//		    }
+//		}
+//		
+//		System.out.println("-------------------------------END---------------------------------");
+//		System.out.println();
+
 	}
 
 	@Override

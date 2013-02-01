@@ -36,23 +36,22 @@ public class BPTVaadinResources {
 	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false});
-	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true});
-	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true});
-	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true});
-	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true});
-	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null, true});
-	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null, true});
-	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true});
-	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true});
-	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true});
-	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null, true});
-	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true});
-	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true});
-	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true});
-	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true});
-	    	// TODO: display image --- 
-	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false});
+	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false});
+	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true});
+	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true});
+	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false});
+	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true, true});
+	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true, true});
+	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null, true, false});
+	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null, true, false});
+	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true, true});
+	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true, true});
+	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true, true});
+	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null, true, true});
+	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false});
+	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false});
+	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false});
+	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, false});
 	    }
 	};
 	
@@ -68,6 +67,7 @@ public class BPTVaadinResources {
 	 * array element #3: BPTPropertyValueType enum type to identify how to generate the specific Vaadin components that are shown
 	 * array element #4: attachment file name
 	 * array element #5: true if attribute is modifiable by user (attachments to be handled separately)
+	 * array element #6: true if attribute shall be visible in BPTShowEntryComponent
 	 * 
 	 */
 	public static List<Object[]> getEntries() {
@@ -196,9 +196,19 @@ public class BPTVaadinResources {
 		Embedded image = new Embedded("", imageResource);
 		image.setType(Embedded.TYPE_IMAGE);
 		// default image size is icon size
-		image.setWidth("50px");
-		image.setHeight("50px");
+		image.setWidth("15px");
+		image.setHeight("15px");
 	    return image;
+	}
+
+	public static String[] getVisibleAttributes() {
+		List<String> visibleAttributes = new ArrayList<String>();		
+		for (Object[] entry : propertiesOfVisibleItems) {
+			if ((Boolean)entry[6]) {
+				visibleAttributes.add((String)entry[1]);
+			}
+		}
+		return visibleAttributes.toArray(new String[visibleAttributes.size()]);
 	}
 	
 }

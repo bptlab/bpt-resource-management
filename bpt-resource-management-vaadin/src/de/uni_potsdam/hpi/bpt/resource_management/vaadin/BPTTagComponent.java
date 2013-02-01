@@ -45,7 +45,7 @@ public class BPTTagComponent extends CustomComponent{
 				if (value == null) return;
 				String valueString = (String) value;
 				searchTagBox.addTag(valueString);
-				System.out.println(valueString);
+//				System.out.println(valueString);
 				searchInput.setValue(null);
 				unselectedValues.remove(valueString);
 				searchInput.removeAllItems();
