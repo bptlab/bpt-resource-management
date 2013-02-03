@@ -233,11 +233,11 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				warningWindow.setWidth("400px");
 				warningWindow.setModal(true);
 				warningWindow.addComponent(new Label("The name you have chosen is already taken - continue?"));
-				Button yesButton = new Button("yes");
-				Button cancelButton = new Button("cancel");
+				Button yesButton = new Button("Yes");
+				Button noButton = new Button("No");
 				warningWindow.addComponent(yesButton);
-				warningWindow.addComponent(cancelButton);
-				cancelButton.addListener(new Button.ClickListener(){
+				warningWindow.addComponent(noButton);
+				noButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						window.removeWindow(warningWindow);
 					}
