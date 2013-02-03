@@ -60,6 +60,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		}
 		
 		// TODO: use openid.identity (_id) here to identify the user
+		// TODO: add openid.identity to document attributes
 		if ((((BPTApplication)getApplication()).isLoggedIn() && (((BPTApplication)getApplication()).getName().equals(tool.get("contact_name"))) && (((BPTApplication)getApplication()).getMailAddress().equals(tool.get("contact_mail")))) || ((BPTApplication)getApplication()).isModerated()){
 			
 			HorizontalLayout layout = new HorizontalLayout();
@@ -144,6 +145,23 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		}
 		getWindow().addWindow(popupWindow);
 		
+		
+	}
+	
+	// TODO: use this in status change button click listeners
+	private void addConfirmationWindow(final Window window, String status) {
+		final Window confirmationWindow = new Window("Notification");
+		confirmationWindow.setWidth("400px");
+		confirmationWindow.setModal(true);
+		confirmationWindow.addComponent(new Label("You are about to change to document status to '" + status + "'."));
+		Button confirmButton = new Button("Confirm");
+		confirmationWindow.addComponent(confirmButton);
+		confirmButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				window.removeWindow(confirmationWindow);
+			}
+		});
+		window.addWindow(confirmationWindow);
 		
 	}
 }
