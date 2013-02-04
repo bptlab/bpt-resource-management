@@ -18,7 +18,6 @@ import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTLoginManager;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
@@ -28,7 +27,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn, moderated;
-	private String _id, name, mailAddress;
+	private String name, mailAddress;
 	private String openIdProvider = "Google"; // TODO: hard coded
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
@@ -72,6 +71,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.loggedIn = loggedIn;
 	}
 	
+	public boolean isModerated() {
+		return moderated;
+	}
+	
+	public void setModerated(boolean moderated) {
+		this.moderated = moderated;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -80,13 +87,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.name = name;
 	}
 
-	public boolean isModerated() {
-		return moderated;
-	}
-	
-	public void setModerated(boolean moderated) {
-		this.moderated = moderated;
-	}
 	
 	public String getMailAddress() {
 		return mailAddress;
@@ -141,9 +141,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> map = request.getParameterMap();
 		
-		try {
-			_id = map.get("openid.identity")[0];
-			System.out.println("The OpenID identifier: " + _id);
+		if (map.containsKey("openid.identity")) {
+			setUser(map.get("openid.identity")[0]);
+			System.out.println("The OpenID identifier: " + (String)getUser());
 			if (openIdProvider.equals("Google")) {
 				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0]; 
 				mailAddress = map.get("openid.ext1.value.email")[0];
@@ -151,26 +151,25 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 				name = map.get("openid.ax.value.fullname")[0]; 
 				mailAddress = map.get("openid.ax.value.email")[0];
 			}
-			moderated = userRepository.isModerator(_id, name, mailAddress);
+			moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
 			loggedIn = true;
 			sidebar.login(name);
-			
-		} catch (NullPointerException e) {
+		} else {
 			return;
 		}
 		
-		System.out.println("-------------------------------START---------------------------------");
-		
-		for (Map.Entry<String, String[]> entry : map.entrySet()) {
-		    System.out.println("Key = " + entry.getKey());
-		    System.out.println("Values:");
-		    for(int i = 0; i < entry.getValue().length; i++){
-		    	System.out.println(entry.getValue()[i].toString());
-		    }
-		}
-		
-		System.out.println("-------------------------------END---------------------------------");
-		System.out.println();
+//		System.out.println("-------------------------------START---------------------------------");
+//		
+//		for (Map.Entry<String, String[]> entry : map.entrySet()) {
+//		    System.out.println("Key = " + entry.getKey());
+//		    System.out.println("Values:");
+//		    for(int i = 0; i < entry.getValue().length; i++){
+//		    	System.out.println(entry.getValue()[i].toString());
+//		    }
+//		}
+//		
+//		System.out.println("-------------------------------END---------------------------------");
+//		System.out.println();
 
 	}
 

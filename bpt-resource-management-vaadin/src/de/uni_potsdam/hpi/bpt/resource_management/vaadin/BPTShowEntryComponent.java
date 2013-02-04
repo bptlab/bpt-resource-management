@@ -22,6 +22,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 public abstract class BPTShowEntryComponent extends VerticalLayout{
 	
 	protected IndexedContainer dataSource;
+	protected String _id;
 	
 	public BPTShowEntryComponent(){
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
@@ -41,7 +42,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 		popupWindow.setWidth("600px");
 		
-		final String _id = item.getItemProperty("ID").getValue().toString();
+		_id = item.getItemProperty("ID").getValue().toString();
 		Map<String, Object> tool = ((BPTApplication)getApplication()).getToolRepository().readDocument(_id);
 		
 		for (Object[] entry : BPTVaadinResources.getEntries()){
@@ -59,9 +60,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			}
 		}
 		
-		// TODO: use openid.identity (_id) here to identify the user
-		// TODO: add openid.identity to document attributes
-		if ((((BPTApplication)getApplication()).isLoggedIn() && (((BPTApplication)getApplication()).getName().equals(tool.get("contact_name"))) && (((BPTApplication)getApplication()).getMailAddress().equals(tool.get("contact_mail")))) || ((BPTApplication)getApplication()).isModerated()){
+		if ((((BPTApplication)getApplication()).isLoggedIn() && ((BPTApplication)getApplication()).getUser().equals(tool.get("user_id"))) || ((BPTApplication)getApplication()).isModerated()){
 			
 			HorizontalLayout layout = new HorizontalLayout();
 			popupWindow.addComponent(layout);
@@ -69,15 +68,12 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			Button deleteButton = new Button("delete");
 			deleteButton.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id);
-					BPTContainerProvider.refreshFromDatabase();
-					((BPTApplication) getApplication()).refresh();
-					getWindow().removeWindow(popupWindow);
+					addConfirmationWindow(popupWindow, "delete");
 				}
 			});
 			layout.addComponent(deleteButton);
 			
-			if (((BPTApplication)getApplication()).isLoggedIn() && (((BPTApplication)getApplication()).getName().equals(tool.get("contact_name"))) && (((BPTApplication)getApplication()).getMailAddress().equals(tool.get("contact_mail")))){
+			if (((BPTApplication)getApplication()).isLoggedIn() && ((BPTApplication)getApplication()).getUser().equals(tool.get("user_id"))){
 				Button editButton = new Button("edit");
 				editButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -91,55 +87,43 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			
 			if(((BPTApplication)getApplication()).isModerated()){
 				
-			if (actualState == BPTToolStatus.Unpublished){
-				
-				Button publishButton = new Button("publish");
-				publishButton.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
-						BPTContainerProvider.refreshFromDatabase();
-						((BPTApplication) getApplication()).refresh();
-						getWindow().removeWindow(popupWindow);
-					}
-				});
-				layout.addComponent(publishButton);
-				
-				Button rejectButton = new Button("reject");
-				rejectButton.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
-						BPTContainerProvider.refreshFromDatabase();
-						((BPTApplication) getApplication()).refresh();
-						getWindow().removeWindow(popupWindow);
-					}
-				});
-				layout.addComponent(rejectButton);						
-				
-			}
-			else if (actualState == BPTToolStatus.Published) {
-				Button unpublishButton = new Button("unpublish");
-				unpublishButton.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
-						BPTContainerProvider.refreshFromDatabase();
-						((BPTApplication) getApplication()).refresh();
-						getWindow().removeWindow(popupWindow);
-					}
-				});
-				layout.addComponent(unpublishButton);	
-			}
-			else {
-				Button proposeButton = new Button("propose");
-				proposeButton.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
-						BPTContainerProvider.refreshFromDatabase();
-						((BPTApplication) getApplication()).refresh();
-						getWindow().removeWindow(popupWindow);
-					}
-				});
-				layout.addComponent(proposeButton);	
-			}
+				if (actualState == BPTToolStatus.Unpublished){
+					
+					Button publishButton = new Button("publish");
+					publishButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							addConfirmationWindow(popupWindow, "publish");
+						}
+					});
+					layout.addComponent(publishButton);
+					
+					Button rejectButton = new Button("reject");
+					rejectButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							addConfirmationWindow(popupWindow, "reject");
+						}
+					});
+					layout.addComponent(rejectButton);						
+					
+				}
+				else if (actualState == BPTToolStatus.Published) {
+					Button unpublishButton = new Button("unpublish");
+					unpublishButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							addConfirmationWindow(popupWindow, "unpublish");
+						}
+					});
+					layout.addComponent(unpublishButton);	
+				}
+				else {
+					Button proposeButton = new Button("propose");
+					proposeButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							addConfirmationWindow(popupWindow, "propose");
+						}
+					});
+					layout.addComponent(proposeButton);	
+				}
 			}
 			
 		}
@@ -148,25 +132,41 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		
 	}
 	
-	// TODO: use this in status change button click listeners
-	private void addConfirmationWindow(final Window window, String status) {
+	private void addConfirmationWindow(final Window popupWindow, final String status) {
 		final Window confirmationWindow = new Window("Notification");
 		confirmationWindow.setWidth("400px");
 		confirmationWindow.setModal(true);
-		confirmationWindow.addComponent(new Label("You are about to change to document status to '" + status + "'."));
+		if (status.equals("delete")) {
+			confirmationWindow.addComponent(new Label("Deleting this entry - are you sure?"));
+		} else if (status.equals("publish")) {
+			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
+		} else if (status.equals("reject")) {
+			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
+		} else if (status.equals("unpublish")) { 
+			confirmationWindow.addComponent(new Label("Unpublishing this entry - are you sure?"));
+		} else { // if status.equals("propose")
+			confirmationWindow.addComponent(new Label("Proposing this entry - are you sure?"));
+		}
 		Button confirmButton = new Button("Confirm");
 		confirmationWindow.addComponent(confirmButton);
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				window.removeWindow(confirmationWindow);
+				if (status.equals("delete")) {
+					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id);
+				} else if (status.equals("publish")) {
+					((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
+				} else if (status.equals("reject")) {
+					((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
+				} else { // if (status.equals("unpublish") || status.equals("propose"))
+					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
+				}
+				BPTContainerProvider.refreshFromDatabase();
+				((BPTApplication) getApplication()).refresh();
+				getWindow().removeWindow(confirmationWindow);
+				getWindow().removeWindow(popupWindow);
 			}
 		});
-		window.addWindow(confirmationWindow);
+		getWindow().addWindow(confirmationWindow);
 		
 	}
 }
-
-
-
-
-//TODO: implement Super-Class for BPTTable
