@@ -96,7 +96,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	public Boolean containsName(String name){
-		List<Map> Docs = getAll();
+		List<Map> Docs = getDocuments("all");
 		for (int i = 0; i < Docs.size(); i++){
 			if(name.equals(Docs.get(i).get("name"))) return true;
 		}

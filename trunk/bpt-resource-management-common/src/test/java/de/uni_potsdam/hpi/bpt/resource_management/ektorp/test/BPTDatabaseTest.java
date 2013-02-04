@@ -37,7 +37,8 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("Windows", "Linux", "Mac OSX")),
 		new ArrayList<String>(Arrays.asList("verification of model properties", "process discovery based on event data", "conformance checking based on event data")),
 		"Eric Verbeek",
-		"h.m.w.verbeek@tunnel",
+		"h.m.w.verbeek@tunnel", 
+		new String(),
 		new Date(),
 		new Date(),
 	};
@@ -54,6 +55,7 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository", "process engine")),
 		"Tijs Rademakers",
 		"test@example.org",
+		new String(),
 		new Date(),
 		new Date(),
 	};
@@ -69,7 +71,8 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("SaaS")),
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository", "verification of model properties")),
 		"Signavio GmbH",
-		"info@signavio.com",
+		"info@signavio.com", 
+		new String(),
 		new Date(),
 		new Date(),
 	};
@@ -85,7 +88,8 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("Windows")),
 		new ArrayList<String>(Arrays.asList("graphical model editor")),
 		"blenta",
-		"shi_yaoqiang@yahoo.com",
+		"shi_yaoqiang@yahoo.com", 
+		new String(),
 		new Date(),
 		new Date(),
 	};
@@ -103,6 +107,7 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository")),
 		"IBM",
 		"test@example.org",
+		new String(),
 		new Date(),
 		new Date(),
 	};

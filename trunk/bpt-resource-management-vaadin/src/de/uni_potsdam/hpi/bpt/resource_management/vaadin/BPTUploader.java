@@ -47,7 +47,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	
 	private VerticalLayout layout;
 	private Upload upload;
-	private TextField nameInput, providerInput, downloadInput, documentationInput, screencastInput;
+	private TextField nameInput, providerInput, downloadInput, documentationInput, screencastInput, contactNameInput, contactMailInput;
 	private TextArea descriptionInput;
 	private Button finishUploadButton, removeImageButton;
 	private BPTTagComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
@@ -59,7 +59,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private Date creationDate;
 	private BPTApplication application;
 	
-	public BPTUploader(Item item, BPTApplication application){
+	public BPTUploader(Item item, final BPTApplication application){
+		this.application = application;
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
 		
@@ -105,6 +106,16 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		functionalityTagComponent = new BPTTagComponent("supportedFunctionalities", true);
 		layout.addComponent(functionalityTagComponent);
 		
+		layout.addComponent(new Label("Contact name:"));
+		contactNameInput = new TextField();
+		contactNameInput.setValue(application.getName());
+		layout.addComponent(contactNameInput);
+		
+		layout.addComponent(new Label("Contact mail:"));
+		contactMailInput = new TextField();
+		contactMailInput.setValue(application.getMailAddress());
+		layout.addComponent(contactMailInput);
+		
 		imagePanel = new Panel("Logo");
 		
 		createUploadComponent(imagePanel);
@@ -139,6 +150,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         		String[] supported_functionality = ((String) item.getItemProperty("Supported functionality").getValue()).split(",");
         		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i]);
         	}
+        	contactNameInput.setValue(application.getName());
+        	contactMailInput.setValue(application.getMailAddress());
         	BPTToolRepository toolRepository = application.getToolRepository();
         	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
 			image.setWidth("");
@@ -151,7 +164,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
-				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
+				BPTToolRepository toolRepository = application.getToolRepository();
 				
 				if (toolRepository.containsName((String)nameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
@@ -171,7 +184,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 			private void finishUpload() {
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
 				//TODO: if(!(item == null)) { updaten statt neuer eintrag
-				if(documentId == null){
+				if (documentId == null) { 
 				
 					documentId = toolRepository.createDocument(generateDocument(new Object[] {
 							(String)nameInput.getValue(),
@@ -184,8 +197,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 							new ArrayList<String>(modelTagComponent.getTagValues()),
 							new ArrayList<String>(platformTagComponent.getTagValues()),
 							new ArrayList<String>(functionalityTagComponent.getTagValues()),
-							((BPTApplication)getApplication()).getName(), 
-							((BPTApplication)getApplication()).getMailAddress(), 
+							(String)contactNameInput.getValue(),
+							(String)contactMailInput.getValue(),
+							(String)application.getUser(), 
 							new Date(),
 							new Date()
 						}));
@@ -202,11 +216,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
 						
 					
-				}
-				else{
+				} else {
 //					System.out.println(descriptionInput.getValue().getClass());
 					Map<String, Object> newValues = new HashMap<String, Object>();
-					newValues.put("_id", documentId);
+					newValues.put("name", nameInput.getValue().toString());
 					newValues.put("description", descriptionInput.getValue().toString());
 					newValues.put("provider", providerInput.getValue().toString());
 					newValues.put("download_url", downloadInput.getValue().toString());
@@ -219,6 +232,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					if (BPTToolStatus.Rejected == BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"))) {
 						newValues.put("status", BPTToolStatus.Unpublished);
 					}
+					newValues.put("contact_name", contactNameInput.getValue().toString());
+					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
 					toolRepository.updateDocument(newValues);
 					
