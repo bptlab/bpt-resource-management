@@ -152,6 +152,12 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map
 		return databaseDocument;
 	}
 	
+	public String deleteAttachment(String _id, String _rev, String attachmentId) {
+		String revision = new String();
+		revision = db.deleteAttachment(_id, _rev, attachmentId);
+		return revision;
+	}
+	
 	private Integer nextAvailableId() {
 		
 		List<String> allDocIdsString = db.getAllDocIds();

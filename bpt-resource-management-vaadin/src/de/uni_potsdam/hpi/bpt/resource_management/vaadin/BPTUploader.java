@@ -55,11 +55,11 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private File logo;
 	private FileOutputStream outputStream;
 	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
-	private String documentId, imageName, imageType;
-	private Date creationDate;
+	private String documentId, imageType;
+	private boolean logoDeleted = false;
 	private BPTApplication application;
 	
-	public BPTUploader(Item item, final BPTApplication application){
+	public BPTUploader(Item item, final BPTApplication application) {
 		this.application = application;
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
@@ -123,11 +123,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         imagePanel.addComponent(new Label("No image uploaded yet"));
         layout.addComponent(imagePanel);
         
-        if(!(item == null)){
-        	//TODO: Bild einfügen
-        	
+        if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	creationDate = (Date) item.getItemProperty("Date created").getValue();
         	nameInput.setValue((item.getItemProperty("Name").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue()));
         	providerInput.setValue(item.getItemProperty("Provider").getValue());
@@ -156,6 +153,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
 			image.setWidth("");
 			image.setHeight("");
+			// TODO: don't call following method if there is no logo in database (remove image button)
 			addImageToPanel(image);
         }
 
@@ -168,6 +166,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				
 				if (toolRepository.containsName((String)nameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
+				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
+						getWindow().showNotification("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!BPTValidator.isValidURL((String)downloadInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Download': " + (String)downloadInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)documentationInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)documentationInput.getValue())) {
@@ -204,7 +204,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 							new Date()
 						}));
 						
-						if (logo != null) { // logo.exists()
+						if (!logoDeleted) { // logo.exists()
 							Map<String, Object> document = toolRepository.readDocument(documentId);
 							String documentRevision = (String)document.get("_rev");
 							
@@ -219,6 +219,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				} else {
 //					System.out.println(descriptionInput.getValue().getClass());
 					Map<String, Object> newValues = new HashMap<String, Object>();
+					newValues.put("_id", documentId);
 					newValues.put("name", nameInput.getValue().toString());
 					newValues.put("description", descriptionInput.getValue().toString());
 					newValues.put("provider", providerInput.getValue().toString());
@@ -237,8 +238,18 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("last_update", new Date());
 					toolRepository.updateDocument(newValues);
 					
+					Map<String, Object> document = toolRepository.updateDocument(newValues);
+					String documentRevision = (String)document.get("_rev");
+					
+					if (logoDeleted) {						
+						toolRepository.deleteAttachment(documentId, documentRevision, "logo");
+					} else if (logo != null) {
+						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
+					}
+					
 					getWindow().showNotification("Updated Entry: " + (String)nameInput.getValue());
 				}
+				
 				((BPTApplication)getApplication()).finder();
 				
 			}
@@ -291,7 +302,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	
 	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		imageName = filename;
 		imageType = mimeType;
 		
         if(System.getProperty("os.name").contains("Windows")) {
@@ -316,8 +326,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource imageResource = new FileResource(logo, getApplication());
 		Embedded image = new Embedded(event.getFilename(), imageResource);
-		
         addImageToPanel(image);
+        logoDeleted = false;
+        application.refresh();
 	}
 
 	private void addImageToPanel(Embedded image) {
@@ -331,11 +342,14 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				imagePanel.removeAllComponents();
 				createUploadComponent(imagePanel);
 				imagePanel.addComponent(new Label("No image uploaded yet"));
-				boolean deletionSuccessful = logo.delete();
-				if (!deletionSuccessful) {
-					throw new IllegalArgumentException("Deletion of picture failed.");
-				}
-				logo = null;
+				if (logo != null) {
+					boolean deletionSuccessful = logo.delete();
+					if (!deletionSuccessful) {
+						throw new IllegalArgumentException("Deletion of picture failed.");
+					}
+					logo = null;
+				} 
+				logoDeleted = true;
 			}
 		});
 	}
