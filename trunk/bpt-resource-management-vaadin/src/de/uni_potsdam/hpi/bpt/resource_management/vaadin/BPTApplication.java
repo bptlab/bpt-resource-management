@@ -55,12 +55,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
-//		loginManager = new BPTLoginManager();
-		
-//		ApplicationContext ctx = this.getContext();
-//		this.webAppCtx = (WebApplicationContext) ctx;
-//		ctx.addTransactionListener(this);
-					
 	}
 	
 	public boolean isLoggedIn() {
