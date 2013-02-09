@@ -45,7 +45,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setLoggedIn(false);
-		entryComponent = new BPTTable();
+		entryComponent = new BPTEntryCards(this);
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
 		layout.addComponent(mainFrame);
@@ -55,6 +55,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.setExpandRatio(sidebar, 3);
 		mainWindow.addComponent(layout);
 		setMainWindow(mainWindow);
+		setTheme("bpt");
 	}
 	
 	public boolean isLoggedIn() {
