@@ -20,12 +20,6 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	
 	public BPTEntryCards(BPTApplication application){
 		
-//		Embedded frame = new Embedded("Website", new ExternalResource("http://vaadin.com"));
-//		frame.setAlternateText("Alternativtext");
-//		frame.setType(Embedded.TYPE_BROWSER);
-//		frame.setWidth("100%");
-//		frame.setHeight("400px");
-//		addComponent(frame);
 //		CustomLayout htmlLayout = new CustomLayout("test");
 //		addComponent(htmlLayout);
 		super();
@@ -33,18 +27,21 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 		this.application = application;
 		addComponent(layout);
 		show(dataSource);
+		
 	}
 
 	@Override
 	protected void show(IndexedContainer entries) {
 		layout.removeAllComponents();
-		String html = "<ul>";
+		String html = "<ul id=\"resource-list\">";
 		for(Object id : entries.getItemIds()){
 			String entryString = generateHtmlString(entries.getItem(id));
-			html = html + "<li> <div>" + entryString + generateButtonString() + "</div> </li>";
+			html = html + "<li class=\"entry\" id=\"" + id.toString() + "\">" + entryString + generateButtonString(id.toString()) + "</li>";
 		}
-		Label htmlLabel = new Label(html);
 		html = html + "</ul>";
+//		html = html + generateJavaScriptString();
+		Label htmlLabel = new Label(html);
+		
 		
 		htmlLabel.setContentMode(Label.CONTENT_XHTML);
 		layout.addComponent(htmlLabel);
@@ -52,29 +49,51 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 		
 	}
 
-	private String generateButtonString() {
-		return "<a href=\"javascript\"> <img src=\"ziel.jpg\" alt=\"button\"> </a>";
+//	private String generateJavaScriptString() {
+//		String js;
+//		js = "<script type=\"text/javascript\">";
+//		js = js + "function showEntry(id){" +                                          
+//	        "var divId = id + \"_extension\"" +
+//	                "document.getElementById(divId).style.display = \"block\";" + 
+//	                "var button_id = id + \"_button_more\";" +
+//	                "document.getElementById(button_id).style.display = \"none\";" +
+//	                "var button_id = id + \"_button_less\";" +
+//	                "document.getElementById(button_id).style.display = \"block\";" +
+//	        "}";
+//		js = js + "function hideEntry(id){" +                                          
+//		        "var divId = id + \"_extension\"" +
+//		                "document.getElementById(divId).style.display = \"none\";" + 
+//		                "var button_id = id + \"_button_more\";" +
+//		                "document.getElementById(button_id).style.display = \"block\";" +
+//		                "var button_id = id + \"_button_less\";" +
+//		                "document.getElementById(button_id).style.display = \"none\";" +
+//		        "}";
+//		return js;
+//	}
+
+	private String generateButtonString(String id) {
+		return "<a class=\"button more\" href=\"javascript:showEntry('" + id + "')\" id=\"1_button_more\"> more </a>" +
+	    "<a class=\"button less\" href=\"javascript:hideEntry('" + id + "')\" id=\"1_button_less\"> less </a>";
 	}
 
 	private String generateHtmlString(Item item) {
 		String entry = "";
 		for(Object id : item.getItemPropertyIds()){
 			Object value = item.getItemProperty(id).getValue();
-			System.out.println(id);
-			if (value.getClass() == Embedded.class) System.out.println("bild");
-			else if(value.getClass() == Link.class){
+
+			if(value.getClass() == Link.class){
 				Link link = (Link) value;
-				entry = entry + "<p> <a href=\"" + link.getCaption() + "\">" + link.getCaption() + "</a> </p>";
+				entry = entry + "<div class=\"" + id.toString() + "\"> <a href=\"" + link.getCaption() + "\">" + link.getCaption() + "</a> </div>";
 			}
 			else if(id == "ID"){
 				entry = entry + "<img src=\"" + getImageFromItem((String) value.toString()) + "\" alt=\"logo\"> ";
 			}
 			else{
 				if(id == "Name"){
-					entry = entry + "<h3>" + value.toString() + "</h3>"; 
+					entry = entry + "<h3 class=\"" + id.toString() + "\">" + value.toString() + "</h3>"; 
 				}
-				else{
-					entry = entry + "<p>" + value.toString() + "</p>";
+				else if(id != "Logo"){
+					entry = entry + "<div class=\"" + id.toString() + "\">" + id.toString() + ":" + value.toString() + "</div>";
 				}
 			}
 		}
