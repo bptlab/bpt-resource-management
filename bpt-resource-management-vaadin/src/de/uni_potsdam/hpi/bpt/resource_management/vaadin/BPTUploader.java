@@ -56,7 +56,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private FileOutputStream outputStream;
 	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
 	private String documentId, imageType;
-	private boolean logoDeleted = false;
+	private boolean logoDeleted = true;
 	private BPTApplication application;
 	
 	public BPTUploader(Item item, final BPTApplication application) {
@@ -80,6 +80,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		
 		layout.addComponent(new Label("Download:"));
 		downloadInput = new TextField();
+		downloadInput.setValue("http://");
 		layout.addComponent(downloadInput);
 		
 		layout.addComponent(new Label("Documentation:"));
@@ -153,8 +154,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
 			image.setWidth("");
 			image.setHeight("");
-			// TODO: don't call following method if there is no logo in database (remove image button)
-			addImageToPanel(image);
+			if (image.getMimeType() != null) { // only if picture exists
+				addImageToPanel(image);
+			}
         }
 
 		finishUploadButton = new Button("Submit");

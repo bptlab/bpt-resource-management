@@ -12,6 +12,7 @@ import com.vaadin.Application;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.service.ApplicationContext.TransactionListener;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -26,26 +27,28 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
-	private boolean loggedIn, moderated;
+	private boolean loggedIn;
+	private boolean moderated;
 	private String name, mailAddress;
-	private String openIdProvider = "Google"; // TODO: hard coded
+	private static final String DEFAULT_OPEN_ID_PROVIDER = "Google";
+	private String openIdProvider = DEFAULT_OPEN_ID_PROVIDER;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTToolRepository toolRepository = new BPTToolRepository();
 	private BPTUserRepository userRepository = new BPTUserRepository();
-//	private BPTLoginManager loginManager;
-//	private HttpServletRequest request;
-//	private HttpServletResponse response;
-//	private WebApplicationContext webAppCtx;
 	
 	@Override
 	public void init() {
+		
+		setLoggedIn(false);
+		setModerated(false);
+		
 		Window mainWindow = new Window("BPTApplication");
 		HorizontalLayout layout =  new HorizontalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
-		setLoggedIn(false);
 		entryComponent = new BPTEntryCards(this);
+//		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
 		layout.addComponent(mainFrame);
@@ -122,15 +125,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public BPTShowEntryComponent getTable(){
 		return entryComponent;
 	}
-	
-	public void loginRequest(String userSupportedString){
-		// userSupportedString = https://www.google.com/accounts/o8/id
-		// http://novell.com/openid ?
-		// https://me.yahoo.com
-//		ServletContext context = ((WebApplicationContext) getContext()).getHttpSession().getServletContext();
-//		String x = loginManager.loginRequest(userSupportedString, context, request, response);
-//		System.out.println(x);
-	}
 
 	@Override
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
@@ -173,38 +167,28 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 	}
 
-//	@Override
-//	public void transactionStart(Application application, Object transactionData) {
-//		// TODO Auto-generated method stub
-//		System.out.println("Transaction start");
-//		System.out.println(transactionData);
-//		HttpServletRequest request = (HttpServletRequest)transactionData;
-//		Map<String, String[]> map = request.getParameterMap();
-//		for (Map.Entry<String, String[]> entry : map.entrySet()) {
-//		    System.out.println("Key = " + entry.getKey());
-//		    System.out.println("Values:");
-//		    for(int i = 0; i < entry.getValue().length; i++){
-//		    	System.out.println(entry.getValue()[i].toString());
-//		    }
-//		}
-//		
-//	}
-//
-//	@Override
-//	public void transactionEnd(Application application, Object transactionData) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
 		sidebar.upload();
 	}
 	
-	public void refresh(){
-		ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
-		ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
-		entryComponent.showEntries(BPTContainerProvider.getVisibleEntries(states, selectedTags));
+	public void refresh() {
+		IndexedContainer dataSource;
+		if (loggedIn && !moderated) {
+			if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
+				dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser());
+			} else {
+				ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
+				states.add(BPTToolStatus.Published);
+				ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
+				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
+			}
+		} else {
+			ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
+			ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
+			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
+		}
+		entryComponent.showEntries(dataSource);
 	}
 }
