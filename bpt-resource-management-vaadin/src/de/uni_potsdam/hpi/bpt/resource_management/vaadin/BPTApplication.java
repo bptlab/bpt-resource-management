@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.vaadin.Application;
+import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.data.Item;
@@ -44,9 +45,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		setModerated(false);
 		
 		Window mainWindow = new Window("BPTApplication");
+		setTheme("bpt");
+		CustomLayout custom = new CustomLayout("mainlayout");
+		custom.setWidth("100%");
+		custom.setHeight("100%");
 		HorizontalLayout layout =  new HorizontalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
+		
 		entryComponent = new BPTEntryCards(this);
 //		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
@@ -56,9 +62,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		mainFrame.add(entryComponent);
 		layout.setExpandRatio(mainFrame, 7);
 		layout.setExpandRatio(sidebar, 3);
-		mainWindow.addComponent(layout);
+		
+		custom.addComponent(layout, "application");
+		mainWindow.addComponent(custom);
 		setMainWindow(mainWindow);
-		setTheme("bpt");
+		
 	}
 	
 	public boolean isLoggedIn() {

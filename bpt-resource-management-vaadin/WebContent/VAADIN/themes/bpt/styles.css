@@ -1,5 +1,5 @@
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/ConfSkin/style.css";
-
+@import "../reindeer/styles.css";
 ul#resource-list {
 	list-style-type:none;
 	margin: 0;
