@@ -33,7 +33,17 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	@Override
 	protected void show(IndexedContainer entries) {
 		layout.removeAllComponents();
-		String html = "<ul id=\"resource-list\">";
+		String html = "Tool Support for Business Process Management <br/>" +
+		"On this page, we will collect and promote innovative scientific and industrial tools that support BPM in any of several fields. <br/>" + 
+		"The collection will comprise tools such as <br/>" + 
+		"<ul>" +
+		    "<li>graphical model editors,</li>" +
+		    "<li>process model repositories,</li>" +
+		    "<li>tools for verification and performance analysis,</li>" +
+		    "<li>software to enact process models and adapt them during runtime,</li>" +
+		    "<li>tools for process mining and conformance checking, and many more. </li>" +
+		"</ul>";
+		html = html + "<ul id=\"resource-list\">";
 		for(Object id : entries.getItemIds()){
 			String entryString = generateHtmlString(entries.getItem(id));
 			html = html + "<li class=\"entry\" id=\"" + id.toString() + "\">" + entryString + generateButtonString(id.toString()) + "</li>";
