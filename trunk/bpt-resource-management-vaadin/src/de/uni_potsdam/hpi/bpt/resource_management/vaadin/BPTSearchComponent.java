@@ -3,25 +3,23 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 public class BPTSearchComponent extends BPTTagComponent{
 
-	private BPTApplication application;
 	private BPTBoxContainer box;
 	private HorizontalLayout boxLayout;
 	
 	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		super(tagColumns, newTagsAllowed);
+		super(application, tagColumns, newTagsAllowed);
 	}
+	
 	@Override
 	protected void addElements(boolean newTagsAllowed) {
 		boxLayout = new HorizontalLayout();
 		layout.addComponent(boxLayout);
-		box = new BPTBoxContainer();
+		box = new BPTBoxContainer(application);
 		super.addElements(newTagsAllowed);
 	}
 	
@@ -33,6 +31,7 @@ public class BPTSearchComponent extends BPTTagComponent{
 		 */
 //		System.out.println("SearchComponent: " + application.isModerator());
 //		if (application.isModerator()) {
+			box = new BPTBoxContainer(application);
 			boxLayout.addComponent(box);
 //		}
 	}
@@ -41,18 +40,21 @@ public class BPTSearchComponent extends BPTTagComponent{
 		boxLayout.removeComponent(box);
 	}
 	
-
 	@Override
-	public void refresh(){
+	public void refresh() {
 		((BPTApplication) getApplication()).refresh();
 	}
 	
-	public ArrayList<BPTToolStatus> getSelectedStates(){
+	public ArrayList<BPTToolStatus> getSelectedStates() {
 		return box.getSelectedStates();
 	}
 	
-	public ArrayList<String> getSelectedTags(){
+	public ArrayList<String> getSelectedTags() {
 		return searchTagBox.getTagValues();
+	}
+	
+	public boolean isOwnEntriesOptionSelected() {
+		return box.isOwnEntriesOptionSelected();
 	}
 	
 	@Override

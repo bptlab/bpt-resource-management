@@ -83,10 +83,22 @@ public class BPTContainerProvider {
 		return uniqueValues;
 	}
 	
-	public static IndexedContainer createContainerWithProperties() {
+	private static IndexedContainer initializeContainerWithProperties() {
 		IndexedContainer container = new IndexedContainer();
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			container.addContainerProperty(entry[1], (Class<?>)entry[2], null);
+		}
+		return container;
+	}
+	
+	private static IndexedContainer generateContainer(List<Map> tools) {
+		IndexedContainer container = initializeContainerWithProperties();
+		for (int i = 0; i < tools.size(); i++) {
+			Map<String, Object> tool = tools.get(i);
+			Item item = container.addItem(i);
+//				System.out.println("print map here: " + tool);
+			setItemPropertyValues(item, tool);
+//				System.out.println("print item here: " + item);
 		}
 		return container;
 	}
@@ -98,17 +110,17 @@ public class BPTContainerProvider {
 	}
 	
 	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags){
-		IndexedContainer container = createContainerWithProperties();
 		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags);
-			for (int i = 0; i < tools.size(); i++) {
-				Map<String, Object> tool = tools.get(i);
-				Item item = container.addItem(i);
-//				System.out.println("print map here: " + tool);
-				setItemPropertyValues(item, tool);
-//				System.out.println("print item here: " + item);
-			}
-			return container;
-		}
+		IndexedContainer container = generateContainer(tools);
+		return container;
+	}
+	
+	public static IndexedContainer getVisibleEntriesByUser(String user){
+		List<Map> tools = toolRepository.getVisibleEntriesByUser(user);
+		IndexedContainer container = generateContainer(tools);
+		return container;
+	}
+	
 	public static void refreshFromDatabase(){
 		toolRepository.refreshData();
 	}

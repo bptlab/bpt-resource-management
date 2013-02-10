@@ -11,22 +11,32 @@ import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-public class BPTTagComponent extends CustomComponent{
+public class BPTTagComponent extends CustomComponent {
 	
 	private ComboBox searchInput;
 	private Set<String> uniqueValues;
 	private Set<String> unselectedValues;
+	protected BPTApplication application;
 	protected BPTSearchTagBox searchTagBox;
 	protected VerticalLayout layout;
 	
+	
 	public BPTTagComponent(String tagColumns, boolean newTagsAllowed) {
+		init(tagColumns, newTagsAllowed);
+	}
+	
+	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
+		this.application = application;
+		init(tagColumns, newTagsAllowed);
+	}
+	
+	private void init(String tagColumns, boolean newTagsAllowed) {
 		uniqueValues = BPTContainerProvider.getUniqueValues(tagColumns);
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		addElements(newTagsAllowed);
-
 	}
 	
 	protected void addElements(boolean newTagsAllowed) {
@@ -34,8 +44,7 @@ public class BPTTagComponent extends CustomComponent{
 		searchTagBox = new BPTSearchTagBox();
 		layout.addComponent(searchInput);
 		layout.addComponent(searchTagBox);
-		addListenerToSearchInputBox();
-		
+		addListenerToSearchInputBox();	
 	}
 
 	private void addListenerToSearchInputBox() {
@@ -50,14 +59,11 @@ public class BPTTagComponent extends CustomComponent{
 				unselectedValues.remove(valueString);
 				searchInput.removeAllItems();
 								
-				for (String unselectedValue: unselectedValues){
+				for (String unselectedValue: unselectedValues) {
 					searchInput.addItem(unselectedValue);
-				}
-				
-								
+				}				
 			}
 		});
-		
 	}
 
 	private ComboBox createSearchInputBox(boolean newTagsAllowed){
@@ -78,19 +84,16 @@ public class BPTTagComponent extends CustomComponent{
 		for (String unselectedValue: unselectedValues){
 			searchInput.addItem(unselectedValue);
 		}
-		
 	}
-	public ArrayList<String> getTagValues(){
+	public ArrayList<String> getTagValues() {
 		
 		return searchTagBox.getTagValues();
 	}
 
 	public void refresh() {
-		
-		
 	}
 	
-	public void addChosenTag(String value){
+	public void addChosenTag(String value) {
 		searchTagBox.addTag(value);
 	}
 

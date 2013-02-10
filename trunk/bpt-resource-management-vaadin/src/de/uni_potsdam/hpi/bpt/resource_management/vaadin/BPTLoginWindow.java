@@ -50,7 +50,6 @@ public class BPTLoginWindow extends Window {
 				
 				component.getWindow().removeWindow(loginWindow);
 				component.login(username);
-				application.loginRequest(username);
 			}});
 
 	}

@@ -11,7 +11,7 @@ import org.ektorp.support.View;
 import org.ektorp.support.Views;
 
 public class BPTToolRepository extends BPTDocumentRepository {
-
+	
 	private List<Map> tableEntries = new ArrayList<Map>();
 	
 	public BPTToolRepository() {
@@ -62,6 +62,20 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return result;
 	}
 	
+	@View(
+			name = "tools_by_user_id", 
+			map = "function(doc) { emit(doc.user_id, doc); }"
+	)
+	private List<Map> getDocumentsByUser(String user) {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("tools_by_user_id")
+							  .key(user);
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
+	}
+	
+	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		databaseDocument.put("status", BPTToolStatus.Unpublished);
@@ -103,12 +117,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return false;
 	};
 	
-	public ArrayList<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags){
+	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags) {
 		tableEntries.clear();
 		for (BPTToolStatus status : states) {
 			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
 		}
-		ArrayList<Map> newEntries = new ArrayList<Map>();
+		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (Map<String, Object> entry : tableEntries){
 			if (containsAllTags(entry, tags, tagAttributes)) {
@@ -116,6 +130,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			}
 		}
 		return newEntries;
+	}
+	
+	public List<Map> getVisibleEntriesByUser(String user) {
+		tableEntries = getDocumentsByUser(user);
+		return tableEntries;
 	}
 
 	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {
@@ -138,7 +157,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	// TODO: should not get all documents when refreshing
-	public void refreshData(){
+	public void refreshData() {
 		tableEntries = getDocuments("all");
 	}
 
