@@ -67,10 +67,11 @@ public class BPTTagComponent extends CustomComponent {
 	}
 
 	private ComboBox createSearchInputBox(boolean newTagsAllowed){
-		searchInput= new ComboBox();
+		searchInput = new ComboBox();
 		for (String uniqueValue: uniqueValues){
 			searchInput.addItem(uniqueValue);
 		}
+		searchInput.setWidth("100%");
 		searchInput.setImmediate(true);
 		searchInput.setNewItemsAllowed(newTagsAllowed);
 		unselectedValues = uniqueValues;

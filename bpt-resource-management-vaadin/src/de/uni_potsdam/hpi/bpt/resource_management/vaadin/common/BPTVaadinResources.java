@@ -36,23 +36,23 @@ public class BPTVaadinResources {
 	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false});
-	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true});
-	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true});
-	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false});
-	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true, true});
-	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true, true});
-	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null, true, false});
-	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null, true, false});
-	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true, true});
-	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true, true});
-	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true, true});
-	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null, true, true});
-	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false});
-	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false}); 
-	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false});
-	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false});
-	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, false});
+	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
+	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
+	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
+	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
+	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
+	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
+	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
+	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
+	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
+	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
+	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
+	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, false, true});
 	    }
 	};
 	
@@ -69,6 +69,7 @@ public class BPTVaadinResources {
 	 * array element #4: attachment file name
 	 * array element #5: true if attribute is modifiable by user (attachments to be handled separately)
 	 * array element #6: true if attribute shall be visible in BPTShowEntryComponent
+	 * array element #7: true if attribute shall be visible in window where selected entry is shown (_attachments are handled separately)
 	 * 
 	 */
 	public static List<Object[]> getEntries() {
