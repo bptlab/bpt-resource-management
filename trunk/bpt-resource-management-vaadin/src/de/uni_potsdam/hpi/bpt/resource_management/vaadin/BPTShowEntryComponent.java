@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -45,19 +46,24 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		_id = item.getItemProperty("ID").getValue().toString();
 		Map<String, Object> tool = ((BPTApplication)getApplication()).getToolRepository().readDocument(_id);
 		
-		for (Object[] entry : BPTVaadinResources.getEntries()){
-			popupWindow.addComponent(new Label(entry[1] + ":"));
-			Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
-			if (entry[2] == Component.class) {
-				popupWindow.addComponent((Component)value);
-			} else if (entry[2] == Embedded.class) {
-				Embedded image = (Embedded)value;
-				image.setWidth("");
-				image.setHeight("");
-				popupWindow.addComponent(image);
-			} else {
-				popupWindow.addComponent(new Label(value.toString()));
+		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntries()).get(1);
+		Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
+		Embedded image = (Embedded)value;
+		image.setWidth("");
+		image.setHeight("");
+		popupWindow.addComponent(image);
+		
+		for (Object[] entry : BPTVaadinResources.getEntries()) {
+			if ((Boolean)entry[7]) {
+				popupWindow.addComponent(new Label(entry[1] + ":"));
+				value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
+				if (entry[2] == Component.class) {
+					popupWindow.addComponent((Component)value);
+				} else {
+					popupWindow.addComponent(new Label(value.toString()));
+				}
 			}
+			
 		}
 		
 		if ((((BPTApplication)getApplication()).isLoggedIn() && ((BPTApplication)getApplication()).getUser().equals(tool.get("user_id"))) || ((BPTApplication)getApplication()).isModerated()){
