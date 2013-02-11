@@ -15,71 +15,48 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTShowEntryComponent;
 
 public class BPTEntryCards extends BPTShowEntryComponent{
 	
-	private VerticalLayout layout;
+	private CustomLayout layout;
 	private BPTApplication application;
+	private VerticalLayout vertical;
 	
 	public BPTEntryCards(BPTApplication application){
 		
 //		CustomLayout htmlLayout = new CustomLayout("test");
 //		addComponent(htmlLayout);
 		super();
-		layout = new VerticalLayout();
+		layout = new CustomLayout("cards");
+		vertical = new VerticalLayout();
 		this.application = application;
 		addComponent(layout);
+		layout.addComponent(vertical, "cards");
 		show(dataSource);
 		
 	}
 
 	@Override
 	protected void show(IndexedContainer entries) {
-		layout.removeAllComponents();
-		String html = "Tool Support for Business Process Management <br/>" +
-		"On this page, we will collect and promote innovative scientific and industrial tools that support BPM in any of several fields. <br/>" + 
-		"The collection will comprise tools such as <br/>" + 
-		"<ul>" +
-		    "<li>graphical model editors,</li>" +
-		    "<li>process model repositories,</li>" +
-		    "<li>tools for verification and performance analysis,</li>" +
-		    "<li>software to enact process models and adapt them during runtime,</li>" +
-		    "<li>tools for process mining and conformance checking, and many more. </li>" +
-		"</ul>";
-		html = html + "<ul id=\"resource-list\">";
+		vertical.removeAllComponents();
 		for(Object id : entries.getItemIds()){
-			String entryString = generateHtmlString(entries.getItem(id));
-			html = html + "<li class=\"entry\" id=\"" + id.toString() + "\">" + entryString + generateButtonString(id.toString()) + "</li>";
+			Item item = entries.getItem(id);
+			vertical.addComponent(new BPTEntry(item));
 		}
-		html = html + "</ul>";
-//		html = html + generateJavaScriptString();
-		Label htmlLabel = new Label(html);
-		
-		
-		htmlLabel.setContentMode(Label.CONTENT_XHTML);
-		layout.addComponent(htmlLabel);
+
+//		String html = "";
+//		html = html + "<ul id=\"resource-list\">";
+//		for(Object id : entries.getItemIds()){
+//			String entryString = generateHtmlString(entries.getItem(id));
+//			html = html + "<li class=\"entry\" id=\"" + id.toString() + "\">" + entryString + generateButtonString(id.toString()) + "</li>";
+//		}
+//		html = html + "</ul>";
+//		Label htmlLabel = new Label(html);
+//		Label htmlLabel = new Label("<li class=\"entry\"> Testeintrag </li>");
+//		
+//		
+//		htmlLabel.setContentMode(Label.CONTENT_XHTML);
+//		layout.addComponent(htmlLabel, "cards");
 		
 		
 	}
-
-//	private String generateJavaScriptString() {
-//		String js;
-//		js = "<script type=\"text/javascript\">";
-//		js = js + "function showEntry(id){" +                                          
-//	        "var divId = id + \"_extension\"" +
-//	                "document.getElementById(divId).style.display = \"block\";" + 
-//	                "var button_id = id + \"_button_more\";" +
-//	                "document.getElementById(button_id).style.display = \"none\";" +
-//	                "var button_id = id + \"_button_less\";" +
-//	                "document.getElementById(button_id).style.display = \"block\";" +
-//	        "}";
-//		js = js + "function hideEntry(id){" +                                          
-//		        "var divId = id + \"_extension\"" +
-//		                "document.getElementById(divId).style.display = \"none\";" + 
-//		                "var button_id = id + \"_button_more\";" +
-//		                "document.getElementById(button_id).style.display = \"block\";" +
-//		                "var button_id = id + \"_button_less\";" +
-//		                "document.getElementById(button_id).style.display = \"none\";" +
-//		        "}";
-//		return js;
-//	}
 
 	private String generateButtonString(String id) {
 		return "<a class=\"button more\" href=\"javascript:showEntry('" + id + "')\" id=\"1_button_more\"> more </a>" +
@@ -87,27 +64,36 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	}
 
 	private String generateHtmlString(Item item) {
-		String entry = "";
+		String base = "";
+		String extension = "<div class=\"extension\" id=\"" + item.getItemProperty("ID") + "_extension\">";
 		for(Object id : item.getItemPropertyIds()){
 			Object value = item.getItemProperty(id).getValue();
-
+			String add = "";
 			if(value.getClass() == Link.class){
 				Link link = (Link) value;
-				entry = entry + "<div class=\"" + id.toString() + "\"> <a href=\"" + link.getCaption() + "\">" + link.getCaption() + "</a> </div>";
+				add = "<div class=\"" + id.toString() + "\"> <a href=\"" + link.getCaption() + "\">" + link.getCaption() + "</a> </div>";
 			}
 			else if(id == "ID"){
-				entry = entry + "<img src=\"" + getImageFromItem((String) value.toString()) + "\" alt=\"logo\"> ";
+				add = "<img src=\"" + getImageFromItem((String) value.toString()) + "\" alt=\"logo\"> ";
 			}
 			else{
 				if(id == "Name"){
-					entry = entry + "<h3 class=\"" + id.toString() + "\">" + value.toString() + "</h3>"; 
+					add =  "<h3 class=\"" + id.toString() + "\">" + value.toString() + "</h3>"; 
 				}
-				else if(id != "Logo"){
-					entry = entry + "<div class=\"" + id.toString() + "\">" + id.toString() + ":" + value.toString() + "</div>";
+				else if(id != "Logo" && id != "User ID"){
+					add = "<div class=\"" + id.toString() + "\">" + id.toString() + ":" + value.toString() + "</div>";
 				}
 			}
+			if(id == "ID" || id =="Name" || id == "Description" || id == "Provider" || id == "Download" || id =="Documentation"){
+				base = base + add;
+			}
+			else{
+				extension = extension + add;
+			}
+			
 		}
-		return entry;
+		extension = extension + "</div>";
+		return base + extension;
 	}
 
 	private String getImageFromItem(String itemId) {
