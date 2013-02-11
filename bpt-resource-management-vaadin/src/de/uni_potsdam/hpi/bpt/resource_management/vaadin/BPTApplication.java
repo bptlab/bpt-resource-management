@@ -66,6 +66,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		custom.addComponent(layout, "application");
 		mainWindow.addComponent(custom);
 		setMainWindow(mainWindow);
+//		mainWindow.executeJavaScript(getScript());
 		
 	}
 	
@@ -199,4 +200,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		}
 		entryComponent.showEntries(dataSource);
 	}
+	
+//	private String getScript(){
+//		
+//		return null;
+//	}
 }
