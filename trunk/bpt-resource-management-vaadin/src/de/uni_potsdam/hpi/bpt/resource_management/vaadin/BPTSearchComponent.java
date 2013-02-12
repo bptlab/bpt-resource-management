@@ -23,7 +23,7 @@ public class BPTSearchComponent extends BPTTagComponent{
 		super.addElements(newTagsAllowed);
 	}
 	
-	public void login(){
+	public void login() {
 		/*  TODO: 
 		 *  non-moderators should not see checkboxes 
 		 *  or should only see the non-published documents they have submitted 
@@ -31,12 +31,13 @@ public class BPTSearchComponent extends BPTTagComponent{
 		 */
 //		System.out.println("SearchComponent: " + application.isModerator());
 //		if (application.isModerator()) {
+			boxLayout.removeAllComponents();
 			box = new BPTBoxContainer(application);
 			boxLayout.addComponent(box);
 //		}
 	}
 	
-	public void logout(){
+	public void logout() {
 		boxLayout.removeComponent(box);
 	}
 	
