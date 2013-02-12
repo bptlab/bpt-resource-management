@@ -184,20 +184,28 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void refresh() {
 		IndexedContainer dataSource;
-		if (loggedIn && !moderated) {
-			if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
-				dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser());
+		if (loggedIn) {
+			if (!moderated) {
+				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
+					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser());
+				} else {
+					ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
+					states.add(BPTToolStatus.Published);
+					ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
+					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
+				}
 			} else {
-				ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
-				states.add(BPTToolStatus.Published);
+				ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
 				ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
 				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
 			}
 		} else {
-			ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
+			ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
+			states.add(BPTToolStatus.Published);
 			ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
 			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
 		}
+		
 		entryComponent.showEntries(dataSource);
 	}
 	

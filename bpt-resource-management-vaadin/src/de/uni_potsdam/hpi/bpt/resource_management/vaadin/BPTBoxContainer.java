@@ -102,14 +102,11 @@ public class BPTBoxContainer extends CustomComponent {
 		if ((Boolean) publishedCheckBox.getValue()) {
 			statusList.add(BPTToolStatus.Published);
 		}
-		
-		if (loggedIn && moderated) {
-			if ((Boolean) unpublishedCheckBox.getValue()) {
-				statusList.add(BPTToolStatus.Unpublished);
-			}
-			if ((Boolean) rejectedCheckBox.getValue()) {
-				statusList.add(BPTToolStatus.Rejected);
-			}
+		if ((Boolean) unpublishedCheckBox.getValue()) {
+			statusList.add(BPTToolStatus.Unpublished);
+		}
+		if ((Boolean) rejectedCheckBox.getValue()) {
+			statusList.add(BPTToolStatus.Rejected);
 		}
 		return statusList;
 	}
