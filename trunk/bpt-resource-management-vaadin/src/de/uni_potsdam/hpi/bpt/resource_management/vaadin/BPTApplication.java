@@ -118,7 +118,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void finder() {
-		entryComponent = new BPTTable();
+		refresh();
 		mainFrame.add(entryComponent);
 		sidebar.finder();
 	}
