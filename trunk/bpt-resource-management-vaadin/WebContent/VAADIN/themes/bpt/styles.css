@@ -56,10 +56,6 @@ ul#resource-list {
 	background-color: #004870;
 }
 
-#resource-list .entry .button.less {
-	display: none;
-}
-
 #resource-list div[class="Description"]:before,
 #resource-list div[class="Provider"]:before,
 #resource-list div[class="Download"]:before,

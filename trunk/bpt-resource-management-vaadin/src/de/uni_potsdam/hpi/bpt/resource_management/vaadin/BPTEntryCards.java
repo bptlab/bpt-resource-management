@@ -8,6 +8,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTShowEntryComponent;
@@ -38,7 +39,7 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 		vertical.removeAllComponents();
 		for(Object id : entries.getItemIds()){
 			Item item = entries.getItem(id);
-			vertical.addComponent(new BPTEntry(item));
+			vertical.addComponent(new BPTEntry(item, application, this));
 		}
 
 //		String html = "";
@@ -99,6 +100,12 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	private String getImageFromItem(String itemId) {
 		BPTToolRepository repository = application.getToolRepository(); 
 		return repository.getDatabaseAddress() + repository.getTableName() + "/" + itemId + "/logo";
+	}
+	
+	
+	public void addConfirmationWindowTo(String entryId, String status) {
+		_id = entryId;
+		addConfirmationWindow(null, status);
 	}
 
 }
