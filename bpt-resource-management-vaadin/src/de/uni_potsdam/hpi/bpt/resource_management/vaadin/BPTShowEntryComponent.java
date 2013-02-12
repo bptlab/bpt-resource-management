@@ -138,7 +138,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		
 	}
 	
-	private void addConfirmationWindow(final Window popupWindow, final String status) {
+	protected void addConfirmationWindow(final Window popupWindow, final String status) {
 		final Window confirmationWindow = new Window("Notification");
 		confirmationWindow.setWidth("400px");
 		confirmationWindow.setModal(true);
@@ -169,7 +169,10 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 				BPTContainerProvider.refreshFromDatabase();
 				((BPTApplication) getApplication()).refresh();
 				getWindow().removeWindow(confirmationWindow);
-				getWindow().removeWindow(popupWindow);
+				if(popupWindow != null){
+					getWindow().removeWindow(popupWindow);
+				}
+				
 			}
 		});
 		getWindow().addWindow(confirmationWindow);

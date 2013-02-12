@@ -8,18 +8,55 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 
 public class BPTEntry extends CustomLayout{
 	
 	private CustomLayout layout;
 	private String entryId;
 	private BPTEntry entry;
+	private String userId;
+	private Item item;
+	private BPTEntryCards entryCards;
 	
-	public BPTEntry(Item item) {
+	
+	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
 		entry = this;
+		this.item = item;
+		this.entryCards = entryCards;
 		entryId = item.getItemProperty("ID").getValue().toString();
+		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(entryId);
+		addButtons(application);
+		for (Object id : item.getItemPropertyIds()) {
+			if (id == "Logo") {
+				Object value = item.getItemProperty(id).getValue();
+				Embedded image = (Embedded) value;
+				image.setWidth("");
+				image.setHeight("");
+				this.addComponent(image, id.toString());
+			}
+			else if (id != "User ID" && id != "ID") {
+				Object value = item.getItemProperty(id).getValue();
+				if(value.getClass() == Link.class){
+					Link link = (Link) value;
+					this.addComponent(link, id.toString());
+				}
+				else {
+					Label label = new Label(value.toString());
+					if(id == "Description") {
+						label.setContentMode(Label.CONTENT_XHTML);
+					}
+					this.addComponent(label, id.toString());
+				}
+			}
+			
+		}
+		
+	}
+
+	private void addButtons(final BPTApplication application) {
 		Button more = new Button("more");
 		more.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
@@ -56,32 +93,73 @@ public class BPTEntry extends CustomLayout{
 				return js;
 				
 			}});
-		more.setStyleName(BaseTheme.BUTTON_LINK);
+		less.setStyleName(BaseTheme.BUTTON_LINK);
 		this.addComponent(less, "button less");
-		for (Object id : item.getItemPropertyIds()) {
-			if (id == "Logo") {
-				Object value = item.getItemProperty(id).getValue();
-				Embedded image = (Embedded) value;
-				image.setWidth("");
-				image.setHeight("");
-				this.addComponent(image, id.toString());
-			}
-			else if (id != "User ID" && id != "ID") {
-				Object value = item.getItemProperty(id).getValue();
-				if(value.getClass() == Link.class){
-					Link link = (Link) value;
-					this.addComponent(link, id.toString());
-				}
-				else {
-					Label label = new Label(value.toString());
-					if(id == "Description") {
-						label.setContentMode(Label.CONTENT_XHTML);
-					}
-					this.addComponent(label, id.toString());
-				}
-			}
+		
+		
+		if(application.getUser() == userId){
+			Button edit = new Button("edit");
+			edit.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					application.edit(item);
+				}});
+			
+			edit.setStyleName(BaseTheme.BUTTON_LINK);
+			this.addComponent(edit, "button edit");
+		}
+		
+		if(application.getUser() == userId || application.isModerated()){
+			Button delete = new Button("delete");
+			delete.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "delete");
+				}});
+			
+			delete.setStyleName(BaseTheme.BUTTON_LINK);
+			this.addComponent(delete, "button delete");
+		}
+		
+		if(application.isModerated()){
+			Button publish = new Button("publish");
+			publish.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "publish");
+				}});
+			
+			publish.setStyleName(BaseTheme.BUTTON_LINK);
+			this.addComponent(publish, "button publish");
+			
+			Button unpublish = new Button("unpublish");
+			unpublish.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "unpublish");
+				}});
+			
+			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
+			this.addComponent(unpublish, "button unpublish");
+			
+			Button reject = new Button("reject");
+			reject.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "reject");
+				}});
+			
+			reject.setStyleName(BaseTheme.BUTTON_LINK);
+			this.addComponent(reject, "button reject");
+			
+			Button propose = new Button("propose");
+			propose.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "propose");
+				}});
+			
+			propose.setStyleName(BaseTheme.BUTTON_LINK);
+			this.addComponent(propose, "button propose");
 			
 		}
 		
+		
 	}
+	
+	
 }
