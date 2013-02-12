@@ -51,6 +51,16 @@ ul#resource-list {
 	transition: all 0.25s;
 }
 
+#resource-list .entry .button.edit {
+	margin: 0px;
+	float:left;
+}
+
+#resource-list .entry .button .v-button .v-button-wrap {
+	color: #FFFFFF
+}
+
+
 #resource-list .entry .button:hover {
 	text-decoration: none;
 	background-color: #004870;
