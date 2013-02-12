@@ -52,12 +52,16 @@ ul#resource-list {
 
 #resource-list .entry .button.edit {
 	margin: 0px;
+	margin-top: 10px;
 	float:left;
 	clear: none;
 }
 
 #resource-list .entry .bpt .v-button-caption {
-	color: #FFFFFF
+	color: #FFFFFF;
+}
+#resource-list .entry .v-link.v-link-bpt2 {
+	display: inline;
 }
 
 

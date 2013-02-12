@@ -10,6 +10,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+
 public class BPTEntry extends CustomLayout{
 	
 	private CustomLayout layout;
@@ -41,6 +43,7 @@ public class BPTEntry extends CustomLayout{
 				Object value = item.getItemProperty(id).getValue();
 				if(value.getClass() == Link.class){
 					Link link = (Link) value;
+					if (id.equals("Contact mail")) link.addStyleName("bpt2");
 					this.addComponent(link, id.toString());
 				}
 				else {
@@ -69,8 +72,10 @@ public class BPTEntry extends CustomLayout{
 		        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
 				"for(i=0; i<nodes.length; i+=1){" +
 					"if(nodes[i].className == 'extension'){" +
-						"nodes[i].style.display = 'block';" +
-					"}}";
+						"nodes[i].style.display = 'block';}" +
+					"if(nodes[i].className == 'button more'){" +
+						"nodes[i].style.display = 'none';}" +
+					"}";
 				return js;
 			}});
 		
@@ -89,8 +94,10 @@ public class BPTEntry extends CustomLayout{
 		        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
 				"for(i=0; i<nodes.length; i+=1){" +
 					"if(nodes[i].className == 'extension'){" +
-						"nodes[i].style.display = 'none';" +
-					"}}";
+						"nodes[i].style.display = 'none';}" +
+					"if(nodes[i].className == 'button more'){" +
+						"nodes[i].style.display = 'block';}" +
+					"}";
 				return js;
 				
 			}});
@@ -99,7 +106,7 @@ public class BPTEntry extends CustomLayout{
 		this.addComponent(less, "button less");
 		
 		
-		if(application.getUser() == userId){
+		if(application.isLoggedIn() && application.getUser().equals(userId)){
 			Button edit = new Button("edit");
 			edit.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -111,7 +118,7 @@ public class BPTEntry extends CustomLayout{
 			this.addComponent(edit, "button edit");
 		}
 		
-		if(application.getUser() == userId || application.isModerated()){
+		if(application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated())){
 			Button delete = new Button("delete");
 			delete.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -123,36 +130,46 @@ public class BPTEntry extends CustomLayout{
 			this.addComponent(delete, "button delete");
 		}
 		
-		if(application.isModerated()){
+		if(application.isLoggedIn() && application.isModerated()){
+			
+			BPTToolStatus actualState = application.getToolRepository().getDocumentStatus(entryId);
+			if (actualState == BPTToolStatus.Unpublished){
+				
+			
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "publish");
 				}});
 			
-			publish.setStyleName(BaseTheme.BUTTON_LINK);
-			publish.addStyleName("bpt");
-			this.addComponent(publish, "button publish");
+					publish.setStyleName(BaseTheme.BUTTON_LINK);
+					publish.addStyleName("bpt");
+					this.addComponent(publish, "button publish");
+					
+					Button reject = new Button("reject");
+					reject.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							entryCards.addConfirmationWindowTo(entryId, "reject");
+						}});
+					
+					reject.setStyleName(BaseTheme.BUTTON_LINK);
+					reject.addStyleName("bpt");
+					this.addComponent(reject, "button reject");
 			
-			Button unpublish = new Button("unpublish");
-			unpublish.addListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "unpublish");
-				}});
+			}
+			else if (actualState == BPTToolStatus.Published){
+				Button unpublish = new Button("unpublish");
+				unpublish.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						entryCards.addConfirmationWindowTo(entryId, "unpublish");
+					}});
+				
+				unpublish.setStyleName(BaseTheme.BUTTON_LINK);
+				unpublish.addStyleName("bpt");
+				this.addComponent(unpublish, "button unpublish");
 			
-			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
-			unpublish.addStyleName("bpt");
-			this.addComponent(unpublish, "button unpublish");
-			
-			Button reject = new Button("reject");
-			reject.addListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "reject");
-				}});
-			
-			reject.setStyleName(BaseTheme.BUTTON_LINK);
-			reject.addStyleName("bpt");
-			this.addComponent(reject, "button reject");
+			}
+			else {
 			
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
@@ -164,6 +181,7 @@ public class BPTEntry extends CustomLayout{
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
 			
+			}
 		}
 		
 		
