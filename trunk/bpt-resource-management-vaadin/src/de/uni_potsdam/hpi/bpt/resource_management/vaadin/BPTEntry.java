@@ -75,6 +75,7 @@ public class BPTEntry extends CustomLayout{
 			}});
 		
 		more.setStyleName(BaseTheme.BUTTON_LINK);
+		more.addStyleName("bpt");
 		this.addComponent(more, "button more");
 		Button less = new Button("less");
 		less.addListener(new Button.ClickListener(){
@@ -94,6 +95,7 @@ public class BPTEntry extends CustomLayout{
 				
 			}});
 		less.setStyleName(BaseTheme.BUTTON_LINK);
+		less.addStyleName("bpt");
 		this.addComponent(less, "button less");
 		
 		
@@ -105,6 +107,7 @@ public class BPTEntry extends CustomLayout{
 				}});
 			
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
+			edit.addStyleName("bpt");
 			this.addComponent(edit, "button edit");
 		}
 		
@@ -116,6 +119,7 @@ public class BPTEntry extends CustomLayout{
 				}});
 			
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
+			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
 		}
 		
@@ -127,6 +131,7 @@ public class BPTEntry extends CustomLayout{
 				}});
 			
 			publish.setStyleName(BaseTheme.BUTTON_LINK);
+			publish.addStyleName("bpt");
 			this.addComponent(publish, "button publish");
 			
 			Button unpublish = new Button("unpublish");
@@ -136,6 +141,7 @@ public class BPTEntry extends CustomLayout{
 				}});
 			
 			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
+			unpublish.addStyleName("bpt");
 			this.addComponent(unpublish, "button unpublish");
 			
 			Button reject = new Button("reject");
@@ -145,6 +151,7 @@ public class BPTEntry extends CustomLayout{
 				}});
 			
 			reject.setStyleName(BaseTheme.BUTTON_LINK);
+			reject.addStyleName("bpt");
 			this.addComponent(reject, "button reject");
 			
 			Button propose = new Button("propose");
@@ -154,6 +161,7 @@ public class BPTEntry extends CustomLayout{
 				}});
 			
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
+			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
 			
 		}
