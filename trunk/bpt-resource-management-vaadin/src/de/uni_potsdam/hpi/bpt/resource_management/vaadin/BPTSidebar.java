@@ -8,21 +8,26 @@ import com.vaadin.ui.VerticalLayout;
 
 public class BPTSidebar extends CustomComponent{
 	
-	private VerticalLayout layout;
+//	private VerticalLayout layout;
+	private HorizontalLayout layout;
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
 	
 	public BPTSidebar(BPTApplication application) {
 		this.application = application;
-		layout = new VerticalLayout();
+		
+//		layout = new VerticalLayout();
+		layout = new HorizontalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
 		setSearchComponent(new BPTSearchComponent(application, "all", false));
-		layout.addComponent(loginComponent);
 		layout.addComponent(getSearchComponent());
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(getSearchComponent(), 8);
+		layout.setExpandRatio(loginComponent, 2);
 		
 	}
 

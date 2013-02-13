@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.Application;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -49,7 +50,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		CustomLayout custom = new CustomLayout("mainlayout");
 		custom.setWidth("100%");
 		custom.setHeight("100%");
-		HorizontalLayout layout =  new HorizontalLayout();
+//		HorizontalLayout layout = new HorizontalLayout();
+		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		
@@ -57,11 +59,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 //		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
-		layout.addComponent(mainFrame);
 		layout.addComponent(sidebar);
+		layout.addComponent(mainFrame);
 		mainFrame.add(entryComponent);
-		layout.setExpandRatio(mainFrame, 7);
-		layout.setExpandRatio(sidebar, 3);
+//		layout.setExpandRatio(mainFrame, 7);
+//		layout.setExpandRatio(sidebar, 3);
 		
 		custom.addComponent(layout, "application");
 		mainWindow.addComponent(custom);
