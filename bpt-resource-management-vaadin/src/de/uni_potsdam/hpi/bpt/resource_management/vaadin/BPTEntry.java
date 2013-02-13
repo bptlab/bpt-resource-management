@@ -180,10 +180,8 @@ public class BPTEntry extends CustomLayout{
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
-			
 			}
 		}
-		
 		
 	}
 	

@@ -71,7 +71,7 @@ public class BPTTagComponent extends CustomComponent {
 		for (String uniqueValue: uniqueValues){
 			searchInput.addItem(uniqueValue);
 		}
-		searchInput.setWidth("100%");
+//		searchInput.setWidth("100%");
 		searchInput.setImmediate(true);
 		searchInput.setNewItemsAllowed(newTagsAllowed);
 		unselectedValues = uniqueValues;

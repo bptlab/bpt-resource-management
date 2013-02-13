@@ -3,15 +3,17 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.VerticalLayout;
 
 public class BPTSearchTagBox extends CustomComponent{
 	
-	private VerticalLayout layout;
+	private GridLayout layout;
 	private ArrayList<BPTSearchTag> searchTagList;
 
 	public BPTSearchTagBox() {
-		layout = new VerticalLayout();
+		//TODO: GRID-Layout?!
+		layout = new GridLayout(2,1);
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
