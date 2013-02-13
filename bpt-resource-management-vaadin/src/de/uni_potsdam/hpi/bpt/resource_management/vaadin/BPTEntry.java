@@ -20,6 +20,7 @@ public class BPTEntry extends CustomLayout{
 	private String userId;
 	private Item item;
 	private BPTEntryCards entryCards;
+	private BPTApplication application;
 	
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
@@ -27,6 +28,7 @@ public class BPTEntry extends CustomLayout{
 		entry = this;
 		this.item = item;
 		this.entryCards = entryCards;
+		this.application = application;
 		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(entryId);
@@ -38,6 +40,7 @@ public class BPTEntry extends CustomLayout{
 				image.setWidth("");
 				image.setHeight("");
 				this.addComponent(image, id.toString());
+				image.addStyleName("bpt-logo");
 			}
 			else if (id != "User ID" && id != "ID") {
 				Object value = item.getItemProperty(id).getValue();
@@ -116,6 +119,7 @@ public class BPTEntry extends CustomLayout{
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
 			this.addComponent(edit, "button edit");
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
 		
 		if(application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated())){
@@ -128,6 +132,7 @@ public class BPTEntry extends CustomLayout{
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("delete"));
 		}
 		
 		if(application.isLoggedIn() && application.isModerated()){
@@ -145,6 +150,7 @@ public class BPTEntry extends CustomLayout{
 					publish.setStyleName(BaseTheme.BUTTON_LINK);
 					publish.addStyleName("bpt");
 					this.addComponent(publish, "button publish");
+					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
 					
 					Button reject = new Button("reject");
 					reject.addListener(new Button.ClickListener(){
@@ -155,6 +161,7 @@ public class BPTEntry extends CustomLayout{
 					reject.setStyleName(BaseTheme.BUTTON_LINK);
 					reject.addStyleName("bpt");
 					this.addComponent(reject, "button reject");
+					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
 			
 			}
 			else if (actualState == BPTToolStatus.Published){
@@ -167,6 +174,7 @@ public class BPTEntry extends CustomLayout{
 				unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 				unpublish.addStyleName("bpt");
 				this.addComponent(unpublish, "button unpublish");
+				application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
 			
 			}
 			else {
@@ -180,9 +188,20 @@ public class BPTEntry extends CustomLayout{
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
 			}
 		}
 		
+	}
+	
+	private String getJavaScriptStringShow(String button) {
+		String js = 
+        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+		"for(i=0; i<nodes.length; i+=1){" +
+			"if(nodes[i].className == 'button edit " + button + "'){" +
+				"nodes[i].style.display = 'block';}" +
+			"}";
+		return js;
 	}
 	
 	
