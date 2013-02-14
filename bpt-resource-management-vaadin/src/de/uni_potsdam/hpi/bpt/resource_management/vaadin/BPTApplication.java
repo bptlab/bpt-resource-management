@@ -120,9 +120,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void finder() {
+		sidebar.finder();
 		refresh();
 		mainFrame.add(entryComponent);
-		sidebar.finder();
+		
 	}
 	
 	public BPTToolRepository getToolRepository() {

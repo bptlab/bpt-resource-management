@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class BPTSidebar extends CustomComponent{
@@ -37,13 +38,20 @@ public class BPTSidebar extends CustomComponent{
 	}
 	
 	public void upload(){
-		layout.removeComponent(getSearchComponent());
+		layout.removeAllComponents();
+		Label label = new Label("");
+		layout.addComponent(label);
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(label, 8);
+		layout.setExpandRatio(loginComponent, 2);
 	}
 	public void finder() {
 		layout.removeAllComponents();
-		layout.addComponent(loginComponent);
 		setSearchComponent(new BPTSearchComponent(application, "all", false));
 		layout.addComponent(getSearchComponent());
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(getSearchComponent(), 8);
+		layout.setExpandRatio(loginComponent, 2);
 		if(application.isLoggedIn()) getSearchComponent().login();
 	}
 	
