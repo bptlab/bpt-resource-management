@@ -305,14 +305,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		imageType = mimeType;
-		
-        if(System.getProperty("os.name").contains("Windows")) {
-			logo = new File("C:\\temp\\" + filename);
-		}
-		else {
-			logo = new File("/tmp/" + filename);
-		}
         
+		logo = new File(filename);
+		
         try {
         	if (Arrays.asList(supportedImageTypes).contains(imageType)) {
         		outputStream = new FileOutputStream(logo);

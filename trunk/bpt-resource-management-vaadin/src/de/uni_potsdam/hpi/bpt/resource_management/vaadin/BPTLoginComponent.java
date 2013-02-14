@@ -66,17 +66,14 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
         layout.addComponent(loginWindowButton);
         
         loginWindowButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {			
-//					final WorkThread thread = new WorkThread();
-//			        thread.start();
+			public void buttonClick(ClickEvent event) {
 			        try {
 						redirectToOpenIDProvider();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-//					createSubWindow(manager, association);
-//					getWindow().addWindow(subWindow);
-			}});
+			}
+		});
         
         NativeSelect openIdProviderNativeSelect = new NativeSelect("OpenID provider");
         for (String openIdProvider : openIdProviders) {
@@ -128,6 +125,9 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	
 	private void redirectToOpenIDProvider() throws IOException {
 		OpenIdManager manager = new OpenIdManager();
+//		manager.setReturnTo("http://localhost:8080/bpt-resource-management-vaadin/");
+//		manager.setRealm("http://localhost:8080/");
+		// TODO: edit setReturnTo & setRealm for deployment
 		manager.setReturnTo("http://localhost:8080/bpt-resource-management-vaadin/");
         manager.setRealm("http://localhost:8080/");
 		manager.setTimeOut(10000);
@@ -150,40 +150,5 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	public void valueChange(ValueChangeEvent event) {
 		openIdProvider = event.getProperty().toString();
 		((BPTApplication) getApplication()).setOpenIdProvider(openIdProvider);
-	}
-	
-//	private String readLine() throws IOException {
-//        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-//        return r.readLine();
-//    }
-//
-//    private static HttpServletRequest createRequest(String url) throws UnsupportedEncodingException {
-//        int pos = url.indexOf('?');
-//        if (pos==(-1))
-//            throw new IllegalArgumentException("Bad url.");
-//        String query = url.substring(pos + 1);
-//        String[] params = query.split("[\\&]+");
-//        final Map<String, String> map = new HashMap<String, String>();
-//        for (String param : params) {
-//            pos = param.indexOf('=');
-//            if (pos==(-1))
-//                throw new IllegalArgumentException("Bad url.");
-//            String key = param.substring(0, pos);
-//            String value = param.substring(pos + 1);
-//            map.put(key, URLDecoder.decode(value, "UTF-8"));
-//        }
-//        return (HttpServletRequest) Proxy.newProxyInstance(
-//                Application.class.getClassLoader(),
-//                new Class[] { HttpServletRequest.class },
-//                new InvocationHandler() {
-//                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-//                        if (method.getName().equals("getParameter"))
-//                            return map.get((String)args[0]);
-//                        throw new UnsupportedOperationException(method.getName());
-//                    }
-//                }
-//        );
-//    }
-
-	
+	}	
 }

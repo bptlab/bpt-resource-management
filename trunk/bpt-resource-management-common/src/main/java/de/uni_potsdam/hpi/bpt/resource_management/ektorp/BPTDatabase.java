@@ -1,5 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+import java.net.MalformedURLException;
+
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.http.HttpClient;
@@ -19,8 +21,8 @@ public class BPTDatabase {
 	
 	private static String host = "localhost";
 	private static int port = 5984;
-//	private static String username = "";
-//	private static String password = "";
+	private static String username = "bpm";
+	private static String password = "petrinet";
 
 	/**
      * Connects to CouchDB.
@@ -30,11 +32,12 @@ public class BPTDatabase {
      * 
      */
 	public static CouchDbConnector connect(String table) {
-		HttpClient httpClient = new StdHttpClient.Builder()
+		HttpClient httpClient;
+		httpClient = new StdHttpClient.Builder()
 									.host(host)
 									.port(port)
-								// 	.username(username)
-								// 	.password(password)
+									.username(username)
+									.password(password)
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
