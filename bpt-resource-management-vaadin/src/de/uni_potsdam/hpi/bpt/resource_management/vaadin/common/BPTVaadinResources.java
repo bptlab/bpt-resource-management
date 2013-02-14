@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.ektorp.DocumentNotFoundException;
 
@@ -24,6 +25,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
@@ -194,7 +196,10 @@ public class BPTVaadinResources {
 			return new Embedded();
 		}
 		
-		ExternalResource imageResource = new ExternalResource(repository.getDatabaseAddress() + repository.getTableName() + "/" + tool.get("_id") + "/" + attachmentName, imageType);
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
+		String databaseAddress = resourceBundle.getString("DB_EXTERNAL_ADDRESS");
+		
+		ExternalResource imageResource = new ExternalResource(databaseAddress + repository.getTableName() + "/" + tool.get("_id") + "/" + attachmentName, imageType);
 		Embedded image = new Embedded("", imageResource);
 		image.setType(Embedded.TYPE_IMAGE);
 		// default image size is icon size

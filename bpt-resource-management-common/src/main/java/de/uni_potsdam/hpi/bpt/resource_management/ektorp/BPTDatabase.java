@@ -38,15 +38,12 @@ public class BPTDatabase {
 		
 		setProperties();
 		
-		Builder builder = new StdHttpClient.Builder()
+		HttpClient httpClient = new StdHttpClient.Builder()
 									.host(host)
-									.port(port);
-		
-		if (username.isEmpty()) {
-			builder = builder.username(username).password(password);
-		}
-
-		HttpClient httpClient = builder.build();
+									.port(port)
+//									.username(username)
+//									.password(password)
+									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
 		CouchDbConnector database = new StdCouchDbConnector(table, databaseInstance);

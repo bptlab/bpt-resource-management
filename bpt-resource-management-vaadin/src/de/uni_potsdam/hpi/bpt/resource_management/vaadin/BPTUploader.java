@@ -71,53 +71,66 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		
 		layout.addComponent(new Label("Name:"));
 		nameInput = new TextField();
+		nameInput.setWidth("100%");
 		layout.addComponent(nameInput);
+		
 		
 		layout.addComponent(new Label("Description:"));
 		descriptionInput = new TextArea();
+		descriptionInput.setWidth("100%");
 		layout.addComponent(descriptionInput);
 		
 		layout.addComponent(new Label("Provider:"));
 		providerInput = new TextField();
+		providerInput.setWidth("100%");
 		layout.addComponent(providerInput);
 		
 		layout.addComponent(new Label("Download:"));
 		downloadInput = new TextField();
 		downloadInput.setValue("http://");
+		downloadInput.setWidth("100%");
 		layout.addComponent(downloadInput);
 		
 		layout.addComponent(new Label("Documentation:"));
 		documentationInput = new TextField();
+		documentationInput.setWidth("100%");
 		layout.addComponent(documentationInput);
 		
 		layout.addComponent(new Label("Screencast:"));
 		screencastInput = new TextField();
+		screencastInput.setWidth("100%");
 		layout.addComponent(screencastInput);
 		
 		layout.addComponent(new Label("Availabilities:"));
 		availabilitiesTagComponent = new BPTTagComponent("availabilities", true);
+		availabilitiesTagComponent.setWidth("100%");
 		layout.addComponent(availabilitiesTagComponent);
 		
 		layout.addComponent(new Label("Model Type:"));
 		modelTagComponent = new BPTTagComponent("modelTypes", true);
+		modelTagComponent.setWidth("100%");
 		layout.addComponent(modelTagComponent);
 		
 		layout.addComponent(new Label("Platform:"));
 		platformTagComponent = new BPTTagComponent("platforms", true);
+		platformTagComponent.setWidth("100%");
 		layout.addComponent(platformTagComponent);
 		
 		layout.addComponent(new Label("Supported functionality:"));
 		functionalityTagComponent = new BPTTagComponent("supportedFunctionalities", true);
+		functionalityTagComponent.setWidth("100%");
 		layout.addComponent(functionalityTagComponent);
 		
 		layout.addComponent(new Label("Contact name:"));
 		contactNameInput = new TextField();
 		contactNameInput.setValue(application.getName());
+		contactNameInput.setWidth("100%");
 		layout.addComponent(contactNameInput);
 		
 		layout.addComponent(new Label("Contact mail:"));
 		contactMailInput = new TextField();
 		contactMailInput.setValue(application.getMailAddress());
+		contactMailInput.setWidth("100%");
 		layout.addComponent(contactMailInput);
 		
 		imagePanel = new Panel("Logo");
