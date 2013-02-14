@@ -40,7 +40,7 @@ public class BPTEntry extends CustomLayout{
 				image.setWidth("");
 				image.setHeight("");
 				this.addComponent(image, id.toString());
-				image.addStyleName("bpt-logo");
+				image.addStyleName("bptlogo");
 			}
 			else if (id != "User ID" && id != "ID") {
 				Object value = item.getItemProperty(id).getValue();
@@ -54,6 +54,7 @@ public class BPTEntry extends CustomLayout{
 					if(id == "Description") {
 						label.setContentMode(Label.CONTENT_XHTML);
 					}
+					label.setWidth("524px");
 					this.addComponent(label, id.toString());
 				}
 			}
@@ -198,9 +199,14 @@ public class BPTEntry extends CustomLayout{
 		String js = 
         "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
 		"for(i=0; i<nodes.length; i+=1){" +
-			"if(nodes[i].className == 'button edit " + button + "'){" +
-				"nodes[i].style.display = 'block';}" +
-			"}";
+			"if(nodes[i].className == 'extension'){" +
+				"var subNodes = nodes[i].childNodes;" +
+				"for(j=0; j<subNodes.length; j+=1){" +
+					"if(subNodes[j].className == 'button edit " + button + "'){" +
+						"subNodes[j].style.display = 'block';}" +
+				"}" +
+			"}" +
+		"}";
 		return js;
 	}
 	

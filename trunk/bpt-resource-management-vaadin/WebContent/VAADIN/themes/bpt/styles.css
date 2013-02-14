@@ -21,21 +21,19 @@ ul#resource-list {
 	margin-left: 160px;
 }
 
-#resource-list .entry img {
+#resource-list .entry .Logo img {
 	margin: 0;
 	max-width: 140px;
 	max-height: 140px;
-}
-
-#resource-list .entry .bpt-logo {
-	margin: 1em 0;
-	max-width: 140px;
-	max-height: 140px;
-	margin-left: 0;
-	float: left;
 	box-shadow: 0 0 3px #B8B8B8;
 }
 
+#resource-list .entry .Logo {
+	margin: 1em 0;
+	margin-left: 0;
+	float: left;
+	
+}
 
 #resource-list .entry .extension{
 	display: none;

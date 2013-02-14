@@ -66,6 +66,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		
 		documentId = null;
 		
+        Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
+        layout.addComponent(label);
+		
 		layout.addComponent(new Label("Name:"));
 		nameInput = new TextField();
 		layout.addComponent(nameInput);
