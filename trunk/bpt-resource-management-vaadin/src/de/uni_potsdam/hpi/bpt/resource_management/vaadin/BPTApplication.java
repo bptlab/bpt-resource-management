@@ -43,7 +43,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void init() {
 		
 		setProperties();
-		
 		setLoggedIn(false);
 		setModerated(false);
 		
@@ -119,6 +118,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private void setProperties() {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
+
+		setLogoutURL(resourceBundle.getString("OPENID_RETURN_TO"));
 	}
 
 	public void uploader() {

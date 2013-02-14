@@ -1,5 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -115,8 +117,10 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	}
 
 	private String getImageFromItem(String itemId) {
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
+		String databaseAddress = resourceBundle.getString("DB_EXTERNAL_ADDRESS");
 		BPTToolRepository repository = application.getToolRepository(); 
-		return repository.getDatabaseAddress() + repository.getTableName() + "/" + itemId + "/logo";
+		return databaseAddress + repository.getTableName() + "/" + itemId + "/logo";
 	}
 	
 	
