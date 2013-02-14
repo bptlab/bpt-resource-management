@@ -24,17 +24,9 @@ public class BPTSearchComponent extends BPTTagComponent{
 	}
 	
 	public void login() {
-		/*  TODO: 
-		 *  non-moderators should not see checkboxes 
-		 *  or should only see the non-published documents they have submitted 
-		 *  plus all published documents when clicking on checkboxes
-		 */
-//		System.out.println("SearchComponent: " + application.isModerator());
-//		if (application.isModerator()) {
 			boxLayout.removeAllComponents();
 			box = new BPTBoxContainer(application);
 			boxLayout.addComponent(box);
-//		}
 	}
 	
 	public void logout() {
