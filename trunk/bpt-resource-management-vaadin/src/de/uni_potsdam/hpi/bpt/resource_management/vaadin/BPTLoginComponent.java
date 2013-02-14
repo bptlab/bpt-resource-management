@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import org.expressme.openid.Association;
 import org.expressme.openid.Endpoint;
@@ -19,17 +20,6 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class BPTLoginComponent extends CustomComponent implements Property.ValueChangeListener {
-	
-//	class WorkThread extends Thread {
-//	    public void run () {
-//	    	try {
-//	    		redirectToOpenIDProvider();
-//	    	}
-//			catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//	    }
-//	}
 		
 	private VerticalLayout layout;
 	private Button loginWindowButton;
@@ -40,9 +30,13 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private BPTNavigationBar navigationBar;
 	private BPTSidebar sidebar;
 	private static final String[] openIdProviders = new String[] { "Google", "Yahoo" };
+	private String openIdReturnTo;
+	private String openIdRealm;
 	private String openIdProvider = openIdProviders[0];
 	
 	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar){
+		
+		setProperties();
 		
 		this.sidebar = sidebar;
 		layout = new VerticalLayout();
@@ -125,11 +119,8 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	
 	private void redirectToOpenIDProvider() throws IOException {
 		OpenIdManager manager = new OpenIdManager();
-//		manager.setReturnTo("http://localhost:8080/bpt-resource-management-vaadin/");
-//		manager.setRealm("http://localhost:8080/");
-		// TODO: edit setReturnTo & setRealm for deployment
-		manager.setReturnTo("http://localhost:8080/bpt-resource-management-vaadin/");
-        manager.setRealm("http://localhost:8080/");
+		manager.setReturnTo(openIdReturnTo);
+        manager.setRealm(openIdRealm);
 		manager.setTimeOut(10000);
         Endpoint endpoint = manager.lookupEndpoint(openIdProvider);
 //        System.out.println(endpoint);
@@ -144,6 +135,12 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 //        Authentication authentication = manager.getAuthentication(request, association.getRawMacKey(), endpoint.getAlias());
 //        System.out.println(authentication);
 
+	}
+	
+	private void setProperties() {
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
+		openIdReturnTo = resourceBundle.getString("OPENID_RETURN_TO");
+		openIdRealm = resourceBundle.getString("OPENID_REALM");
 	}
 
 	@Override

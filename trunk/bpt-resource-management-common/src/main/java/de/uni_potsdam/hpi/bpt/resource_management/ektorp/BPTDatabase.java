@@ -1,11 +1,14 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.net.MalformedURLException;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
+import org.ektorp.http.StdHttpClient.Builder;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 
@@ -19,10 +22,10 @@ import org.ektorp.impl.StdCouchDbInstance;
  */
 public class BPTDatabase {
 	
-	private static String host = "localhost";
-	private static int port = 5984;
-	private static String username = "bpm";
-	private static String password = "petrinet";
+	private static String host;
+	private static int port;
+	private static String username;
+	private static String password;
 
 	/**
      * Connects to CouchDB.
@@ -32,13 +35,18 @@ public class BPTDatabase {
      * 
      */
 	public static CouchDbConnector connect(String table) {
-		HttpClient httpClient;
-		httpClient = new StdHttpClient.Builder()
+		
+		setProperties();
+		
+		Builder builder = new StdHttpClient.Builder()
 									.host(host)
-									.port(port)
-									.username(username)
-									.password(password)
-									.build();
+									.port(port);
+		
+		if (username.isEmpty()) {
+			builder = builder.username(username).password(password);
+		}
+
+		HttpClient httpClient = builder.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
 		CouchDbConnector database = new StdCouchDbConnector(table, databaseInstance);
@@ -46,6 +54,32 @@ public class BPTDatabase {
 		database.createDatabaseIfNotExists();
 		
 		return database;
+		
+	}
+
+	private static void setProperties() {
+
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
+		try {
+			host = resourceBundle.getString("DB_HOST");
+		} catch (MissingResourceException e) {
+			host = "localhost";
+		}
+		try {
+			port = Integer.parseInt(resourceBundle.getString("DB_PORT"));
+		} catch (MissingResourceException e) {
+			port = 5984;
+		}
+		try {
+			username = resourceBundle.getString("DB_USERNAME");
+		} catch (MissingResourceException e) {
+			username = "";
+		}
+		try {
+			password = resourceBundle.getString("DB_PASSWORD");
+		} catch (MissingResourceException e) {
+			password = "";
+		}
 		
 	}
 
