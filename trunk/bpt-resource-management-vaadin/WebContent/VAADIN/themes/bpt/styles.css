@@ -60,7 +60,7 @@ ul#resource-list {
 	margin-top: 10px;
 	float:left;
 	clear: none;
-	
+	display: none;
 }
 
 #resource-list .entry .bpt .v-button-caption {

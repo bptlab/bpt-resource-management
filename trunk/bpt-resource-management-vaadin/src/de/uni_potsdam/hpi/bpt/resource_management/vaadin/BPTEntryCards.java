@@ -1,4 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+import java.util.ArrayList;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
@@ -19,6 +21,7 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	private CustomLayout layout;
 	private BPTApplication application;
 	private VerticalLayout vertical;
+	private ArrayList<BPTEntry> entryList;
 	
 	public BPTEntryCards(BPTApplication application){
 		
@@ -27,10 +30,12 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 		super();
 		layout = new CustomLayout("cards");
 		vertical = new VerticalLayout();
+		entryList = new ArrayList<BPTEntry>();
 		this.application = application;
 		addComponent(layout);
 		layout.addComponent(vertical, "cards");
 		show(dataSource);
+		
 		
 	}
 
@@ -41,7 +46,7 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 			Item item = entries.getItem(id);
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
-			entry.addButtons();
+			entryList.add(entry);
 		}
 
 //		String html = "";
