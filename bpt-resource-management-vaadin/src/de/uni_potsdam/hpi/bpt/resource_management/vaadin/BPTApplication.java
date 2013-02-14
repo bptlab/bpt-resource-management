@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +33,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private boolean loggedIn;
 	private boolean moderated;
 	private String name, mailAddress;
-	private static final String DEFAULT_OPEN_ID_PROVIDER = "Google";
-	private String openIdProvider = DEFAULT_OPEN_ID_PROVIDER;
+	private String openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTToolRepository toolRepository = new BPTToolRepository();
@@ -41,6 +41,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	@Override
 	public void init() {
+		
+		setProperties();
 		
 		setLoggedIn(false);
 		setModerated(false);
@@ -71,7 +73,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 //		mainWindow.executeJavaScript(getScript());
 		
 	}
-	
+
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
@@ -111,6 +113,12 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 
 	public void setOpenIdProvider(String openIdProvider) {
 		this.openIdProvider = openIdProvider;
+	}
+	
+
+	private void setProperties() {
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
+		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
 	}
 
 	public void uploader() {
