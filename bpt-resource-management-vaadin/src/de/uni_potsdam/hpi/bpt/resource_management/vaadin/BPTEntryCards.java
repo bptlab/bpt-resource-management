@@ -47,6 +47,7 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
 			entryList.add(entry);
+//			entry.hideJavaScript();
 		}
 
 //		String html = "";

@@ -90,22 +90,10 @@ public class BPTEntry extends CustomLayout{
 		Button less = new Button("less");
 		less.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				getWindow().executeJavaScript(getJavaScriptStringHide());
+				hideJavaScript();
 				entry.setHeight("");
 			}
-
-			private String getJavaScriptStringHide() {
-				String js = 
-		        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-				"for(i=0; i<nodes.length; i+=1){" +
-					"if(nodes[i].className == 'extension'){" +
-						"nodes[i].style.display = 'none';}" +
-					"if(nodes[i].className == 'button more'){" +
-						"nodes[i].style.display = 'block';}" +
-					"}";
-				return js;
-				
-			}});
+});
 		less.setStyleName(BaseTheme.BUTTON_LINK);
 		less.addStyleName("bpt");
 		this.addComponent(less, "button less");
@@ -201,16 +189,13 @@ public class BPTEntry extends CustomLayout{
 	}
 
 	private String getJavaScriptStringShow(String button) {
-		String js = "alert('NEXT??????????????" + entryId + "');" +
-	"alert(document.getElementById('" + entryId +"'));" +
+		String js = 
         "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-        		"alert('NEXT');" +
 		"for(i=0; i<nodes.length; i+=1){" +
 			"if(nodes[i].className == 'extension'){" +
 				"var subNodes = nodes[i].childNodes;" +
 				"for(j=0; j<subNodes.length; j+=1){" +
 					"if(subNodes[j].className == 'button edit " + button + "'){" +
-						"alert('found');" +
 						"subNodes[j].style.display = 'block';" +
 						"break;}" +
 				"}" +
@@ -219,5 +204,22 @@ public class BPTEntry extends CustomLayout{
 		return js;
 	}
 	
+
+	private String getJavaScriptStringHide() {
+		String js = 
+        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+		"for(i=0; i<nodes.length; i+=1){" +
+			"if(nodes[i].className == 'extension'){" +
+				"nodes[i].style.display = 'none';}" +
+			"if(nodes[i].className == 'button more'){" +
+				"nodes[i].style.display = 'block';}" +
+			"}";
+		return js;
+		
+	}
+	
+	public void hideJavaScript(){
+		application.getMainWindow().executeJavaScript(getJavaScriptStringHide());
+	}
 	
 }
