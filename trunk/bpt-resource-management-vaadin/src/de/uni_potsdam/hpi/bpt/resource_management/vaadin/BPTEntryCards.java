@@ -22,6 +22,7 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	private BPTApplication application;
 	private VerticalLayout vertical;
 	private ArrayList<BPTEntry> entryList;
+	private Boolean isInitial;
 	
 	public BPTEntryCards(BPTApplication application){
 		
@@ -32,9 +33,11 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 		vertical = new VerticalLayout();
 		entryList = new ArrayList<BPTEntry>();
 		this.application = application;
+		isInitial = true;
 		addComponent(layout);
 		layout.addComponent(vertical, "cards");
 		show(dataSource);
+		isInitial = false;
 		
 		
 	}
@@ -47,7 +50,13 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
 			entryList.add(entry);
-//			entry.hideJavaScript();
+			
+			if(!isInitial){
+				for(int i = 0; i < entryList.size(); i++){
+					entryList.get(i).hideJavaScript();
+				}
+			}
+			
 		}
 
 //		String html = "";
