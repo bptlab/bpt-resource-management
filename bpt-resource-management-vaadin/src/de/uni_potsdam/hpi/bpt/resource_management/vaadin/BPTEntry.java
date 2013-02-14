@@ -32,7 +32,6 @@ public class BPTEntry extends CustomLayout{
 		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(entryId);
-		addButtons(application);
 		for (Object id : item.getItemPropertyIds()) {
 			if (id == "Logo") {
 				Object value = item.getItemProperty(id).getValue();
@@ -63,7 +62,7 @@ public class BPTEntry extends CustomLayout{
 		
 	}
 
-	private void addButtons(final BPTApplication application) {
+	public void addButtons() {
 		Button more = new Button("more");
 		more.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
@@ -120,7 +119,7 @@ public class BPTEntry extends CustomLayout{
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
 			this.addComponent(edit, "button edit");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("edit"));
+//			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
 		
 		if(application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated())){
@@ -133,7 +132,8 @@ public class BPTEntry extends CustomLayout{
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("delete"));
+//			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("delete"));
+//			System.out.println("renderDeleteButton" + entryId);
 		}
 		
 		if(application.isLoggedIn() && application.isModerated()){
@@ -151,7 +151,7 @@ public class BPTEntry extends CustomLayout{
 					publish.setStyleName(BaseTheme.BUTTON_LINK);
 					publish.addStyleName("bpt");
 					this.addComponent(publish, "button publish");
-					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
+//					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
 					
 					Button reject = new Button("reject");
 					reject.addListener(new Button.ClickListener(){
@@ -162,7 +162,7 @@ public class BPTEntry extends CustomLayout{
 					reject.setStyleName(BaseTheme.BUTTON_LINK);
 					reject.addStyleName("bpt");
 					this.addComponent(reject, "button reject");
-					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
+//					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
 			
 			}
 			else if (actualState == BPTToolStatus.Published){
@@ -175,7 +175,7 @@ public class BPTEntry extends CustomLayout{
 				unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 				unpublish.addStyleName("bpt");
 				this.addComponent(unpublish, "button unpublish");
-				application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
+//				application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
 			
 			}
 			else {
@@ -189,21 +189,25 @@ public class BPTEntry extends CustomLayout{
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
+//			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
 			}
 		}
 		
 	}
 	
 	private String getJavaScriptStringShow(String button) {
-		String js = 
+		String js = "alert('NEXT??????????????" + entryId + "');" +
+	"alert(document.getElementById('" + entryId +"'));" +
         "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+        		"alert('NEXT');" +
 		"for(i=0; i<nodes.length; i+=1){" +
 			"if(nodes[i].className == 'extension'){" +
 				"var subNodes = nodes[i].childNodes;" +
 				"for(j=0; j<subNodes.length; j+=1){" +
 					"if(subNodes[j].className == 'button edit " + button + "'){" +
-						"subNodes[j].style.display = 'block';}" +
+						"alert('found');" +
+						"subNodes[j].style.display = 'block';" +
+						"break;}" +
 				"}" +
 			"}" +
 		"}";

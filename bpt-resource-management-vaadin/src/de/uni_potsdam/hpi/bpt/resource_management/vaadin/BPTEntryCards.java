@@ -39,7 +39,9 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 		vertical.removeAllComponents();
 		for(Object id : entries.getItemIds()){
 			Item item = entries.getItem(id);
-			vertical.addComponent(new BPTEntry(item, application, this));
+			BPTEntry entry = new BPTEntry(item, application, this);
+			vertical.addComponent(entry);
+			entry.addButtons();
 		}
 
 //		String html = "";
