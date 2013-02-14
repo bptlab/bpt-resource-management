@@ -132,9 +132,16 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return newEntries;
 	}
 	
-	public List<Map> getVisibleEntriesByUser(String user) {
+	public List<Map> getVisibleEntriesByUser(String user, ArrayList<String> tags) {
 		tableEntries = getDocumentsByUser(user);
-		return tableEntries;
+		List<Map> newEntries = new ArrayList<Map>();
+		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
+		for (Map<String, Object> entry : tableEntries){
+			if (containsAllTags(entry, tags, tagAttributes)) {
+				newEntries.add(entry);
+			}
+		}
+		return newEntries;
 	}
 
 	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {

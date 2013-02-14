@@ -163,6 +163,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
 			loggedIn = true;
 			sidebar.login(name);
+			finder();
 		} else {
 			return;
 		}
@@ -198,7 +199,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		if (loggedIn) {
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
-					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser());
+					ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
+					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags);
 				} else {
 					ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
 					states.add(BPTToolStatus.Published);
