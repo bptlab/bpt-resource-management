@@ -90,19 +90,17 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		return databaseDocument;
 	}
-
-	public InputStream readAttachment(String _id, String attachmentId) {
+	
+	/* 
+	 * the stream has to be closed later on
+	 */
+	public AttachmentInputStream readAttachment(String _id, String attachmentId) {
 		AttachmentInputStream inputStream = new AttachmentInputStream("null", null, "image/jpeg"); // default initialization
 		try {
 			inputStream = db.getAttachment(_id, attachmentId);
 		} catch (DocumentNotFoundException e) {
 			e.printStackTrace();
 			return null;
-		}
-		try {
-			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return inputStream;
 	}

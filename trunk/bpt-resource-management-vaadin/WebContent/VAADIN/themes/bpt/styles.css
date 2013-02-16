@@ -23,9 +23,12 @@ ul#resource-list {
 
 #resource-list .entry .Logo img {
 	margin: 0;
-	max-width: 140px;
-	max-height: 140px;
+	max-width: 130px;
+	max-height: 130px;
+        background-color: white;    
+        border: 5px solid white;
 	box-shadow: 0 0 3px #B8B8B8;
+        margin-top: -0.8em;
 }
 
 #resource-list .entry .Logo {

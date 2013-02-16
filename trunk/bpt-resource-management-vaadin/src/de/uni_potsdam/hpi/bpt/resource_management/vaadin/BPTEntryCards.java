@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -16,6 +17,8 @@ import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTShowEntryComponent;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 
 public class BPTEntryCards extends BPTShowEntryComponent{
@@ -117,10 +120,12 @@ public class BPTEntryCards extends BPTShowEntryComponent{
 	}
 
 	private String getImageFromItem(String itemId) {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
-		String databaseAddress = resourceBundle.getString("DB_EXTERNAL_ADDRESS");
-		BPTToolRepository repository = application.getToolRepository(); 
-		return databaseAddress + repository.getTableName() + "/" + itemId + "/logo";
+		Map<String, Object> tool = ((BPTApplication)getApplication()).getToolRepository().readDocument(itemId);
+		
+		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntries()).get(1);
+		Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
+		Embedded image = (Embedded)value;
+		return ((ExternalResource)image.getSource()).getURL();
 	}
 	
 	

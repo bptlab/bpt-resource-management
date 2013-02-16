@@ -51,7 +51,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		CustomLayout custom = new CustomLayout("mainlayout");
 		custom.setWidth("100%");
 		custom.setHeight("100%");
-//		HorizontalLayout layout = new HorizontalLayout();
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
@@ -118,7 +117,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private void setProperties() {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
-
 		setLogoutURL(resourceBundle.getString("OPENID_RETURN_TO"));
 	}
 
@@ -222,9 +220,4 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		entryComponent.showEntries(dataSource);
 	}
-	
-//	private String getScript(){
-//		
-//		return null;
-//	}
 }

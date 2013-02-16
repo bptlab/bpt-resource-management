@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.ektorp.AttachmentInputStream;
 import org.ektorp.DocumentNotFoundException;
+import org.vaadin.imagefilter.Image;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
@@ -188,24 +191,25 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	private static Embedded asImage(BPTDocumentRepository repository, Map<String, Object> tool, String attachmentName) {
-		String imageType;
-		try {
-			imageType = (String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type");
-		} catch (NullPointerException e) {
+	private static Embedded asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
+		
+		if (tool.containsKey("_attachments")) {
+			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
+			Image image = new Image(attachmentInputStream, true);
+			try {
+				attachmentInputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// default image size is icon size
+			image.setWidth("15px");
+			image.setHeight("15px");
+		    return image;
+		} else {
 			return new Embedded();
 		}
 		
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
-		String databaseAddress = resourceBundle.getString("DB_EXTERNAL_ADDRESS");
-		
-		ExternalResource imageResource = new ExternalResource(databaseAddress + repository.getTableName() + "/" + tool.get("_id") + "/" + attachmentName, imageType);
-		Embedded image = new Embedded("", imageResource);
-		image.setType(Embedded.TYPE_IMAGE);
-		// default image size is icon size
-		image.setWidth("15px");
-		image.setHeight("15px");
-	    return image;
 	}
 
 	public static String[] getVisibleAttributes() {
