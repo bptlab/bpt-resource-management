@@ -1,13 +1,20 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.expressme.openid.OpenIdException;
 
 import com.vaadin.Application;
 import com.vaadin.ui.CustomLayout;
@@ -18,6 +25,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.service.ApplicationContext.TransactionListener;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 
@@ -30,10 +38,9 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
-	private boolean loggedIn;
-	private boolean moderated;
+	private boolean loggedIn, loggingIn, moderated;
 	private String name, mailAddress;
-	private String openIdProvider;
+	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
 	private BPTToolRepository toolRepository = new BPTToolRepository();
@@ -41,12 +48,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	@Override
 	public void init() {
-		
 		setProperties();
-		setLoggedIn(false);
-		setModerated(false);
 		
 		Window mainWindow = new Window("BPTApplication");
+		setMainWindow(mainWindow);
 		setTheme("bpt");
 		CustomLayout custom = new CustomLayout("mainlayout");
 		custom.setWidth("100%");
@@ -67,9 +72,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		custom.addComponent(layout, "application");
 		mainWindow.addComponent(custom);
-		setMainWindow(mainWindow);
 //		mainWindow.executeJavaScript(getScript());
-		
 	}
 
 	public boolean isLoggedIn() {
@@ -80,6 +83,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.loggedIn = loggedIn;
 	}
 	
+	public boolean isLoggingIn() {
+		return loggingIn;
+	}
+
+	public void setLoggingIn(boolean loggingIn) {
+		this.loggingIn = loggingIn;
+	}
+
 	public boolean isModerated() {
 		return moderated;
 	}
@@ -114,10 +125,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 
-	private void setProperties() {
+	private void setProperties() {		
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
+		applicationURL = resourceBundle.getString("OPENID_RETURN_TO");
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
-		setLogoutURL(resourceBundle.getString("OPENID_RETURN_TO"));
+		setLogoutURL(applicationURL);
+		setLoggedIn(false);
+		setLoggingIn(false);
+		setModerated(false);
 	}
 
 	public void uploader() {
@@ -149,7 +164,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> map = request.getParameterMap();
 		
-		if (map.containsKey("openid.identity")) {
+		if (loggingIn && map.containsKey("openid.identity")) {
+			loggingIn = false;
+			// TODO: check nonce for security reasons
+//			checkNonce(request.getParameter("openid.response_nonce"));
 			setUser(map.get("openid.identity")[0]);
 			System.out.println("The OpenID identifier: " + (String)getUser());
 			if (openIdProvider.equals("Google")) {
@@ -163,8 +181,13 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			loggedIn = true;
 			sidebar.login(name);
 			finder();
-		} else {
-			return;
+//			try {
+//				response.sendRedirect(getLogoutURL());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			return;
 		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
@@ -182,9 +205,48 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 
 	}
 
+//	private void checkNonce(String nonce) {
+//		// TODO Auto-generated method stub
+//		if (nonce == null || nonce.length() < 20) {
+//            throw new OpenIdException("Verify failed.");
+//		}
+//        long nonceTime = getNonceTime(nonce);
+//        long diff = System.currentTimeMillis() - nonceTime;
+//        if (diff < 0) {
+//            diff = (-diff);
+//        }
+//        if (diff > 3600000L) {// ONE_HOUR
+//            throw new OpenIdException("Bad nonce time.");
+//        }
+//        if (nonceExists(nonce)) {
+//            throw new OpenIdException("Verify nonce failed.");
+//        }
+//        storeNonce(nonce, nonceTime + 7200000L);
+//
+//	}
+//
+//	private void storeNonce(String nonce, long nonceExpiryTime) {
+//		// TODO to store in database
+//		
+//	}
+//
+//	private boolean nonceExists(String nonce) {
+//		// TODO to check from database
+//		return false;
+//	}
+//
+//	private long getNonceTime(String nonce) {
+//		try {
+//            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+//                    .parse(nonce.substring(0, 19) + "+0000")
+//                    .getTime();
+//        } catch (ParseException e) {
+//            throw new OpenIdException("Bad nonce time.");
+//        }
+//	}
+
 	@Override
 	public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
-		
 	}
 
 	public void edit(Item item) {

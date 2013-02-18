@@ -118,14 +118,23 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	};
 	
 	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags) {
-		tableEntries.clear();
-		for (BPTToolStatus status : states) {
-			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
-		}
+//		tableEntries.clear();
+//		for (BPTToolStatus status : states) {
+//			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
+//		}
+		/*
+		 * TODO: getAll() is a quick fix for the following not yet investigated error
+		 * when swichting from "own entries" to "all entries" as resource provider
+		 * - happens in deployed version only! - 
+		 */
+		
+		tableEntries = getAll();
 		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (Map<String, Object> entry : tableEntries){
-			if (containsAllTags(entry, tags, tagAttributes)) {
+			if (!(Boolean)entry.get("deleted") 
+					&& states.contains(BPTToolStatus.valueOf((String) entry.get("status"))) 
+					&& containsAllTags(entry, tags, tagAttributes)) { // see TODO above
 				newEntries.add(entry);
 			}
 		}

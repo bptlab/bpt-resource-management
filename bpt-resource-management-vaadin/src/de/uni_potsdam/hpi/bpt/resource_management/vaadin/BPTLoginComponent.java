@@ -51,7 +51,6 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 			addLoginButton();
 		}
 		
-		
 	}
 
 	private void addLoginButton() {
@@ -129,6 +128,13 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
         String url = manager.getAuthenticationUrl(endpoint, association);
 //        System.out.println("Copy the authentication URL in browser:\n" + url);
         ((BPTApplication) getApplication()).getMainWindow().open(new ExternalResource(url), "_self");
+        /*
+         *  TODO: this is not a clean solution
+         *  if user clicks on login and then goes back to the application
+         *  the user can paste the OpenID return URL with parameters
+         *  and may login as another user
+         */
+        ((BPTApplication) getApplication()).setLoggingIn(true);
 //        System.out.println("After successfully sign on in browser, enter the URL of address bar in browser:");
 //        String ret = readLine();
 //        HttpServletRequest request = createRequest(ret);
