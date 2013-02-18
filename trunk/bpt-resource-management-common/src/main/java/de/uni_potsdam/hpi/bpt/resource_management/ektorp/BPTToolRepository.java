@@ -124,7 +124,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 //		}
 		/*
 		 * TODO: getAll() is a quick fix for the following not yet investigated error
-		 * when swichting from "own entries" to "all entries" as resource provider
+		 * when switching from "own entries" to "published entries" as resource provider
 		 * - happens in deployed version only! - 
 		 */
 		
@@ -146,7 +146,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (Map<String, Object> entry : tableEntries){
-			if (containsAllTags(entry, tags, tagAttributes)) {
+			if (!(Boolean)entry.get("deleted") 
+					&& containsAllTags(entry, tags, tagAttributes)) {
 				newEntries.add(entry);
 			}
 		}
