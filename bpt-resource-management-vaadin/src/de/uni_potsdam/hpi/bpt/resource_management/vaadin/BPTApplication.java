@@ -181,11 +181,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			loggedIn = true;
 			sidebar.login(name);
 			finder();
-//			try {
-//				response.sendRedirect(getLogoutURL());
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			try {
+				response.sendRedirect(getLogoutURL());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 //		} else {
 //			return;
 		}

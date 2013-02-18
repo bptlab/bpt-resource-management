@@ -95,6 +95,16 @@ ul#resource-list {
 	margin-left: -1em;
 }
 
+#resource-list div[class="Download"]:before {
+	content: "Download URL";
+}
+#resource-list div[class="Documentation"]:before {
+	content: "Documentation URL";
+}
+#resource-list div[class="Screencast"]:before {
+	content: "Screencast URL";
+}
+
 #resource-list div[class="Description"],
 #resource-list div[class="Provider"],
 #resource-list div[class="Download"],

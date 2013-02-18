@@ -78,9 +78,9 @@ public class BPTBoxContainer extends CustomComponent {
 				resourceProviderOptionGroup = new OptionGroup();
 				layout.addComponent(resourceProviderOptionGroup);
 				resourceProviderOptionGroup.setImmediate(true);
-				resourceProviderOptionGroup.addItem("all entries");
+				resourceProviderOptionGroup.addItem("published entries");
 				resourceProviderOptionGroup.addItem("own entries");
-				resourceProviderOptionGroup.select("all entries");
+				resourceProviderOptionGroup.select("published entries");
 				
 				resourceProviderOptionGroup.addListener(new Property.ValueChangeListener() {
 				    public void valueChange(ValueChangeEvent event) {
