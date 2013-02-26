@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
+package de.uni_potsdam.hpi.bpt.resource_management;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;

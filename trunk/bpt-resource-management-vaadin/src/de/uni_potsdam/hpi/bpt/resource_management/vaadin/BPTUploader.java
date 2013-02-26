@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -39,7 +40,9 @@ import com.vaadin.ui.Window.Notification;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTValidator;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
+import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
@@ -58,6 +61,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private String documentId, imageType;
 	private boolean logoDeleted = true;
 	private BPTApplication application;
+	private List<Map> moderators;
+	private static String newLine = System.getProperty("line.separator");
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		this.application = application;
@@ -164,8 +169,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         		String[] supported_functionality = ((String) item.getItemProperty("Supported functionality").getValue()).split(",");
         		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i]);
         	}
-        	contactNameInput.setValue(application.getName());
-        	contactMailInput.setValue(application.getMailAddress());
+        	contactNameInput.setValue(item.getItemProperty("Contact name").getValue());
+        	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
         	BPTToolRepository toolRepository = application.getToolRepository();
         	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
 			image.setWidth("");
@@ -201,6 +206,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 
 			private void finishUpload() {
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
+				BPTUserRepository userRepository = ((BPTApplication)getApplication()).getUserRepository();
+				
+				moderators = userRepository.getModerators();
+				
 				//TODO: if(!(item == null)) { updaten statt neuer eintrag
 				if (documentId == null) { 
 				
@@ -220,19 +229,23 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 							(String)application.getUser(), 
 							new Date(),
 							new Date()
-						}));
+					}));
 						
-						if (!logoDeleted) { // logo.exists()
-							Map<String, Object> document = toolRepository.readDocument(documentId);
-							String documentRevision = (String)document.get("_rev");
-							
-							toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
-							
-							logo.delete();
-						}
+					if (!logoDeleted) { // logo.exists()
+						Map<String, Object> document = toolRepository.readDocument(documentId);
+						String documentRevision = (String)document.get("_rev");
 						
-						getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
+						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
 						
+						logo.delete();
+					}
+					
+					String subject = "[BPTrm] New entry: " + (String)nameInput.getValue() + " (" + documentId + ")";
+					
+					// TODO: move to common
+					sendEmailForNewEntry();
+					
+					getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
 					
 				} else {
 //					System.out.println(descriptionInput.getValue().getClass());
@@ -265,7 +278,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
 					}
 					
-					getWindow().showNotification("Updated Entry: " + (String)nameInput.getValue());
+					// TODO: move to common
+					sendEmailForUpdatedEntry();
+					
+					getWindow().showNotification("Updated entry: " + (String)nameInput.getValue());
 				}
 				
 				((BPTApplication)getApplication()).finder();
@@ -370,8 +386,50 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	@Override
 	public void uploadFailed(FailedEvent event) {
 		getWindow().showNotification(
-                "Upload failed :(",
+                "Upload failed",
                 "The type of the file you have submitted is not supported or the file was not found.",
                 Notification.TYPE_ERROR_MESSAGE);
+	}
+	
+	private void sendEmailForNewEntry() {
+		
+		String subject = "[BPTrm] New entry: " + (String)nameInput.getValue() + " (" + documentId + ")";
+		
+		for (Map<String, Object> moderator : moderators) {
+			
+			String recipient = (String) moderator.get("mail_address");
+			
+			StringBuilder content = new StringBuilder();
+			content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
+			content.append("A new entry has been submitted by " + application.getName() + " <" + application.getMailAddress() + ">. ");
+			content.append("You may publish or reject it on " + application.getLogoutURL() + "." + newLine + newLine);
+			content.append("Regards" + newLine);
+			content.append("-- bpm-conference.org" + newLine + newLine);
+			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
+			
+			BPTMailProvider.sendMail(recipient, subject, content.toString());
+		}
+		
+	}
+	
+	private void sendEmailForUpdatedEntry() {
+		
+		String subject = "[BPTrm] Updated entry: " + (String)nameInput.getValue() + " (" + documentId + ")";
+		
+		for (Map<String, Object> moderator : moderators) {
+			
+			String recipient = (String) moderator.get("mail_address");
+			
+			StringBuilder content = new StringBuilder();
+			content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
+			content.append("An entry has been updated by " + application.getName() + " <" + application.getMailAddress() + ">. ");
+			content.append("You may publish or reject it on " + application.getLogoutURL() + "." + newLine + newLine);
+			content.append("Regards" + newLine);
+			content.append("-- bpm-conference.org" + newLine + newLine);
+			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
+			
+			BPTMailProvider.sendMail(recipient, subject, content.toString());
+		}
+		
 	}
 }

@@ -6,10 +6,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ektorp.ViewQuery;
+import org.ektorp.support.View;
+
 public class BPTUserRepository extends BPTDocumentRepository {
 	
 	public BPTUserRepository() {
 		super("bpt_resources_users");
+	}
+	
+	@View(
+			name = "moderators", 
+			map = "function(doc) { if (doc.is_moderator) emit(doc._id, doc); }"
+	)
+	public List<Map> getModerators() {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("moderators");
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
+	}
+	
+	@View(
+			name = "resource_providers", 
+			map = "function(doc) { if (!doc.is_moderator) emit(doc._id, doc); }"
+	)
+	public List<Map> getResourceProviders() {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("resource_providers");
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
 	}
 	
 	@Override
