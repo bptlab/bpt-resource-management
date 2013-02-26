@@ -5,14 +5,6 @@
   <version>SNAPSHOT</version>
   <name>bpt-resource-management-common</name>
   <description>Commons of Management System for Various Resources from the BPT group</description>
-  <repositories>
-   <repository>
-         <id>openid4java snapshots repository</id>
-         <name>openid4java snapshots repository</name>
-         <url>https://oss.sonatype.org/content/repositories/openid4java-snapshots</url>
-    	  <snapshots />
-	  </repository>
-  </repositories>
   <dependencies>
   	<dependency>
   		<groupId>org.ektorp</groupId>
@@ -51,6 +43,16 @@
 		<groupId>commons-codec</groupId>
 		<artifactId>commons-codec</artifactId>
 		<version>1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>javax.mail</groupId>
+		<artifactId>mail</artifactId>
+		<version>1.4.6</version>
+	</dependency>
+  	<dependency>
+		<groupId>javax.activation</groupId>
+		<artifactId>activation</artifactId>
+		<version>1.1.1</version>
 	</dependency>
   </dependencies>
 </project>

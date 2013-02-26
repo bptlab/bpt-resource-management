@@ -57,7 +57,9 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	    	)
 	    })
 	public List<Map> getDocuments(String status) {
-		ViewQuery query = createQuery(status + "_tools");
+		ViewQuery query = new ViewQuery()
+							.designDocId("_design/Map")
+							.viewName(status + "_tools");
 		List<Map> result = db.queryView(query, Map.class);	
 		return result;
 	}
@@ -66,7 +68,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			name = "tools_by_user_id", 
 			map = "function(doc) { emit(doc.user_id, doc); }"
 	)
-	private List<Map> getDocumentsByUser(String user) {
+	public List<Map> getDocumentsByUser(String user) {
 		ViewQuery query = new ViewQuery()
 							  .designDocId("_design/Map")
 							  .viewName("tools_by_user_id")
@@ -118,23 +120,23 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	};
 	
 	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags) {
-//		tableEntries.clear();
-//		for (BPTToolStatus status : states) {
-//			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
-//		}
+		tableEntries.clear();
+		for (BPTToolStatus status : states) {
+			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
+		}
 		/*
 		 * TODO: getAll() is a quick fix for the following not yet investigated error
 		 * when switching from "own entries" to "published entries" as resource provider
 		 * - happens in deployed version only! - 
 		 */
-		
-		tableEntries = getAll();
+//		
+//		tableEntries = getAll();
 		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (Map<String, Object> entry : tableEntries){
-			if (!(Boolean)entry.get("deleted") 
+			if (/* !(Boolean)entry.get("deleted") 
 					&& states.contains(BPTToolStatus.valueOf((String) entry.get("status"))) 
-					&& containsAllTags(entry, tags, tagAttributes)) { // see TODO above
+					&& */ containsAllTags(entry, tags, tagAttributes)) { // see TODO above
 				newEntries.add(entry);
 			}
 		}
@@ -146,8 +148,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
 		for (Map<String, Object> entry : tableEntries){
-			if (!(Boolean)entry.get("deleted") 
-					&& containsAllTags(entry, tags, tagAttributes)) {
+			if (/* !(Boolean)entry.get("deleted") 
+					&& */ containsAllTags(entry, tags, tagAttributes)) {
 				newEntries.add(entry);
 			}
 		}
