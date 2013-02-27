@@ -61,8 +61,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private String documentId, imageType;
 	private boolean logoDeleted = true;
 	private BPTApplication application;
-	private List<Map> moderators;
-	private static String newLine = System.getProperty("line.separator");
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		this.application = application;
@@ -208,8 +206,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
 				BPTUserRepository userRepository = ((BPTApplication)getApplication()).getUserRepository();
 				
-				moderators = userRepository.getModerators();
-				
 				//TODO: if(!(item == null)) { updaten statt neuer eintrag
 				if (documentId == null) { 
 				
@@ -240,14 +236,10 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						logo.delete();
 					}
 					
-					String subject = "[BPTrm] New entry: " + (String)nameInput.getValue() + " (" + documentId + ")";
-					
-					// TODO: move to common
-					sendEmailForNewEntry();
-					
 					getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
-					
+
 				} else {
+					
 //					System.out.println(descriptionInput.getValue().getClass());
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
@@ -277,9 +269,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					} else if (logo != null) {
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
 					}
-					
-					// TODO: move to common
-					sendEmailForUpdatedEntry();
 					
 					getWindow().showNotification("Updated entry: " + (String)nameInput.getValue());
 				}
@@ -389,47 +378,5 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
                 "Upload failed",
                 "The type of the file you have submitted is not supported or the file was not found.",
                 Notification.TYPE_ERROR_MESSAGE);
-	}
-	
-	private void sendEmailForNewEntry() {
-		
-		String subject = "[BPTrm] New entry: " + (String)nameInput.getValue() + " (" + documentId + ")";
-		
-		for (Map<String, Object> moderator : moderators) {
-			
-			String recipient = (String) moderator.get("mail_address");
-			
-			StringBuilder content = new StringBuilder();
-			content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-			content.append("A new entry has been submitted by " + application.getName() + " <" + application.getMailAddress() + ">. ");
-			content.append("You may publish or reject it on " + application.getLogoutURL() + "." + newLine + newLine);
-			content.append("Regards" + newLine);
-			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
-			
-			BPTMailProvider.sendMail(recipient, subject, content.toString());
-		}
-		
-	}
-	
-	private void sendEmailForUpdatedEntry() {
-		
-		String subject = "[BPTrm] Updated entry: " + (String)nameInput.getValue() + " (" + documentId + ")";
-		
-		for (Map<String, Object> moderator : moderators) {
-			
-			String recipient = (String) moderator.get("mail_address");
-			
-			StringBuilder content = new StringBuilder();
-			content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-			content.append("An entry has been updated by " + application.getName() + " <" + application.getMailAddress() + ">. ");
-			content.append("You may publish or reject it on " + application.getLogoutURL() + "." + newLine + newLine);
-			content.append("Regards" + newLine);
-			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
-			
-			BPTMailProvider.sendMail(recipient, subject, content.toString());
-		}
-		
 	}
 }

@@ -158,13 +158,17 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
-					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id);
+					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
 				} else if (status.equals("publish")) {
 					((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
 				} else if (status.equals("reject")) {
 					((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
-				} else { // if (status.equals("unpublish") || status.equals("propose"))
-					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id);
+				} else if (status.equals("unpublish")) { 
+					boolean fromPublished = true;
+					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromPublished);
+				} else { // if status.equals("propose"))
+					boolean fromRejected = false;
+					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromRejected);
 				}
 				BPTContainerProvider.refreshFromDatabase();
 				((BPTApplication) getApplication()).refresh();

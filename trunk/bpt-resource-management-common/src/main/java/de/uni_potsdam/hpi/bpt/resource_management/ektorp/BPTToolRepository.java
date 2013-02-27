@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,12 +11,42 @@ import org.ektorp.ViewResult;
 import org.ektorp.support.View;
 import org.ektorp.support.Views;
 
+import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
+
 public class BPTToolRepository extends BPTDocumentRepository {
+	
+	// TODO: moderator should be able to disable email notifications, shouldn't he?
+	// --> new attribute 'notificiations_enabled', may be set by the user
 	
 	private List<Map> tableEntries = new ArrayList<Map>();
 	
 	public BPTToolRepository() {
 		super("bpt_resources_tools");
+	}
+	
+	@Override
+	public String createDocument(Map<String, Object> document) {
+		String documentId = super.createDocument(document);
+		BPTMailProvider.sendEmailForNewEntry((String)document.get("name"), documentId, (String)document.get("user_id"));
+		return documentId;
+	}
+	
+	@Override
+	public Map<String, Object> updateDocument(Map<String, Object> document) {
+		Map<String, Object> databaseDocument = super.updateDocument(document);
+		BPTMailProvider.sendEmailForUpdatedEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+		return databaseDocument;
+	}
+	
+	public Map<String, Object> deleteDocument(String _id, boolean byModerator) {
+		Map<String, Object> databaseDocument = super.deleteDocument(_id);
+		if (byModerator) {
+			BPTMailProvider.sendEmailForDeletedEntryToResourceProvider((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+		} else {
+			BPTMailProvider.sendEmailForDeletedEntryToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
+		}
+		
+		return databaseDocument;
 	}
 	
 	/**
@@ -89,13 +120,24 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Published);
 		db.update(databaseDocument);
+		BPTMailProvider.sendEmailForPublishedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		return databaseDocument;
 	}
 	
-	public Map<String, Object> unpublishDocument(String _id) {
+	private Map<String, Object> unpublishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Unpublished);
 		db.update(databaseDocument);
+		return databaseDocument;
+	}
+	
+	public Map<String, Object> unpublishDocument(String _id, boolean fromPublished) {
+		Map<String, Object> databaseDocument = unpublishDocument(_id);
+		if (fromPublished) { // unpublish (by moderator, notify resource provider) // TODO: may a resource provider unpublish an entry?
+			BPTMailProvider.sendEmailForUnpublishedEntryFromPublished((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+		} else { // propose (by moderator if he has previously unpublished an entry by mistake, notify resource provider)
+			BPTMailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+		}
 		return databaseDocument;
 	}
 	
@@ -103,6 +145,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Rejected);
 		db.update(databaseDocument);
+		BPTMailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		return databaseDocument;
 	}
 	

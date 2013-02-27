@@ -201,6 +201,8 @@ public class BPTVaadinResources {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
 
 			// default image size is icon size
 			image.setWidth("15px");
