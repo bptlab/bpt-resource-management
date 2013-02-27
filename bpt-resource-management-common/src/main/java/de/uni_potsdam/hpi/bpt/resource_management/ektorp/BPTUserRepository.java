@@ -38,6 +38,11 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		List<Map> result = db.queryView(query, Map.class);
 		return result;
 	}
+
+	public Map<String, Object> getUser(String _id) {
+		Map<String, Object> user = db.get(Map.class, _id);
+		return user;
+	}
 	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
