@@ -19,6 +19,7 @@ Source:
 || create`*` || || || notify moderator, request to publish or reject ||
 || || publish`*` || || notify provider ||
 || || reject`*`  || || notify provider || 
+|| || propose`*`  || || notify provider || 
 || update`*` || || || notify moderator, request to approve (do nothing) or reject ||
 || unpublish`*` || || || notify moderator ||
 || || unpublish`*` || || notify provider ||
