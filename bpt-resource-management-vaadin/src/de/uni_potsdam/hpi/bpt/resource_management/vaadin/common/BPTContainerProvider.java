@@ -1,20 +1,16 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
  * Provides data for the table and the search component.
@@ -26,14 +22,15 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
  * @author tw
  *
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTContainerProvider {
 	
 	private static BPTToolRepository toolRepository = new BPTToolRepository();
 	
-	/**
-	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
-	 *
-	 */
+//	/**
+//	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
+//	 *
+//	 */
 //	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray){
 //		
 //		IndexedContainer container = createContainerWithProperties();

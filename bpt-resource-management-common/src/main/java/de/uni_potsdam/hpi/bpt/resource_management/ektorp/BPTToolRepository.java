@@ -1,14 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
-import com.github.ldriscoll.ektorplucene.CustomLuceneResult;
-import com.github.ldriscoll.ektorplucene.CustomLuceneResult.Row;
-import com.github.ldriscoll.ektorplucene.LuceneQuery;
-import com.github.ldriscoll.ektorplucene.designdocument.annotation.FullText;
-import com.github.ldriscoll.ektorplucene.designdocument.annotation.Index;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +11,14 @@ import org.ektorp.ViewResult;
 import org.ektorp.support.View;
 import org.ektorp.support.Views;
 
+import com.github.ldriscoll.ektorplucene.CustomLuceneResult;
+import com.github.ldriscoll.ektorplucene.LuceneQuery;
+import com.github.ldriscoll.ektorplucene.designdocument.annotation.FullText;
+import com.github.ldriscoll.ektorplucene.designdocument.annotation.Index;
+
 import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTToolRepository extends BPTDocumentRepository {
 	
 	private List<Map> tableEntries = new ArrayList<Map>();

@@ -8,17 +8,16 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
+@SuppressWarnings("serial")
 public class BPTSearchTag extends CustomComponent{
 	
 	private Label label;
 	private Button deleteButton;
-	private BPTSearchTagBox searchTagBox;
 	private BPTSearchTag searchTag = this;
 
 	public BPTSearchTag(final BPTSearchTagBox searchtagbox, String value) {
 		Layout layout = new HorizontalLayout();
 		setCompositionRoot(layout);
-		this.searchTagBox = searchtagbox;
 		deleteButton = new Button("x");
         deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
         label = new Label(value);
@@ -28,7 +27,8 @@ public class BPTSearchTag extends CustomComponent{
         deleteButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				searchtagbox.removeTag(searchTag);
-			}});
+			}
+		});
                    
 	}
 	public String getValue(){

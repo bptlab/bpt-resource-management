@@ -1,35 +1,23 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
-import org.ektorp.AttachmentInputStream;
-import org.ektorp.DocumentNotFoundException;
 import org.vaadin.imagefilter.Image;
 
-import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
  * Contains resources required by Vaadin to display various components.
@@ -37,6 +25,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
  * @author tw
  *
  */
+@SuppressWarnings({ "serial", "unchecked" })
 public class BPTVaadinResources {
 	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {

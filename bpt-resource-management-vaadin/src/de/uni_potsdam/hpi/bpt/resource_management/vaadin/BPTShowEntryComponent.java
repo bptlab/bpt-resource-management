@@ -1,7 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -20,6 +19,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
+@SuppressWarnings("serial")
 public abstract class BPTShowEntryComponent extends VerticalLayout{
 	
 	protected IndexedContainer dataSource;
@@ -35,6 +35,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		this.dataSource = dataSource;
 		show(dataSource);
 	}
+	
 	// to be overwritten in subclass
 	protected abstract void show(IndexedContainer tableEntries); 
 	

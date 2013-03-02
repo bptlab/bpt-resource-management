@@ -6,6 +6,7 @@ import com.vaadin.ui.HorizontalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 
+@SuppressWarnings("serial")
 public class BPTTagSearchComponent extends BPTTagComponent{
 
 	private BPTBoxContainer box;

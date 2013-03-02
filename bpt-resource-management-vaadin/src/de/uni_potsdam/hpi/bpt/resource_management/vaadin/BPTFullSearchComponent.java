@@ -8,6 +8,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
+@SuppressWarnings("serial")
 public class BPTFullSearchComponent extends CustomComponent {
 	
 	private BPTApplication application;

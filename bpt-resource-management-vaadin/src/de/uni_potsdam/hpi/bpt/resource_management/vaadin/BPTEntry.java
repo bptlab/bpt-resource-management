@@ -2,19 +2,18 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 
-public class BPTEntry extends CustomLayout{
+@SuppressWarnings("serial")
+public class BPTEntry extends CustomLayout {
 	
-	private CustomLayout layout;
 	private String entryId;
 	private BPTEntry entry;
 	private String userId;
@@ -82,7 +81,8 @@ public class BPTEntry extends CustomLayout{
 						"nodes[i].style.display = 'none';}" +
 					"}";
 				return js;
-			}});
+			}
+		});
 		
 		more.setStyleName(BaseTheme.BUTTON_LINK);
 		more.addStyleName("bpt");
@@ -93,7 +93,7 @@ public class BPTEntry extends CustomLayout{
 				hideJavaScript();
 				entry.setHeight("");
 			}
-});
+		});
 		less.setStyleName(BaseTheme.BUTTON_LINK);
 		less.addStyleName("bpt");
 		this.addComponent(less, "button less");
@@ -107,7 +107,8 @@ public class BPTEntry extends CustomLayout{
 			edit.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					application.edit(item);
-				}});
+				}
+			});
 			
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
@@ -120,7 +121,8 @@ public class BPTEntry extends CustomLayout{
 			delete.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "delete");
-				}});
+				}
+			});
 			
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
@@ -136,7 +138,8 @@ public class BPTEntry extends CustomLayout{
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "publish");
-			}});
+				}
+			});
 		
 			publish.setStyleName(BaseTheme.BUTTON_LINK);
 			publish.addStyleName("bpt");
@@ -147,7 +150,8 @@ public class BPTEntry extends CustomLayout{
 			reject.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "reject");
-			}});
+				}
+			});
 			
 			reject.setStyleName(BaseTheme.BUTTON_LINK);
 			reject.addStyleName("bpt");
@@ -160,7 +164,8 @@ public class BPTEntry extends CustomLayout{
 			unpublish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "unpublish");
-				}});
+				}
+			});
 			
 			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 			unpublish.addStyleName("bpt");
@@ -174,7 +179,8 @@ public class BPTEntry extends CustomLayout{
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "propose");
-				}});
+				}
+			});
 			
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");

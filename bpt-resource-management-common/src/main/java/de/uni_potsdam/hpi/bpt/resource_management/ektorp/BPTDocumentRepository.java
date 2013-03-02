@@ -5,15 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.ektorp.AttachmentInputStream;
 import org.ektorp.DocumentNotFoundException;
-import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
-import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.View;
-import org.ektorp.support.Views;
 
 import com.github.ldriscoll.ektorplucene.CouchDbRepositorySupportWithLucene;
 
@@ -30,11 +30,11 @@ import com.github.ldriscoll.ektorplucene.CouchDbRepositorySupportWithLucene;
  * @author tw
  *
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 //public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWithLucene<Map> {
 	
 	protected String tableName;
-	private List<Map> tableEntries = new ArrayList<Map>();
 	
 	/**
      * @param table the name of the database to connect to
@@ -95,7 +95,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	}
 	
 	/* 
-	 * the stream has to be closed later on
+	 * ! the stream has to be closed later on !
 	 */
 	public AttachmentInputStream readAttachment(String _id, String attachmentId) {
 		AttachmentInputStream inputStream = new AttachmentInputStream("null", null, "image/jpeg"); // default initialization
