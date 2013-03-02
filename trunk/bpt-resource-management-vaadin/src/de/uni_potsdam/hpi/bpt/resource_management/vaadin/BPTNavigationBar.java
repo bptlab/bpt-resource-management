@@ -3,9 +3,9 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 
+@SuppressWarnings("serial")
 public class BPTNavigationBar extends CustomComponent{
 	
 	private HorizontalLayout layout;
@@ -22,12 +22,14 @@ public class BPTNavigationBar extends CustomComponent{
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				((BPTApplication)getApplication()).finder();
-			}});
+			}
+		});
 		
 		uploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				((BPTApplication)getApplication()).uploader();
-			}});
+			}
+		});
 	}
 
 }

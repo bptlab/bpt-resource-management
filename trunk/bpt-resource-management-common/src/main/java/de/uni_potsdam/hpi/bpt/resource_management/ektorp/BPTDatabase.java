@@ -1,16 +1,12 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
-import org.ektorp.http.StdHttpClient.Builder;
-import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 
 import com.github.ldriscoll.ektorplucene.LuceneAwareCouchDbConnector;

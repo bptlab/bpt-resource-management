@@ -16,17 +16,15 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
+@SuppressWarnings("serial")
 public class BPTLoginComponent extends CustomComponent implements Property.ValueChangeListener {
 		
 	private VerticalLayout layout;
 	private Button loginButton;
 	private Button logoutButton;
-	private Button registerButton;
 	private Label welcomeLabel;
-	private Window subWindow;
 	private BPTNavigationBar navigationBar;
 	private BPTSidebar sidebar;
 	private static final String[] openIdProviders = new String[] { "Google", "Yahoo" };

@@ -1,28 +1,19 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
 
-import com.vaadin.Application;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.Resource;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 
+@SuppressWarnings("serial")
 public class BPTBoxContainer extends CustomComponent {
-
+	
 	private HorizontalLayout layout;
 	private CheckBox unpublishedCheckBox, publishedCheckBox, rejectedCheckBox;
 	private boolean loggedIn, moderated;
@@ -55,20 +46,18 @@ public class BPTBoxContainer extends CustomComponent {
 				rejectedCheckBox.setImmediate(true);
 				
 				unpublishedCheckBox.addListener(new Property.ValueChangeListener() {
-				    public void valueChange(ValueChangeEvent event) {
-				    	
+					public void valueChange(ValueChangeEvent event) {
 				    	refresh();
 				    }
 				});
 				rejectedCheckBox.addListener(new Property.ValueChangeListener() {
-				    public void valueChange(ValueChangeEvent event) {
+					public void valueChange(ValueChangeEvent event) {
 				    	refresh();
 				    }
 				});
 
 				publishedCheckBox.addListener(new Property.ValueChangeListener() {
-				    public void valueChange(ValueChangeEvent event) {
-				    	
+					public void valueChange(ValueChangeEvent event) {
 				    	refresh();
 				    }
 				});
@@ -83,7 +72,7 @@ public class BPTBoxContainer extends CustomComponent {
 				resourceProviderOptionGroup.select("published entries");
 				
 				resourceProviderOptionGroup.addListener(new Property.ValueChangeListener() {
-				    public void valueChange(ValueChangeEvent event) {
+					public void valueChange(ValueChangeEvent event) {
 				    	refresh();
 				    }
 				});

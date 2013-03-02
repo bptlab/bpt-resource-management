@@ -2,7 +2,6 @@ package de.uni_potsdam.hpi.bpt.resource_management.mail;
 
 import java.util.List;
 import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
@@ -10,6 +9,7 @@ import javax.mail.Session;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
+@SuppressWarnings("rawtypes")
 public class BPTMailProvider {
 	
 	private final Session session = BPTMailUtils.getGMailSession("bptresourcemanagement@gmail.com", "petrinet");
@@ -38,13 +38,13 @@ public class BPTMailProvider {
 		}
 	}
 	
-	private void sendMultipartTextAndHtmlMail(Session session, String recipient, String subject, String textContent, String htmlContent) {
-		try {
-			BPTMailUtils.sendMultipartTextAndHtmlMail(session, recipient, subject, textContent, htmlContent);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
+//	private void sendMultipartTextAndHtmlMail(Session session, String recipient, String subject, String textContent, String htmlContent) {
+//		try {
+//			BPTMailUtils.sendMultipartTextAndHtmlMail(session, recipient, subject, textContent, htmlContent);
+//		} catch (MessagingException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	public void sendEmailForNewEntry(String toolName, String documentId, String userId) {
 		
@@ -122,7 +122,6 @@ public class BPTMailProvider {
 			String subject = "[Tools for BPM] Deleted entry: " + toolName + " (" + documentId + ")";
 
 			List<Map> moderators = userRepository.getModerators();
-			Map<String, Object> user = userRepository.getUser(userId);
 			
 			for (Map<String, Object> moderator : moderators) {
 				
@@ -209,7 +208,6 @@ public class BPTMailProvider {
 			String subject = "[Tools for BPM] Unpublished entry: " + " (" + documentId + ")";
 
 			List<Map> moderators = userRepository.getModerators();
-			Map<String, Object> user = userRepository.getUser(userId);
 			
 			for (Map<String, Object> moderator : moderators) {
 				

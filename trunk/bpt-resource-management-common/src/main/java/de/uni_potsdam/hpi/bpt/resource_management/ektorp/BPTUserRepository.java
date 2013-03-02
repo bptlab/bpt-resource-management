@@ -1,7 +1,5 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +7,7 @@ import java.util.Map;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTUserRepository extends BPTDocumentRepository {
 	
 	public BPTUserRepository() {

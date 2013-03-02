@@ -1,12 +1,10 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.util.ArrayList;
-
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
+@SuppressWarnings("serial")
 public class BPTSidebar extends CustomComponent{
 	
 //	private VerticalLayout layout;

@@ -1,27 +1,19 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
@@ -31,21 +23,18 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
-import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
-import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
+@SuppressWarnings("serial")
 public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	private VerticalLayout layout;
@@ -204,7 +193,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 
 			private void finishUpload() {
 				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
-				BPTUserRepository userRepository = ((BPTApplication)getApplication()).getUserRepository();
 				
 				//TODO: if(!(item == null)) { updaten statt neuer eintrag
 				if (documentId == null) { 

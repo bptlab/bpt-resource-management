@@ -1,40 +1,27 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.expressme.openid.OpenIdException;
-
 import com.vaadin.Application;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.service.ApplicationContext;
-import com.vaadin.service.ApplicationContext.TransactionListener;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
-import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
+@SuppressWarnings({ "unchecked", "serial" })
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	
 	private BPTShowEntryComponent entryComponent;

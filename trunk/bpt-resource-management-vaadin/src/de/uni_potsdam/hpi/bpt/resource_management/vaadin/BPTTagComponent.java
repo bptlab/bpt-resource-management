@@ -11,6 +11,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
+@SuppressWarnings("serial")
 public class BPTTagComponent extends CustomComponent {
 	
 	protected ComboBox searchInput;
@@ -82,6 +83,7 @@ public class BPTTagComponent extends CustomComponent {
 			searchInput.addItem(unselectedValue);
 		}
 	}
+	
 	public ArrayList<String> getTagValues() {
 		
 		return searchTagBox.getTagValues();
