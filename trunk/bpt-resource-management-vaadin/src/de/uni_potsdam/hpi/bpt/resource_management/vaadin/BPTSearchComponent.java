@@ -1,58 +1,44 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.util.ArrayList;
-
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+public class BPTSearchComponent extends CustomComponent {
 
-public class BPTSearchComponent extends BPTTagComponent{
+	private VerticalLayout layout;
+	private BPTFullSearchComponent fullSearchComponent;
+	private BPTTagSearchComponent tagSearchComponent;
 
-	private BPTBoxContainer box;
-	private HorizontalLayout boxLayout;
-	
 	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		super(application, tagColumns, newTagsAllowed);
+		fullSearchComponent = new BPTFullSearchComponent(application);
+		tagSearchComponent = new BPTTagSearchComponent(application, tagColumns, newTagsAllowed);
+		init();
 	}
-	
-	@Override
-	protected void addElements(boolean newTagsAllowed) {
-		boxLayout = new HorizontalLayout();
-		layout.addComponent(boxLayout);
-		box = new BPTBoxContainer(application);
-		super.addElements(newTagsAllowed);
+
+	private void init() {
+		layout = new VerticalLayout();
+		layout.setWidth("100%");
+		layout.setHeight("100%");
+		setCompositionRoot(layout);
+		layout.addComponent(fullSearchComponent);
+		layout.addComponent(tagSearchComponent);
 	}
-	
-	public void login() {
-			boxLayout.removeAllComponents();
-			box = new BPTBoxContainer(application);
-			boxLayout.addComponent(box);
+
+	public BPTFullSearchComponent getFullSearchComponent() {
+		return fullSearchComponent;
 	}
-	
-	public void logout() {
-		boxLayout.removeComponent(box);
+
+	public void setFullSearchComponent(BPTFullSearchComponent fullSearchComponent) {
+		this.fullSearchComponent = fullSearchComponent;
 	}
-	
-	@Override
-	public void refresh() {
-		((BPTApplication) getApplication()).refresh();
+
+	public BPTTagSearchComponent getTagSearchComponent() {
+		return tagSearchComponent;
 	}
-	
-	public ArrayList<BPTToolStatus> getSelectedStates() {
-		return box.getSelectedStates();
-	}
-	
-	public ArrayList<String> getSelectedTags() {
-		return searchTagBox.getTagValues();
-	}
-	
-	public boolean isOwnEntriesOptionSelected() {
-		return box.isOwnEntriesOptionSelected();
-	}
-	
-	@Override
-	public void addChosenTag(String value){
-		searchTagBox.addTag(value);
+
+	public void setTagSearchComponent(BPTTagSearchComponent tagSearchComponent) {
+		this.tagSearchComponent = tagSearchComponent;
 	}
 
 }

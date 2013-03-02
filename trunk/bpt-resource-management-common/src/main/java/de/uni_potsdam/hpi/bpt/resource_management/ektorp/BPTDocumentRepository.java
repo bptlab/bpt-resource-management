@@ -15,6 +15,8 @@ import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.View;
 import org.ektorp.support.Views;
 
+import com.github.ldriscoll.ektorplucene.CouchDbRepositorySupportWithLucene;
+
 /**
  * Provides querying methods based on CouchDB views.
  * Provides methods for CRUD operations based on java.util.Map - may be directly used by front-end.
@@ -28,7 +30,8 @@ import org.ektorp.support.Views;
  * @author tw
  *
  */
-public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
+//public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
+public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWithLucene<Map> {
 	
 	protected String tableName;
 	private List<Map> tableEntries = new ArrayList<Map>();

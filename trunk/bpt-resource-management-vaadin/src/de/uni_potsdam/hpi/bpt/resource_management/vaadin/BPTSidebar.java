@@ -24,17 +24,33 @@ public class BPTSidebar extends CustomComponent{
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
 		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
-		setSearchComponent(new BPTSearchComponent(application, "all", false));
-		layout.addComponent(getSearchComponent());
+		searchComponent = new BPTSearchComponent(application, "all", false);
+		init(layout);		
+	}
+
+	public BPTSearchComponent getSearchComponent() {
+		return searchComponent;
+	}
+
+	public void setSearchComponent(BPTSearchComponent searchComponent) {
+		this.searchComponent = searchComponent;
+	}
+
+	private void init(HorizontalLayout layout2) {
+		layout.addComponent(searchComponent);
 		layout.addComponent(loginComponent);
-		layout.setExpandRatio(getSearchComponent(), 8);
-		layout.setExpandRatio(loginComponent, 2);
-		
+		layout.setExpandRatio(searchComponent, 75);
+		layout.setExpandRatio(loginComponent, 25);
 	}
 
 	public void login(String name) {
-		getSearchComponent().login();
+		searchComponent.getTagSearchComponent().login();
 		loginComponent.login(name);
+	}
+
+	public void logout(){
+		searchComponent.getTagSearchComponent().logout();
+		application.close();
 	}
 	
 	public void upload(){
@@ -45,27 +61,14 @@ public class BPTSidebar extends CustomComponent{
 		layout.setExpandRatio(label, 8);
 		layout.setExpandRatio(loginComponent, 2);
 	}
+	
 	public void finder() {
 		layout.removeAllComponents();
-		setSearchComponent(new BPTSearchComponent(application, "all", false));
-		layout.addComponent(getSearchComponent());
-		layout.addComponent(loginComponent);
-		layout.setExpandRatio(getSearchComponent(), 8);
-		layout.setExpandRatio(loginComponent, 2);
-		if(application.isLoggedIn()) getSearchComponent().login();
-	}
-	
-	public void logout(){
-		getSearchComponent().logout();
-		application.close();
-	}
-
-	public BPTSearchComponent getSearchComponent() {
-		return searchComponent;
-	}
-
-	private void setSearchComponent(BPTSearchComponent searchComponent) {
-		this.searchComponent = searchComponent;
+		searchComponent = new BPTSearchComponent(application, "all", false);
+		init(layout);
+		if (application.isLoggedIn()) {
+			searchComponent.getTagSearchComponent().login();
+		}
 	}
 
 }

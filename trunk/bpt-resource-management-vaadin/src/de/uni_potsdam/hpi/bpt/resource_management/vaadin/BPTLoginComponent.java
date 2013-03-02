@@ -22,7 +22,7 @@ import com.vaadin.ui.themes.BaseTheme;
 public class BPTLoginComponent extends CustomComponent implements Property.ValueChangeListener {
 		
 	private VerticalLayout layout;
-	private Button loginWindowButton;
+	private Button loginButton;
 	private Button logoutButton;
 	private Button registerButton;
 	private Label welcomeLabel;
@@ -54,11 +54,11 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	}
 
 	private void addLoginButton() {
-		loginWindowButton = new Button("Login");
-        loginWindowButton.setStyleName(BaseTheme.BUTTON_LINK);
-        layout.addComponent(loginWindowButton);
+		loginButton = new Button("Login");
+        loginButton.setStyleName(BaseTheme.BUTTON_LINK);
+        layout.addComponent(loginButton);
         
-        loginWindowButton.addListener(new Button.ClickListener(){
+        loginButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 			        try {
 						redirectToOpenIDProvider();
@@ -101,10 +101,6 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	
 			}});
 		
-	}
-
-	private void createSubWindow(OpenIdManager manager, Association association){
-			subWindow = new BPTLoginWindow("Login succesful!", this);
 	}
 	
 	public void login(String name){

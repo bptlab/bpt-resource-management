@@ -28,7 +28,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 	public BPTShowEntryComponent(){
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
-		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>());
+		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), null);
 	}
 	
 	public void showEntries(IndexedContainer dataSource) {
@@ -91,45 +91,42 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 			}
 			BPTToolStatus actualState = ((BPTApplication)getApplication()).getToolRepository().getDocumentStatus(_id);
 			
-			if(((BPTApplication)getApplication()).isModerated()){
+			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
 				
-				if (actualState == BPTToolStatus.Unpublished){
-					
-					Button publishButton = new Button("publish");
-					publishButton.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							addConfirmationWindow(popupWindow, "publish");
-						}
-					});
-					layout.addComponent(publishButton);
-					
-					Button rejectButton = new Button("reject");
-					rejectButton.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							addConfirmationWindow(popupWindow, "reject");
-						}
-					});
-					layout.addComponent(rejectButton);						
-					
-				}
-				else if (actualState == BPTToolStatus.Published) {
-					Button unpublishButton = new Button("unpublish");
-					unpublishButton.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							addConfirmationWindow(popupWindow, "unpublish");
-						}
-					});
-					layout.addComponent(unpublishButton);	
-				}
-				else {
-					Button proposeButton = new Button("propose");
-					proposeButton.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							addConfirmationWindow(popupWindow, "propose");
-						}
-					});
-					layout.addComponent(proposeButton);	
-				}
+				Button publishButton = new Button("publish");
+				publishButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow(popupWindow, "publish");
+					}
+				});
+				layout.addComponent(publishButton);
+				
+				Button rejectButton = new Button("reject");
+				rejectButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow(popupWindow, "reject");
+					}
+				});
+				layout.addComponent(rejectButton);						
+				
+			}
+			else if (actualState == BPTToolStatus.Published) {
+				Button unpublishButton = new Button("unpublish");
+				unpublishButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow(popupWindow, "unpublish");
+					}
+				});
+				layout.addComponent(unpublishButton);	
+			}
+			else if (actualState == BPTToolStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
+				Button proposeButton = new Button("propose");
+				proposeButton.addListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow(popupWindow, "propose");
+					}
+				});
+				layout.addComponent(proposeButton);	
 			}
 			
 		}
@@ -165,7 +162,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 					((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
-					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromPublished);
+					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
 				} else { // if status.equals("propose"))
 					boolean fromRejected = false;
 					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromRejected);

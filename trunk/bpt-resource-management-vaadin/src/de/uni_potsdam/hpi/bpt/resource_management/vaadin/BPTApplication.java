@@ -36,6 +36,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 public class BPTApplication extends Application implements HttpServletRequestListener {
+	
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn, loggingIn, moderated;
@@ -43,11 +44,17 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
-	private BPTToolRepository toolRepository = new BPTToolRepository();
-	private BPTUserRepository userRepository = new BPTUserRepository();
+	private BPTToolRepository toolRepository;
+	private BPTUserRepository userRepository;
 	
 	@Override
 	public void init() {
+		toolRepository = new BPTToolRepository();
+		userRepository = new BPTUserRepository();
+		
+		// XXX mail notifications are disabled by default - enable here for deployment
+//		toolRepository.enableMailProvider();
+		
 		setProperties();
 		
 		Window mainWindow = new Window("BPTApplication");
@@ -125,7 +132,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 
-	private void setProperties() {		
+	private void setProperties() { 		
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 		applicationURL = resourceBundle.getString("OPENID_RETURN_TO");
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
@@ -186,8 +193,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//		} else {
-//			return;
+		} else {
+			return;
 		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
@@ -257,27 +264,29 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void refresh() {
 		IndexedContainer dataSource;
+		BPTTagSearchComponent tagSearchComponent = sidebar.getSearchComponent().getTagSearchComponent();
+		String query = sidebar.getSearchComponent().getFullSearchComponent().getQuery();
 		if (loggedIn) {
 			if (!moderated) {
-				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
-					ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
-					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags);
+				if (tagSearchComponent.isOwnEntriesOptionSelected()) {
+					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
+					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
 				} else {
 					ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
 					states.add(BPTToolStatus.Published);
-					ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
-					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
+					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
+					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 				}
 			} else {
-				ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
-				ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
-				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
+				ArrayList<BPTToolStatus> states = tagSearchComponent.getSelectedStates();
+				ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
+				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 			}
 		} else {
 			ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
 			states.add(BPTToolStatus.Published);
-			ArrayList<String> selectedTags = sidebar.getSearchComponent().getSelectedTags();
-			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags);
+			ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
+			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 		}
 		
 		entryComponent.showEntries(dataSource);
