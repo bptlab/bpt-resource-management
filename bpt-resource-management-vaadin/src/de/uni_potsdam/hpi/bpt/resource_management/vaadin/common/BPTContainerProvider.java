@@ -65,8 +65,7 @@ public class BPTContainerProvider {
 	 */
 	public static Set<String> getUniqueValues(String tagColumn) {
 		Set<String> uniqueValues = new HashSet<String>();
-		//TODO: avoid database access
-		List<Map> tools = toolRepository.getAll();
+		List<Map> tools = toolRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
 		for (Map<String, Object> tool : tools) {
@@ -109,14 +108,14 @@ public class BPTContainerProvider {
 		}
 	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags){
-		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags);
+	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query){
+		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> tags){
-		List<Map> tools = toolRepository.getVisibleEntriesByUser(user, tags);
+	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> tags, String query){
+		List<Map> tools = toolRepository.getVisibleEntriesByUser(user, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}

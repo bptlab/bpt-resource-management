@@ -129,50 +129,47 @@ public class BPTEntry extends CustomLayout{
 			System.out.println("renderDeleteButton" + entryId);
 		}
 		
-		if(application.isLoggedIn() && application.isModerated()){
-			
-			BPTToolStatus actualState = application.getToolRepository().getDocumentStatus(entryId);
-			if (actualState == BPTToolStatus.Unpublished){
-				
-			
+		BPTToolStatus actualState = application.getToolRepository().getDocumentStatus(entryId);
+		
+		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Unpublished){
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "publish");
+			}});
+		
+			publish.setStyleName(BaseTheme.BUTTON_LINK);
+			publish.addStyleName("bpt");
+			this.addComponent(publish, "button publish");
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
+			
+			Button reject = new Button("reject");
+			reject.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "reject");
+			}});
+			
+			reject.setStyleName(BaseTheme.BUTTON_LINK);
+			reject.addStyleName("bpt");
+			this.addComponent(reject, "button reject");
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
+		}
+		
+		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTToolStatus.Published){
+			Button unpublish = new Button("unpublish");
+			unpublish.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					entryCards.addConfirmationWindowTo(entryId, "unpublish");
 				}});
 			
-					publish.setStyleName(BaseTheme.BUTTON_LINK);
-					publish.addStyleName("bpt");
-					this.addComponent(publish, "button publish");
-					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
-					
-					Button reject = new Button("reject");
-					reject.addListener(new Button.ClickListener(){
-						public void buttonClick(ClickEvent event) {
-							entryCards.addConfirmationWindowTo(entryId, "reject");
-						}});
-					
-					reject.setStyleName(BaseTheme.BUTTON_LINK);
-					reject.addStyleName("bpt");
-					this.addComponent(reject, "button reject");
-					application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
-			
-			}
-			else if (actualState == BPTToolStatus.Published){
-				Button unpublish = new Button("unpublish");
-				unpublish.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						entryCards.addConfirmationWindowTo(entryId, "unpublish");
-					}});
-				
-				unpublish.setStyleName(BaseTheme.BUTTON_LINK);
-				unpublish.addStyleName("bpt");
-				this.addComponent(unpublish, "button unpublish");
-				application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
-			
-			}
-			else {
-			
+			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
+			unpublish.addStyleName("bpt");
+			this.addComponent(unpublish, "button unpublish");
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
+		
+		}
+		
+		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Rejected){
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -183,7 +180,6 @@ public class BPTEntry extends CustomLayout{
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
-			}
 		}
 		
 	}

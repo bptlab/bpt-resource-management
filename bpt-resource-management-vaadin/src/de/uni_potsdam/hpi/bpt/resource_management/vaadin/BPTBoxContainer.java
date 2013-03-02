@@ -24,7 +24,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 public class BPTBoxContainer extends CustomComponent {
 
 	private HorizontalLayout layout;
-	private CheckBox unpublishedCheckBox, publishedCheckBox, rejectedCheckBox, ownEntriesCheckBox;
+	private CheckBox unpublishedCheckBox, publishedCheckBox, rejectedCheckBox;
 	private boolean loggedIn, moderated;
 	private OptionGroup resourceProviderOptionGroup;
 	

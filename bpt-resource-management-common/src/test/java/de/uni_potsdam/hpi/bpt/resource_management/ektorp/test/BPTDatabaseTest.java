@@ -16,14 +16,17 @@ import org.junit.runners.MethodSorters;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
 @FixMethodOrder(MethodSorters.JVM)
 public class BPTDatabaseTest {
 	
-	private BPTToolRepository repository;
+	private BPTToolRepository toolRepository;
+	private BPTUserRepository userRepository;
 	private Map<String, Object> exampleToolFromDatabase;
 	private static int numberOfDocuments;
 	private static String[] toolIdentifiers = new String[5];
+	private static final String userId = "http://www.example.com/openid-user";	
 	
 	private final Object[] firstTool = new Object[] {
 		"ProM",
@@ -37,11 +40,12 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("Windows", "Linux", "Mac OSX")),
 		new ArrayList<String>(Arrays.asList("verification of model properties", "process discovery based on event data", "conformance checking based on event data")),
 		"Eric Verbeek",
-		"h.m.w.verbeek@tunnel", 
-		new String(),
+		"test@example.org", 
+		userId,
 		new Date(),
 		new Date(),
 	};
+	
 	private final Object[] secondTool = new Object[] {
 		"Activiti",
 		"<b>Activiti</b> is an open-source workflow engine written in Java that can execute business processes described in BPMN 2.0.",
@@ -55,10 +59,11 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository", "process engine")),
 		"Tijs Rademakers",
 		"test@example.org",
-		new String(),
+		userId,
 		new Date(),
 		new Date(),
 	};
+	
 	private final Object[] thirdTool = new Object[] {
 		"Signavio Process Editor",
 		"",
@@ -71,11 +76,12 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("SaaS")),
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository", "verification of model properties")),
 		"Signavio GmbH",
-		"info@signavio.com", 
-		new String(),
+		"test@example.org", 
+		userId,
 		new Date(),
 		new Date(),
 	};
+	
 	private final Object[] fourthTool = new Object[] {
 		"Yaoqiang BPMN Editor",
 		"Yaoqiang BPMN Editor is a graphical editor for business process diagrams, compliant with OMG specifications (BPMN 2.0).",
@@ -88,8 +94,8 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("Windows")),
 		new ArrayList<String>(Arrays.asList("graphical model editor")),
 		"blenta",
-		"shi_yaoqiang@yahoo.com", 
-		new String(),
+		"test@example.org", 
+		userId,
 		new Date(),
 		new Date(),
 	};
@@ -107,29 +113,36 @@ public class BPTDatabaseTest {
 		new ArrayList<String>(Arrays.asList("graphical model editor", "model repository")),
 		"IBM",
 		"test@example.org",
-		new String(),
+		userId,
 		new Date(),
 		new Date(),
 	};
 	
 	public BPTDatabaseTest(){
-		repository = new BPTToolRepository();
-		numberOfDocuments = repository.numberOfDocuments();
+		toolRepository = new BPTToolRepository();
+		toolRepository.disableMailProvider();
+		userRepository = new BPTUserRepository();
+		numberOfDocuments = toolRepository.numberOfDocuments();
 	}
 	
 	@Test(expected = DocumentNotFoundException.class)
 	public void testDocumentNotFound() {
-		exampleToolFromDatabase = repository.readDocument("trololol");
+		exampleToolFromDatabase = toolRepository.readDocument("trololol");
+	}
+	
+	@Test
+	public void testCreateUser() {
+		userRepository.isModerator(userId, "Example User", "mail@example.org");
 	}
 	
 	@Test
 	public void testCreateDocument() {
-		toolIdentifiers[0] = repository.createDocument(generateDocument(firstTool));
-		toolIdentifiers[1] = repository.createDocument(generateDocument(secondTool));
-		assertEquals(numberOfDocuments + 2, repository.numberOfDocuments());
-		toolIdentifiers[2] = repository.createDocument(generateDocument(thirdTool));
-		toolIdentifiers[3] = repository.createDocument(generateDocument(fourthTool));
-		toolIdentifiers[4] = repository.createDocument(generateDocument(fifthTool));
+		toolIdentifiers[0] = toolRepository.createDocument(generateDocument(firstTool));
+		toolIdentifiers[1] = toolRepository.createDocument(generateDocument(secondTool));
+		assertEquals(numberOfDocuments + 2, toolRepository.numberOfDocuments());
+		toolIdentifiers[2] = toolRepository.createDocument(generateDocument(thirdTool));
+		toolIdentifiers[3] = toolRepository.createDocument(generateDocument(fourthTool));
+		toolIdentifiers[4] = toolRepository.createDocument(generateDocument(fifthTool));
 	}
 	
 	private Map<String, Object> generateDocument(Object[] tool) {
@@ -143,18 +156,23 @@ public class BPTDatabaseTest {
 
 	@Test
 	public void testUpdateDocument() {
-		exampleToolFromDatabase = repository.readDocument(toolIdentifiers[0]);
+		exampleToolFromDatabase = toolRepository.readDocument(toolIdentifiers[0]);
 		exampleToolFromDatabase.put("download_url", "http://www.promtools.org");
-		repository.updateDocument(exampleToolFromDatabase);
+		toolRepository.updateDocument(exampleToolFromDatabase);
 	}
 	
 	@Test
 	public void testDeleteDocument() {
 		for (String _id : toolIdentifiers) {
-			exampleToolFromDatabase = repository.readDocument(_id);
-			repository.deleteDocument(_id);
+			exampleToolFromDatabase = toolRepository.readDocument(_id);
+			toolRepository.deleteDocument(_id);
 		}
-		assertEquals(numberOfDocuments - 5, repository.numberOfDocuments());
+		assertEquals(numberOfDocuments - 5, toolRepository.numberOfDocuments());
+	}
+	
+	@Test
+	public void testDeleteUser() {
+		userRepository.deleteDocument(userId);
 	}
 
 }

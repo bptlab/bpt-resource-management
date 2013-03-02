@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -11,6 +12,8 @@ import org.ektorp.http.StdHttpClient;
 import org.ektorp.http.StdHttpClient.Builder;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
+
+import com.github.ldriscoll.ektorplucene.LuceneAwareCouchDbConnector;
 
 /**
  * Provides a static method to connect to CouchDB.
@@ -34,7 +37,7 @@ public class BPTDatabase {
      * @return the connection to the database
      * 
      */
-	public static CouchDbConnector connect(String table) {
+	public static LuceneAwareCouchDbConnector connect(String table) {
 		
 		setProperties();
 		
@@ -46,12 +49,17 @@ public class BPTDatabase {
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
-		CouchDbConnector database = new StdCouchDbConnector(table, databaseInstance);
+//		CouchDbConnector database = new StdCouchDbConnector(table, databaseInstance);
 		
-		database.createDatabaseIfNotExists();
-		
-		return database;
-		
+		try {
+			LuceneAwareCouchDbConnector database = new LuceneAwareCouchDbConnector(table, databaseInstance);
+			database.createDatabaseIfNotExists();
+			return database;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}		
 	}
 
 	private static void setProperties() {

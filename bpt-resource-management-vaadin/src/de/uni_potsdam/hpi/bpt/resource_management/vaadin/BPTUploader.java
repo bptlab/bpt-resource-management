@@ -105,22 +105,22 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		layout.addComponent(screencastInput);
 		
 		layout.addComponent(new Label("Availabilities:"));
-		availabilitiesTagComponent = new BPTTagComponent("availabilities", true);
+		availabilitiesTagComponent = new BPTTagComponent(application, "availabilities", true);
 		availabilitiesTagComponent.setWidth("100%");
 		layout.addComponent(availabilitiesTagComponent);
 		
 		layout.addComponent(new Label("Model Type:"));
-		modelTagComponent = new BPTTagComponent("modelTypes", true);
+		modelTagComponent = new BPTTagComponent(application, "modelTypes", true);
 		modelTagComponent.setWidth("100%");
 		layout.addComponent(modelTagComponent);
 		
 		layout.addComponent(new Label("Platform:"));
-		platformTagComponent = new BPTTagComponent("platforms", true);
+		platformTagComponent = new BPTTagComponent(application, "platforms", true);
 		platformTagComponent.setWidth("100%");
 		layout.addComponent(platformTagComponent);
 		
 		layout.addComponent(new Label("Supported functionality:"));
-		functionalityTagComponent = new BPTTagComponent("supportedFunctionalities", true);
+		functionalityTagComponent = new BPTTagComponent(application, "supportedFunctionalities", true);
 		functionalityTagComponent.setWidth("100%");
 		layout.addComponent(functionalityTagComponent);
 		

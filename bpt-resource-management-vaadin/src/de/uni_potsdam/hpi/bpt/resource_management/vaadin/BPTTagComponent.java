@@ -13,17 +13,13 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 
 public class BPTTagComponent extends CustomComponent {
 	
-	private ComboBox searchInput;
+	protected ComboBox searchInput;
 	private Set<String> uniqueValues;
 	private Set<String> unselectedValues;
-	protected BPTApplication application;
 	protected BPTSearchTagBox searchTagBox;
 	protected VerticalLayout layout;
+	protected BPTApplication application;
 	
-	
-	public BPTTagComponent(String tagColumns, boolean newTagsAllowed) {
-		init(tagColumns, newTagsAllowed);
-	}
 	
 	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		this.application = application;
@@ -47,6 +43,18 @@ public class BPTTagComponent extends CustomComponent {
 		addListenerToSearchInputBox();	
 	}
 
+	private ComboBox createSearchInputBox(boolean newTagsAllowed){
+		searchInput = new ComboBox();
+		for (String uniqueValue: uniqueValues) {
+			searchInput.addItem(uniqueValue);
+		}
+//		searchInput.setWidth("100%");
+		searchInput.setImmediate(true);
+		searchInput.setNewItemsAllowed(newTagsAllowed);
+		unselectedValues = uniqueValues;
+		return searchInput;
+	}
+
 	private void addListenerToSearchInputBox() {
 		searchInput.addListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
@@ -64,18 +72,6 @@ public class BPTTagComponent extends CustomComponent {
 				}				
 			}
 		});
-	}
-
-	private ComboBox createSearchInputBox(boolean newTagsAllowed){
-		searchInput = new ComboBox();
-		for (String uniqueValue: uniqueValues){
-			searchInput.addItem(uniqueValue);
-		}
-//		searchInput.setWidth("100%");
-		searchInput.setImmediate(true);
-		searchInput.setNewItemsAllowed(newTagsAllowed);
-		unselectedValues = uniqueValues;
-		return searchInput;
 	}
 
 	public void addTag(BPTSearchTag searchTag) {
