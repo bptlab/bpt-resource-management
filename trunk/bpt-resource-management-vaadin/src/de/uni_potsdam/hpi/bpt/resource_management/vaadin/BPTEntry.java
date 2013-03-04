@@ -51,8 +51,8 @@ public class BPTEntry extends CustomLayout {
 					this.addComponent(link, id.toString());
 				}
 				else {
-					if(id == "Provider" || id == "Tool"){
-						Link link = new Link((String) value, new ExternalResource(item.getItemProperty(id + " URL").getValue().toString()));
+					if(id == "Provider"){
+						Link link = new Link((String) value, new ExternalResource(item.getItemProperty("Provider URL").getValue().toString()));
 						this.addComponent(link, id.toString());
 					}
 					else{
