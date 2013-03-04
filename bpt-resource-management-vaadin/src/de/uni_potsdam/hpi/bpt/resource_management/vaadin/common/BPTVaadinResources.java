@@ -32,7 +32,7 @@ public class BPTVaadinResources {
 	    { 
 	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
 	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
-	    	add(new Object[] {"name", "Tool", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
 	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
 	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
@@ -47,7 +47,6 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, true, true});
-	    	add(new Object[] {"tool_url", "Tool URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"description_url", "Description URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"provider_url", "Provider URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
 	    	add(new Object[] {"tutorial_url", "Tutorial", Component.class, BPTPropertyValueType.LINK, null, true, false, true});

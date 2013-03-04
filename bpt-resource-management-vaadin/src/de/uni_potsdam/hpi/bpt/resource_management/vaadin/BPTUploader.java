@@ -66,11 +66,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		toolNameInput.setWidth("100%");
 		layout.addComponent(toolNameInput);
 		
-		layout.addComponent(new Label("Tool URL:"));
-		toolURLInput = new TextField();
-		toolURLInput.setWidth("100%");
-		layout.addComponent(toolURLInput);
-		
 		layout.addComponent(new Label("Description:"));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
@@ -153,8 +148,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	toolNameInput.setValue((item.getItemProperty("Tool").getValue()));
-        	toolURLInput.setValue((item.getItemProperty("Tool URL").getValue()));
+        	toolNameInput.setValue((item.getItemProperty("Name").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue()));
         	descriptionURLInput.setValue((item.getItemProperty("Description URL").getValue()));
         	providerInput.setValue(item.getItemProperty("Provider").getValue());
@@ -236,7 +230,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 							(String)application.getUser(), 
 							new Date(),
 							new Date(),
-							(String)toolURLInput.getValue(),
 							(String)descriptionURLInput.getValue(),
 							(String)providerURLInput.getValue(),
 							(String)tutorialInput.getValue()
@@ -259,7 +252,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
 					newValues.put("name", toolNameInput.getValue().toString());
-					newValues.put("tool_url", toolURLInput.getValue().toString());
 					newValues.put("description", descriptionInput.getValue().toString());
 					newValues.put("description_url", descriptionURLInput.getValue().toString());
 					newValues.put("provider", providerInput.getValue().toString());
