@@ -153,12 +153,12 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	toolNameInput.setValue((item.getItemProperty("Name").getValue()));
-        	toolURLInput.setValue((item.getItemProperty("ToolURL").getValue()));
+        	toolNameInput.setValue((item.getItemProperty("Tool").getValue()));
+        	toolURLInput.setValue((item.getItemProperty("Tool URL").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue()));
-        	descriptionURLInput.setValue((item.getItemProperty("DescriptionURL").getValue()));
+        	descriptionURLInput.setValue((item.getItemProperty("Description URL").getValue()));
         	providerInput.setValue(item.getItemProperty("Provider").getValue());
-        	providerURLInput.setValue(item.getItemProperty("ProviderURL").getValue());
+        	providerURLInput.setValue(item.getItemProperty("Provider URL").getValue());
         	downloadInput.setValue(((Link)(item.getItemProperty("Download").getValue())).getCaption());
         	documentationInput.setValue(((Link)(item.getItemProperty("Documentation").getValue())).getCaption());
         	screencastInput.setValue(((Link)(item.getItemProperty("Screencast").getValue())).getCaption());
