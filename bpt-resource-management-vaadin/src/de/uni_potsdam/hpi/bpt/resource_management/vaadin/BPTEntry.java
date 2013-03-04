@@ -1,6 +1,8 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
@@ -41,7 +43,7 @@ public class BPTEntry extends CustomLayout {
 				this.addComponent(image, id.toString());
 				image.addStyleName("bptlogo");
 			}
-			else if (id != "User ID" && id != "ID") {
+			else if (id != "User ID" && id != "ID" && id != "Description URL" && id != "Provider URL" && id != "Tool URL") {
 				Object value = item.getItemProperty(id).getValue();
 				if(value.getClass() == Link.class){
 					Link link = (Link) value;
@@ -49,12 +51,22 @@ public class BPTEntry extends CustomLayout {
 					this.addComponent(link, id.toString());
 				}
 				else {
-					Label label = new Label(value.toString());
-					if(id == "Description") {
-						label.setContentMode(Label.CONTENT_XHTML);
+					if(id == "Provider" || id == "Tool"){
+						Link link = new Link((String) value, new ExternalResource(item.getItemProperty(id + " URL").getValue().toString()));
+						this.addComponent(link, id.toString());
 					}
-					label.setWidth("524px");
-					this.addComponent(label, id.toString());
+					else{
+						String labelContent = value.toString();
+						Label label = new Label(labelContent);
+						if(id == "Description") {
+							label.setContentMode(Label.CONTENT_XHTML);
+							String descriptionURL = item.getItemProperty("Description URL").getValue().toString();
+							labelContent = labelContent + "<a href='" + descriptionURL + "'> more</a>";
+							label.setValue(labelContent);
+						}
+						label.setWidth("500px");
+						this.addComponent(label, id.toString());
+					}
 				}
 			}
 			

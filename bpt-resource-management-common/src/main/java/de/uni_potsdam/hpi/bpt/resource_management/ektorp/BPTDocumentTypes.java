@@ -20,10 +20,11 @@ public class BPTDocumentTypes {
 	public static String[] getDocumentKeys(String type) {
 		if (type.equals("bpt_resources_tools")) {
 			return new String[] {
-				"name", "description", "provider", 
+				"name","description", "provider", 
 				"download_url", "documentation_url", "screencast_url", 
 				"availabilities", "model_types", "platforms", "supported_functionalities", 
-				"contact_name", "contact_mail", "user_id", "date_created", "last_update"
+				"contact_name", "contact_mail", "user_id", "date_created", "last_update",
+				"tool_url", "description_url", "provider_url", "tutorial_url"
 			};
 		}
 		if (type.equals("bpt_resources_users")) {
