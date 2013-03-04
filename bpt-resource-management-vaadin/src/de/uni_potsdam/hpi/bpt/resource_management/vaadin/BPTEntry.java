@@ -51,7 +51,7 @@ public class BPTEntry extends CustomLayout {
 					this.addComponent(link, id.toString());
 				}
 				else {
-					if(id == "Provider"){
+					if(id == "Provider" && !(item.getItemProperty("Provider URL").getValue().toString().isEmpty())){
 						Link link = new Link((String) value, new ExternalResource(item.getItemProperty("Provider URL").getValue().toString()));
 						this.addComponent(link, id.toString());
 					}
@@ -61,7 +61,7 @@ public class BPTEntry extends CustomLayout {
 						if(id == "Description") {
 							label.setContentMode(Label.CONTENT_XHTML);
 							String descriptionURL = item.getItemProperty("Description URL").getValue().toString();
-							labelContent = labelContent + "<a href='" + descriptionURL + "'> more</a>";
+							labelContent = labelContent + "<a href='" + descriptionURL + "' target='_blank'> more</a>";
 							label.setValue(labelContent);
 						}
 						label.setWidth("500px");
