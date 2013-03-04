@@ -53,6 +53,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
+//		layout.setSizeUndefined();
 		
 		entryComponent = new BPTEntryCards(this);
 //		entryComponent = new BPTTable();
