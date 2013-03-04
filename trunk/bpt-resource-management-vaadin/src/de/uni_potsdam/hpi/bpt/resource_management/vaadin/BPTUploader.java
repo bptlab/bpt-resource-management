@@ -39,7 +39,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	
 	private VerticalLayout layout;
 	private Upload upload;
-	private TextField nameInput, providerInput, downloadInput, documentationInput, screencastInput, contactNameInput, contactMailInput;
+	private TextField toolNameInput, toolURLInput, descriptionURLInput, providerInput, providerURLInput, downloadInput, documentationInput, screencastInput, tutorialInput, contactNameInput, contactMailInput;
 	private TextArea descriptionInput;
 	private Button finishUploadButton, removeImageButton;
 	private BPTTagComponent availabilitiesTagComponent, modelTagComponent, platformTagComponent, functionalityTagComponent;
@@ -61,21 +61,35 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
         layout.addComponent(label);
 		
-		layout.addComponent(new Label("Name:"));
-		nameInput = new TextField();
-		nameInput.setWidth("100%");
-		layout.addComponent(nameInput);
+		layout.addComponent(new Label("Tool Name:"));
+		toolNameInput = new TextField();
+		toolNameInput.setWidth("100%");
+		layout.addComponent(toolNameInput);
 		
+		layout.addComponent(new Label("Tool URL:"));
+		toolURLInput = new TextField();
+		toolURLInput.setWidth("100%");
+		layout.addComponent(toolURLInput);
 		
 		layout.addComponent(new Label("Description:"));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
 		layout.addComponent(descriptionInput);
 		
+		layout.addComponent(new Label("Description URL:"));
+		descriptionURLInput = new TextField();
+		descriptionURLInput.setWidth("100%");
+		layout.addComponent(descriptionURLInput);
+		
 		layout.addComponent(new Label("Provider:"));
 		providerInput = new TextField();
 		providerInput.setWidth("100%");
 		layout.addComponent(providerInput);
+		
+		layout.addComponent(new Label("Provider URL:"));
+		providerURLInput = new TextField();
+		providerURLInput.setWidth("100%");
+		layout.addComponent(providerURLInput);
 		
 		layout.addComponent(new Label("Download:"));
 		downloadInput = new TextField();
@@ -92,6 +106,11 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		screencastInput = new TextField();
 		screencastInput.setWidth("100%");
 		layout.addComponent(screencastInput);
+		
+		layout.addComponent(new Label("Tutorial:"));
+		tutorialInput = new TextField();
+		tutorialInput.setWidth("100%");
+		layout.addComponent(tutorialInput);
 		
 		layout.addComponent(new Label("Availabilities:"));
 		availabilitiesTagComponent = new BPTTagComponent(application, "availabilities", true);
@@ -134,12 +153,16 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	nameInput.setValue((item.getItemProperty("Name").getValue()));
+        	toolNameInput.setValue((item.getItemProperty("Name").getValue()));
+        	toolURLInput.setValue((item.getItemProperty("ToolURL").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue()));
+        	descriptionURLInput.setValue((item.getItemProperty("DescriptionURL").getValue()));
         	providerInput.setValue(item.getItemProperty("Provider").getValue());
+        	providerURLInput.setValue(item.getItemProperty("ProviderURL").getValue());
         	downloadInput.setValue(((Link)(item.getItemProperty("Download").getValue())).getCaption());
         	documentationInput.setValue(((Link)(item.getItemProperty("Documentation").getValue())).getCaption());
         	screencastInput.setValue(((Link)(item.getItemProperty("Screencast").getValue())).getCaption());
+        	tutorialInput.setValue(((Link)(item.getItemProperty("Tutorial").getValue())).getCaption());
         	if(!(item.getItemProperty("Availability").getValue().toString().equals(""))){
         		String[] availability = ((String) item.getItemProperty("Availability").getValue()).split(",");
         		for(int i = 0; i < availability.length; i++) availabilitiesTagComponent.addChosenTag(availability[i]);
@@ -174,7 +197,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				
 				BPTToolRepository toolRepository = application.getToolRepository();
 				
-				if (toolRepository.containsName((String)nameInput.getValue()) && documentId == null) {
+				if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
 				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
 						getWindow().showNotification("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
@@ -198,7 +221,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				if (documentId == null) { 
 				
 					documentId = toolRepository.createDocument(generateDocument(new Object[] {
-							(String)nameInput.getValue(),
+							(String)toolNameInput.getValue(),
 							(String)descriptionInput.getValue(),
 							(String)providerInput.getValue(),
 							(String)downloadInput.getValue(),
@@ -212,7 +235,11 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 							(String)contactMailInput.getValue(),
 							(String)application.getUser(), 
 							new Date(),
-							new Date()
+							new Date(),
+							(String)toolURLInput.getValue(),
+							(String)descriptionURLInput.getValue(),
+							(String)providerURLInput.getValue(),
+							(String)tutorialInput.getValue()
 					}));
 						
 					if (!logoDeleted) { // logo.exists()
@@ -224,19 +251,23 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						logo.delete();
 					}
 					
-					getWindow().showNotification("New entry submitted: " + (String)nameInput.getValue());
+					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
 
 				} else {
 					
 //					System.out.println(descriptionInput.getValue().getClass());
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
-					newValues.put("name", nameInput.getValue().toString());
+					newValues.put("name", toolNameInput.getValue().toString());
+					newValues.put("tool_url", toolURLInput.getValue().toString());
 					newValues.put("description", descriptionInput.getValue().toString());
+					newValues.put("description_url", descriptionURLInput.getValue().toString());
 					newValues.put("provider", providerInput.getValue().toString());
+					newValues.put("provider_url", providerURLInput.getValue().toString());
 					newValues.put("download_url", downloadInput.getValue().toString());
 					newValues.put("documentation_url", documentationInput.getValue().toString());
 					newValues.put("screencast_url", screencastInput.getValue().toString());
+					newValues.put("tutorial_url", tutorialInput.getValue().toString());
 					newValues.put("availabilities", new ArrayList<String>(availabilitiesTagComponent.getTagValues()));
 					newValues.put("model_types", new ArrayList<String>(modelTagComponent.getTagValues()));
 					newValues.put("platforms", new ArrayList<String>(platformTagComponent.getTagValues()));
@@ -258,7 +289,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
 					}
 					
-					getWindow().showNotification("Updated entry: " + (String)nameInput.getValue());
+					getWindow().showNotification("Updated entry: " + (String)toolNameInput.getValue());
 				}
 				
 				((BPTApplication)getApplication()).finder();

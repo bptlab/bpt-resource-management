@@ -147,7 +147,9 @@ ul#resource-list {
 	display: inline;
 }
 
-#resource-list div[class="Date created"],
-#resource-list div[class="Last update"] {
+#resource-list div[class="Date created"] {
 	display: none;
+}
+#resource-list div[class="Last update"]{
+	content: "Last update";
 }
