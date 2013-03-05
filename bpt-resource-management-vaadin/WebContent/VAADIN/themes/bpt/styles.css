@@ -153,3 +153,7 @@ ul#resource-list {
 #resource-list div[class="Last update"]{
 	content: "Last update";
 }
+
+div {
+	overflow: auto !important;
+}
