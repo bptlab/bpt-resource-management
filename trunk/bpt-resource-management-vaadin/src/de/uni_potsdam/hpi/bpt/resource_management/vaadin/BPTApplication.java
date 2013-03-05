@@ -13,6 +13,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -45,15 +46,13 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		setProperties();
 		
 		Window mainWindow = new Window("BPTApplication");
+		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme("bpt");
 		CustomLayout custom = new CustomLayout("mainlayout");
-		custom.setWidth("100%");
 		custom.setHeight("100%");
 		VerticalLayout layout =  new VerticalLayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
-//		layout.setSizeUndefined();
+		layout.setWidth("732px");
 		
 		entryComponent = new BPTEntryCards(this);
 //		entryComponent = new BPTTable();
@@ -62,12 +61,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		layout.addComponent(sidebar);
 		layout.addComponent(mainFrame);
 		mainFrame.add(entryComponent);
-//		layout.setExpandRatio(mainFrame, 7);
-//		layout.setExpandRatio(sidebar, 3);
-		
 		custom.addComponent(layout, "application");
-		mainWindow.addComponent(custom);
-//		mainWindow.executeJavaScript(getScript());
+		mainWindow.setContent(custom);
 	}
 
 	public boolean isLoggedIn() {
