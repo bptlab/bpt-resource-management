@@ -2,7 +2,6 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
@@ -58,33 +57,38 @@ public class BPTEntry extends CustomLayout {
 				} else {
 					this.addComponent(link, id.toString());
 				}
-			}
-			else {
-				if (id.equals("Provider") && !(item.getItemProperty("Provider URL").getValue().toString().isEmpty())) {
-					Link link = new Link((String) value, new ExternalResource(item.getItemProperty("Provider URL").getValue().toString()));
-					this.addComponent(link, id.toString());
-				}
-				else {
+			} else {
+				if (id.equals("Provider")) {
+					String providerURL = ((Link)item.getItemProperty("Provider URL").getValue()).getCaption();
+					if (providerURL.isEmpty()) {
+						Label label = new Label((String) value);
+						this.addComponent(label, id.toString());
+					} else {
+						Link link = new Link((String) value, new ExternalResource(providerURL));
+						this.addComponent(link, id.toString());
+					}
+				} else {
 					String labelContent = value.toString();
 					Label label = new Label(labelContent);
-					if (id == "Description" && !(item.getItemProperty("Description URL").getValue().toString().isEmpty())) {
-						if (labelContent.isEmpty()) {
-							labelContent = "For a description of this tool see";
+					if (id == "Description") {
+						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();
+						if (!descriptionURL.isEmpty()) {
+							if (labelContent.isEmpty()) {
+								labelContent = "For a description of this tool see";
+							}
+							label.setContentMode(Label.CONTENT_XHTML);
+							labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
+							label.setValue(labelContent);
 						}
-						label.setContentMode(Label.CONTENT_XHTML);
-						String descriptionURL = item.getItemProperty("Description URL").getValue().toString();
-						labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
-						label.setValue(labelContent);
-					}
-					else if (id.equals("Contact name")) {
+					} else if (id.equals("Contact name")) {
 						label.setContentMode(Label.CONTENT_XHTML);
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "<span class=\"displaynone\">null</span>@<span class=\"displaynone\">null</span>"); // for obfuscation
 						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
 						label.setValue(labelContent);
 					}
-					label.setWidth("500px"); // TODO: Korrekte Breite ... 90% geht ganz gut
-					if(labelContent.isEmpty()) {
+					label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+					if (labelContent.isEmpty()) {
 						addDefaultComponent(id.toString());
 					} else {
 						this.addComponent(label, id.toString());
@@ -96,7 +100,7 @@ public class BPTEntry extends CustomLayout {
 
 	private void addDefaultComponent(String location) {
 		Label label = new Label("(none)");
-		label.setWidth("500px"); // TODO: Korrekte Breite ... 90% geht ganz gut
+		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
 		this.addComponent(label, location);
 	}
 
