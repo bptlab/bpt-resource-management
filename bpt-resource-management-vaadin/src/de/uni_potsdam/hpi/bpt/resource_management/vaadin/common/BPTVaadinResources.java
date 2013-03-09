@@ -23,7 +23,8 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
  * Contains resources required by Vaadin to display various components.
  * 
  * @author tw
- *
+ * @author bu
+ * 
  */
 @SuppressWarnings({ "serial", "unchecked" })
 public class BPTVaadinResources {
@@ -34,10 +35,13 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
 	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
+	    	add(new Object[] {"description_url", "Description URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
 	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
-	    	add(new Object[] {"download_url", "Download", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
-	    	add(new Object[] {"documentation_url", "Documentation", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
-	    	add(new Object[] {"screencast_url", "Screencast", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
+	    	add(new Object[] {"provider_url", "Provider URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
+	    	add(new Object[] {"download_url", "Download URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
+	    	add(new Object[] {"documentation_url", "Documentation URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
+	    	add(new Object[] {"screencast_url", "Screencast URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
+	    	add(new Object[] {"tutorial_url", "Tutorial URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
 	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true, true, true});
@@ -47,9 +51,6 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, true, true});
-	    	add(new Object[] {"description_url", "Description URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
-	    	add(new Object[] {"provider_url", "Provider URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
-	    	add(new Object[] {"tutorial_url", "Tutorial", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
 	    }
 	};
 	
