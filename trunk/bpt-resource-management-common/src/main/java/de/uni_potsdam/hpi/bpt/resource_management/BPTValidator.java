@@ -10,6 +10,11 @@ public class BPTValidator {
 	private static EmailValidator emailValidator = EmailValidator.getInstance();
 
 	public static boolean isValidURL(String url) {
+//		for (String protocol : schemes) {
+//			if (url.equals(protocol + "://")) {
+//				return true;
+//			}
+//		}
 		return urlValidator.isValid(url);
 	}
 	
