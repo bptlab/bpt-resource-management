@@ -71,14 +71,16 @@ public class BPTEntry extends CustomLayout {
 					String labelContent = value.toString();
 					Label label = new Label(labelContent);
 					if (id == "Description") {
+						label.setContentMode(Label.CONTENT_XHTML);
 						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();
 						if (!descriptionURL.isEmpty()) {
 							if (labelContent.isEmpty()) {
 								labelContent = "For a description of this tool see";
 							}
-							label.setContentMode(Label.CONTENT_XHTML);
 							labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
 							label.setValue(labelContent);
+						} else if (labelContent.isEmpty()) {
+							labelContent = "This tool has no description.";
 						}
 					} else if (id.equals("Contact name")) {
 						label.setContentMode(Label.CONTENT_XHTML);
