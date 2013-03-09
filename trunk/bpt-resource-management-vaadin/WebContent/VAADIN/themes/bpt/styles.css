@@ -1,5 +1,9 @@
 @import "../reindeer/styles.css";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/ConfSkin/style.css";
+
+span.displaynone { 
+	display:none; 
+}
              
 ul#resource-list {
 	list-style-type:none;
@@ -79,43 +83,51 @@ ul#resource-list {
 	background-color: #004870;
 }
 
-#resource-list div[class="Description"]:before,
 #resource-list div[class="Provider"]:before,
-#resource-list div[class="Download"]:before,
-#resource-list div[class="Documentation"]:before,
-#resource-list div[class="Screencast"]:before,
+#resource-list div[class="Download URL"]:before,
+#resource-list div[class="Documentation URL"]:before,
+#resource-list div[class="Screencast URL"]:before,
+#resource-list div[class="Tutorial URL"]:before,
 #resource-list div[class="Availability"]:before,
 #resource-list div[class="Model type"]:before,
 #resource-list div[class="Platform"]:before,
 #resource-list div[class="Supported functionality"]:before,
-#resource-list div[class="Contact name"]:before {
+#resource-list div[class="Contact name"]:before,
+#resource-list div[class="Last update"]:before {
 	content: attr(class);
 	font-style: italic;
 	display: block;
 	margin-left: -1em;
 }
 
-#resource-list div[class="Download"]:before {
+#resource-list div[class="Download URL"]:before {
 	content: "Download URL";
 }
-#resource-list div[class="Documentation"]:before {
+#resource-list div[class="Documentation URL"]:before {
 	content: "Documentation URL";
 }
-#resource-list div[class="Screencast"]:before {
+#resource-list div[class="Screencast URL"]:before {
 	content: "Screencast URL";
+}
+#resource-list div[class="Tutorial URL"]:before {
+	content: "Tutorial URL";
+}
+#resource-list div[class="Last update"]:before{
+	content: "Last update";
 }
 
 #resource-list div[class="Description"],
 #resource-list div[class="Provider"],
-#resource-list div[class="Download"],
-#resource-list div[class="Documentation"],
-#resource-list div[class="Screencast"],
+#resource-list div[class="Download URL"],
+#resource-list div[class="Documentation URL"],
+#resource-list div[class="Screencast URL"],
+#resource-list div[class="Tutorial URL"],
 #resource-list div[class="Availability"],
 #resource-list div[class="Model type"],
 #resource-list div[class="Platform"],
 #resource-list div[class="Supported functionality"],
 #resource-list div[class="Contact name"],
-#resource-list div[class="Contact mail"] {
+#resource-list div[class="Last update"] {
 	padding: 0 0 0 1em;
 	margin-bottom: 0.8em;
 }
@@ -129,15 +141,17 @@ ul#resource-list {
 }
 
 #resource-list div[class="Contact name"]:before {
+	/*
 	display: inline;
 	margin: 0 1em 0 -1em;
+	*/
 	content: "Contact";
 }
 
+/*
 #resource-list div[class="Contact mail"]:before {
 	content: "<";
 }
-
 #resource-list div[class="Contact mail"]:after {
 	content: ">";
 }
@@ -146,12 +160,10 @@ ul#resource-list {
 #resource-list div[class="Contact mail"] {
 	display: inline;
 }
+*/
 
 #resource-list div[class="Date created"] {
 	display: none;
-}
-#resource-list div[class="Last update"]{
-	content: "Last update";
 }
 
 div {

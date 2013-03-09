@@ -33,45 +33,71 @@ public class BPTEntry extends CustomLayout {
 		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(entryId);
+		
 		addButtons();
-		for (Object id : item.getItemPropertyIds()) {
-			if (id == "Logo") {
-				Object value = item.getItemProperty(id).getValue();
-				Embedded image = (Embedded) value;
-				image.setWidth("");
-				image.setHeight("");
-				this.addComponent(image, id.toString());
-				image.addStyleName("bptlogo");
+		for (Object attributeName : item.getItemPropertyIds()) {
+			addToLayout(attributeName.toString());
+		}
+	}
+
+	private void addToLayout(String id) {
+		if (id.equals("Logo")) {
+			Object value = item.getItemProperty(id).getValue();
+			Embedded image = (Embedded) value;
+			image.setWidth("");
+			image.setHeight("");
+			this.addComponent(image, id.toString());
+			image.addStyleName("bptlogo");
+		}
+		else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail")) {
+			Object value = item.getItemProperty(id).getValue();
+			if (value.getClass() == Link.class) {
+				Link link = (Link) value;
+				if (link.getCaption().isEmpty()) {
+					addDefaultComponent(id.toString());
+				} else {
+					this.addComponent(link, id.toString());
+				}
 			}
-			else if (id != "User ID" && id != "ID" && id != "Description URL" && id != "Provider URL" && id != "Tool URL") {
-				Object value = item.getItemProperty(id).getValue();
-				if(value.getClass() == Link.class){
-					Link link = (Link) value;
-					if (id.equals("Contact mail")) link.addStyleName("bpt2");
+			else {
+				if (id.equals("Provider") && !(item.getItemProperty("Provider URL").getValue().toString().isEmpty())) {
+					Link link = new Link((String) value, new ExternalResource(item.getItemProperty("Provider URL").getValue().toString()));
 					this.addComponent(link, id.toString());
 				}
 				else {
-					if(id == "Provider" && !(item.getItemProperty("Provider URL").getValue().toString().isEmpty())){
-						Link link = new Link((String) value, new ExternalResource(item.getItemProperty("Provider URL").getValue().toString()));
-						this.addComponent(link, id.toString());
-					}
-					else{
-						String labelContent = value.toString();
-						Label label = new Label(labelContent);
-						if(id == "Description") {
-							label.setContentMode(Label.CONTENT_XHTML);
-							String descriptionURL = item.getItemProperty("Description URL").getValue().toString();
-							labelContent = labelContent + "<a href='" + descriptionURL + "' target='_blank'> more</a>";
-							label.setValue(labelContent);
+					String labelContent = value.toString();
+					Label label = new Label(labelContent);
+					if (id == "Description" && !(item.getItemProperty("Description URL").getValue().toString().isEmpty())) {
+						if (labelContent.isEmpty()) {
+							labelContent = "For a description of this tool see";
 						}
-						label.setWidth("500px");
+						label.setContentMode(Label.CONTENT_XHTML);
+						String descriptionURL = item.getItemProperty("Description URL").getValue().toString();
+						labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
+						label.setValue(labelContent);
+					}
+					else if (id.equals("Contact name")) {
+						label.setContentMode(Label.CONTENT_XHTML);
+						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
+						mailAddress.replace("@", "<span class=\"displaynone\">null</span>@<span class=\"displaynone\">null</span>"); // for obfuscation
+						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
+						label.setValue(labelContent);
+					}
+					label.setWidth("500px"); // TODO: Korrekte Breite ... 90% geht ganz gut
+					if(labelContent.isEmpty()) {
+						addDefaultComponent(id.toString());
+					} else {
 						this.addComponent(label, id.toString());
 					}
 				}
 			}
-			
 		}
-		
+	}
+
+	private void addDefaultComponent(String location) {
+		Label label = new Label("(none)");
+		label.setWidth("500px"); // TODO: Korrekte Breite ... 90% geht ganz gut
+		this.addComponent(label, location);
 	}
 
 	public void addButtons() {
