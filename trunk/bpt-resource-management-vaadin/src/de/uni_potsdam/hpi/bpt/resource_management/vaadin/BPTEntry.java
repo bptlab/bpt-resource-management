@@ -79,7 +79,7 @@ public class BPTEntry extends CustomLayout {
 					else if (id.equals("Contact name")) {
 						label.setContentMode(Label.CONTENT_XHTML);
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
-						mailAddress.replace("@", "<span class=\"displaynone\">null</span>@<span class=\"displaynone\">null</span>"); // for obfuscation
+						mailAddress = mailAddress.replace("@", "<span class=\"displaynone\">null</span>@<span class=\"displaynone\">null</span>"); // for obfuscation
 						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
 						label.setValue(labelContent);
 					}
