@@ -166,6 +166,6 @@ ul#resource-list {
 	display: none;
 }
 
-div {
+div[id="content"] {
 	overflow: auto !important;
 }
