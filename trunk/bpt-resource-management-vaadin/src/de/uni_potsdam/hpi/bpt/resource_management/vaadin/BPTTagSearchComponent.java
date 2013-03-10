@@ -13,8 +13,8 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 	private HorizontalLayout boxLayout;
 	
 	public BPTTagSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		// TODO: Label with caption "Tag search "
 		super(application, tagColumns, newTagsAllowed);
+		searchInput.setInputPrompt("Tag search");
 //		searchInput.setWidth("70%");
 	}
 	
@@ -38,6 +38,7 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 	
 	@Override
 	public void refresh() {
+		super.refresh();
 		application.refresh();
 	}
 	

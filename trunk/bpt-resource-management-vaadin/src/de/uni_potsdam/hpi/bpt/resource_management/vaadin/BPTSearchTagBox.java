@@ -19,6 +19,7 @@ public class BPTSearchTagBox extends CustomComponent{
 		setCompositionRoot(layout);
 		searchTagList = new ArrayList<BPTSearchTag>();
 	};
+	
 	public void addTag(String value){
 		BPTSearchTag searchTag = new BPTSearchTag(this, value);
 		searchTagList.add(searchTag);
@@ -26,14 +27,14 @@ public class BPTSearchTagBox extends CustomComponent{
 		refresh();
 	}
 	
-	public void removeTag(BPTSearchTag searchTag){
+	public void removeTag(BPTSearchTag searchTag) {
 		searchTagList.remove(searchTag);
 		int x = layout.getComponentArea(searchTag).getColumn1();
 		int y = layout.getComponentArea(searchTag).getRow1();
 		int xn = 0;
 		int yn = y + 1;
 		layout.removeComponent(searchTag);
-		if ((x + 1)< layout.getColumns()){
+		if ((x + 1)< layout.getColumns()) {
 			xn = x +1;
 			yn = y;
 		}
@@ -55,6 +56,12 @@ public class BPTSearchTagBox extends CustomComponent{
 		layout.setCursorY(0);
 		
 		((BPTTagComponent) getParent().getParent()).addTag(searchTag);
+		refresh();
+	}
+	
+	public void removeAllTags() {
+		searchTagList.clear();
+		layout.removeAllComponents();
 		refresh();
 	}
 	

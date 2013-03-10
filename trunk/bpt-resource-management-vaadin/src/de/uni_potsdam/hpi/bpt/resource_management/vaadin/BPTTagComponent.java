@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.vaadin.data.Property;
@@ -11,7 +12,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unchecked" })
 public class BPTTagComponent extends CustomComponent {
 	
 	protected ComboBox searchInput;
@@ -28,6 +29,7 @@ public class BPTTagComponent extends CustomComponent {
 	}
 	
 	private void init(String tagColumns, boolean newTagsAllowed) {
+		// TODO: update unique values on entry addition or deletion
 		uniqueValues = BPTContainerProvider.getUniqueValues(tagColumns);
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
@@ -49,10 +51,11 @@ public class BPTTagComponent extends CustomComponent {
 		for (String uniqueValue: uniqueValues) {
 			searchInput.addItem(uniqueValue);
 		}
-//		searchInput.setWidth("100%");
+		searchInput.setWidth("300px");
 		searchInput.setImmediate(true);
+		searchInput.setNullSelectionAllowed(false);
 		searchInput.setNewItemsAllowed(newTagsAllowed);
-		unselectedValues = uniqueValues;
+		unselectedValues = (Set<String>)((HashSet<String>) uniqueValues).clone();
 		return searchInput;
 	}
 
@@ -61,9 +64,8 @@ public class BPTTagComponent extends CustomComponent {
 			public void valueChange(ValueChangeEvent event) {
 				Object value = searchInput.getValue();
 				if (value == null) return;
-				String valueString = (String) value;
+				String valueString = ((String) value).trim().replaceAll(" +", " ");
 				searchTagBox.addTag(valueString);
-//				System.out.println(valueString);
 				searchInput.setValue(null);
 				unselectedValues.remove(valueString);
 				searchInput.removeAllItems();
@@ -77,23 +79,27 @@ public class BPTTagComponent extends CustomComponent {
 
 	public void addTag(BPTSearchTag searchTag) {
 		unselectedValues.add(searchTag.getValue());
-		searchInput.removeAllItems();
-		
-		for (String unselectedValue: unselectedValues){
-			searchInput.addItem(unselectedValue);
-		}
+		refresh();
+	}
+	
+	public void restoreAllTags() {
+		unselectedValues = (Set<String>)((HashSet<String>) uniqueValues).clone();
+		searchTagBox.removeAllTags();
+		refresh();
 	}
 	
 	public ArrayList<String> getTagValues() {
-		
 		return searchTagBox.getTagValues();
 	}
 
 	public void refresh() {
+		searchInput.removeAllItems();
+		for (String unselectedValue : unselectedValues){
+			searchInput.addItem(unselectedValue);
+		}
 	}
 	
 	public void addChosenTag(String value) {
 		searchTagBox.addTag(value);
 	}
-
 }

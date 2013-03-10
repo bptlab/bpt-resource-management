@@ -45,7 +45,6 @@ public class BPTDatabase {
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);
-//		CouchDbConnector database = new StdCouchDbConnector(table, databaseInstance);
 		
 		try {
 			LuceneAwareCouchDbConnector database = new LuceneAwareCouchDbConnector(table, databaseInstance);

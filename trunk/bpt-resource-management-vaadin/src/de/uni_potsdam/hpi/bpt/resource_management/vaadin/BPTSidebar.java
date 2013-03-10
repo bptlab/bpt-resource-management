@@ -34,7 +34,7 @@ public class BPTSidebar extends CustomComponent{
 		this.searchComponent = searchComponent;
 	}
 
-	private void init(HorizontalLayout layout2) {
+	private void init(HorizontalLayout layout) {
 		layout.addComponent(searchComponent);
 		layout.addComponent(loginComponent);
 		layout.setExpandRatio(searchComponent, 75);
@@ -53,15 +53,17 @@ public class BPTSidebar extends CustomComponent{
 	
 	public void upload(){
 		layout.removeAllComponents();
-		Label label = new Label("");
+//		layout = new HorizontalLayout();
+		Label label = new Label("* required <br/> <sup>+</sup> at least one of the two required", Label.CONTENT_XHTML);
 		layout.addComponent(label);
 		layout.addComponent(loginComponent);
-		layout.setExpandRatio(label, 8);
-		layout.setExpandRatio(loginComponent, 2);
+		layout.setExpandRatio(label, 75);
+		layout.setExpandRatio(loginComponent, 25);
 	}
 	
 	public void finder() {
 		layout.removeAllComponents();
+//		layout = new HorizontalLayout();
 		searchComponent = new BPTSearchComponent(application, "all", false);
 		init(layout);
 		if (application.isLoggedIn()) {
