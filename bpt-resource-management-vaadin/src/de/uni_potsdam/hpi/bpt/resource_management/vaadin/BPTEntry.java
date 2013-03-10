@@ -81,6 +81,7 @@ public class BPTEntry extends CustomLayout {
 							label.setValue(labelContent);
 						} else if (labelContent.isEmpty()) {
 							labelContent = "This tool has no description.";
+							label.setValue(labelContent);
 						}
 					} else if (id.equals("Contact name")) {
 						label.setContentMode(Label.CONTENT_XHTML);

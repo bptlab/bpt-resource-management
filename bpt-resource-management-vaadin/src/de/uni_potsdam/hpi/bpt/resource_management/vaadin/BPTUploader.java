@@ -61,94 +61,91 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
         layout.addComponent(label);
 		
-		layout.addComponent(new Label("Tool name:"));
+		layout.addComponent(new Label("Tool name *"));
 		toolNameInput = new TextField();
 		toolNameInput.setWidth("100%");
 		layout.addComponent(toolNameInput);
 		
-		layout.addComponent(new Label("Description:"));
+		layout.addComponent(new Label("Description <sup>+</sup>", Label.CONTENT_XHTML));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
 		layout.addComponent(descriptionInput);
 		
-		layout.addComponent(new Label("Description URL:"));
+		layout.addComponent(new Label("Description URL <sup>+</sup>", Label.CONTENT_XHTML));
 		descriptionURLInput = new TextField();
-//		descriptionURLInput.setValue("http://");
+		descriptionURLInput.setInputPrompt("http://");
 		descriptionURLInput.setWidth("100%");
 		layout.addComponent(descriptionURLInput);
 		
-		layout.addComponent(new Label("Provider:"));
+		layout.addComponent(new Label("Provider *"));
 		providerInput = new TextField();
 		providerInput.setWidth("100%");
 		layout.addComponent(providerInput);
 		
-		layout.addComponent(new Label("Provider URL:"));
+		layout.addComponent(new Label("Provider URL"));
 		providerURLInput = new TextField();
-//		providerURLInput.setValue("http://");
+		providerURLInput.setInputPrompt("http://");
 		providerURLInput.setWidth("100%");
 		layout.addComponent(providerURLInput);
 		
-		layout.addComponent(new Label("Download URL:"));
+		layout.addComponent(new Label("Download URL *"));
 		downloadURLInput = new TextField();
-//		downloadInput.setValue("http://");
+		downloadURLInput.setInputPrompt("http://");
 		downloadURLInput.setWidth("100%");
 		layout.addComponent(downloadURLInput);
 		
-		layout.addComponent(new Label("Documentation URL:"));
+		layout.addComponent(new Label("Documentation URL"));
 		documentationURLInput = new TextField();
-//		documentationURLInput.setValue("http://");
+		documentationURLInput.setInputPrompt("http://");
 		documentationURLInput.setWidth("100%");
 		layout.addComponent(documentationURLInput);
 		
-		layout.addComponent(new Label("Screencast URL:"));
+		layout.addComponent(new Label("Screencast URL"));
 		screencastURLInput = new TextField();
-//		screencastURLInput.setValue("http://");
+		screencastURLInput.setInputPrompt("http://");
 		screencastURLInput.setWidth("100%");
 		layout.addComponent(screencastURLInput);
 		
-		layout.addComponent(new Label("Tutorial URL:"));
+		layout.addComponent(new Label("Tutorial URL"));
 		tutorialURLInput = new TextField();
-//		tutorialURLInput.setValue("http://");
+		tutorialURLInput.setInputPrompt("http://");
 		tutorialURLInput.setWidth("100%");
 		layout.addComponent(tutorialURLInput);
 		
-		layout.addComponent(new Label("Availabilities:"));
+		layout.addComponent(new Label("Availabilities"));
 		availabilitiesTagComponent = new BPTTagComponent(application, "availabilities", true);
 		availabilitiesTagComponent.setWidth("100%");
 		layout.addComponent(availabilitiesTagComponent);
 		
-		layout.addComponent(new Label("Model type:"));
+		layout.addComponent(new Label("Model type"));
 		modelTagComponent = new BPTTagComponent(application, "modelTypes", true);
 		modelTagComponent.setWidth("100%");
 		layout.addComponent(modelTagComponent);
 		
-		layout.addComponent(new Label("Platform:"));
+		layout.addComponent(new Label("Platform"));
 		platformTagComponent = new BPTTagComponent(application, "platforms", true);
 		platformTagComponent.setWidth("100%");
 		layout.addComponent(platformTagComponent);
 		
-		layout.addComponent(new Label("Supported functionality:"));
+		layout.addComponent(new Label("Supported functionality"));
 		functionalityTagComponent = new BPTTagComponent(application, "supportedFunctionalities", true);
 		functionalityTagComponent.setWidth("100%");
 		layout.addComponent(functionalityTagComponent);
 		
-		layout.addComponent(new Label("Contact name:"));
+		layout.addComponent(new Label("Contact name *"));
 		contactNameInput = new TextField();
 		contactNameInput.setValue(application.getName());
 		contactNameInput.setWidth("100%");
 		layout.addComponent(contactNameInput);
 		
-		layout.addComponent(new Label("Contact mail:"));
+		layout.addComponent(new Label("Contact mail *"));
 		contactMailInput = new TextField();
 		contactMailInput.setValue(application.getMailAddress());
 		contactMailInput.setWidth("100%");
 		layout.addComponent(contactMailInput);
 		
 		imagePanel = new Panel("Logo");
-		
 		createUploadComponent(imagePanel);
-		
-        imagePanel.addComponent(new Label("No image uploaded yet"));
         layout.addComponent(imagePanel);
         
         if (item != null) {
@@ -340,7 +337,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	}
 	
 	private void createUploadComponent(Panel parent) {
-		upload = new Upload("Upload a logo (*.jpg, *.gif, *.png supported):", this);
+		upload = new Upload("Upload a logo (*.jpg, *.gif, *.png)", this);
 		upload.setImmediate(false);
 		upload.setWidth("-1px");
 		upload.setHeight("-1px");
@@ -352,7 +349,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		imageType = mimeType;
-        
 		logo = new File(filename);
 		
         try {

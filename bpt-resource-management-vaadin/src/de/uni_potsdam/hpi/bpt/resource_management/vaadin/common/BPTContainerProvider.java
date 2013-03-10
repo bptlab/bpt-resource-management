@@ -62,6 +62,7 @@ public class BPTContainerProvider {
 	 */
 	public static Set<String> getUniqueValues(String tagColumn) {
 		Set<String> uniqueValues = new HashSet<String>();
+		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic

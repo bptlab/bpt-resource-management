@@ -13,7 +13,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -45,7 +44,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		setProperties();
 		
-		Window mainWindow = new Window("BPTApplication");
+		Window mainWindow = new Window("Tools for BPM");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme("bpt");
