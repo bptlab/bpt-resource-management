@@ -7,7 +7,6 @@ import com.vaadin.ui.Label;
 @SuppressWarnings("serial")
 public class BPTSidebar extends CustomComponent{
 	
-//	private VerticalLayout layout;
 	private HorizontalLayout layout;
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
@@ -16,7 +15,6 @@ public class BPTSidebar extends CustomComponent{
 	public BPTSidebar(BPTApplication application) {
 		this.application = application;
 		
-//		layout = new VerticalLayout();
 		layout = new HorizontalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
