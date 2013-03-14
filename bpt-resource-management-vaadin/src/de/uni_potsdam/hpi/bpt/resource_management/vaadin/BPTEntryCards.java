@@ -26,6 +26,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		entryList = new ArrayList<BPTEntry>();
 		this.application = application;
 		isInitial = true;
+		layout.addStyleName("scroll");
 		addComponent(layout);
 		layout.addComponent(vertical, "cards");
 		show(dataSource);

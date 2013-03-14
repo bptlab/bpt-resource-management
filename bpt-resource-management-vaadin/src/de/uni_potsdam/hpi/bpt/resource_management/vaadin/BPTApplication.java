@@ -59,8 +59,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		sidebar = new BPTSidebar(this);
 		layout.addComponent(sidebar);
 		layout.addComponent(mainFrame);
+		layout.addStyleName("scroll");
 		mainFrame.add(entryComponent);
 		custom.addComponent(layout, "application");
+		custom.addStyleName("scroll");
 		mainWindow.setContent(custom);
 	}
 

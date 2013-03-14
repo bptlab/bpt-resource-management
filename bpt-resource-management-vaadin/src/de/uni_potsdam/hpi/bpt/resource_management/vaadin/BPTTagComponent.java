@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
@@ -15,12 +17,13 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 @SuppressWarnings({ "serial", "unchecked" })
 public class BPTTagComponent extends CustomComponent {
 	
-	protected ComboBox searchInput;
-	private Set<String> uniqueValues;
-	private Set<String> unselectedValues;
+	protected BPTSearchInputField searchInput;
+	private ArrayList<String> uniqueValues;
+	private ArrayList<String> unselectedValues;
 	protected BPTSearchTagBox searchTagBox;
 	protected VerticalLayout layout;
 	protected BPTApplication application;
+	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
 	
 	
 	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
@@ -47,15 +50,17 @@ public class BPTTagComponent extends CustomComponent {
 	}
 
 	private ComboBox createSearchInputBox(boolean newTagsAllowed){
-		searchInput = new ComboBox();
+		searchInput = new BPTSearchInputField();
 		for (String uniqueValue: uniqueValues) {
-			searchInput.addItem(uniqueValue);
+			Label label = new Label(uniqueValue);
+			if(categories.contains(uniqueValue)) {
+//				label = new Label("<b>" + uniqueValue + "</b>");
+				label.setContentMode(Label.CONTENT_XHTML);
+			}
+			searchInput.addItem(label);
 		}
-		searchInput.setWidth("300px");
-		searchInput.setImmediate(true);
-		searchInput.setNullSelectionAllowed(false);
 		searchInput.setNewItemsAllowed(newTagsAllowed);
-		unselectedValues = (Set<String>)((HashSet<String>) uniqueValues).clone();
+		unselectedValues = (ArrayList<String>) uniqueValues.clone();
 		return searchInput;
 	}
 
@@ -64,15 +69,26 @@ public class BPTTagComponent extends CustomComponent {
 			public void valueChange(ValueChangeEvent event) {
 				Object value = searchInput.getValue();
 				if (value == null) return;
-				String valueString = ((String) value).trim().replaceAll(" +", " ");
-				searchTagBox.addTag(valueString);
+				String valueString;
+				if(value instanceof String){
+					valueString = ((String) value).trim().replaceAll(" +", " ");
+				}
+				else {
+					valueString = ((Label) value).getValue().toString().trim().replaceAll(" +", " ");
+				}
+				
+				if(!categories.contains(valueString)){
+					searchTagBox.addTag(valueString);
+					unselectedValues.remove(valueString);
+					searchInput.removeAllItems();
+					
+					for (String unselectedValue: unselectedValues) {
+						Label label = new Label(unselectedValue);
+						if(categories.contains(unselectedValue)) label.addStyleName(unselectedValue);
+						searchInput.addItem(label);
+					}
+				}
 				searchInput.setValue(null);
-				unselectedValues.remove(valueString);
-				searchInput.removeAllItems();
-								
-				for (String unselectedValue: unselectedValues) {
-					searchInput.addItem(unselectedValue);
-				}				
 			}
 		});
 	}
@@ -83,7 +99,7 @@ public class BPTTagComponent extends CustomComponent {
 	}
 	
 	public void restoreAllTags() {
-		unselectedValues = (Set<String>)((HashSet<String>) uniqueValues).clone();
+		unselectedValues = (ArrayList<String>) uniqueValues.clone();
 		searchTagBox.removeAllTags();
 		refresh();
 	}
@@ -95,7 +111,7 @@ public class BPTTagComponent extends CustomComponent {
 	public void refresh() {
 		searchInput.removeAllItems();
 		for (String unselectedValue : unselectedValues){
-			searchInput.addItem(unselectedValue);
+			searchInput.addItem(new Label(unselectedValue));
 		}
 	}
 	
