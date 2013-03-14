@@ -66,12 +66,12 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		toolNameInput.setWidth("100%");
 		layout.addComponent(toolNameInput);
 		
-		layout.addComponent(new Label("Description <sup>+</sup>", Label.CONTENT_XHTML));
+		layout.addComponent(new Label("Description text <font color=\"#BBBBBB\">and/or description URL</font>", Label.CONTENT_XHTML));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
 		layout.addComponent(descriptionInput);
 		
-		layout.addComponent(new Label("Description URL <sup>+</sup>", Label.CONTENT_XHTML));
+		layout.addComponent(new Label("Description URL <font color=\"#BBBBBB\">and/or description text</font>", Label.CONTENT_XHTML));
 		descriptionURLInput = new TextField();
 		descriptionURLInput.setInputPrompt("http://");
 		descriptionURLInput.setWidth("100%");
@@ -88,7 +88,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		providerURLInput.setWidth("100%");
 		layout.addComponent(providerURLInput);
 		
-		layout.addComponent(new Label("Download URL *"));
+		layout.addComponent(new Label("Download URL"));
 		downloadURLInput = new TextField();
 		downloadURLInput.setInputPrompt("http://");
 		downloadURLInput.setWidth("100%");
@@ -132,13 +132,13 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		functionalityTagComponent.setWidth("100%");
 		layout.addComponent(functionalityTagComponent);
 		
-		layout.addComponent(new Label("Contact name *"));
+		layout.addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML));
 		contactNameInput = new TextField();
 		contactNameInput.setValue(application.getName());
 		contactNameInput.setWidth("100%");
 		layout.addComponent(contactNameInput);
 		
-		layout.addComponent(new Label("Contact mail *"));
+		layout.addComponent(new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML));
 		contactMailInput = new TextField();
 		contactMailInput.setValue(application.getMailAddress());
 		contactMailInput.setWidth("100%");
@@ -205,8 +205,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					getWindow().showNotification("'Provider' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)providerURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)providerURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Provider URL': " + (String)providerURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
-				} else if (!BPTValidator.isValidURL((String)downloadURLInput.getValue())) {
-					getWindow().showNotification("Invalid URL", "in field 'Download URL': " + (String)downloadURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)documentationURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)documentationURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Documentation URL': " + (String)documentationURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)screencastURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)screencastURLInput.getValue())) {

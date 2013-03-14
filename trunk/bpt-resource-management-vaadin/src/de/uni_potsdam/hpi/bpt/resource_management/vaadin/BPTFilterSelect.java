@@ -1,3 +1,4 @@
+//package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 //import com.google.gwt.user.client.Command;
 //import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 //import com.vaadin.terminal.gwt.client.UIDL;
