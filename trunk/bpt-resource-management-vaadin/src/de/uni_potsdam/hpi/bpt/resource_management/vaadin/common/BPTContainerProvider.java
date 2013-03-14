@@ -60,21 +60,36 @@ public class BPTContainerProvider {
 	 * @return the unique values (= tags)
 	 *
 	 */
-	public static Set<String> getUniqueValues(String tagColumn) {
-		Set<String> uniqueValues = new HashSet<String>();
+	public static ArrayList<String> getUniqueValues(String tagColumn) {
+		ArrayList<String> uniqueValues = new ArrayList<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
-		for (Map<String, Object> tool : tools) {
-			if (tagColumn == "all" || tagColumn == "availabilities")
-			uniqueValues.addAll(new HashSet<String>((ArrayList<String>)tool.get("availabilities"))); // hard_coded
-			if (tagColumn == "all" || tagColumn == "modelTypes")
-			uniqueValues.addAll(new HashSet<String>((ArrayList<String>)tool.get("model_types"))); // cast
-			if (tagColumn == "all" || tagColumn == "platforms")
-			uniqueValues.addAll(new HashSet<String>((ArrayList<String>)tool.get("platforms")));
-			if (tagColumn == "all" || tagColumn == "supportedFunctionalities")
-			uniqueValues.addAll(new HashSet<String>((ArrayList<String>)tool.get("supported_functionalities")));
+		
+		if (tagColumn == "all" || tagColumn == "availabilities"){
+			uniqueValues.add("----- Availabilities -----");
+			for (Map<String, Object> tool : tools) {
+				uniqueValues.addAll((ArrayList<String>)tool.get("availabilities")); // hard_coded
+			}
+		}
+		if (tagColumn == "all" || tagColumn == "modelTypes"){
+			uniqueValues.add("----- Model types -----");
+			for (Map<String, Object> tool : tools) {
+				uniqueValues.addAll((ArrayList<String>)tool.get("model_types")); // cast
+			}
+		}
+		if (tagColumn == "all" || tagColumn == "platforms"){
+			uniqueValues.add("----- Platforms -----");
+			for (Map<String, Object> tool : tools) {
+				uniqueValues.addAll((ArrayList<String>)tool.get("platforms"));
+			}
+		}
+		if (tagColumn == "all" || tagColumn == "supportedFunctionalities"){
+			uniqueValues.add("----- Supported functionalities -----");
+			for (Map<String, Object> tool : tools) {
+				uniqueValues.addAll((ArrayList<String>)tool.get("supported_functionalities"));
+			}
 		}
 		
 		return uniqueValues;
