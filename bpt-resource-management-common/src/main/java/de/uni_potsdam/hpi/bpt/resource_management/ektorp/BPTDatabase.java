@@ -51,7 +51,6 @@ public class BPTDatabase {
 			database.createDatabaseIfNotExists();
 			return database;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}		

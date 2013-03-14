@@ -54,7 +54,7 @@ public class BPTSidebar extends CustomComponent{
 	public void upload(){
 		layout.removeAllComponents();
 //		layout = new HorizontalLayout();
-		Label label = new Label("* required <br/> <sup>+</sup> at least one of the two required", Label.CONTENT_XHTML);
+		Label label = new Label("required fields marked with *<br/>", Label.CONTENT_XHTML);
 		layout.addComponent(label);
 		layout.addComponent(loginComponent);
 		layout.setExpandRatio(label, 75);
