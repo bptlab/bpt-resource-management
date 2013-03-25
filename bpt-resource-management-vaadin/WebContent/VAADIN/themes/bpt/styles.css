@@ -169,3 +169,17 @@ ul#resource-list {
 div.scroll{
 	overflow: auto !important;
 }
+
+
+.v-select-optiongroup-horizontal .v-select-option {
+	display: inline !important;
+}
+
+.v-select-optiongroup-horizontal {
+	white-space: nowrap !important;
+}
+
+.v-select-optiongroup-horizontal
+.v-select-option.v-radiobutton {
+	padding-right: 10px !important;
+}

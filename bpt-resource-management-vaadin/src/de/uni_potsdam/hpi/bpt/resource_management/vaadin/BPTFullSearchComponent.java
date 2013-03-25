@@ -37,7 +37,7 @@ public class BPTFullSearchComponent extends CustomComponent {
 		searchInput.setInputPrompt("Full-text search");
 		searchInput.setImmediate(true);
 		
-		searchButton = new Button("Apply");
+		searchButton = new Button("Search");
 		searchButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				refresh();

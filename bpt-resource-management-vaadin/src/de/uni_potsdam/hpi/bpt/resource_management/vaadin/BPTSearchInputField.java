@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.ui.ComboBox;
 
+@SuppressWarnings("serial")
 public class BPTSearchInputField extends ComboBox{
 	
 	public BPTSearchInputField(){

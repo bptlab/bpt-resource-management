@@ -5,29 +5,54 @@ import java.util.ArrayList;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-public class BPTSearchTagBox extends CustomComponent{
+public class BPTTagBox extends CustomComponent{
 	
+	protected VerticalLayout baseLayout;
 	private GridLayout layout;
 	private ArrayList<BPTSearchTag> searchTagList;
 
-	public BPTSearchTagBox() {
+	public BPTTagBox() {
+		baseLayout = new VerticalLayout();
+		setCompositionRoot(baseLayout);
+		addGridsToComponent();
+		searchTagList = new ArrayList<BPTSearchTag>();
+	}
+
+	protected void addGridsToComponent() {
 		layout = new GridLayout(2,1);
 		layout.setWidth("100%");
 		layout.setHeight("100%");
-		setCompositionRoot(layout);
-		searchTagList = new ArrayList<BPTSearchTag>();
+		baseLayout.addComponent(layout);
 	};
 	
 	public void addTag(String value){
+		addTagToLayout(value, layout);
+	}
+	
+	public void addTagToLayout(String value, GridLayout layout){
 		BPTSearchTag searchTag = new BPTSearchTag(this, value);
+		addSearchTag(searchTag, layout);
+	}
+
+	public void addTagToLayout(String value, String type, GridLayout layout){
+		BPTSearchTag searchTag = new BPTSearchTag(this, type, value);
+		addSearchTag(searchTag, layout);
+	}
+	
+	private void addSearchTag(BPTSearchTag searchTag, GridLayout layout) {
 		searchTagList.add(searchTag);
 		layout.addComponent(searchTag);
 		refresh();
 	}
 	
 	public void removeTag(BPTSearchTag searchTag) {
+		removeTagFromLayout(searchTag, layout);
+	}
+	
+	protected void removeTagFromLayout(BPTSearchTag searchTag, GridLayout layout) {
 		searchTagList.remove(searchTag);
 		int x = layout.getComponentArea(searchTag).getColumn1();
 		int y = layout.getComponentArea(searchTag).getRow1();
