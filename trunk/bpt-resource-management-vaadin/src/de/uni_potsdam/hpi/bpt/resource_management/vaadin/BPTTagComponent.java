@@ -2,8 +2,6 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -20,7 +18,7 @@ public class BPTTagComponent extends CustomComponent {
 	protected BPTSearchInputField searchInput;
 	private ArrayList<String> uniqueValues;
 	private ArrayList<String> unselectedValues;
-	protected BPTSearchTagBox searchTagBox;
+	protected BPTTagBox tagBox;
 	protected VerticalLayout layout;
 	protected BPTApplication application;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
@@ -43,10 +41,14 @@ public class BPTTagComponent extends CustomComponent {
 	
 	protected void addElements(boolean newTagsAllowed) {
 		createSearchInputBox(newTagsAllowed);
-		searchTagBox = new BPTSearchTagBox();
 		layout.addComponent(searchInput);
-		layout.addComponent(searchTagBox);
+		addTagBox();
 		addListenerToSearchInputBox();	
+	}
+
+	protected void addTagBox() {
+		tagBox = new BPTTagBox();
+		layout.addComponent(tagBox);
 	}
 
 	private ComboBox createSearchInputBox(boolean newTagsAllowed){
@@ -78,15 +80,16 @@ public class BPTTagComponent extends CustomComponent {
 				}
 				
 				if(!categories.contains(valueString)){
-					searchTagBox.addTag(valueString);
+					tagBox.addTag(valueString);
 					unselectedValues.remove(valueString);
 					searchInput.removeAllItems();
 					
-					for (String unselectedValue: unselectedValues) {
-						Label label = new Label(unselectedValue);
-						if(categories.contains(unselectedValue)) label.addStyleName(unselectedValue);
-						searchInput.addItem(label);
-					}
+					refresh();
+//					for (String unselectedValue: unselectedValues) {
+//						Label label = new Label(unselectedValue);
+//						if(categories.contains(unselectedValue)) label.addStyleName(unselectedValue);
+//						searchInput.addItem(label);
+//					}
 				}
 				searchInput.setValue(null);
 			}
@@ -100,22 +103,24 @@ public class BPTTagComponent extends CustomComponent {
 	
 	public void restoreAllTags() {
 		unselectedValues = (ArrayList<String>) uniqueValues.clone();
-		searchTagBox.removeAllTags();
+		tagBox.removeAllTags();
 		refresh();
 	}
 	
 	public ArrayList<String> getTagValues() {
-		return searchTagBox.getTagValues();
+		return tagBox.getTagValues();
 	}
 
 	public void refresh() {
 		searchInput.removeAllItems();
-		for (String unselectedValue : unselectedValues){
-			searchInput.addItem(new Label(unselectedValue));
+		for (String uniqueValue : uniqueValues){
+			if(unselectedValues.contains(uniqueValue)){
+				searchInput.addItem(new Label(uniqueValue));
+			}
 		}
 	}
 	
 	public void addChosenTag(String value) {
-		searchTagBox.addTag(value);
+		tagBox.addTag(value);
 	}
 }

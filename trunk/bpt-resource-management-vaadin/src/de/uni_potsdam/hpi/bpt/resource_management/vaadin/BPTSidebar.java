@@ -42,12 +42,12 @@ public class BPTSidebar extends CustomComponent{
 	}
 
 	public void login(String name) {
-		searchComponent.getTagSearchComponent().login();
+		searchComponent.login();
 		loginComponent.login(name);
 	}
 
 	public void logout(){
-		searchComponent.getTagSearchComponent().logout();
+		searchComponent.logout();
 		application.close();
 	}
 	
@@ -67,7 +67,7 @@ public class BPTSidebar extends CustomComponent{
 		searchComponent = new BPTSearchComponent(application, "all", false);
 		init(layout);
 		if (application.isLoggedIn()) {
-			searchComponent.getTagSearchComponent().login();
+			searchComponent.login();
 		}
 	}
 

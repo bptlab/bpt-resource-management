@@ -1,7 +1,10 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,38 +64,57 @@ public class BPTContainerProvider {
 	 *
 	 */
 	public static ArrayList<String> getUniqueValues(String tagColumn) {
-		ArrayList<String> uniqueValues = new ArrayList<String>();
+		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
 		
-		if (tagColumn == "all" || tagColumn == "availabilities"){
-			uniqueValues.add("----- Availabilities -----");
+		Collator comparator = Collator.getInstance();
+		comparator.setStrength(Collator.PRIMARY);
+		
+		if (tagColumn == "all" || tagColumn == "availabilities") {
+			uniqueValues.add("----- Availability -----");
+			ArrayList<String> availabilityTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				uniqueValues.addAll((ArrayList<String>)tool.get("availabilities")); // hard_coded
+				ArrayList<String> availabilityTagsOfTool = (ArrayList<String>)tool.get("availabilities");  // cast
+				availabilityTags.addAll(availabilityTagsOfTool);
 			}
+			Collections.sort(availabilityTags, comparator);
+			uniqueValues.addAll(availabilityTags); // hard_coded
 		}
-		if (tagColumn == "all" || tagColumn == "modelTypes"){
-			uniqueValues.add("----- Model types -----");
+		if (tagColumn == "all" || tagColumn == "modelTypes") {
+			uniqueValues.add("----- Model type -----");
+			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				uniqueValues.addAll((ArrayList<String>)tool.get("model_types")); // cast
+				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("model_types");  // cast
+				modelTypeTags.addAll(modelTypeTagsOfTool);
 			}
+			Collections.sort(modelTypeTags, comparator);
+			uniqueValues.addAll(modelTypeTags); // hard_coded
 		}
-		if (tagColumn == "all" || tagColumn == "platforms"){
-			uniqueValues.add("----- Platforms -----");
+		if (tagColumn == "all" || tagColumn == "platforms") {
+			uniqueValues.add("----- Platform -----");
+			ArrayList<String> platformTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				uniqueValues.addAll((ArrayList<String>)tool.get("platforms"));
+				ArrayList<String> platformTagsOfTool = (ArrayList<String>)tool.get("platforms");  // cast
+				platformTags.addAll(platformTagsOfTool);
 			}
+			Collections.sort(platformTags, comparator);
+			uniqueValues.addAll(platformTags); // hard_coded
 		}
-		if (tagColumn == "all" || tagColumn == "supportedFunctionalities"){
-			uniqueValues.add("----- Supported functionalities -----");
+		if (tagColumn == "all" || tagColumn == "supportedFunctionalities") {
+			uniqueValues.add("----- Supported functionality -----");
+			ArrayList<String> supportedFunctionalityTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				uniqueValues.addAll((ArrayList<String>)tool.get("supported_functionalities"));
+				ArrayList<String> supportedFunctionalityTagsOfTool = (ArrayList<String>)tool.get("supported_functionalities");  // cast
+				supportedFunctionalityTags.addAll(supportedFunctionalityTagsOfTool);
 			}
+			Collections.sort(supportedFunctionalityTags, comparator);
+			uniqueValues.addAll(supportedFunctionalityTags); // hard_coded
 		}
 		
-		return uniqueValues;
+		return new ArrayList<String>(uniqueValues);
 	}
 	
 	private static IndexedContainer initializeContainerWithProperties() {

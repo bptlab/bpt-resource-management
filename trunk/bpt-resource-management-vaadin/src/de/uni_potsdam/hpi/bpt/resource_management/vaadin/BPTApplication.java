@@ -252,7 +252,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		String query = sidebar.getSearchComponent().getFullSearchComponent().getQuery();
 		if (loggedIn) {
 			if (!moderated) {
-				if (tagSearchComponent.isOwnEntriesOptionSelected()) {
+				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
 					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
 				} else {
@@ -262,7 +262,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 				}
 			} else {
-				ArrayList<BPTToolStatus> states = tagSearchComponent.getSelectedStates();
+				ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
 				ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
 				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 			}

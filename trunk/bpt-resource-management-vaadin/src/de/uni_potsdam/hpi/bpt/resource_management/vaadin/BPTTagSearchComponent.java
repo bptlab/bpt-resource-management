@@ -2,15 +2,8 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
 
-import com.vaadin.ui.HorizontalLayout;
-
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-
 @SuppressWarnings("serial")
 public class BPTTagSearchComponent extends BPTTagComponent{
-
-	private BPTBoxContainer box;
-	private HorizontalLayout boxLayout;
 	
 	public BPTTagSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		super(application, tagColumns, newTagsAllowed);
@@ -19,44 +12,24 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 	}
 	
 	@Override
-	protected void addElements(boolean newTagsAllowed) {
-		boxLayout = new HorizontalLayout();
-		layout.addComponent(boxLayout);
-		box = new BPTBoxContainer(application);
-		super.addElements(newTagsAllowed);
-	}
-	
-	public void login() {
-		boxLayout.removeAllComponents();
-		box = new BPTBoxContainer(application);
-		boxLayout.addComponent(box);
-	}
-	
-	public void logout() {
-		boxLayout.removeComponent(box);
-	}
-	
-	@Override
 	public void refresh() {
 		super.refresh();
 		application.refresh();
 	}
 	
-	public ArrayList<BPTToolStatus> getSelectedStates() {
-		return box.getSelectedStates();
-	}
-	
 	public ArrayList<String> getSelectedTags() {
-		return searchTagBox.getTagValues();
-	}
-	
-	public boolean isOwnEntriesOptionSelected() {
-		return box.isOwnEntriesOptionSelected();
+		return tagBox.getTagValues();
 	}
 	
 	@Override
 	public void addChosenTag(String value){
-		searchTagBox.addTag(value);
+		tagBox.addTag(value);
+	}
+	
+	@Override
+	protected void addTagBox(){
+		tagBox = new BPTSearchTagBoxes();
+		layout.addComponent(tagBox);
 	}
 
 }

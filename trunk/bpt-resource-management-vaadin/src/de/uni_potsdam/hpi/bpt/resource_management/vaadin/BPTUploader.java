@@ -66,12 +66,12 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		toolNameInput.setWidth("100%");
 		layout.addComponent(toolNameInput);
 		
-		layout.addComponent(new Label("Description text <font color=\"#BBBBBB\">and/or description URL</font>", Label.CONTENT_XHTML));
+		layout.addComponent(new Label("Description text (*) <font color=\"#BBBBBB\">and/or description URL</font>", Label.CONTENT_XHTML));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
 		layout.addComponent(descriptionInput);
 		
-		layout.addComponent(new Label("Description URL <font color=\"#BBBBBB\">and/or description text</font>", Label.CONTENT_XHTML));
+		layout.addComponent(new Label("Description URL (*) <font color=\"#BBBBBB\">and/or description text</font>", Label.CONTENT_XHTML));
 		descriptionURLInput = new TextField();
 		descriptionURLInput.setInputPrompt("http://");
 		descriptionURLInput.setWidth("100%");
@@ -112,7 +112,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		tutorialURLInput.setWidth("100%");
 		layout.addComponent(tutorialURLInput);
 		
-		layout.addComponent(new Label("Availabilities"));
+		layout.addComponent(new Label("Availability"));
 		availabilitiesTagComponent = new BPTTagComponent(application, "availabilities", true);
 		availabilitiesTagComponent.setWidth("100%");
 		layout.addComponent(availabilitiesTagComponent);
@@ -161,19 +161,19 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         	tutorialURLInput.setValue(((Link)(item.getItemProperty("Tutorial URL").getValue())).getCaption());
         	if(!(item.getItemProperty("Availability").getValue().toString().equals(""))){
         		String[] availability = ((String) item.getItemProperty("Availability").getValue()).split(",");
-        		for(int i = 0; i < availability.length; i++) availabilitiesTagComponent.addChosenTag(availability[i]);
+        		for(int i = 0; i < availability.length; i++) availabilitiesTagComponent.addChosenTag(availability[i].trim().replaceAll(" +", " "));
         	}
         	if(!(item.getItemProperty("Model type").getValue().toString().equals(""))){
         		String[] model_type = ((String) item.getItemProperty("Model type").getValue()).split(",");
-        		for(int i = 0; i < model_type.length; i++) modelTagComponent.addChosenTag(model_type[i]);
+        		for(int i = 0; i < model_type.length; i++) modelTagComponent.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
         	}
         	if(!(item.getItemProperty("Platform").getValue().toString().equals(""))){
         		String[] platform = ((String) item.getItemProperty("Platform").getValue()).split(",");
-        		for(int i = 0; i < platform.length; i++) platformTagComponent.addChosenTag(platform[i]);
+        		for(int i = 0; i < platform.length; i++) platformTagComponent.addChosenTag(platform[i].trim().replaceAll(" +", " "));
         	}
         	if(!(item.getItemProperty("Supported functionality").getValue().toString().equals(""))){
         		String[] supported_functionality = ((String) item.getItemProperty("Supported functionality").getValue()).split(",");
-        		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i]);
+        		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i].trim().replaceAll(" +", " "));
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
@@ -198,7 +198,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 				} else if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
 				} else if (((String)descriptionInput.getValue()).isEmpty() && (((String)descriptionURLInput.getValue()).isEmpty())) {
-					getWindow().showNotification("One of the fields 'Provider' and 'Provider URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
+					getWindow().showNotification("One of the fields 'Description' and 'Description URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)descriptionURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)descriptionURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Description URL': " + (String)descriptionURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (((String)providerInput.getValue()).isEmpty()) {

@@ -71,6 +71,9 @@ public class BPTBoxContainer extends CustomComponent {
 				resourceProviderOptionGroup.addItem("own entries");
 				resourceProviderOptionGroup.select("published entries");
 				
+				resourceProviderOptionGroup.addStyleName("horizontal");
+				resourceProviderOptionGroup.setSizeUndefined();
+				
 				resourceProviderOptionGroup.addListener(new Property.ValueChangeListener() {
 					public void valueChange(ValueChangeEvent event) {
 				    	refresh();
