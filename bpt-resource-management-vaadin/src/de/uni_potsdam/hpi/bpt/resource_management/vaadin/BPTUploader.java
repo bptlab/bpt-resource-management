@@ -50,6 +50,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private String documentId, imageType;
 	private boolean logoDeleted = true;
 	private BPTApplication application;
+	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		this.application = application;
@@ -177,7 +178,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
-        	BPTToolRepository toolRepository = application.getToolRepository();
         	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
 			image.setWidth("");
 			image.setHeight("");
@@ -191,25 +191,23 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
-				BPTToolRepository toolRepository = application.getToolRepository();
-				
 				if (((String)toolNameInput.getValue()).isEmpty()) {
 					getWindow().showNotification("'Tool name' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
 				} else if (((String)descriptionInput.getValue()).isEmpty() && (((String)descriptionURLInput.getValue()).isEmpty())) {
 					getWindow().showNotification("One of the fields 'Description' and 'Description URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
-				} else if (!((String)descriptionURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)descriptionURLInput.getValue())) {
+				} else if (!((String)descriptionURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)descriptionURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Description URL': " + (String)descriptionURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (((String)providerInput.getValue()).isEmpty()) {
 					getWindow().showNotification("'Provider' field is empty", Notification.TYPE_ERROR_MESSAGE);
-				} else if (!((String)providerURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)providerURLInput.getValue())) {
+				} else if (!((String)providerURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)providerURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Provider URL': " + (String)providerURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
-				} else if (!((String)documentationURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)documentationURLInput.getValue())) {
+				} else if (!((String)documentationURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)documentationURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Documentation URL': " + (String)documentationURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
-				} else if (!((String)screencastURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)screencastURLInput.getValue())) {
+				} else if (!((String)screencastURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)screencastURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Screencast URL': " + (String)screencastURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
-				} else if (!((String)tutorialURLInput.getValue()).isEmpty() && !BPTValidator.isValidURL((String)tutorialURLInput.getValue())) {
+				} else if (!((String)tutorialURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)tutorialURLInput.getValue())) {
 					getWindow().showNotification("Invalid URL", "in field 'Tutorial URL': " + (String)tutorialURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (((String)contactNameInput.getValue()).isEmpty()) {
 					getWindow().showNotification("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
@@ -221,8 +219,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 			}
 
 			private void finishUpload() {
-				BPTToolRepository toolRepository = ((BPTApplication)getApplication()).getToolRepository();
-				
 				if (documentId == null) { 
 				
 					documentId = toolRepository.createDocument(generateDocument(new Object[] {
@@ -244,7 +240,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						(String)contactMailInput.getValue(),
 						(String)application.getUser(), 
 						new Date(),
-						new Date()
+						new Date(), 
+						null
 					}));
 						
 					if (!logoDeleted) { // logo.exists()
@@ -280,6 +277,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("contact_name", contactNameInput.getValue().toString());
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
+					newValues.put("notification_date", null);
 					toolRepository.updateDocument(newValues);
 					
 					Map<String, Object> document = toolRepository.updateDocument(newValues);

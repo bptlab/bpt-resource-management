@@ -7,11 +7,40 @@ import java.util.Map;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 
+/**
+ * 
+ * Provides access to CouchDB's store for Tools for BPM users.
+ * There are two roles of users - moderator and resource provider. 
+ * A resource provider may submit and update his own entries.
+ * In addition, a moderator may change the status of an entry or delete an entry.
+ * 
+ * @see de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository
+ * 
+ * @author tw
+ *
+ */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTUserRepository extends BPTDocumentRepository {
 	
+	private static BPTUserRepository instance = null;
+	
 	public BPTUserRepository() {
 		super("bpt_resources_users");
+	}
+	
+	public static BPTUserRepository getInstance() {
+		if (instance == null) {
+                instance = new BPTUserRepository();
+            }		
+		return instance;
+	}
+	
+	public static boolean instanceIsCleared() {
+		return instance == null;
+	}
+	
+	public static void clearInstance() {
+		instance = null;
 	}
 	
 	@View(
@@ -38,9 +67,23 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param _id OpenID of the user
+	 * @return database document containing information about the user as java.util.Map
+	 * 
+	 */
 	public Map<String, Object> getUser(String _id) {
 		Map<String, Object> user = db.get(Map.class, _id);
 		return user;
+	}
+
+	@Override
+	public String createDocument(Map<String, Object> document) {
+		String _id = (String) document.get("_id");
+		document = setDefaultValues(document);
+		db.create(_id, document);
+		return _id;
 	}
 	
 	@Override
@@ -58,14 +101,6 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		}
 		createDocument(generateDocument(new Object[] {_id, name, mailAddress}));
 		return false;
-	}
-	
-	@Override
-	public String createDocument(Map<String, Object> document) {
-		String _id = (String) document.get("_id");
-		document = setDefaultValues(document);
-		db.create(_id, document);
-		return _id;
 	}
 
 	private Map<String, Object> generateDocument(Object[] values) {

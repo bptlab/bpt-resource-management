@@ -14,16 +14,18 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
-public abstract class BPTShowEntryComponent extends VerticalLayout{
+public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
 	protected IndexedContainer dataSource;
 	protected String _id;
+	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	
 	public BPTShowEntryComponent(){
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
@@ -46,10 +48,10 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		popupWindow.setWidth("600px");
 		
 		_id = item.getItemProperty("ID").getValue().toString();
-		Map<String, Object> tool = ((BPTApplication)getApplication()).getToolRepository().readDocument(_id);
+		Map<String, Object> tool = toolRepository.readDocument(_id);
 		
 		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntries()).get(1);
-		Object value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
+		Object value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
@@ -58,7 +60,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			if ((Boolean)entry[7]) {
 				popupWindow.addComponent(new Label(entry[1] + ":"));
-				value = BPTVaadinResources.generateComponent(((BPTApplication)getApplication()).getToolRepository(), tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
+				value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
 				if (entry[2] == Component.class) {
 					popupWindow.addComponent((Component)value);
 				} else {
@@ -91,7 +93,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 				});
 				layout.addComponent(editButton);
 			}
-			BPTToolStatus actualState = ((BPTApplication)getApplication()).getToolRepository().getDocumentStatus(_id);
+			BPTToolStatus actualState = toolRepository.getDocumentStatus(_id);
 			
 			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
 				
@@ -157,17 +159,17 @@ public abstract class BPTShowEntryComponent extends VerticalLayout{
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
-					((BPTApplication)getApplication()).getToolRepository().deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
+					toolRepository.deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
 				} else if (status.equals("publish")) {
-					((BPTApplication)getApplication()).getToolRepository().publishDocument(_id);
+					toolRepository.publishDocument(_id);
 				} else if (status.equals("reject")) {
-					((BPTApplication)getApplication()).getToolRepository().rejectDocument(_id);
+					toolRepository.rejectDocument(_id);
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
-					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
+					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
 				} else { // if status.equals("propose"))
 					boolean fromRejected = false;
-					((BPTApplication)getApplication()).getToolRepository().unpublishDocument(_id, fromRejected);
+					toolRepository.unpublishDocument(_id, fromRejected);
 				}
 				BPTContainerProvider.refreshFromDatabase();
 				((BPTApplication) getApplication()).refresh();

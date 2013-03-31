@@ -18,15 +18,18 @@ import org.ektorp.DocumentNotFoundException;
 import com.github.ldriscoll.ektorplucene.CouchDbRepositorySupportWithLucene;
 
 /**
- * Provides querying methods based on CouchDB views.
- * Provides methods for CRUD operations based on java.util.Map - may be directly used by front-end.
+ * Provides querying methods based on CouchDB views for documents and their attachments.
+ * Provides methods for CRUD operations based on java.util.Map - may be used directly by front-end.
  * 
- * public int numberOfDocuments()
  * public String createDocument(String type, Map<String, Object> document)
  * public Map<String, Object> readDocument(String _id)
  * public Map<String, Object> updateDocument(Map<String, Object> document)
  * public Map<String, Object> deleteDocument(String _id)
- *
+ * 
+ * public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType)
+ * public AttachmentInputStream readAttachment(String _id, String attachmentId)
+ * public String deleteAttachment(String _id, String _rev, String attachmentId)
+ * 
  * @author tw
  *
  */
@@ -46,30 +49,11 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
         initStandardDesignDocument();
 	}
 	
-	public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType) {
-		String revision = new String();
-		
-		try {
-			InputStream inputStream = new FileInputStream(file);
-			AttachmentInputStream attachmentStream = new AttachmentInputStream(attachmentId, inputStream, contentType);
-			revision = db.createAttachment(_id, _rev, attachmentStream);
-			inputStream.close();
-			attachmentStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return revision;
-	}
-	
 	/**
 	 * Creates a new document in the database.
 	 * 
-     * @param type the type of the document to be stored
      * @param document java.util.Map containing the attributes and their values to be stored
-     * @return the id of the stored document
+     * @return id of the stored document
      * 
      */
 	public String createDocument(Map<String, Object> document) {
@@ -93,25 +77,11 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		return databaseDocument;
 	}
-	
-	/* 
-	 * ! the stream has to be closed later on !
-	 */
-	public AttachmentInputStream readAttachment(String _id, String attachmentId) {
-		AttachmentInputStream inputStream = new AttachmentInputStream("null", null, "image/jpeg"); // default initialization
-		try {
-			inputStream = db.getAttachment(_id, attachmentId);
-		} catch (DocumentNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return inputStream;
-	}
 
 	/**
-	 * Fetches an existing document in the database.
+	 * Fetches an existing document from the database.
 	 * 
-     * @param _id the id of the document to be fetched
+     * @param _id id of the document to be fetched
      * @return database document as java.util.Map
      * 
      */
@@ -121,7 +91,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	}
 	
 	/**
-	 * Fetches an existing document in the database.
+	 * Updates an existing document in the database.
 	 * 
      * @param java.util.Map with updated values
      * @return updated database document as java.util.Map
@@ -142,7 +112,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	/**
 	 * Deletes a document by marking it as deleted but keeping it in the database.
 	 * 
-     * @param _id the id of the document to be deleted
+     * @param _id id of the document to be deleted
      * @return deleted database document as java.util.Map
      * 
      */
@@ -153,6 +123,59 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		return databaseDocument;
 	}
 	
+	/**
+	 * 
+	 * @param _id id of the document where the attachment has to be added to
+	 * @param _rev trevision of the document where the attachment has to be added to
+	 * @param attachmentId name of the new attachment - must be unique
+	 * @param file attachment as file
+	 * @param contentType content type of the file - also known as MIME type
+	 * @return new revision of the document after adding the attachment
+	 */
+	public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType) {
+		String revision = new String();
+		
+		try {
+			InputStream inputStream = new FileInputStream(file);
+			AttachmentInputStream attachmentStream = new AttachmentInputStream(attachmentId, inputStream, contentType);
+			revision = db.createAttachment(_id, _rev, attachmentStream);
+			inputStream.close();
+			attachmentStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return revision;
+	}
+	
+	/**
+	 * Fetches an existing attachment from the database.
+	 * 
+	 * @param _id id of the document where the attachment is stored
+	 * @param attachmentId name of the attachment
+	 * @return file as java.io.InputStream - has to be closed after usage!
+	 */
+	public AttachmentInputStream readAttachment(String _id, String attachmentId) {
+		AttachmentInputStream inputStream = new AttachmentInputStream("null", null, "image/jpeg"); // default initialization
+		try {
+			inputStream = db.getAttachment(_id, attachmentId);
+		} catch (DocumentNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return inputStream;
+	}
+	
+	/**
+	 * Deletes the attachment of a document.
+	 * 
+	 * @param _id id of the document where the attachment is stored
+	 * @param _rev revision of the document where the attachment is stored
+	 * @param attachmentId name of the attachment
+	 * @return new revision of the document after deleting the attachment
+	 */
 	public String deleteAttachment(String _id, String _rev, String attachmentId) {
 		String revision = new String();
 		revision = db.deleteAttachment(_id, _rev, attachmentId);

@@ -3,11 +3,9 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -28,7 +26,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTContainerProvider {
 	
-	private static BPTToolRepository toolRepository = new BPTToolRepository();
+	private static BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	
 //	/**
 //	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
@@ -137,25 +135,25 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private static void setItemPropertyValues(Item item, Map<String, Object> tool){
+	private static void setItemPropertyValues(Item item, Map<String, Object> tool) {
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
 		}
 	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query){
+	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
 		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> tags, String query){
+	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> tags, String query) {
 		List<Map> tools = toolRepository.getVisibleEntriesByUser(user, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static void refreshFromDatabase(){
+	public static void refreshFromDatabase() {
 		toolRepository.refreshData();
 	}
 }
