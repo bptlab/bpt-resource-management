@@ -13,7 +13,14 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class BPTMailUtils {
-
+	
+	/**
+	 * The session to be used for sending and receiving mails from Google Mail.
+	 * 
+	 * @param username username at Google Mail
+	 * @param password password at Google Mail
+	 * @return the session
+	 */
 	public static Session getGMailSession(String username, String password) {
 		final Properties properties = new Properties();
 		
@@ -43,6 +50,15 @@ public class BPTMailUtils {
 	    });
 	}
 	
+	/**
+	 * Sends a mail in plain text.
+	 * 
+	 * @param session
+	 * @param recipient
+	 * @param subject
+	 * @param content
+	 * @throws MessagingException
+	 */
 	public static void sendMail(Session session, String recipient, String subject, String content) throws MessagingException {
 		Message message = new MimeMessage(session);
 
@@ -54,6 +70,16 @@ public class BPTMailUtils {
 		Transport.send(message);
 	}
 	
+	/**
+	 * Sends a multi-part mail composed from both plain and HTML text.
+	 * 
+	 * @param session
+	 * @param recipient
+	 * @param subject
+	 * @param textContent content as plain text
+	 * @param htmlContent content as HTML text
+	 * @throws MessagingException
+	 */
 	public static void sendMultipartTextAndHtmlMail(Session session, String recipient, String subject, String textContent, String htmlContent) throws MessagingException {
 		MimeMultipart content = new MimeMultipart("alternative");
 

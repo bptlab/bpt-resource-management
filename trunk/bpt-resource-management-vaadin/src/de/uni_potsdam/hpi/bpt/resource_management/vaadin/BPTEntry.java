@@ -10,6 +10,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 
 @SuppressWarnings("serial")
@@ -21,7 +22,7 @@ public class BPTEntry extends CustomLayout {
 	private Item item;
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
-	
+	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -176,7 +177,7 @@ public class BPTEntry extends CustomLayout {
 			System.out.println("renderDeleteButton" + entryId);
 		}
 		
-		BPTToolStatus actualState = application.getToolRepository().getDocumentStatus(entryId);
+		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
 		
 		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Unpublished){
 			Button publish = new Button("publish");

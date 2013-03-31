@@ -14,7 +14,7 @@ import com.github.ldriscoll.ektorplucene.LuceneAwareCouchDbConnector;
 /**
  * Provides a static method to connect to CouchDB.
  * 
- * public static CouchDbConnector connect(String table)
+ * public static LuceneAwareCouchDbConnector connect(String table)
  *
  * @author tw
  *

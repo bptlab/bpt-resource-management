@@ -36,11 +36,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	@Override
 	public void init() {
-		toolRepository = new BPTToolRepository();
-		userRepository = new BPTUserRepository();
-		
-		// XXX mail notifications are disabled by default - enable here for deployment
-//		toolRepository.enableMailProvider();
+		toolRepository = BPTToolRepository.getInstance();
+		userRepository = BPTUserRepository.getInstance();
 		
 		setProperties();
 		
