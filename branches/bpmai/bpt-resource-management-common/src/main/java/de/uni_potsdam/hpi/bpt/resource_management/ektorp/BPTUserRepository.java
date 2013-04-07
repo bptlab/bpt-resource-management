@@ -9,7 +9,7 @@ import org.ektorp.support.View;
 
 /**
  * 
- * Provides access to CouchDB's store for Tools for BPM users.
+ * Provides access to CouchDB's store for BPMAI users.
  * There are two roles of users - moderator and resource provider. 
  * A resource provider may submit and update his own entries.
  * In addition, a moderator may change the status of an entry or delete an entry.
@@ -25,7 +25,7 @@ public class BPTUserRepository extends BPTDocumentRepository {
 	private static BPTUserRepository instance = null;
 	
 	public BPTUserRepository() {
-		super("bpt_resources_users");
+		super("bpmai_users");
 	}
 	
 	public static BPTUserRepository getInstance() {
@@ -105,7 +105,7 @@ public class BPTUserRepository extends BPTDocumentRepository {
 
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys("bpt_resources_users");
+		String[] keys = BPTDocumentTypes.getDocumentKeys("bpmai_users");
 		for(int i = 0; i < keys.length; i++) {
 			document.put(keys[i], values[i]);
 		}

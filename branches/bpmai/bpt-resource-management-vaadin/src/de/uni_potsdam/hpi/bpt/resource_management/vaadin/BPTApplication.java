@@ -42,7 +42,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		setProperties();
 		
-		Window mainWindow = new Window("Tools for BPM");
+		Window mainWindow = new Window("BPM Academic Initiative");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme("bpt");

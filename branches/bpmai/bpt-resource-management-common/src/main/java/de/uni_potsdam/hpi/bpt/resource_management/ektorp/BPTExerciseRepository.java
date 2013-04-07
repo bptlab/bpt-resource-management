@@ -20,7 +20,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
 /**
  * 
- * Provides access to CouchDB's store for Tools for BPM entries
+ * Provides access to CouchDB's store for BPMAI entries
  * 
  * @see de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository
  * 
@@ -29,20 +29,19 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
  *
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class BPTToolRepository extends BPTDocumentRepository {
+public class BPTExerciseRepository extends BPTDocumentRepository {
 	
-	private static BPTToolRepository instance = null;
+	private static BPTExerciseRepository instance = null;
 	private List<Map> tableEntries = new ArrayList<Map>();
-	private BPTMailProvider mailProvider = BPTMailProvider.getInstance();
+//	private BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	
-	public BPTToolRepository() {
-		super("bpt_resources_tools");
-		disableMailProvider();
+	public BPTExerciseRepository() {
+		super("bpmai_exercises");
 	}
 	
-	public static BPTToolRepository getInstance() {
+	public static BPTExerciseRepository getInstance() {
 		if (instance == null) {
-                instance = new BPTToolRepository();
+                instance = new BPTExerciseRepository();
             }		
 		return instance;
 	}
@@ -58,17 +57,17 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	@Override
 	public String createDocument(Map<String, Object> document) {
 		String documentId = super.createDocument(document);
-		mailProvider.sendEmailForNewEntry((String)document.get("name"), documentId, (String)document.get("user_id"));
+//		mailProvider.sendEmailForNewEntry((String)document.get("name"), documentId, (String)document.get("user_id"));
 		return documentId;
 	}
 	
 	@Override
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = super.updateDocument(document);
-		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished
-				&& document.get("notification_url") == null) {
-			mailProvider.sendEmailForUpdatedEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
-		}
+//		if (BPTEntryStatus.valueOf((String) databaseDocument.get("status")) != BPTEntryStatus.Unpublished
+//				&& document.get("notification_url") == null) {
+//			mailProvider.sendEmailForUpdatedEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+//		}
 		return databaseDocument;
 	}
 	
@@ -82,12 +81,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
      */
 	public Map<String, Object> deleteDocument(String _id, boolean byModerator) {
 		Map<String, Object> databaseDocument = super.deleteDocument(_id);
-		if (byModerator) {
-			mailProvider.sendEmailForDeletedEntryToResourceProvider((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
-		} else {
-			mailProvider.sendEmailForDeletedEntryToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
-		}
-		
+//		if (byModerator) {
+//			mailProvider.sendEmailForDeletedEntryToResourceProvider((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//		} else {
+//			mailProvider.sendEmailForDeletedEntryToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
+//		}
 		return databaseDocument;
 	}
 	
@@ -119,26 +117,26 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 */
 	@Views({
 	    @View(
-	    	name = "all_tools", 
+	    	name = "all_entries", 
 			map = "function(doc) { if (!doc.deleted) emit(doc._id, doc); }"
 	    	), 
 	    @View(
-	       	name = "published_tools", 
+	       	name = "published_entries", 
 	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Published') emit(doc._id, doc); }"
 	       	), 
 	   	@View(
-	   		name = "unpublished_tools", 
+	   		name = "unpublished_entries", 
 	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Unpublished') emit(doc._id, doc); }"
 	    	), 
 	    @View(
-	    	name = "rejected_tools", 
+	    	name = "rejected_entries", 
 	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Rejected') emit(doc._id, doc); }"
 	    	)
 	    })
 	public List<Map> getDocuments(String status) {
 		ViewQuery query = new ViewQuery()
 							.designDocId("_design/Map")
-							.viewName(status + "_tools");
+							.viewName(status + "_entries");
 		List<Map> result = db.queryView(query, Map.class);	
 		return result;
 	}
@@ -150,14 +148,52 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @return list of entries as database documents
 	 */
 	@View(
-			name = "tools_by_user_id", 
+			name = "entries_by_user_id", 
 			map = "function(doc) { emit(doc.user_id, doc); }"
 	)
 	public List<Map> getDocumentsByUser(String user) {
 		ViewQuery query = new ViewQuery()
 							  .designDocId("_design/Map")
-							  .viewName("tools_by_user_id")
+							  .viewName("entries_by_user_id")
 							  .key(user);
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
+	}
+	
+	/**
+	 * Fetches the documents by language.
+	 * 
+	 * @param language language of the entries
+	 * @return list of entries as database documents
+	 */
+	@View(
+			name = "entries_by_user_id", 
+			map = "function(doc) { emit(doc.language, doc); }"
+	)
+	public List<Map> getDocumentsByLanguage(String language) {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("entries_by_user_id")
+							  .key(language);
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
+	}
+	
+	/**
+	 * Fetches the documents by exercise set identifier.
+	 * 
+	 * @param set_id exercise set identifier
+	 * @return list of entries as database documents
+	 */
+	@View(
+			name = "entries_by_set_id", 
+			map = "function(doc) { emit(doc.set_id, doc); }"
+	)
+	public List<Map> getDocumentsBySetId(String set_id) {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("entries_by_set_id")
+							  .key(set_id);
 		List<Map> result = db.queryView(query, Map.class);
 		return result;
 	}
@@ -175,12 +211,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	        name = "fullSearch",
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
-	                    "res.add(doc.name); " + 
+	                    "res.add(doc.title); " + 
 	                    "res.add(doc.description); " + 
-	                    "res.add(doc.provider); " + 
-	                    "res.add(doc.download_url); " + 
-	                    "res.add(doc.documentation_url); " + 
-	                    "res.add(doc.screencast_url); " + 
 	                    "res.add(doc.contact_name); " +
 //	                    "res.add(doc._id, {field: \"_id\", store: \"yes\"} ); " +
 //	                    "res.add(doc.name, {field: \"name\", store: \"yes\"} ); " +
@@ -207,22 +239,22 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
-		databaseDocument.put("status", BPTToolStatus.Unpublished);
+		databaseDocument.put("status", BPTExerciseStatus.Unpublished);
 		databaseDocument.put("deleted", false);
 		return databaseDocument;
 	}
 	
 	public Map<String, Object> publishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTToolStatus.Published);
+		databaseDocument.put("status", BPTExerciseStatus.Published);
 		db.update(databaseDocument);
-		mailProvider.sendEmailForPublishedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//		mailProvider.sendEmailForPublishedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		return databaseDocument;
 	}
 	
 	private Map<String, Object> unpublishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTToolStatus.Unpublished);
+		databaseDocument.put("status", BPTExerciseStatus.Unpublished);
 		db.update(databaseDocument);
 		return databaseDocument;
 	}
@@ -239,7 +271,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			databaseDocument = unpublishDocument(_id, fromPublished, true);
 		} else { 
 			databaseDocument = unpublishDocument(_id);
-			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		}
 		return databaseDocument;
 	}
@@ -255,27 +287,27 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		Map<String, Object> databaseDocument = unpublishDocument(_id);
 		if (fromPublished) { 
 			if (byModerator) {
-				mailProvider.sendEmailForUnpublishedEntryFromPublishedToResourceProvider((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//				mailProvider.sendEmailForUnpublishedEntryFromPublishedToResourceProvider((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 			} else {
-				mailProvider.sendEmailForUnpublishedEntryFromPublishedToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
+//				mailProvider.sendEmailForUnpublishedEntryFromPublishedToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 			}
 		} else { // propose (by moderator if he has previously unpublished an entry by mistake, notify resource provider)
-			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		}
 		return databaseDocument;
 	}
 	
 	public Map<String, Object> rejectDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTToolStatus.Rejected);
+		databaseDocument.put("status", BPTExerciseStatus.Rejected);
 		db.update(databaseDocument);
-		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		return databaseDocument;
 	}
 	
-	public BPTToolStatus getDocumentStatus(String _id){
+	public BPTExerciseStatus getDocumentStatus(String _id){
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		return BPTToolStatus.valueOf((String) databaseDocument.get("status"));
+		return BPTExerciseStatus.valueOf((String) databaseDocument.get("status"));
 	}
 	
 	/**
@@ -300,15 +332,16 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param query full text search query handled by Lucene
 	 * @return list of entries with the given states matching on tag search and full text search
 	 */
-	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags, String query) {
+	public List<Map> getVisibleEntries(String language, List<BPTExerciseStatus> states, ArrayList<String> tags, String query) {
 		tableEntries.clear();
-		for (BPTToolStatus status : states) {
+		for (BPTExerciseStatus status : states) {
 			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
 		}
+		
 		List<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
-		for (Map<String, Object> entry : tableEntries){
-			if (containsAllTags(entry, tags, tagAttributes)) { 
+		String[] tagAttributes = new String[] {"topics", "model_types", "task_types", "other_tags"};
+		for (Map<String, Object> entry : tableEntries) {
+			if (containsAllTags(entry, tags, tagAttributes) && ((String) entry.get("language")).equals(language)) { 
 				newEntries.add(entry);
 			}
 		}
@@ -336,7 +369,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	public List<Map> getVisibleEntriesByUser(String user, ArrayList<String> tags, String query) {
 		tableEntries = getDocumentsByUser(user);
 		List<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};
+		String[] tagAttributes = new String[] {"topics", "model_types", "task_types", "other_tags"};
 		for (Map<String, Object> entry : tableEntries){
 			if (containsAllTags(entry, tags, tagAttributes)) {
 				newEntries.add(entry);
@@ -349,6 +382,25 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			}
 		}
 		return newEntries;
+	}
+	
+	/**
+	 * Composite search in entries of an user.
+	 * 
+	 * @param language language of the entries
+	 * @param user id of the user
+	 * @param tags tags that the entries shall contain
+	 * @param query full text search query handled by Lucene
+	 * @return list of entries of the user matching on tag search and full text search
+	 */
+	public List<Map> getVisibleEntriesByUser(String language, String user, ArrayList<String> tags, String query) {
+		List<Map> entries = getVisibleEntriesByUser(user, tags, query);
+		for (Map<String, Object> entry : entries) {
+			if (!((String) entry.get("language")).equals(language)) { 
+				entries.remove(entry);
+			}
+		}
+		return entries;
 	}
 
 	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {
@@ -370,16 +422,16 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return true;
 	}
 
-	public boolean isMailProviderEnabled() {
-		return mailProvider.isEnabled();
-	}
+//	public boolean isMailProviderEnabled() {
+//		return mailProvider.isEnabled();
+//	}
 
 	public void enableMailProvider() {
-		mailProvider.setEnabled(true);
+//		mailProvider.setEnabled(true);
 	}
 	
 	public void disableMailProvider() {
-		mailProvider.setEnabled(false);
+//		mailProvider.setEnabled(false);
 	}
 	
 	// TODO: should not get all documents when refreshing
