@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.search;
 
 import java.util.ArrayList;
 
@@ -7,6 +7,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTBoxContainer;
 
 @SuppressWarnings("serial")
 public class BPTSearchComponent extends CustomComponent {

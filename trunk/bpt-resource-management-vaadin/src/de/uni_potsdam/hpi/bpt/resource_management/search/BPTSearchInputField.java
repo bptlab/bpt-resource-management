@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.search;
 
 import com.vaadin.ui.ComboBox;
 

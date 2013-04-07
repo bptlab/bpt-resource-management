@@ -19,6 +19,7 @@ import com.vaadin.ui.Window;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings({ "unchecked", "serial" })

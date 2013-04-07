@@ -7,6 +7,8 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.VerticalLayout;
 
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
+
 @SuppressWarnings("serial")
 public class BPTTagBox extends CustomComponent{
 	

@@ -1,6 +1,9 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.search;
 
 import java.util.ArrayList;
+
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagComponent;
 
 @SuppressWarnings("serial")
 public class BPTTagSearchComponent extends BPTTagComponent{
