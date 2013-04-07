@@ -1,0 +1,185 @@
+@import "../reindeer/styles.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/ConfSkin/style.css";
+
+span.displaynone { 
+	display:none; 
+}
+             
+ul#resource-list {
+	list-style-type:none;
+	margin: 0;
+	padding: 0;
+}
+
+#resource-list li.entry {
+	padding: 1em;
+	margin: 1em;
+	clear: left;
+}
+
+#resource-list li.entry:nth-child(2n+1) {
+	background-color: #eee;
+}
+
+#resource-list .entry>* {
+	margin-left: 160px;
+}
+
+#resource-list .entry .Logo img {
+	margin: 0;
+	max-width: 130px;
+	max-height: 130px;
+        background-color: white;    
+        border: 5px solid white;
+	box-shadow: 0 0 3px #B8B8B8;
+        margin-top: -0.8em;
+}
+
+#resource-list .entry .Logo {
+	margin: 1em 0;
+	margin-left: 0;
+	float: left;
+	
+}
+
+#resource-list .entry .extension{
+	display: none;
+}
+
+#resource-list .entry .button {
+	clear: left;
+	display: block;
+	position: relative;
+	padding: 0.2em 0.3em 0.4em;
+	margin: 0.4em 0 0.4em 90%;
+	text-align: center;
+	background-color: #00639C;
+	color: #fff;
+	
+	-webkit-transition: all 0.25s;
+	-moz-transition: all 0.25s;
+	-o-transition: all 0.25s;
+	transition: all 0.25s;
+}
+
+#resource-list .entry .button.edit {
+	margin: 0px;
+	margin-top: 10px;
+	float:left;
+	clear: none;
+	display: none;
+}
+
+#resource-list .entry .bpt .v-button-caption {
+	color: #FFFFFF;
+}
+#resource-list .entry .v-link.v-link-bpt2 {
+	display: inline;
+}
+
+
+#resource-list .entry .button:hover {
+	text-decoration: none;
+	background-color: #004870;
+}
+
+#resource-list div[class="Provider"]:before,
+#resource-list div[class="Download URL"]:before,
+#resource-list div[class="Documentation URL"]:before,
+#resource-list div[class="Screencast URL"]:before,
+#resource-list div[class="Tutorial URL"]:before,
+#resource-list div[class="Availability"]:before,
+#resource-list div[class="Model type"]:before,
+#resource-list div[class="Platform"]:before,
+#resource-list div[class="Supported functionality"]:before,
+#resource-list div[class="Contact name"]:before,
+#resource-list div[class="Last update"]:before {
+	content: attr(class);
+	font-style: italic;
+	display: block;
+	margin-left: -1em;
+}
+
+#resource-list div[class="Download URL"]:before {
+	content: "Download URL";
+}
+#resource-list div[class="Documentation URL"]:before {
+	content: "Documentation URL";
+}
+#resource-list div[class="Screencast URL"]:before {
+	content: "Screencast URL";
+}
+#resource-list div[class="Tutorial URL"]:before {
+	content: "Tutorial URL";
+}
+#resource-list div[class="Last update"]:before{
+	content: "Last update";
+}
+
+#resource-list div[class="Description"],
+#resource-list div[class="Provider"],
+#resource-list div[class="Download URL"],
+#resource-list div[class="Documentation URL"],
+#resource-list div[class="Screencast URL"],
+#resource-list div[class="Tutorial URL"],
+#resource-list div[class="Availability"],
+#resource-list div[class="Model type"],
+#resource-list div[class="Platform"],
+#resource-list div[class="Supported functionality"],
+#resource-list div[class="Contact name"],
+#resource-list div[class="Last update"] {
+	padding: 0 0 0 1em;
+	margin-bottom: 0.8em;
+}
+
+#resource-list div[class="Description"]:before {
+	display: inline;
+	margin: 0 1em 0 0;
+}
+#resource-list div[class="Description"]{
+	padding-left: 0em;	
+}
+
+#resource-list div[class="Contact name"]:before {
+	/*
+	display: inline;
+	margin: 0 1em 0 -1em;
+	*/
+	content: "Contact";
+}
+
+/*
+#resource-list div[class="Contact mail"]:before {
+	content: "<";
+}
+#resource-list div[class="Contact mail"]:after {
+	content: ">";
+}
+
+#resource-list div[class="Contact name"],
+#resource-list div[class="Contact mail"] {
+	display: inline;
+}
+*/
+
+#resource-list div[class="Date created"] {
+	display: none;
+}
+
+div.scroll{
+	overflow: auto !important;
+}
+
+
+.v-select-optiongroup-horizontal .v-select-option {
+	display: inline !important;
+}
+
+.v-select-optiongroup-horizontal {
+	white-space: nowrap !important;
+}
+
+.v-select-optiongroup-horizontal
+.v-select-option.v-radiobutton {
+	padding-right: 10px !important;
+}
