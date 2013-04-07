@@ -14,8 +14,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
@@ -25,11 +25,11 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
 	protected IndexedContainer dataSource;
 	protected String _id;
-	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	protected BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
 	
 	public BPTShowEntryComponent(){
-		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-		statusList.add(BPTToolStatus.Published);
+		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+		statusList.add(BPTExerciseStatus.Published);
 		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), null);
 		addStyleName("scroll");
 	}
@@ -93,9 +93,9 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(editButton);
 			}
-			BPTToolStatus actualState = toolRepository.getDocumentStatus(_id);
+			BPTExerciseStatus actualState = toolRepository.getDocumentStatus(_id);
 			
-			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
+			if (actualState == BPTExerciseStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
 				
 				Button publishButton = new Button("publish");
 				publishButton.addListener(new Button.ClickListener(){
@@ -114,7 +114,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				layout.addComponent(rejectButton);						
 				
 			}
-			else if (actualState == BPTToolStatus.Published) {
+			else if (actualState == BPTExerciseStatus.Published) {
 				Button unpublishButton = new Button("unpublish");
 				unpublishButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -123,7 +123,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(unpublishButton);	
 			}
-			else if (actualState == BPTToolStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
+			else if (actualState == BPTExerciseStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
 				Button proposeButton = new Button("propose");
 				proposeButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {

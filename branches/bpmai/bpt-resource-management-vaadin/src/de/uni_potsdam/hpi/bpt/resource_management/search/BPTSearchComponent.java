@@ -6,7 +6,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTBoxContainer;
 
@@ -64,7 +64,7 @@ public class BPTSearchComponent extends CustomComponent {
 		boxLayout.removeAllComponents();
 	}
 	
-	public ArrayList<BPTToolStatus> getSelectedStates() {
+	public ArrayList<BPTExerciseStatus> getSelectedStates() {
 		return box.getSelectedStates();
 	}
 	

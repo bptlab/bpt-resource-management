@@ -10,8 +10,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 
 @SuppressWarnings("serial")
 public class BPTEntry extends CustomLayout {
@@ -22,7 +22,7 @@ public class BPTEntry extends CustomLayout {
 	private Item item;
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
-	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -177,9 +177,9 @@ public class BPTEntry extends CustomLayout {
 			System.out.println("renderDeleteButton" + entryId);
 		}
 		
-		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
+		BPTExerciseStatus actualState = toolRepository.getDocumentStatus(entryId);
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Unpublished){
+		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Unpublished){
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -205,7 +205,7 @@ public class BPTEntry extends CustomLayout {
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
 		}
 		
-		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTToolStatus.Published){
+		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTExerciseStatus.Published){
 			Button unpublish = new Button("unpublish");
 			unpublish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -220,7 +220,7 @@ public class BPTEntry extends CustomLayout {
 		
 		}
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Rejected){
+		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Rejected){
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {

@@ -29,8 +29,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
@@ -50,7 +50,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private String documentId, imageType;
 	private boolean logoDeleted = true;
 	private BPTApplication application;
-	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		this.application = application;
@@ -271,8 +271,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("model_types", new ArrayList<String>(modelTagComponent.getTagValues()));
 					newValues.put("platforms", new ArrayList<String>(platformTagComponent.getTagValues()));
 					newValues.put("supported_functionalities", new ArrayList<String>(functionalityTagComponent.getTagValues()));
-					if (BPTToolStatus.Rejected == BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"))) {
-						newValues.put("status", BPTToolStatus.Unpublished);
+					if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"))) {
+						newValues.put("status", BPTExerciseStatus.Unpublished);
 					}
 					newValues.put("contact_name", contactNameInput.getValue().toString());
 					newValues.put("contact_mail", contactMailInput.getValue().toString());

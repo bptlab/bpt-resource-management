@@ -16,8 +16,8 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
@@ -32,12 +32,12 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
-	private BPTToolRepository toolRepository;
+	private BPTExerciseRepository exerciseRepository;
 	private BPTUserRepository userRepository;
 	
 	@Override
 	public void init() {
-		toolRepository = BPTToolRepository.getInstance();
+		exerciseRepository = BPTExerciseRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		
 		setProperties();
@@ -137,8 +137,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 	}
 	
-	public BPTToolRepository getToolRepository() {
-		return toolRepository;
+	public BPTExerciseRepository getExerciseRepository() {
+		return exerciseRepository;
 	}
 	
 	public BPTUserRepository getUserRepository() {
@@ -254,19 +254,19 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
 					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
 				} else {
-					ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
-					states.add(BPTToolStatus.Published);
+					ArrayList<BPTExerciseStatus> states = new ArrayList<BPTExerciseStatus>();
+					states.add(BPTExerciseStatus.Published);
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
 					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 				}
 			} else {
-				ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
+				ArrayList<BPTExerciseStatus> states = sidebar.getSearchComponent().getSelectedStates();
 				ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
 				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 			}
 		} else {
-			ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
-			states.add(BPTToolStatus.Published);
+			ArrayList<BPTExerciseStatus> states = new ArrayList<BPTExerciseStatus>();
+			states.add(BPTExerciseStatus.Published);
 			ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
 			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
 		}

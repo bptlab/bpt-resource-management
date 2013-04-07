@@ -1,4 +1,4 @@
-//package de.uni_potsdam.hpi.bpt.resource_management;
+package de.uni_potsdam.hpi.bpt.resource_management;
 //
 //import java.text.ParseException;
 //import java.text.SimpleDateFormat;
@@ -24,7 +24,7 @@
 // *
 // */
 //@SuppressWarnings({ "rawtypes" })
-//public class BPTTaskScheduler {
+public class BPTTaskScheduler {
 //	
 //	Timer timer = new Timer();
 //	BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
@@ -160,4 +160,4 @@
 ////	public static void main(String args[]) {
 ////		new BPTTaskScheduler();
 ////	}
-//}
+}
