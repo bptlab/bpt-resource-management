@@ -4,6 +4,8 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
+
 @SuppressWarnings("serial")
 public class BPTSidebar extends CustomComponent{
 	

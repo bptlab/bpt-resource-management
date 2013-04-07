@@ -10,6 +10,8 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchInputField;
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings({ "serial", "unchecked" })
@@ -22,8 +24,7 @@ public class BPTTagComponent extends CustomComponent {
 	protected VerticalLayout layout;
 	protected BPTApplication application;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
-	
-	
+		
 	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		this.application = application;
 		init(tagColumns, newTagsAllowed);

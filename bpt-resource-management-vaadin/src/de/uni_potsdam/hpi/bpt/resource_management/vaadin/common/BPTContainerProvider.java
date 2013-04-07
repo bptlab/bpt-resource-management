@@ -72,7 +72,7 @@ public class BPTContainerProvider {
 		comparator.setStrength(Collator.PRIMARY);
 		
 		if (tagColumn == "all" || tagColumn == "availabilities") {
-			uniqueValues.add("----- Availability -----");
+			uniqueValues.add("----- Availabilities -----");
 			ArrayList<String> availabilityTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> availabilityTagsOfTool = (ArrayList<String>)tool.get("availabilities");  // cast
@@ -82,7 +82,7 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(availabilityTags); // hard_coded
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
-			uniqueValues.add("----- Model type -----");
+			uniqueValues.add("----- Model types -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("model_types");  // cast
@@ -92,7 +92,7 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(modelTypeTags); // hard_coded
 		}
 		if (tagColumn == "all" || tagColumn == "platforms") {
-			uniqueValues.add("----- Platform -----");
+			uniqueValues.add("----- Platforms -----");
 			ArrayList<String> platformTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> platformTagsOfTool = (ArrayList<String>)tool.get("platforms");  // cast
@@ -102,7 +102,7 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(platformTags); // hard_coded
 		}
 		if (tagColumn == "all" || tagColumn == "supportedFunctionalities") {
-			uniqueValues.add("----- Supported functionality -----");
+			uniqueValues.add("----- Supported functionalities -----");
 			ArrayList<String> supportedFunctionalityTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> supportedFunctionalityTagsOfTool = (ArrayList<String>)tool.get("supported_functionalities");  // cast

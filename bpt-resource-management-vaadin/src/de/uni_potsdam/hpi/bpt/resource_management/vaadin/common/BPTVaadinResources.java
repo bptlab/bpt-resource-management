@@ -205,7 +205,6 @@ public class BPTVaadinResources {
 		} else {
 			return new Embedded();
 		}
-		
 	}
 
 	public static String[] getVisibleAttributes() {

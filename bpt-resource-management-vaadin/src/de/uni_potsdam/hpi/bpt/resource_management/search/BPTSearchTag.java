@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.search;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -7,6 +7,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.themes.BaseTheme;
+
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagBox;
 
 @SuppressWarnings("serial")
 public class BPTSearchTag extends CustomComponent{
@@ -24,7 +26,7 @@ public class BPTSearchTag extends CustomComponent{
 	
 	public BPTSearchTag(final BPTTagBox searchTagBox, String type, String value) {
 		this.value = value;
-        label = new Label("&nbsp;" + value + "&nbsp;(" + type + ")&nbsp;", Label.CONTENT_XHTML);
+        label = new Label("&nbsp;" + value /* + "&nbsp;(" + type + ")&nbsp;" */, Label.CONTENT_XHTML);
 		addTagToLayout(searchTagBox, value);
 	}
 	
