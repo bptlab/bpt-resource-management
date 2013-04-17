@@ -266,9 +266,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		document = new File(filename);
 		
         try {
-        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+//        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
         		outputStream = new FileOutputStream(document);
-        	}
+//        	}
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
