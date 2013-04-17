@@ -66,7 +66,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = super.updateDocument(document);
 		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished
-				&& document.get("notification_url") == null) {
+				&& document.get("notification_date") == null) {
 			mailProvider.sendEmailForUpdatedEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 		}
 		return databaseDocument;
@@ -303,7 +303,9 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags, String query) {
 		tableEntries.clear();
 		for (BPTToolStatus status : states) {
-			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
+			for (Map<String, Object> document : getDocuments(status.toString().toLowerCase())) {
+				tableEntries.add(document);
+			}
 		}
 		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"availabilities", "model_types", "platforms", "supported_functionalities"};

@@ -89,7 +89,8 @@ public class BPTMailProvider {
 				
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("A new entry has been submitted by " + user.get("name") + " <" + user.get("mail_address") + "> and awaits approval. " + newLine);
+				content.append("A new entry has been submitted by " + user.get("name") + " <" + user.get("mail_address") + "> and awaits approval: " + newLine + newLine);
+				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
 				content.append("As a moderator you may publish, reject or delete it on " + applicationURL + "." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
@@ -121,7 +122,8 @@ public class BPTMailProvider {
 				
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("An entry has been updated by " + user.get("name") + " <" + user.get("mail_address") + ">. " + newLine);
+				content.append("An entry has been updated by " + user.get("name") + " <" + user.get("mail_address") + ">. " + newLine + newLine);
+				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
 				content.append("As a moderator you may have a look at it on " + applicationURL + "." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
@@ -176,7 +178,8 @@ public class BPTMailProvider {
 				
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("The entry " + toolName + " has been deleted by its resource provider. " + newLine + newLine);
+				content.append("An entry has been deleted by its resource provider. " + newLine + newLine);
+				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
 				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
@@ -283,7 +286,8 @@ public class BPTMailProvider {
 			
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("The entry '" + toolName + "' has been unpublished by its resource provider." + newLine);
+				content.append("An entry has been unpublished by its resource provider." + newLine + newLine);
+				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
 				content.append("As a moderator you may publish, reject or delete it on " + applicationURL + "." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
@@ -380,7 +384,7 @@ public class BPTMailProvider {
 				}
 				content.append("As a moderator you may have a look at them on " + applicationURL + "." + newLine + newLine);
 				content.append("Please note that an entry will be unpublished automatically " +
-						"after two weeks of the first dectection of an URL pointing to unavailable resources.");
+						"after two weeks of the first dectection of an URL pointing to unavailable resources." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
 				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");

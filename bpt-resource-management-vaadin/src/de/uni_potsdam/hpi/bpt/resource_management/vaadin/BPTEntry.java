@@ -1,5 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.Map;
+
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
@@ -12,6 +14,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
 @SuppressWarnings("serial")
 public class BPTEntry extends CustomLayout {
@@ -23,6 +26,7 @@ public class BPTEntry extends CustomLayout {
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private BPTUserRepository userRepository = BPTUserRepository.getInstance();
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -48,65 +52,83 @@ public class BPTEntry extends CustomLayout {
 			image.setHeight("");
 			this.addComponent(image, id.toString());
 			image.addStyleName("bptlogo");
-		}
-		else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail")) {
+		} else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
 			Object value = item.getItemProperty(id).getValue();
 			if (value.getClass() == Link.class) {
-				Link link = (Link) value;
-				if (link.getCaption().isEmpty()) {
-					addDefaultComponent(id.toString());
-				} else {
-					this.addComponent(link, id.toString());
+				String url = ((Link) value).getCaption();
+				if (!url.isEmpty()) {
+					Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + url + "' target='_blank'>" + url + "</a></span>");
+					label.setContentMode(Label.CONTENT_XHTML);
+					label.setWidth("90%");
+					this.addComponent(label, id.toString());
 				}
 			} else {
 				if (id.equals("Provider")) {
-					String providerURL = ((Link)item.getItemProperty("Provider URL").getValue()).getCaption();
+					String providerURL = ((Link) item.getItemProperty("Provider URL").getValue()).getCaption();
 					if (providerURL.isEmpty()) {
-						Label label = new Label((String) value);
+						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/><span style=\"margin-left: 1em; display: block\">" + (String) value + "</span>");
+						label.setContentMode(Label.CONTENT_XHTML);
+						label.setWidth("90%");
 						this.addComponent(label, id.toString());
 					} else {
-						Link link = new Link((String) value, new ExternalResource(providerURL));
-						this.addComponent(link, id.toString());
+						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + providerURL + "' target='_blank'>" + (String) value + "</a></span>");
+						label.setContentMode(Label.CONTENT_XHTML);
+						this.addComponent(label, id.toString());
 					}
 				} else {
 					String labelContent = value.toString();
-					Label label = new Label(labelContent);
 					if (id == "Description") {
-						label.setContentMode(Label.CONTENT_XHTML);
 						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();
 						if (!descriptionURL.isEmpty()) {
 							if (labelContent.isEmpty()) {
 								labelContent = "For a description of this tool see";
 							}
 							labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
-							label.setValue(labelContent);
 						} else if (labelContent.isEmpty()) {
 							labelContent = "This tool has no description.";
-							label.setValue(labelContent);
 						}
 					} else if (id.equals("Contact name")) {
-						label.setContentMode(Label.CONTENT_XHTML);
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
 						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
-						label.setValue(labelContent);
 					}
-					label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-					if (labelContent.isEmpty()) {
-						addDefaultComponent(id.toString());
-					} else {
+					if (!labelContent.isEmpty()) {
+						Label label;
+						if (id == "Name" || id == "Description") {
+							label = new Label("<span style=\"display: block\">" + labelContent + "</span>");
+						} else if (id == "Contact name") {
+							label = new Label("<i><span style=\"margin-left: -1em\">Contact</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
+						} else {
+							label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
+						}
+						label.setContentMode(Label.CONTENT_XHTML);
+						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
 						this.addComponent(label, id.toString());
 					}
 				}
 			}
-		}
+		} else if (id.equals("User ID") && application.isModerated()) {
+			String userId = item.getItemProperty(id).getValue().toString();
+			Label label = new Label("<i><span style=\"margin-left: -1em\">OpenID of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + userId + "</span>");
+			label.setContentMode(Label.CONTENT_XHTML);
+			label.setWidth("90%");
+			this.addComponent(label, "OpenID of resource provider");
+			Map<String, Object> document = userRepository.readDocument(userId);
+			String name = (String) document.get("name");
+			String mailAddress = (String) document.get("mail_address");
+			mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
+			label = new Label("<i><span style=\"margin-left: -1em\">Contact of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + name + "&nbsp;&lt;" + mailAddress + "&gt;" + "</span>");
+			label.setContentMode(Label.CONTENT_XHTML);
+			label.setWidth("90%");
+			this.addComponent(label, "Contact of resource provider");
+		} 
 	}
 
-	private void addDefaultComponent(String location) {
-		Label label = new Label("(none)");
-		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-		this.addComponent(label, location);
-	}
+//	private void addDefaultComponent(String location) {
+//		Label label = new Label("(none)");
+//		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+//		this.addComponent(label, location);
+//	}
 
 	public void addButtons() {
 		Button more = new Button("more");
