@@ -45,7 +45,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		Window mainWindow = new Window("BPM Academic Initiative");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
-		setTheme("bpt");
+		setTheme("bpmai");
 		CustomLayout custom = new CustomLayout("mainlayout");
 		custom.setHeight("100%");
 		VerticalLayout layout =  new VerticalLayout();
@@ -149,7 +149,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		return entryComponent;
 	}
 
-	@Override
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> map = request.getParameterMap();
 		
@@ -234,7 +233,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 //        }
 //	}
 
-	@Override
 	public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
 	}
 
