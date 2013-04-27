@@ -41,15 +41,8 @@ public class BPTEntry extends CustomLayout {
 	}
 
 	private void addToLayout(String id) {
-		if (id.equals("Logo")) {
-			Object value = item.getItemProperty(id).getValue();
-			Embedded image = (Embedded) value;
-			image.setWidth("");
-			image.setHeight("");
-			this.addComponent(image, id.toString());
-			image.addStyleName("bptlogo");
-		}
-		else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail")) {
+		//TODO: links zu allen Dokumenten die hochgeladen wurden
+		if (!id.equals("User ID") && !id.equals("ID") && !id.equals("set_id") && !id.equals("Contact mail")) {
 			Object value = item.getItemProperty(id).getValue();
 			if (value.getClass() == Link.class) {
 				Link link = (Link) value;
@@ -58,33 +51,11 @@ public class BPTEntry extends CustomLayout {
 				} else {
 					this.addComponent(link, id.toString());
 				}
-			} else {
-				if (id.equals("Provider")) {
-					String providerURL = ((Link)item.getItemProperty("Provider URL").getValue()).getCaption();
-					if (providerURL.isEmpty()) {
-						Label label = new Label((String) value);
-						this.addComponent(label, id.toString());
-					} else {
-						Link link = new Link((String) value, new ExternalResource(providerURL));
-						this.addComponent(link, id.toString());
-					}
-				} else {
+			} 
+			else {
 					String labelContent = value.toString();
 					Label label = new Label(labelContent);
-					if (id == "Description") {
-						label.setContentMode(Label.CONTENT_XHTML);
-						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();
-						if (!descriptionURL.isEmpty()) {
-							if (labelContent.isEmpty()) {
-								labelContent = "For a description of this tool see";
-							}
-							labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
-							label.setValue(labelContent);
-						} else if (labelContent.isEmpty()) {
-							labelContent = "This tool has no description.";
-							label.setValue(labelContent);
-						}
-					} else if (id.equals("Contact name")) {
+					if (id.equals("Contact name")) {
 						label.setContentMode(Label.CONTENT_XHTML);
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
@@ -97,7 +68,6 @@ public class BPTEntry extends CustomLayout {
 					} else {
 						this.addComponent(label, id.toString());
 					}
-				}
 			}
 		}
 	}

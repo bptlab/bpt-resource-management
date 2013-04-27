@@ -3,7 +3,6 @@
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/ImagePlugin/style.css";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/HeadlinesPlugin/style.css";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/BlogPlugin/style.css";
-@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/BlogPlugin/blogplugin.js";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/SoaiSkin/layout.css";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/SoaiSkin/typo.css";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/SoaiSkin/print.css"
@@ -175,4 +174,14 @@ div.scroll{
 .v-select-optiongroup-horizontal
 .v-select-option.v-radiobutton {
 	padding-right: 10px !important;
+}
+
+div{
+	background-color:#FFFFFF !important;
+}
+
+body{
+	background-color:#FFFFFF !important;
+	 margin: 1em auto !important;
+	 width: 60em !important;
 }
