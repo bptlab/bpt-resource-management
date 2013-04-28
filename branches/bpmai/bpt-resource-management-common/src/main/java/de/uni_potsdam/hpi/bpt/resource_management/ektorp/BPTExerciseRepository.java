@@ -61,6 +61,26 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 		return documentId;
 	}
 	
+	/**
+	 * Fetches next available exercise set identifier.
+	 * 
+	 * @return next available set_id
+	 */
+	@View(
+		name = "next_available_set_id", 
+		map = "function(doc) { emit(null, doc.set_id) }",
+		reduce = "function(key, values, rereduce) { var ids = []; values.forEach(function(id) { if ids.push(parseInt(id)); }); return Math.max.apply(Math, ids) }"
+		)
+	public String nextAvailableSetId() {
+		ViewQuery query = createQuery("next_available_set_id");
+		ViewResult result = db.queryView(query);
+		try {
+			return new Integer(result.getRows().get(0).getValueAsInt() + 1).toString();
+		} catch (IndexOutOfBoundsException e) {
+			return "1";
+		}
+	}
+	
 	@Override
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = super.updateDocument(document);
@@ -235,7 +255,6 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
         }
         return result;
 	}
-	
 	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {

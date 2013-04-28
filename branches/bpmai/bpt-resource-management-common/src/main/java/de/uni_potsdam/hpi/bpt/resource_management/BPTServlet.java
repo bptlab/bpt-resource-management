@@ -21,7 +21,7 @@ public class BPTServlet extends HttpServlet {
 		exerciseRepository = BPTExerciseRepository.getInstance();
 
 		// mail notifications are disabled by default - enable here at deployment
-//		toolRepository.enableMailProvider();
+//		exerciseRepository.enableMailProvider();
 		
 		// schedules the tasks checking the entries for broken URLs and date of last update
 //		new BPTTaskScheduler();
