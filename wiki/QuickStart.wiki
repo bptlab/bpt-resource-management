@@ -1,0 +1,27 @@
+#summary Quick start for developers. Further information is provided in the Java code documentation.
+
+= Project structure =
+
+There are two projects including the source files:
+
+  * *`bpt-resource-management-common`*: Maven project
+    * Storage and retrievement of CouchDB documents
+      * Full search with Lucene
+    * Functionality to send e-mail notifications
+    * Servlet to schedule tasks validating URLs
+  * *`bpt-resource-management-vaadin`*: Eclipse project
+    * Vaadin web application
+    * OpenID login
+
+We recommend to use Eclipse 3.x or higher for development.
+
+= Modifying the data schema =
+
+DataSchema modification has to be done in two Java classes:
+
+* `BPTDocumentTypes.java` in package `de.uni_potsdam.hpi.bpt.resource_management.ektorp`
+* `BPTVaadinResources.java` in package `de.uni_potsdam.hpi.bpt.resource_management.vaadin.common`
+
+= Vaadin web application =
+
+See `BPTApplication.java` in package `de.uni_potsdam.hpi.bpt.resource_management.vaadin`.
