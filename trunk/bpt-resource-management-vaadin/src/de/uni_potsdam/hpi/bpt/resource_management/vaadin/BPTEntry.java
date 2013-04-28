@@ -3,7 +3,6 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.Map;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;

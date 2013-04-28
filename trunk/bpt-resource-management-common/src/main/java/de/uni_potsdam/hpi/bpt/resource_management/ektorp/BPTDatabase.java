@@ -96,6 +96,5 @@ public class BPTDatabase {
 
 	public static void setPort(int port) {
 		BPTDatabase.port = port;
-	}
-	
+	}	
 }

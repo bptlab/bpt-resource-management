@@ -252,12 +252,22 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
+//					try {
+						dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
+//					} catch (DbAccessException e) {
+//						getMainWindow().showNotification("Full search is invalid", "Please use punctuation marks with care (opening and closing marks)", Notification.TYPE_ERROR_MESSAGE);
+//						return;
+//					}
 				} else {
 					ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
 					states.add(BPTToolStatus.Published);
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+//					try {
+						dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+//					} catch (DbAccessException e) {
+//						getMainWindow().showNotification("Full search is invalid", "Please use punctuation marks with care (opening and closing marks)", Notification.TYPE_ERROR_MESSAGE);
+//						return;
+//					}
 				}
 			} else {
 				ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
