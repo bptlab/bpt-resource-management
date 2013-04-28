@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -37,6 +40,7 @@ import com.vaadin.ui.Window.Notification;
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
@@ -52,13 +56,16 @@ public class BPTUploader extends TabSheet {
 		this.application = application;
 		
         if (item != null) {
-        	addComponent(new BPTUploadPanel(item, application, this));
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
-        	//TODO: alle einträge mit gleicher set_id finden und als tabs anzeigen
-        	
+        	 List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
+        	 IndexedContainer entries = BPTContainerProvider.generateContainer(map);
+     		for(Object id : entries.getItemIds()){
+     				Item nextItem = entries.getItem(id);
+     				addComponent(new BPTUploadPanel(nextItem, application, this));
+     		}
         }
         else{
-//        	set_id = generateNewSetId();
+        	set_id = exerciseRepository.nextAvailableSetId();
         }
         addNewUploadPanel();
 	}

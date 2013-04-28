@@ -45,7 +45,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	private VerticalLayout layout;
 	private Upload upload;
-	private TextField titleInput, contactNameInput, contactMailInput;
+	private TextField titleInput, contactNameInput, contactMailInput, exerciseURLInput;
 	private ComboBox languageInput;
 	private RichTextArea descriptionInput;
 	private Button finishUploadButton;
@@ -60,7 +60,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel documentPanel;
 	private Label titleLabel, languageLabel, descriptionLabel, topicLabel, modellingLanguageLabel, taskTypeLabel,
-	additionalTagsLabel, contactNameLabel, contactMailLabel;
+	additionalTagsLabel, contactNameLabel, contactMailLabel, exerciseURLLabel;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -147,8 +147,6 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
         	
         	Object x = item.getItemProperty("Topics").getValue();
-        	System.out.println(x);
-        	System.out.println(x.toString());
         	if(!(item.getItemProperty("Topics").getValue().toString().equals(""))){
         		String[] model_type = ((String) item.getItemProperty("Topics").getValue()).split(",");
         		for(int i = 0; i < model_type.length; i++) topic.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
@@ -167,6 +165,8 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
+        	languageInput.setValue((item.getItemProperty("Language").getValue().toString()));
+        	setLanguageTo((item.getItemProperty("Language").getValue().toString()));
         }
 
 		finishUploadButton = new Button("Submit");

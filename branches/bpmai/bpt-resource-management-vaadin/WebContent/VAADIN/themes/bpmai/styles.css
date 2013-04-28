@@ -77,7 +77,7 @@ ul#resource-list {
 }
 
 #resource-list .entry .bpt .v-button-caption {
-	color: #FFFFFF;
+	color: #000000;
 }
 #resource-list .entry .v-link.v-link-bpt2 {
 	display: inline;
@@ -106,17 +106,8 @@ ul#resource-list {
 	margin-left: -1em;
 }
 
-#resource-list div[class="Download URL"]:before {
-	content: "Download URL";
-}
-#resource-list div[class="Documentation URL"]:before {
-	content: "Documentation URL";
-}
-#resource-list div[class="Screencast URL"]:before {
-	content: "Screencast URL";
-}
-#resource-list div[class="Tutorial URL"]:before {
-	content: "Tutorial URL";
+#resource-list div[class="Excercise URL"]:before {
+	content: "Excercise URL";
 }
 #resource-list div[class="Last update"]:before{
 	content: "Last update";

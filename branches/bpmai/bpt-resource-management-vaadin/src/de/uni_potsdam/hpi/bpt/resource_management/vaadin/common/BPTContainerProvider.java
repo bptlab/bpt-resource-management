@@ -118,7 +118,7 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private static IndexedContainer generateContainer(List<Map> exercises) {
+	public static IndexedContainer generateContainer(List<Map> exercises) {
 		IndexedContainer container = initializeContainerWithProperties();
 		for (int i = 0; i < exercises.size(); i++) {
 			Map<String, Object> tool = exercises.get(i);
