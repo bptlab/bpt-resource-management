@@ -43,5 +43,3 @@ We recommend to use Eclipse 3.x or higher for development.
     * You may modify the `web.xml` in `\bpt-resource-management-vaadin\WebContent\WEB-INF`
       * Use templates `web_deployment.xml` and `web_development.xml`
     * Make sure that [https://github.com/rnewson/couchdb-lucene CouchDB Lucene] is deployed on your Tomcat
-
-= Developer
