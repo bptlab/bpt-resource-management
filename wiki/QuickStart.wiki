@@ -19,8 +19,8 @@ We recommend to use Eclipse 3.x or higher for development.
 
 DataSchema modification has to be done in two Java classes:
 
-* `BPTDocumentTypes.java` in package `de.uni_potsdam.hpi.bpt.resource_management.ektorp`
-* `BPTVaadinResources.java` in package `de.uni_potsdam.hpi.bpt.resource_management.vaadin.common`
+  * `BPTDocumentTypes.java` in package `de.uni_potsdam.hpi.bpt.resource_management.ektorp`
+  * `BPTVaadinResources.java` in package `de.uni_potsdam.hpi.bpt.resource_management.vaadin.common`
 
 = Vaadin web application =
 
