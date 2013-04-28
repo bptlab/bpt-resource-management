@@ -69,7 +69,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	@View(
 		name = "next_available_set_id", 
 		map = "function(doc) { emit(null, doc.set_id) }",
-		reduce = "function(key, values, rereduce) { var ids = []; values.forEach(function(id) { if ids.push(parseInt(id)); }); return Math.max.apply(Math, ids) }"
+		reduce = "function(key, values, rereduce) {var max = 0; values.forEach(function(value) { var intValue = parseInt(value); if (intValue > max) max = intValue; } }); return max; }"
 		)
 	public String nextAvailableSetId() {
 		ViewQuery query = createQuery("next_available_set_id");
