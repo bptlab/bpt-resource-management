@@ -43,7 +43,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
-	//TODO: alle einträge mit gleicher set_id finden und als tabs anzeigen
 	private VerticalLayout layout;
 	private Upload upload;
 	private TextField titleInput, contactNameInput, contactMailInput;
@@ -68,6 +67,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		this.application = application;
 		layout = this;
 		this.uploader = uploader;
+		set_id = uploader.getSetId();
 		
 		documentId = null;
 		
@@ -143,24 +143,26 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	set_id = item.getItemProperty("set_id").toString();
-        	titleInput.setValue((item.getItemProperty("Name").getValue()));
+        	titleInput.setValue((item.getItemProperty("Title").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
         	
-        	if(!(item.getItemProperty("Topic").getValue().toString().equals(""))){
-        		String[] model_type = ((String) item.getItemProperty("Topic").getValue()).split(",");
+        	Object x = item.getItemProperty("Topics").getValue();
+        	System.out.println(x);
+        	System.out.println(x.toString());
+        	if(!(item.getItemProperty("Topics").getValue().toString().equals(""))){
+        		String[] model_type = ((String) item.getItemProperty("Topics").getValue()).split(",");
         		for(int i = 0; i < model_type.length; i++) topic.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
         	}
-        	if(!(item.getItemProperty("Modelling language").getValue().toString().equals(""))){
-        		String[] platform = ((String) item.getItemProperty("Modelling language").getValue()).split(",");
+        	if(!(item.getItemProperty("Modelling Languages").getValue().toString().equals(""))){
+        		String[] platform = ((String) item.getItemProperty("Modelling Languages").getValue()).split(",");
         		for(int i = 0; i < platform.length; i++) modellingLanguage.addChosenTag(platform[i].trim().replaceAll(" +", " "));
         	}
-        	if(!(item.getItemProperty("Task type").getValue().toString().equals(""))){
-        		String[] supported_functionality = ((String) item.getItemProperty("Task type").getValue()).split(",");
+        	if(!(item.getItemProperty("Task Types").getValue().toString().equals(""))){
+        		String[] supported_functionality = ((String) item.getItemProperty("Task Types").getValue()).split(",");
         		for(int i = 0; i < supported_functionality.length; i++) taskType.addChosenTag(supported_functionality[i].trim().replaceAll(" +", " "));
         	}
-        	if(!(item.getItemProperty("Other").getValue().toString().equals(""))){
-        		String[] availability = ((String) item.getItemProperty("Other").getValue()).split(",");
+        	if(!(item.getItemProperty("Other tags").getValue().toString().equals(""))){
+        		String[] availability = ((String) item.getItemProperty("Other tags").getValue()).split(",");
         		for(int i = 0; i < availability.length; i++) other.addChosenTag(availability[i].trim().replaceAll(" +", " "));
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());

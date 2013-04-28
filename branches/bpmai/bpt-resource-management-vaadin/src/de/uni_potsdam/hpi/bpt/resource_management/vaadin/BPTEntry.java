@@ -36,6 +36,8 @@ public class BPTEntry extends CustomLayout {
 		
 		addButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
+			System.out.println(attributeName);
+			System.out.println(item.getItemProperty(attributeName).getValue());
 			addToLayout(attributeName.toString());
 		}
 	}

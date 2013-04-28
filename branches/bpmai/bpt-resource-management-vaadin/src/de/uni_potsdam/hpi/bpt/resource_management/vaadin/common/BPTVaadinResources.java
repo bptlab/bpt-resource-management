@@ -48,8 +48,8 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"language", "Language", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
 	    	add(new Object[] {"topics", "Topics", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"model_types", "Model types", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"task_types", "Platforms", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"model_types", "Modelling Languages", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"task_types", "Task Types", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"other_tags", "Other tags", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
 	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 

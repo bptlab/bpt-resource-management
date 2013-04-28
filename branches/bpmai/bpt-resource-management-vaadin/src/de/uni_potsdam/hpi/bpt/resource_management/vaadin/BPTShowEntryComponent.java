@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -36,6 +37,12 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
 	public void showEntries(IndexedContainer dataSource) {
 		this.dataSource = dataSource;
+		System.out.println("--------------------------------------------------------------------------------------------------------");
+		Collection<?> ids = dataSource.getItemIds();
+		for(Object id : ids){
+			System.out.println(dataSource.getItem(id));
+		}
+		System.out.println("--------------------------------------------------------------------------------------------------------");
 		show(dataSource);
 	}
 	

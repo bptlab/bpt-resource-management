@@ -52,14 +52,22 @@ public class BPTUploader extends TabSheet {
 		this.application = application;
 		
         if (item != null) {
-        	set_id = item.getItemProperty("set_id").getValue().toString();
-        	//TODO: alle einträge mit gleicher set_id finden und als tabs anzeigen
         	addComponent(new BPTUploadPanel(item, application, this));
+        	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
+        	//TODO: alle einträge mit gleicher set_id finden und als tabs anzeigen
+        	
+        }
+        else{
+//        	set_id = generateNewSetId();
         }
         addNewUploadPanel();
 	}
 
 	public void addNewUploadPanel() {
 		addComponent(new BPTUploadPanel(null, application, this));
+	}
+
+	public String getSetId() {
+		return set_id;
 	}
 }
