@@ -14,7 +14,13 @@ To run the BPT resource management system, you need the following  components:
 There are two projects including the source files:
 
   * *`bpt-resource-management-common`*: Maven project
+    * Storage and retrievement of CouchDB documents
+      * Full search with Lucene
+    * Functionality to send e-mail notifications
+    * Servlet to schedule tasks validating URLs
   * *`bpt-resource-management-vaadin`*: Eclipse project
+    * Vaadin web application
+    * OpenID login
 
 We recommend to use Eclipse 3.x or higher for development.
 
@@ -27,7 +33,7 @@ We recommend to use Eclipse 3.x or higher for development.
     * _DB_PASSWORD_ - password of the admin user of your CouchDB
     * _DEFAULT_OPEN_ID_PROVIDER_ - Google or Yahoo
     * _OPENID_RETURN_TO_ - the URL where the application is accessed
-    * _OPENID_REALM_ - see http://openid.net/specs/openid-authentication-2_0.html#realms
+    * _OPENID_REALM_ - see [http://openid.net/specs/openid-authentication-2_0.html#realms OpenID specification]
   * (optional) E-mail notifications - as mentioned in DataSchema
     * Modify the resources in package `de.uni_potsdam.hpi.bpt.resource_management.mail`
       * Configure the e-mail settings in `BPTMailUtils.java`
@@ -35,4 +41,7 @@ We recommend to use Eclipse 3.x or higher for development.
   * Create a JAR file from project bpt-resource-management-common and store it in `\bpt-resource-management-vaadin\WebContent\WEB-INF\lib`
   * Run the project `bpt-resource-management-vaadin` in Eclipse locally or create a WAR file from this project to deploy it on a Tomcat server
     * You may modify the `web.xml` in `\bpt-resource-management-vaadin\WebContent\WEB-INF`
-      * use templates `web_deployment.xml` and `web_development.xml`
+      * Use templates `web_deployment.xml` and `web_development.xml`
+    * Make sure that [https://github.com/rnewson/couchdb-lucene CouchDB Lucene] is deployed on your Tomcat
+
+= Developer
