@@ -39,10 +39,18 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		show(dataSource);
 	}
 	
-	// to be overwritten in subclass
+	/**
+	 * @abstract to be overwritten by subclass
+	 * 
+	 * @param tableEntries
+	 */
 	protected abstract void show(IndexedContainer tableEntries); 
 	
-	// default solution (entries will be shown in popup), can be overwritten in Subclasses
+	/**
+	 * default solution (entries will be shown in popup), to be overwritten in subclass
+	 * 
+	 * @param item
+	 */
 	protected void showSelectedEntry(final Item item) {
 		final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 		popupWindow.setWidth("600px");

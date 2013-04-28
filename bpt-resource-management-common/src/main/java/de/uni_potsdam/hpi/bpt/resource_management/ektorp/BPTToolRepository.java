@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
+import org.ektorp.DbAccessException;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.support.View;
@@ -194,14 +195,18 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		query.setIncludeDocs(true);
 		
 		TypeReference resultDocType = new TypeReference<CustomLuceneResult<Map>>() {};
-        CustomLuceneResult<Map> luceneResult = db.queryLucene(query, resultDocType);
-        List<CustomLuceneResult.Row<Map>> luceneResultRows = luceneResult.getRows();
-        
-        List<Map> result = new ArrayList<Map>();
-        for (CustomLuceneResult.Row<Map> row : luceneResultRows) {
-            result.add(row.getDoc());
-        }
-        return result;
+		try {
+			CustomLuceneResult<Map> luceneResult = db.queryLucene(query, resultDocType);
+	        List<CustomLuceneResult.Row<Map>> luceneResultRows = luceneResult.getRows();
+	        
+	        List<Map> result = new ArrayList<Map>();
+	        for (CustomLuceneResult.Row<Map> row : luceneResultRows) {
+	            result.add(row.getDoc());
+	        }
+	        return result;
+		} catch (DbAccessException e) {
+			return new ArrayList<Map>();
+		}
 	}
 	
 	

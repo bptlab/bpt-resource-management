@@ -69,6 +69,6 @@ public class BPTFullSearchComponent extends CustomComponent {
 	}
 	
 	public String getQuery() {
-		return (String)searchInput.getValue();
+		return (String) searchInput.getValue();
 	}
 }

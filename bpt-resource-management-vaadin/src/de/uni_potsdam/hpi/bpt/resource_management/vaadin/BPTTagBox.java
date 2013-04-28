@@ -87,9 +87,11 @@ public class BPTTagBox extends CustomComponent{
 	}
 	
 	public void removeAllTags() {
-		searchTagList.clear();
-		layout.removeAllComponents();
-		refresh();
+		if (!searchTagList.isEmpty()) {
+			searchTagList.clear();
+			layout.removeAllComponents();
+			refresh();
+		}
 	}
 	
 	private void refresh() {
