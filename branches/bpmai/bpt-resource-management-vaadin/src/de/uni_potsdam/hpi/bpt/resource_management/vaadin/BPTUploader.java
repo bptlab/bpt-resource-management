@@ -61,7 +61,9 @@ public class BPTUploader extends TabSheet {
         	 IndexedContainer entries = BPTContainerProvider.generateContainer(map);
      		for(Object id : entries.getItemIds()){
      				Item nextItem = entries.getItem(id);
-     				addComponent(new BPTUploadPanel(nextItem, application, this));
+     				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
+     				addComponent(nextPanel);
+     				nextPanel.putLanguageInput(nextItem.getItemProperty("Language").getValue().toString());
      		}
         }
         else{

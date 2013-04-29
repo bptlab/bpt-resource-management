@@ -165,8 +165,6 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
-        	languageInput.setValue((item.getItemProperty("Language").getValue().toString()));
-        	setLanguageTo((item.getItemProperty("Language").getValue().toString()));
         }
 
 		finishUploadButton = new Button("Submit");
@@ -194,7 +192,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 				
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
 						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
-						//TODO: set_id erzeugen
+						set_id,
 						(String)titleInput.getValue(),
 						(String)languageInput.getValue(),
 						(String)descriptionInput.getValue(),
@@ -207,7 +205,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 						(String)application.getUser(),
 						new Date(),
 						new Date(), 
-						null
+//						null
 					}));
 						
 					getWindow().showNotification("New entry submitted: " + (String)titleInput.getValue());
@@ -353,6 +351,11 @@ private void addDocumentToPanel(FileResource documentRessource) {
 
 	private void setBptUploader(BPTUploader bptUploader) {
 		this.uploader = bptUploader;
+	}
+	
+	public void putLanguageInput(String language){
+    	languageInput.addItem(language);
+    	languageInput.setValue(language);
 	}
 
 }

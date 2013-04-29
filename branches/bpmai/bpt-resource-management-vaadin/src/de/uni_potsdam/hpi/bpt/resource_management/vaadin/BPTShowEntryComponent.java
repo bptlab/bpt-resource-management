@@ -31,7 +31,8 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	public BPTShowEntryComponent(){
 		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 		statusList.add(BPTExerciseStatus.Published);
-		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), null);
+		String language = "Deutsch";
+		dataSource = BPTContainerProvider.getVisibleEntries(language, statusList, new ArrayList<String>(), null);
 		addStyleName("scroll");
 	}
 	

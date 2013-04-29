@@ -32,7 +32,7 @@ public class BPTTagComponent extends CustomComponent {
 	
 	private void init(String tagColumns, boolean newTagsAllowed) {
 		// TODO: update unique values on entry addition or deletion
-		uniqueValues = BPTContainerProvider.getUniqueValues(tagColumns);
+		uniqueValues = BPTContainerProvider.getUniqueTagValues(tagColumns);
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");

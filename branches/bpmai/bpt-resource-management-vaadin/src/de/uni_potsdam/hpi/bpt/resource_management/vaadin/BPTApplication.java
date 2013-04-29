@@ -246,6 +246,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		IndexedContainer dataSource;
 		BPTTagSearchComponent tagSearchComponent = sidebar.getSearchComponent().getTagSearchComponent();
 		String query = sidebar.getSearchComponent().getFullSearchComponent().getQuery();
+		String language = sidebar.getSearchComponent().getLanguageSelector().getLanguage();
 		if (loggedIn) {
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
@@ -255,18 +256,18 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 					ArrayList<BPTExerciseStatus> states = new ArrayList<BPTExerciseStatus>();
 					states.add(BPTExerciseStatus.Published);
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-					dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+					dataSource = BPTContainerProvider.getVisibleEntries(language, states, selectedTags, query);
 				}
 			} else {
 				ArrayList<BPTExerciseStatus> states = sidebar.getSearchComponent().getSelectedStates();
 				ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+				dataSource = BPTContainerProvider.getVisibleEntries(language, states, selectedTags, query);
 			}
 		} else {
 			ArrayList<BPTExerciseStatus> states = new ArrayList<BPTExerciseStatus>();
 			states.add(BPTExerciseStatus.Published);
 			ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+			dataSource = BPTContainerProvider.getVisibleEntries(language, states, selectedTags, query);
 		}
 		
 		entryComponent.showEntries(dataSource);

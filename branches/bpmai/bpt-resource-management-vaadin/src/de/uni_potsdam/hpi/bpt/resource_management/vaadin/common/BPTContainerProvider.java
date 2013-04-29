@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class BPTContainerProvider {
 	 * @return the unique values (= tags)
 	 *
 	 */
-	public static ArrayList<String> getUniqueValues(String tagColumn) {
+	public static ArrayList<String> getUniqueTagValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
@@ -110,6 +111,17 @@ public class BPTContainerProvider {
 		return new ArrayList<String>(uniqueValues);
 	}
 	
+	public static ArrayList<String> getUniqueValues(String attribute){
+		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
+		List<Map> tools = toolRepository.getDocuments("all");
+		for (Map<String, Object> tool : tools) {
+			String attributeString = (String) tool.get(attribute);
+			uniqueValues.add(attributeString);
+		}
+		ArrayList<String> uniqueList = new ArrayList<String>(uniqueValues);
+//		Collections.sort(uniqueList, Comparator<T>)
+		return new ArrayList<String>(uniqueValues);
+	}
 	private static IndexedContainer initializeContainerWithProperties() {
 		IndexedContainer container = new IndexedContainer();
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
@@ -136,9 +148,9 @@ public class BPTContainerProvider {
 		}
 	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTExerciseStatus> statusList, ArrayList<String> tags, String query) {
+	public static IndexedContainer getVisibleEntries(String language, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> tags, String query) {
 		// TODO: support different languages of an entry		
-		List<Map> tools = toolRepository.getVisibleEntries("de", statusList, tags, query);
+		List<Map> tools = toolRepository.getVisibleEntries(language, statusList, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
