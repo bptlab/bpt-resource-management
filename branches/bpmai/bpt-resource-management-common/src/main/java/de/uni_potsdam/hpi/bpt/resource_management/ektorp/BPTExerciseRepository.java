@@ -358,7 +358,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 		}
 		
 		List<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"topics", "model_types", "task_types", "other_tags"};
+		String[] tagAttributes = new String[] {"topics", "modelling_languages", "task_types", "other_tags"};
 		for (Map<String, Object> entry : tableEntries) {
 			if (containsAllTags(entry, tags, tagAttributes) && ((String) entry.get("language")).equals(language)) { 
 				newEntries.add(entry);

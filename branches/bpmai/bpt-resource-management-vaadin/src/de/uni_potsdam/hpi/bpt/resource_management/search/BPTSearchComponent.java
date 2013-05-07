@@ -25,7 +25,7 @@ public class BPTSearchComponent extends CustomComponent {
 	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		fullSearchComponent = new BPTFullSearchComponent(application);
 		tagSearchComponent = new BPTTagSearchComponent(application, tagColumns, newTagsAllowed);
-		setLanguageSelector(new BPTLanguageSelector(application));
+		languageSelector = (new BPTLanguageSelector(application));
 		this.application = application;
 		init();
 	}
@@ -39,6 +39,7 @@ public class BPTSearchComponent extends CustomComponent {
 		layout.addComponent(boxLayout);
 		layout.addComponent(fullSearchComponent);
 		layout.addComponent(tagSearchComponent);
+		layout.addComponent(languageSelector);
 	}
 
 	public BPTFullSearchComponent getFullSearchComponent() {
@@ -77,10 +78,6 @@ public class BPTSearchComponent extends CustomComponent {
 
 	public BPTLanguageSelector getLanguageSelector() {
 		return languageSelector;
-	}
-
-	private void setLanguageSelector(BPTLanguageSelector languageSelector) {
-		this.languageSelector = languageSelector;
 	}
 
 }

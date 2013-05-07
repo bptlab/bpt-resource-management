@@ -1,5 +1,8 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.List;
+import java.util.Map;
+
 import com.vaadin.data.Item;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
@@ -8,6 +11,8 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
@@ -23,6 +28,8 @@ public class BPTEntry extends CustomLayout {
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
 	private BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
+	private TabSheet tabsheet;
+	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -72,6 +79,19 @@ public class BPTEntry extends CustomLayout {
 					}
 			}
 		}
+		tabsheet = new TabSheet();
+		this.addComponent(tabsheet, "Tabs");
+		System.out.println(item.getItemProperty("Exercise Set ID").getValue());
+		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
+		System.out.println("----------------------------------------------------------------------------------------------");
+		for(Map entry : relatedEntries){
+			System.out.println(entry);
+			//TODO: funktioniert das suchen nach set_id?
+			BPTSubEntry subEntry = new BPTSubEntry(entry);
+			tabsheet.addComponent(subEntry);
+			tabsheet.getTab(subEntry).setCaption((String) entry.get("language"));
+		}
+		System.out.println("----------------------------------------------------------------------------------------------");
 	}
 
 	private void addDefaultComponent(String location) {

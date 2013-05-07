@@ -78,10 +78,10 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(topicTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
-			uniqueValues.add("----- Model types -----");
+			uniqueValues.add("----- Modelling languages -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("model_types");
+				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modelling_languages");
 				modelTypeTags.addAll(modelTypeTagsOfTool);
 			}
 			Collections.sort(modelTypeTags, comparator);
@@ -111,11 +111,11 @@ public class BPTContainerProvider {
 		return new ArrayList<String>(uniqueValues);
 	}
 	
-	public static ArrayList<String> getUniqueValues(String attribute){
+	public static ArrayList<String> getUniqueLanguages(){
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		List<Map> tools = toolRepository.getDocuments("all");
 		for (Map<String, Object> tool : tools) {
-			String attributeString = (String) tool.get(attribute);
+			String attributeString = (String) tool.get("language");
 			uniqueValues.add(attributeString);
 		}
 		ArrayList<String> uniqueList = new ArrayList<String>(uniqueValues);

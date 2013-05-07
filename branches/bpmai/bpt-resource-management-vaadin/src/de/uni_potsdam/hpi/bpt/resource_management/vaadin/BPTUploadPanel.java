@@ -45,7 +45,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	private VerticalLayout layout;
 	private Upload upload;
-	private TextField titleInput, contactNameInput, contactMailInput, exerciseURLInput;
+	private TextField subTitleInput, contactNameInput, contactMailInput, exerciseURLInput;
 	private ComboBox languageInput;
 	private RichTextArea descriptionInput;
 	private Button finishUploadButton;
@@ -59,8 +59,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel documentPanel;
-	private Label titleLabel, languageLabel, descriptionLabel, topicLabel, modellingLanguageLabel, taskTypeLabel,
-	additionalTagsLabel, contactNameLabel, contactMailLabel, exerciseURLLabel;
+	private Label subTitleLabel, languageLabel, descriptionLabel, exerciseURLLabel;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -74,11 +73,11 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
         layout.addComponent(label);
 		
-        titleLabel = new Label("Title");
-		layout.addComponent(titleLabel);
-		titleInput = new TextField();
-		titleInput.setWidth("100%");
-		layout.addComponent(titleInput);
+        subTitleLabel = new Label("Subtitle");
+		layout.addComponent(subTitleLabel);
+		subTitleInput = new TextField();
+		subTitleInput.setWidth("100%");
+		layout.addComponent(subTitleInput);
 		
 		languageLabel = new Label("Language");
 		layout.addComponent(languageLabel);
@@ -93,49 +92,17 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		});
 		layout.addComponent(languageInput);
 		
-		descriptionLabel = new Label("Description", Label.CONTENT_XHTML);
+		descriptionLabel = new Label("Description");
 		layout.addComponent(descriptionLabel);
 		descriptionInput = new RichTextArea();
 		descriptionInput.setWidth("100%");
 		layout.addComponent(descriptionInput);
 		
-		topicLabel = new Label("Topic");
-		layout.addComponent(topicLabel);
-		topic = new BPTTagComponent(application, "topic", true);
-		topic.setWidth("100%");
-		layout.addComponent(topic);
-		
-		modellingLanguageLabel = new Label("Modelling Language");
-		layout.addComponent(modellingLanguageLabel);
-		modellingLanguage = new BPTTagComponent(application, "modellingLanguage", true);
-		modellingLanguage.setWidth("100%");
-		layout.addComponent(modellingLanguage);
-		
-		taskTypeLabel = new Label("Task Type");
-		layout.addComponent(taskTypeLabel);
-		taskType = new BPTTagComponent(application, "taskType", true);
-		taskType.setWidth("100%");
-		layout.addComponent(taskType);
-		
-		additionalTagsLabel = new Label("Additional Tags");
-		layout.addComponent(additionalTagsLabel);
-		other = new BPTTagComponent(application, "additional", true);
-		other.setWidth("100%");
-		layout.addComponent(other);
-		
-		contactNameLabel = new Label("Contact name <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML);
-		layout.addComponent(contactNameLabel);
-		contactNameInput = new TextField();
-		contactNameInput.setValue(application.getName());
-		contactNameInput.setWidth("100%");
-		layout.addComponent(contactNameInput);
-		
-		contactMailLabel = new Label("Contact mail <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML);
-		layout.addComponent(contactMailLabel);
-		contactMailInput = new TextField();
-		contactMailInput.setValue(application.getMailAddress());
-		contactMailInput.setWidth("100%");
-		layout.addComponent(contactMailInput);
+		layout.addComponent(new Label("Exercise URL"));
+		exerciseURLInput = new TextField();
+		exerciseURLInput.setInputPrompt("http://");
+		exerciseURLInput.setWidth("100%");
+		layout.addComponent(exerciseURLInput);
 		
 		documentPanel = new Panel("Documents");
 		createUploadComponent(documentPanel);
@@ -143,139 +110,12 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	titleInput.setValue((item.getItemProperty("Title").getValue()));
+        	subTitleInput.setValue((item.getItemProperty("Subtitle").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
-        	
-        	Object x = item.getItemProperty("Topics").getValue();
-        	if(!(item.getItemProperty("Topics").getValue().toString().equals(""))){
-        		String[] model_type = ((String) item.getItemProperty("Topics").getValue()).split(",");
-        		for(int i = 0; i < model_type.length; i++) topic.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
-        	}
-        	if(!(item.getItemProperty("Modelling Languages").getValue().toString().equals(""))){
-        		String[] platform = ((String) item.getItemProperty("Modelling Languages").getValue()).split(",");
-        		for(int i = 0; i < platform.length; i++) modellingLanguage.addChosenTag(platform[i].trim().replaceAll(" +", " "));
-        	}
-        	if(!(item.getItemProperty("Task Types").getValue().toString().equals(""))){
-        		String[] supported_functionality = ((String) item.getItemProperty("Task Types").getValue()).split(",");
-        		for(int i = 0; i < supported_functionality.length; i++) taskType.addChosenTag(supported_functionality[i].trim().replaceAll(" +", " "));
-        	}
-        	if(!(item.getItemProperty("Other tags").getValue().toString().equals(""))){
-        		String[] availability = ((String) item.getItemProperty("Other tags").getValue()).split(",");
-        		for(int i = 0; i < availability.length; i++) other.addChosenTag(availability[i].trim().replaceAll(" +", " "));
-        	}
-        	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
-        	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
         }
 
-		finishUploadButton = new Button("Submit");
-		layout.addComponent(finishUploadButton);
-		finishUploadButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				
-				if (((String)titleInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Title' field is empty", Notification.TYPE_ERROR_MESSAGE);
-				} else if (exerciseRepository.containsName((String)titleInput.getValue()) && documentId == null) {
-					addWarningWindow(getWindow());
-				} else if (((String)descriptionInput.getValue()).isEmpty()) {
-					getWindow().showNotification("One of the fields 'Description' must be filled", Notification.TYPE_ERROR_MESSAGE);
-				} else if (((String)contactNameInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
-				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
-					getWindow().showNotification("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
-				} else {
-					finishUpload();
-				}
-			}
-
-			private void finishUpload() {
-				if (documentId == null) { 
-				
-					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
-						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
-						set_id,
-						(String)titleInput.getValue(),
-						(String)languageInput.getValue(),
-						(String)descriptionInput.getValue(),
-						new ArrayList<String>(topic.getTagValues()),
-						new ArrayList<String>(modellingLanguage.getTagValues()),
-						new ArrayList<String>(taskType.getTagValues()),
-						new ArrayList<String>(other.getTagValues()),
-						(String)contactNameInput.getValue(),
-						(String)contactMailInput.getValue(),
-						(String)application.getUser(),
-						new Date(),
-						new Date(), 
-//						null
-					}));
-						
-					getWindow().showNotification("New entry submitted: " + (String)titleInput.getValue());
-
-				} else {
-					Map<String, Object> newValues = new HashMap<String, Object>();
-					newValues.put("_id", documentId);
-					newValues.put("set_id", set_id);
-					newValues.put("language", (String)languageInput.getValue());
-					newValues.put("name", titleInput.getValue().toString());
-					newValues.put("description", descriptionInput.getValue().toString());
-					newValues.put("topic", new ArrayList<String>(topic.getTagValues()));
-					newValues.put("modelling_language", new ArrayList<String>(modellingLanguage.getTagValues()));
-					newValues.put("task_type", new ArrayList<String>(taskType.getTagValues()));
-					newValues.put("other_tags", new ArrayList<String>(other.getTagValues()));
-					if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) exerciseRepository.readDocument(documentId).get("status"))) {
-						newValues.put("status", BPTExerciseStatus.Unpublished);
-					}
-					newValues.put("contact_name", contactNameInput.getValue().toString());
-					newValues.put("contact_mail", contactMailInput.getValue().toString());
-					newValues.put("last_update", new Date());
-					newValues.put("notification_date", null);
-					exerciseRepository.updateDocument(newValues);
-					
-					Map<String, Object> document = exerciseRepository.updateDocument(newValues);
-					String documentRevision = (String)document.get("_rev");
-					
-					getWindow().showNotification("Updated entry: " + (String)titleInput.getValue());
-				}
-				
-				((BPTApplication)getApplication()).finder();
-				
-			}
-
-			private void addWarningWindow(final Window window) {
-				final Window warningWindow = new Window("Warning");
-				warningWindow.setWidth("400px");
-				warningWindow.setModal(true);
-				warningWindow.addComponent(new Label("The name you have chosen is already taken - continue?"));
-				Button yesButton = new Button("Yes");
-				Button noButton = new Button("No");
-				warningWindow.addComponent(yesButton);
-				warningWindow.addComponent(noButton);
-				noButton.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						window.removeWindow(warningWindow);
-					}
-				});
-				yesButton.addListener(new Button.ClickListener(){
-					public void buttonClick(ClickEvent event) {
-						window.removeWindow(warningWindow);
-						finishUpload();
-					}
-				});
-				window.addWindow(warningWindow);
-				
-			}
-		});
 	}
 
-	private Map<String, Object> generateDocument(Object[] values) {
-		Map<String, Object> document = new HashMap<String, Object>();
-		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true);
-		String[] keys = keysList.toArray(new String[keysList.size()]);
-		for(int i = 0; i < keys.length; i++) {
-			document.put(keys[i], values[i]);
-		}
-		return document;
-	}
-	
 	private void createUploadComponent(Panel parent) {
 		upload = new Upload("Upload at least one Document (*.pdf, *.doc, *.docx)", this);
 		upload.setImmediate(false);
@@ -320,28 +160,16 @@ private void addDocumentToPanel(FileResource documentRessource) {
 	}
 	
 	private void setLanguageTo(String value) {
-		getBptUploader().getTab(this).setCaption(value);
+		getBptUploader().getTabSheet().getTab(this).setCaption(value);
 		if(value.equals("Deutsch")){
-			titleLabel.setValue("Titel");
+			subTitleLabel.setValue("Untertitel");
 			languageLabel.setValue("Sprache");
 			descriptionLabel.setValue("Beschreibung");
-			topicLabel.setValue("Thema");
-			modellingLanguageLabel.setValue("Modellierungssprache");
-			taskTypeLabel.setValue("Aufgabentyp");
-			additionalTagsLabel.setValue("Zusätliche Tags");
-			contactNameLabel.setValue("Kontaktname <font color=\"#BBBBBB\">as shown on the website</font>");
-			contactMailLabel.setValue("Kontakt-Email <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>");
 		}
 		else{
-			titleLabel.setValue("Title");
+			subTitleLabel.setValue("Subtitle");
 			languageLabel.setValue("Language");
 			descriptionLabel.setValue("Description");
-			topicLabel.setValue("Topic");
-			modellingLanguageLabel.setValue("Modelling language");
-			taskTypeLabel.setValue("Task type");
-			additionalTagsLabel.setValue("Additional tags");
-			contactNameLabel.setValue("Contact name <font color=\"#BBBBBB\">as shown on the website</font>");
-			contactMailLabel.setValue("Contact mail <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>");
 		}
 	}
 
@@ -356,6 +184,27 @@ private void addDocumentToPanel(FileResource documentRessource) {
 	public void putLanguageInput(String language){
     	languageInput.addItem(language);
     	languageInput.setValue(language);
+	}
+	
+	public String getDocumentId(){
+		return documentId;
+	}
+
+	public String getSubtitleFromInput() {
+		return (String)subTitleInput.getValue();
+	}
+
+	public String getLanguageFromInput() {
+		return (String)languageInput.getValue();
+	}
+
+	public String getDescriptionFromInput() {
+		// XXX vorher: toString() ..?
+		return (String) descriptionInput.getValue();
+	}
+
+	public String getExerciseURLFromInput() {
+		return (String) exerciseURLInput.getValue();
 	}
 
 }
