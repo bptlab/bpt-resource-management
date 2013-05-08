@@ -17,8 +17,7 @@ public class BPTLanguageSelector extends NativeSelect{
 		super();
 		this.application = application;
 		ArrayList<String> languageList = BPTContainerProvider.getUniqueLanguages();
-		System.out.println("---------------------------LANGUAGELIST:");
-		System.out.println(languageList);
+		setImmediate(true);
 		for(String language : languageList){
 			addItem(language);
 		}

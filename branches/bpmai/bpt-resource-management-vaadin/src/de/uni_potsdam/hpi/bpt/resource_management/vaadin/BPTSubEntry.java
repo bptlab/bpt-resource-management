@@ -21,7 +21,7 @@ public class BPTSubEntry extends CustomLayout{
 		this.addComponent(descriptionLabel, "Description");
 		exercise_url = (String) entry.get("exercise_url");
 		Label exerciseURLLabel = new Label(exercise_url);
-		this.addComponent(exerciseURLLabel, "Exercise_URL");
+		this.addComponent(exerciseURLLabel, "Exercise URL");
 		
 	}
 

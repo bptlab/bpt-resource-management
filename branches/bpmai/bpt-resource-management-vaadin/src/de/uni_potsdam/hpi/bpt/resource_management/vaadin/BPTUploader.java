@@ -28,6 +28,7 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
@@ -45,7 +46,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValue
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
-public class BPTUploader extends VerticalLayout {
+public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabChangeListener{
 	
 	private String set_id;
 	private BPTApplication application;
@@ -66,6 +67,7 @@ public class BPTUploader extends VerticalLayout {
 	private Label contactMailLabel;
 	private TextField contactMailInput;
 	private Button finishUploadButton;
+	private BPTUploadPanel lastPanel;
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		super();
@@ -79,7 +81,7 @@ public class BPTUploader extends VerticalLayout {
 		
 		this.tabSheet = new TabSheet();
 		addComponent(tabSheet);
-		
+		tabSheet.addListener(this);
 		addTagComponents();
 		
 		addContactInputs();
@@ -102,10 +104,19 @@ public class BPTUploader extends VerticalLayout {
         }
         else{
         	set_id = exerciseRepository.nextAvailableSetId();
+        	addNewUploadPanel("new Entry");
         }
-        addNewUploadPanel();
+        lastPanel = addNewUploadPanel("+");
         
 		
+	}
+	
+	public void selectedTabChange(SelectedTabChangeEvent event) {
+		System.out.println("tab changed");
+		if(tabSheet.getSelectedTab() == lastPanel){
+			tabSheet.getTab(lastPanel).setCaption("new Entry");
+			lastPanel = addNewUploadPanel("+");
+		}
 	}
 
 	private void setContactDates(Item item) {
@@ -175,8 +186,11 @@ public class BPTUploader extends VerticalLayout {
 		addComponent(other);
 	}
 
-	public void addNewUploadPanel() {
-		this.tabSheet.addComponent(new BPTUploadPanel(null, application, this));
+	public BPTUploadPanel addNewUploadPanel(String caption) {
+		BPTUploadPanel panel = new BPTUploadPanel(null, application, this);
+		this.tabSheet.addComponent(panel);
+		this.tabSheet.getTab(panel).setCaption(caption);
+		return panel;
 	}
 
 	public String getSetId() {
@@ -215,56 +229,59 @@ public class BPTUploader extends VerticalLayout {
 		String documentId, subTitle, language, description, exercise_url;
 		while(tabIterator.hasNext()){
 			uploadPanel = (BPTUploadPanel) tabIterator.next();
-			documentId = uploadPanel.getDocumentId();
-			subTitle = uploadPanel.getSubtitleFromInput();
-			language = uploadPanel.getLanguageFromInput();
-			description = uploadPanel.getDescriptionFromInput();
-			exercise_url = uploadPanel.getExerciseURLFromInput();
-			if (documentId == null) { 
-				
-				documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
-					// order of parameters MUST accord to the one given in BPTDocumentTypes.java
-					set_id,
-					(String)titleInput.getValue(),
-					subTitle,
-					language,
-					description,
-					new ArrayList<String>(topic.getTagValues()),
-					new ArrayList<String>(modellingLanguage.getTagValues()),
-					new ArrayList<String>(taskType.getTagValues()),
-					new ArrayList<String>(other.getTagValues()),
-					exercise_url,
-					(String)contactNameInput.getValue(),
-					(String)contactMailInput.getValue(),
-					(String)application.getUser(),
-					new Date(),
-					new Date(), 
-//					null
-				}));
-			}
-			else {
-				Map<String, Object> newValues = new HashMap<String, Object>();
-				newValues.put("_id", documentId);
-				newValues.put("set_id", set_id);
-				newValues.put("title", (String)titleInput.getValue());
-				newValues.put("subtitle", subTitle);
-				newValues.put("language", language);
-				newValues.put("description", description);
-				newValues.put("topics", new ArrayList<String>(topic.getTagValues()));
-				newValues.put("modelling_languages", new ArrayList<String>(modellingLanguage.getTagValues()));
-				newValues.put("task_types", new ArrayList<String>(taskType.getTagValues()));
-				newValues.put("other_tags", new ArrayList<String>(other.getTagValues()));
-				if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) exerciseRepository.readDocument(documentId).get("status"))) {
-					newValues.put("status", BPTExerciseStatus.Unpublished);
+			if(!uploadPanel.equals(lastPanel)){
+			
+				documentId = uploadPanel.getDocumentId();
+				subTitle = uploadPanel.getSubtitleFromInput();
+				language = uploadPanel.getLanguageFromInput();
+				description = uploadPanel.getDescriptionFromInput();
+				exercise_url = uploadPanel.getExerciseURLFromInput();
+				if (documentId == null) { 
+					
+					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
+						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
+						set_id,
+						(String)titleInput.getValue(),
+						subTitle,
+						language,
+						description,
+						new ArrayList<String>(topic.getTagValues()),
+						new ArrayList<String>(modellingLanguage.getTagValues()),
+						new ArrayList<String>(taskType.getTagValues()),
+						new ArrayList<String>(other.getTagValues()),
+						exercise_url,
+						(String)contactNameInput.getValue(),
+						(String)contactMailInput.getValue(),
+						(String)application.getUser(),
+						new Date(),
+						new Date(), 
+	//					null
+					}));
 				}
-				newValues.put("exercise_url", exercise_url);
-				newValues.put("contact_name", contactNameInput.getValue().toString());
-				newValues.put("contact_mail", contactMailInput.getValue().toString());
-				newValues.put("last_update", new Date());
-				newValues.put("notification_date", null);
-				exerciseRepository.updateDocument(newValues);
-				
-				Map<String, Object> document = exerciseRepository.updateDocument(newValues);
+				else {
+					Map<String, Object> newValues = new HashMap<String, Object>();
+					newValues.put("_id", documentId);
+					newValues.put("set_id", set_id);
+					newValues.put("title", (String)titleInput.getValue());
+					newValues.put("subtitle", subTitle);
+					newValues.put("language", language);
+					newValues.put("description", description);
+					newValues.put("topics", new ArrayList<String>(topic.getTagValues()));
+					newValues.put("modelling_languages", new ArrayList<String>(modellingLanguage.getTagValues()));
+					newValues.put("task_types", new ArrayList<String>(taskType.getTagValues()));
+					newValues.put("other_tags", new ArrayList<String>(other.getTagValues()));
+					if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) exerciseRepository.readDocument(documentId).get("status"))) {
+						newValues.put("status", BPTExerciseStatus.Unpublished);
+					}
+					newValues.put("exercise_url", exercise_url);
+					newValues.put("contact_name", contactNameInput.getValue().toString());
+					newValues.put("contact_mail", contactMailInput.getValue().toString());
+					newValues.put("last_update", new Date());
+					newValues.put("notification_date", null);
+					exerciseRepository.updateDocument(newValues);
+					
+					Map<String, Object> document = exerciseRepository.updateDocument(newValues);
+				}
 			}
 		}
 		((BPTApplication)getApplication()).finder();
@@ -280,3 +297,6 @@ public class BPTUploader extends VerticalLayout {
 		return document;
 	}
 }
+
+
+

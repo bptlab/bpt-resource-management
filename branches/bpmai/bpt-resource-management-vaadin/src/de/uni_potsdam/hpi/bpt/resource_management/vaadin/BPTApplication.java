@@ -43,7 +43,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		setProperties();
 		
 		Window mainWindow = new Window("BPM Academic Initiative");
-		mainWindow.setScrollable(true);
+//		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme("bpmai");
 		CustomLayout custom = new CustomLayout("mainlayout");
@@ -57,10 +57,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		sidebar = new BPTSidebar(this);
 		layout.addComponent(sidebar);
 		layout.addComponent(mainFrame);
-		layout.addStyleName("scroll");
+//		layout.addStyleName("scroll");
 		mainFrame.add(entryComponent);
 		custom.addComponent(layout, "application");
-		custom.addStyleName("scroll");
+//		custom.addStyleName("scroll");
 		mainWindow.setContent(custom);
 	}
 
@@ -246,7 +246,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		IndexedContainer dataSource;
 		BPTTagSearchComponent tagSearchComponent = sidebar.getSearchComponent().getTagSearchComponent();
 		String query = sidebar.getSearchComponent().getFullSearchComponent().getQuery();
-		String language = sidebar.getSearchComponent().getLanguageSelector().getLanguage();
+		String language = getSelectedLanguage();
 		if (loggedIn) {
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
@@ -271,5 +271,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		}
 		
 		entryComponent.showEntries(dataSource);
+	}
+	
+	public String getSelectedLanguage(){
+		return sidebar.getSearchComponent().getLanguageSelector().getLanguage();
 	}
 }

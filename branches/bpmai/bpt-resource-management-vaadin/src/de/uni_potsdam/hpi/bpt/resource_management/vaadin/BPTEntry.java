@@ -81,17 +81,15 @@ public class BPTEntry extends CustomLayout {
 		}
 		tabsheet = new TabSheet();
 		this.addComponent(tabsheet, "Tabs");
-		System.out.println(item.getItemProperty("Exercise Set ID").getValue());
 		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
-		System.out.println("----------------------------------------------------------------------------------------------");
 		for(Map entry : relatedEntries){
-			System.out.println(entry);
-			//TODO: funktioniert das suchen nach set_id?
 			BPTSubEntry subEntry = new BPTSubEntry(entry);
 			tabsheet.addComponent(subEntry);
 			tabsheet.getTab(subEntry).setCaption((String) entry.get("language"));
+			if(entry.get("language").equals(application.getSelectedLanguage())){
+				tabsheet.setSelectedTab(subEntry);
+			}
 		}
-		System.out.println("----------------------------------------------------------------------------------------------");
 	}
 
 	private void addDefaultComponent(String location) {

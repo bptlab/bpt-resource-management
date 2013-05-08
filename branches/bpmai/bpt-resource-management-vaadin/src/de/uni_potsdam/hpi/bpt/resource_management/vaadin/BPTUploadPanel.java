@@ -128,8 +128,10 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		documentType = mimeType;
-		document = new File(filename);
-		
+		document = new File(filename + "\\");
+		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
+		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
+
         try {
 //        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
         		outputStream = new FileOutputStream(document);

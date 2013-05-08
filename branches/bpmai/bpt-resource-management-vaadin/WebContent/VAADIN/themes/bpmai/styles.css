@@ -21,14 +21,14 @@ ul#resource-list {
 	padding: 1em;
 	margin: 1em;
 	clear: left;
+	background-color: #FFFFFF;
+	border-width: 2px;
+	border-color: #000000;
+	border-style: solid;
 }
 
 #resource-list li.entry:nth-child(2n+1) {
-	background-color: #eee;
-}
-
-#resource-list .entry>* {
-	margin-left: 160px;
+	background-color: #FFFFFF;
 }
 
 #resource-list .entry .extension{
@@ -44,6 +44,9 @@ ul#resource-list {
 	text-align: center;
 	background-color: #00639C;
 	color: #fff;
+	border-width: 1px;
+	border-color: #000000;
+	border-style: solid;
 	
 	-webkit-transition: all 0.25s;
 	-moz-transition: all 0.25s;
@@ -72,15 +75,11 @@ ul#resource-list {
 	background-color: #004870;
 }
 
-#resource-list div[class="Provider"]:before,
-#resource-list div[class="Download URL"]:before,
-#resource-list div[class="Documentation URL"]:before,
-#resource-list div[class="Screencast URL"]:before,
-#resource-list div[class="Tutorial URL"]:before,
-#resource-list div[class="Availability"]:before,
-#resource-list div[class="Model type"]:before,
-#resource-list div[class="Platform"]:before,
-#resource-list div[class="Supported functionality"]:before,
+#resource-list div[class="Exercise URL"]:before,
+#resource-list div[class="Topics"]:before,
+#resource-list div[class="Modelling Languages"]:before,
+#resource-list div[class="Task types"]:before,
+#resource-list div[class="Other Tags"]:before,
 #resource-list div[class="Contact name"]:before,
 #resource-list div[class="Last update"]:before {
 	content: attr(class);
@@ -97,15 +96,11 @@ ul#resource-list {
 }
 
 #resource-list div[class="Description"],
-#resource-list div[class="Provider"],
-#resource-list div[class="Download URL"],
-#resource-list div[class="Documentation URL"],
-#resource-list div[class="Screencast URL"],
-#resource-list div[class="Tutorial URL"],
-#resource-list div[class="Availability"],
-#resource-list div[class="Model type"],
-#resource-list div[class="Platform"],
-#resource-list div[class="Supported functionality"],
+#resource-list div[class="Exercise URL"],
+#resource-list div[class="Topics"],
+#resource-list div[class="Modelling Languages"],
+#resource-list div[class="Task types"],
+#resource-list div[class="Other Tags"],
 #resource-list div[class="Contact name"],
 #resource-list div[class="Last update"] {
 	padding: 0 0 0 1em;
@@ -158,4 +153,19 @@ body{
 	background-color:#FFFFFF !important;
 	 margin: 1em auto !important;
 	 width: 60em !important;
+	 overflow: auto !important;
+}
+
+div.v-tabsheet-spacertd { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+}
+
+div.v-tabsheet-spacertd div { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+}
+
+div {
+	overflow: visible !important;
 }
