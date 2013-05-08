@@ -15,6 +15,44 @@ There are two projects including the source files:
 
 We recommend to use Eclipse 3.x or higher for development.
 
+== Frontend architecture ==
+
+The class structure of the user interface (Vaadin web application):
+
+http://bpt-resource-management.googlecode.com/files/bptrm-ui-entries.png
+
+Main page
+  * (Window)
+    * (CustomLayout)
+    * (VerticalLayout)
+      * BPTSidebar
+        * (HorizontalLayout)
+          * BPTSearchComponent
+            * (VerticalLayout)
+              * (HorizontalLayout)
+                * BPTBoxContainer
+              * BPTTagSearchComponent
+                * (VerticalLayout)
+                  * BPTSearchTagBoxes
+              * BPTFullSearchComponent
+                * VerticalLayout (Search, Reset)		
+          * BPTLoginComponent
+            * (VerticalLayout)
+              * BPTNavigationBar
+                * HorizontalLayout (Find, Upload)
+      * BPTMainFrame
+        * BPTEntryComponent
+          * BPTEntry
+
+Uploader
+  * (Window)
+    * (CustomLayout)
+    * (VerticalLayout)
+      * BPTSidebar
+        * (HorizontalLayout) (Label)
+      * BPTMainFrame
+        * BPTUploader
+
 = Modifying the data schema =
 
 DataSchema modification has to be done in two Java classes:
