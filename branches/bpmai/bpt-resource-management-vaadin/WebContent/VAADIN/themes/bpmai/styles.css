@@ -22,7 +22,7 @@ ul#resource-list {
 	margin: 1em;
 	clear: left;
 	background-color: #FFFFFF;
-	border-width: 2px;
+	border-width: 1px;
 	border-color: #000000;
 	border-style: solid;
 }
@@ -85,7 +85,7 @@ ul#resource-list {
 	content: attr(class);
 	font-style: italic;
 	display: block;
-	margin-left: -1em;
+	margin-left: -2em;
 }
 
 #resource-list div[class="Excercise URL"]:before {
@@ -103,7 +103,7 @@ ul#resource-list {
 #resource-list div[class="Other Tags"],
 #resource-list div[class="Contact name"],
 #resource-list div[class="Last update"] {
-	padding: 0 0 0 1em;
+	padding: 0 0 0 4em;
 	margin-bottom: 0.8em;
 }
 
@@ -147,6 +147,7 @@ div.scroll{
 
 div{
 	background-color:#FFFFFF !important;
+	overflow: visible !important;
 }
 
 body{
@@ -156,16 +157,65 @@ body{
 	 overflow: auto !important;
 }
 
-div.v-tabsheet-spacertd { 
+td.v-tabsheet-tabitemcell { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-color: #0000000;
+	border-style: solid;
+	border-left-style: none;
+}
+
+td.v-tabsheet-tabitemcell-first { 
+	border-left-style: solid;
+}
+
+td.v-tabsheet-tabitemcell-selected { 
+	border-bottom-style: none;
+}
+
+td.v-tabsheet-tabitemcell div { 
 	background-image:none !important;
 	background-color: #FFFFFF;
 }
 
-div.v-tabsheet-spacertd div { 
+td.v-tabsheet-spacertd { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-color:#000000;
+	border-bottom-style: solid;
+}
+
+td.v-tabsheet-spacertd div { 
 	background-image:none !important;
 	background-color: #FFFFFF;
 }
 
-div {
-	overflow: visible !important;
+a.redHover:hover{
+	text-decoration: none !important;
+	color: #AA0000 !important;
+}
+
+div.redButton span.v-button-wrap span.v-button-caption{
+	text-decoration: none !important;
+	color: #AA0000 !important;
+}
+
+.border {
+	border-width: 1px;
+	border-color: #000000;
+	border-style: solid;
+}
+
+div.redButtonHover span.v-button-wrap span.v-button-caption:HOVER{
+	text-decoration: none !important;
+	color: #AA0000 !important;
+}
+
+span.v-tabsheet-caption-close{
+		/*
+	hier könnte das Bild ersetzt werden (auch für hover)
+	*/
+	
 }

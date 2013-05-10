@@ -51,10 +51,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
 		
+		sidebar = new BPTSidebar(this);
 		entryComponent = new BPTEntryCards(this);
 //		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
-		sidebar = new BPTSidebar(this);
 		layout.addComponent(sidebar);
 		layout.addComponent(mainFrame);
 //		layout.addStyleName("scroll");

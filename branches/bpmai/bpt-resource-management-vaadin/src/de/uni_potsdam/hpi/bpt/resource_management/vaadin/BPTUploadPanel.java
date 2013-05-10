@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
@@ -45,11 +47,9 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	private VerticalLayout layout;
 	private Upload upload;
-	private TextField subTitleInput, contactNameInput, contactMailInput, exerciseURLInput;
+	private TextField subTitleInput, exerciseURLInput;
 	private ComboBox languageInput;
 	private RichTextArea descriptionInput;
-	private Button finishUploadButton;
-	private BPTTagComponent topic, modellingLanguage, taskType, other;
 	private BPTUploader uploader;
 	
 	private File document;
@@ -69,9 +69,6 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		set_id = uploader.getSetId();
 		
 		documentId = null;
-		
-        Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
-        layout.addComponent(label);
 		
         subTitleLabel = new Label("Subtitle");
 		layout.addComponent(subTitleLabel);

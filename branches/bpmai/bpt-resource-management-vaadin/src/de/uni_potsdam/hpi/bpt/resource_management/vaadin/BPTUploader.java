@@ -73,6 +73,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		super();
 		this.application = application;
 		
+        Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
+        addComponent(label);
+		
         titleLabel = new Label("Title");
 		addComponent(titleLabel);
 		titleInput = new TextField();
@@ -97,6 +100,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
      				Item nextItem = entries.getItem(id);
      				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
      				this.tabSheet.addComponent(nextPanel);
+     				tabSheet.getTab(nextPanel).setClosable(true);
      				nextPanel.putLanguageInput(nextItem.getItemProperty("Language").getValue().toString());
      		}
      		setTagValues(item);
@@ -104,7 +108,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
         }
         else{
         	set_id = exerciseRepository.nextAvailableSetId();
-        	addNewUploadPanel("new Entry");
+        	BPTUploadPanel newEntryPanel = addNewUploadPanel("new Entry");
+        	tabSheet.getTab(newEntryPanel).setClosable(true);
         }
         lastPanel = addNewUploadPanel("+");
         
@@ -115,6 +120,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		System.out.println("tab changed");
 		if(tabSheet.getSelectedTab() == lastPanel){
 			tabSheet.getTab(lastPanel).setCaption("new Entry");
+			tabSheet.getTab(lastPanel).setClosable(true);
 			lastPanel = addNewUploadPanel("+");
 		}
 	}
