@@ -219,3 +219,7 @@ span.v-tabsheet-caption-close{
 	*/
 	
 }
+
+div.v-tabsheet-content{
+	border-style: none none;
+}

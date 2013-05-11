@@ -134,7 +134,7 @@ public class BPTEntry extends CustomLayout {
 		});
 		less.setStyleName(BaseTheme.BUTTON_LINK);
 		less.addStyleName("bpt");
-		more.addStyleName("redButtonHover");
+		less.addStyleName("redButtonHover");
 		this.addComponent(less, "button less");
 		
 	}
