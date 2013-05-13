@@ -54,7 +54,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	private File document;
 	private FileOutputStream outputStream;
-	private final String[] supportedDocumentTypes = new String[] {"application/pdf"};
+	private final String[] supportedDocumentTypes = new String[] {"application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
 	private String documentId, documentType, language, set_id;
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
@@ -125,14 +125,14 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		documentType = mimeType;
-		document = new File(filename + "\\");
-		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
-		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
+		document = new File(filename);
+//		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
+//		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
 
         try {
-//        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
         		outputStream = new FileOutputStream(document);
-//        	}
+        	}
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -141,12 +141,13 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 	
 	public void uploadSucceeded(final SucceededEvent event) {
-		final FileResource documentRessource = new FileResource(document, getApplication());
-		addDocumentToPanel(documentRessource);
-		System.out.println(documentRessource);
+		final FileResource documentResource = new FileResource(document, getApplication());
+		addDocumentToPanel(documentResource);
+		System.out.println(documentResource);
         application.refresh();
 	}
-private void addDocumentToPanel(FileResource documentRessource) {
+	
+	private void addDocumentToPanel(FileResource documentResource) {
 		// TODO Auto-generated method stub
 		
 	}
