@@ -121,6 +121,10 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		upload.addListener((Upload.SucceededListener)this);
         upload.addListener((Upload.FailedListener)this);
 		parent.addComponent(upload);
+		
+//		link = new Link();
+//		link.setVisible(false);
+//		parent.addComponent(link);
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
@@ -142,14 +146,18 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource documentResource = new FileResource(document, getApplication());
-		addDocumentToPanel(documentResource);
+		String filename = event.getFilename();
+		addDocumentToPanel(documentResource, filename);
 		System.out.println(documentResource);
         application.refresh();
 	}
 	
-	private void addDocumentToPanel(FileResource documentResource) {
-		// TODO Auto-generated method stub
-		
+	private void addDocumentToPanel(FileResource documentResource, String filename) {
+		Link link = new Link();
+		link.setVisible(true);
+		link.setCaption(filename);
+		link.setResource(documentResource);	
+		documentPanel.addComponent(link);
 	}
 
 	public void uploadFailed(FailedEvent event) {
