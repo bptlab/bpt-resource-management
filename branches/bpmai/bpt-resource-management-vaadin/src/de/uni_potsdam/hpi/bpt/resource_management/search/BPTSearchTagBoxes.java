@@ -60,16 +60,16 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	@Override
 	public void addTag(String value){
 		if(availabilitiesTags.contains(value)){
-			addTagToLayout(value, "Availability", availabilitiesLayout);
+			addTagToLayout(value, "Topics", availabilitiesLayout);
 		}
 		else if (modelTypesTags.contains(value)){
-			addTagToLayout(value, "Model type", modelTypesLayout);
+			addTagToLayout(value, "Modelling languages", modelTypesLayout);
 		}
 		else if (platformsTags.contains(value)){
-			addTagToLayout(value, "Platform", platformsLayout);
+			addTagToLayout(value, "Task types", platformsLayout);
 		}
 		else if (supportedFunctionalitiesTags.contains(value)){
-			addTagToLayout(value, "Supported functionality", supportedFunctionalitiesLayout);
+			addTagToLayout(value, "Other tags", supportedFunctionalitiesLayout);
 		}
 		
 	}

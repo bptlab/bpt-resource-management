@@ -45,7 +45,9 @@ public class BPTEntry extends CustomLayout {
 		for (Object attributeName : item.getItemPropertyIds()) {
 			System.out.println(attributeName);
 			System.out.println(item.getItemProperty(attributeName).getValue());
-			addToLayout(attributeName.toString());
+			if (attributeName != "Attachment names") {
+				addToLayout(attributeName.toString());
+			}
 		}
 	}
 

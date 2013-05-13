@@ -39,7 +39,7 @@ public class BPTDocumentTypes {
 					"exercise_url",
 					"contact_name", "contact_mail", "user_id",
 					"date_created", "last_update",
-					"notification_date"
+					"notification_date", "attachment_names"
 			};
 		}
 		if (type.equals("bpmai_users")) {

@@ -233,6 +233,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
 		BPTUploadPanel uploadPanel;
 		String documentId, subTitle, language, description, exercise_url;
+		List<String> attachmentNames;
 		while(tabIterator.hasNext()){
 			uploadPanel = (BPTUploadPanel) tabIterator.next();
 			if(!uploadPanel.equals(lastPanel)){
@@ -242,6 +243,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 				language = uploadPanel.getLanguageFromInput();
 				description = uploadPanel.getDescriptionFromInput();
 				exercise_url = uploadPanel.getExerciseURLFromInput();
+				attachmentNames = uploadPanel.getAttachmentNames();
 				if (documentId == null) { 
 					
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
@@ -261,8 +263,23 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 						(String)application.getUser(),
 						new Date(),
 						new Date(), 
-	//					null
+						attachmentNames
 					}));
+					
+					if (!uploadPanel.getDocuments().isEmpty()) {
+						
+						Map<String, File> attachments = uploadPanel.getDocuments();
+						Map<String, String> mimeTypes = uploadPanel.getMimeTypes();
+						
+						for (String filename : attachments.keySet()) {
+							Map<String, Object> document = exerciseRepository.readDocument(documentId);
+							String documentRevision = (String)document.get("_rev");
+							File file = attachments.get(filename);
+							String mimeType = mimeTypes.get(filename);
+							exerciseRepository.createAttachment(documentId, documentRevision, filename, file, mimeType);
+							file.delete();
+						}
+					}
 				}
 				else {
 					Map<String, Object> newValues = new HashMap<String, Object>();
@@ -284,9 +301,17 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
 					newValues.put("notification_date", null);
-					exerciseRepository.updateDocument(newValues);
+					newValues.put("attachment_names", attachmentNames);
 					
 					Map<String, Object> document = exerciseRepository.updateDocument(newValues);
+					String documentRevision = (String)document.get("_rev");
+					
+					/*
+					 *  TODO: 
+					 *  new attribute in exercise containing array list of attachment names
+					 *  so that attachments can be retrieved properly and deleted on update if necessary
+					 */
+					
 				}
 			}
 		}

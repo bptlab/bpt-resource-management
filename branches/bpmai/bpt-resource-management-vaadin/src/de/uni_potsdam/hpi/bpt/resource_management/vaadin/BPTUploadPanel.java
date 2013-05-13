@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -52,14 +53,17 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private RichTextArea descriptionInput;
 	private BPTUploader uploader;
 	
-	private File document;
 	private FileOutputStream outputStream;
 	private final String[] supportedDocumentTypes = new String[] {"application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
-	private String documentId, documentType, language, set_id;
+	private String documentId, language, set_id;
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel documentPanel;
 	private Label subTitleLabel, languageLabel, descriptionLabel, exerciseURLLabel;
+	private Map<String, File> documents = new HashMap<String, File>();
+	private Map<String, String> mimeTypes = new HashMap<String, String>();
+	private List<String>  attachmentNames = new ArrayList<String>();
+	private File document;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -128,18 +132,20 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		documentType = mimeType;
 		document = new File(filename);
 //		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
 //		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
 
         try {
-        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+        	if (Arrays.asList(supportedDocumentTypes).contains(mimeType)) {
         		outputStream = new FileOutputStream(document);
         	}
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        documents.put(filename, document);
+        mimeTypes.put(filename, mimeType);
+        attachmentNames.add(filename);
         
         return outputStream;
 	}
@@ -152,12 +158,30 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         application.refresh();
 	}
 	
-	private void addDocumentToPanel(FileResource documentResource, String filename) {
-		Link link = new Link();
+	private void addDocumentToPanel(FileResource documentResource, final String filename) {
+		final Link link = new Link();
 		link.setVisible(true);
 		link.setCaption(filename);
 		link.setResource(documentResource);	
 		documentPanel.addComponent(link);
+		final Button removeDocumentButton = new Button("Remove document");
+		documentPanel.addComponent(removeDocumentButton);
+		removeDocumentButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent clickEvent) {
+				if (documents.get(filename) != null) {
+					boolean deletionSuccessful = documents.get(filename).delete();
+					documents.remove(filename);
+					mimeTypes.remove(filename);
+					attachmentNames.remove(filename);
+					documentPanel.removeComponent(link);
+					documentPanel.removeComponent(removeDocumentButton);
+					if (!deletionSuccessful) {
+						throw new IllegalArgumentException("Deletion of file " + filename + " failed.");
+					}
+				}
+			}
+		});
+		
 	}
 
 	public void uploadFailed(FailedEvent event) {
@@ -215,4 +239,15 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		return (String) exerciseURLInput.getValue();
 	}
 
+	public Map<String, File> getDocuments() {
+		return documents;
+	}
+	
+	public Map<String, String> getMimeTypes() {
+		return mimeTypes;
+	}
+	
+	public List<String> getAttachmentNames() {
+		return attachmentNames;
+	}
 }

@@ -155,8 +155,8 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> tags, String query) {
-		List<Map> tools = toolRepository.getVisibleEntriesByUser(user, tags, query);
+	public static IndexedContainer getVisibleEntriesByUser(String language, String user, ArrayList<String> tags, String query) {
+		List<Map> tools = toolRepository.getVisibleEntriesByUser(language, user, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}

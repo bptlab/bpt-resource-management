@@ -206,13 +206,13 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	 * @return list of entries as database documents
 	 */
 	@View(
-			name = "entries_by_set_id", 
+			name = "entries_by_language", 
 			map = "function(doc) { emit(doc.set_id, doc); }"
 	)
 	public List<Map> getDocumentsBySetId(String set_id) {
 		ViewQuery query = new ViewQuery()
 							  .designDocId("_design/Map")
-							  .viewName("entries_by_set_id")
+							  .viewName("entries_by_language")
 							  .key(set_id);
 		List<Map> result = db.queryView(query, Map.class);
 		return result;
@@ -354,7 +354,9 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	public List<Map> getVisibleEntries(String language, List<BPTExerciseStatus> states, ArrayList<String> tags, String query) {
 		tableEntries.clear();
 		for (BPTExerciseStatus status : states) {
-			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
+			for (Map<String, Object> document : getDocuments(status.toString().toLowerCase())) {
+				tableEntries.add(document);
+			}
 		}
 		
 		List<Map> newEntries = new ArrayList<Map>();
@@ -388,7 +390,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	public List<Map> getVisibleEntriesByUser(String user, ArrayList<String> tags, String query) {
 		tableEntries = getDocumentsByUser(user);
 		List<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"topics", "model_types", "task_types", "other_tags"};
+		String[] tagAttributes = new String[] {"topics", "modelling_languages", "task_types", "other_tags"};
 		for (Map<String, Object> entry : tableEntries){
 			if (containsAllTags(entry, tags, tagAttributes)) {
 				newEntries.add(entry);
@@ -414,12 +416,13 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	 */
 	public List<Map> getVisibleEntriesByUser(String language, String user, ArrayList<String> tags, String query) {
 		List<Map> entries = getVisibleEntriesByUser(user, tags, query);
+		List<Map> entriesByLanguage = new ArrayList<Map>();
 		for (Map<String, Object> entry : entries) {
 			if (!((String) entry.get("language")).equals(language)) { 
-				entries.remove(entry);
+				entriesByLanguage.add(entry);
 			}
 		}
-		return entries;
+		return entriesByLanguage;
 	}
 
 	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {

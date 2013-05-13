@@ -251,7 +251,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
 					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
+					dataSource = BPTContainerProvider.getVisibleEntriesByUser(language, (String)getUser(), selectedTags, query);
 				} else {
 					ArrayList<BPTExerciseStatus> states = new ArrayList<BPTExerciseStatus>();
 					states.add(BPTExerciseStatus.Published);
