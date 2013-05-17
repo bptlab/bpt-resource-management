@@ -67,7 +67,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = super.updateDocument(document);
 		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished
-				&& document.get("notification_date") == null) {
+				&& databaseDocument.get("notification_date") == null) {
 			mailProvider.sendEmailForUpdatedEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 		}
 		return databaseDocument;
@@ -152,7 +152,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 */
 	@View(
 			name = "tools_by_user_id", 
-			map = "function(doc) { emit(doc.user_id, doc); }"
+			map = "function(doc) { if (!doc.deleted) emit(doc.user_id, doc); }"
 	)
 	public List<Map> getDocumentsByUser(String user) {
 		ViewQuery query = new ViewQuery()
@@ -270,11 +270,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
-	public Map<String, Object> rejectDocument(String _id) {
+	public Map<String, Object> rejectDocument(String _id, String reason) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Rejected);
 		db.update(databaseDocument);
-		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"), reason);
 		return databaseDocument;
 	}
 	

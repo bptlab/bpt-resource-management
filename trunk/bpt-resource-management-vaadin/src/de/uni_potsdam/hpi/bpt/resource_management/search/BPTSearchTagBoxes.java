@@ -57,6 +57,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		}
 		
 	}
+	
 	@Override
 	public void addTag(String value){
 		if(availabilitiesTags.contains(value)){
@@ -71,6 +72,17 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		else if (supportedFunctionalitiesTags.contains(value)){
 			addTagToLayout(value, "Supported functionality", supportedFunctionalitiesLayout);
 		}
-		
+	}
+	
+	@Override
+	public void removeAllTags() {
+		if (!searchTagList.isEmpty()) {
+			searchTagList.clear();
+			availabilitiesLayout.removeAllComponents();
+			modelTypesLayout.removeAllComponents();
+			platformsLayout.removeAllComponents();
+			supportedFunctionalitiesLayout.removeAllComponents();
+			refresh();
+		}
 	}
 }

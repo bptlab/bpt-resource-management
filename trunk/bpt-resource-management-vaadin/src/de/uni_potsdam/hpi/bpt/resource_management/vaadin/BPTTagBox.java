@@ -14,7 +14,7 @@ public class BPTTagBox extends CustomComponent{
 	
 	protected VerticalLayout baseLayout;
 	private GridLayout layout;
-	private ArrayList<BPTSearchTag> searchTagList;
+	protected ArrayList<BPTSearchTag> searchTagList;
 
 	public BPTTagBox() {
 		baseLayout = new VerticalLayout();
@@ -94,7 +94,7 @@ public class BPTTagBox extends CustomComponent{
 		}
 	}
 	
-	private void refresh() {
+	protected void refresh() {
 		((BPTTagComponent) getParent().getParent()).refresh();
 	}
 	
