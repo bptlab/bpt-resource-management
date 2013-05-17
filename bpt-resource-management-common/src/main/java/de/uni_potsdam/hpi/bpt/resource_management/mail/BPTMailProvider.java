@@ -221,7 +221,7 @@ public class BPTMailProvider {
 	 * @param toolName name of the entry that has been rejected
 	 * @param userId id of the user whose entry has been rejected
 	 */
-	public void sendEmailForRejectedEntry(String toolName, String userId) {
+	public void sendEmailForRejectedEntry(String toolName, String userId, String reason) {
 		if (enabled) {
 			String subject = "[Tools for BPM] Rejected entry: " + toolName;
 
@@ -231,7 +231,8 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been rejected by one of the moderators." + newLine);
+			content.append("Your entry '" + toolName + "' has been rejected by one of the moderators." + newLine + newLine);
+			content.append("Reason: " + reason + newLine + newLine);
 			content.append("As a resource provider you may edit (to request for approval again) or delete it on " + applicationURL + "." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);

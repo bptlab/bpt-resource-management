@@ -11,6 +11,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -26,6 +27,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	protected IndexedContainer dataSource;
 	protected String _id;
 	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private TextArea reasonForRejectionTextArea;
 	
 	public BPTShowEntryComponent(){
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
@@ -157,6 +159,12 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
 		} else if (status.equals("reject")) {
 			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
+			reasonForRejectionTextArea = new TextArea();
+			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
+			reasonForRejectionTextArea.setRows(5);
+			reasonForRejectionTextArea.setWidth("95%");
+			reasonForRejectionTextArea.setWordwrap(true);
+			confirmationWindow.addComponent(reasonForRejectionTextArea);
 		} else if (status.equals("unpublish")) { 
 			confirmationWindow.addComponent(new Label("Unpublishing this entry - are you sure?"));
 		} else { // if status.equals("propose")
@@ -171,7 +179,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				} else if (status.equals("publish")) {
 					toolRepository.publishDocument(_id);
 				} else if (status.equals("reject")) {
-					toolRepository.rejectDocument(_id);
+					toolRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
 					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
