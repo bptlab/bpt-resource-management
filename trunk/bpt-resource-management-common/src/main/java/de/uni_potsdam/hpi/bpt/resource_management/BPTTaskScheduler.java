@@ -61,7 +61,7 @@ public class BPTTaskScheduler {
 		public void run() {
 			System.out.println(new Date() + " - URL check started ...");
 			Map<String, Set<String>> documentsWithUnavailableURLs = new HashMap<String, Set<String>>();
-			List<Map> documents = toolRepository.getDocuments("published");
+			List<Map<String, Object>> documents = toolRepository.getDocuments("published");
 			String[] keys = BPTDocumentTypes.getDocumentKeysStoringURLs("bpt_resources_tools");
 			for (Map<String, Object> document : documents) {
 				Set<String> unavailableURLs = new HashSet<String>();
@@ -126,7 +126,7 @@ public class BPTTaskScheduler {
 		public void run() {
 			System.out.println(new Date() + " - Check for old entries started ...");
 			List<String> namesOfOldDocuments = new ArrayList<String>();
-			List<Map> documents = toolRepository.getDocuments("published");
+			List<Map<String, Object>> documents = toolRepository.getDocuments("published");
 			try {
 				for (Map<String, Object> document : documents) {
 					Date now = new Date();

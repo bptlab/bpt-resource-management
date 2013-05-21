@@ -64,7 +64,7 @@ public class BPTContainerProvider {
 	public static ArrayList<String> getUniqueValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
-		List<Map> tools = toolRepository.getDocuments("all");
+		List<Map<String, Object>> tools = toolRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
 		
