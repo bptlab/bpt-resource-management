@@ -80,12 +80,12 @@ public class BPTTaskScheduler {
 					String documentId = (String)document.get("_id");
 					if ((Integer) document.get("number_of_url_validation_fails") < 3) {
 						document.put("number_of_url_validation_fails", (Integer) document.get("number_of_url_validation_fails") + 1);
-						toolRepository.updateDocument(document);
+						toolRepository.update(document);
 					} else {
 						if (document.get("notification_date") == null) {
 							document.put("notification_date", new Date());
 							mailProvider.sendEmailForPublishedEntryWithUnavailableUrls((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"), unavailableURLs);
-							toolRepository.updateDocument(document);
+							toolRepository.update(document);
 							documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
 						} else {
 							try {
@@ -96,7 +96,7 @@ public class BPTTaskScheduler {
 									toolRepository.unpublishDocument(documentId, true);
 									document.put("number_of_url_validation_fails", 0);
 									document.put("notification_date", null);
-									toolRepository.updateDocument(document);
+									toolRepository.update(document);
 									System.out.println("--- Document " + documentId + " unpublished ---");
 								} else {
 									documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
@@ -112,7 +112,7 @@ public class BPTTaskScheduler {
 						if (document.get("notification_date") != null) {
 							document.put("notification_date", null);
 						}
-						toolRepository.updateDocument(document);
+						toolRepository.update(document);
 					}
 				}
 			}
@@ -175,7 +175,7 @@ public class BPTTaskScheduler {
 							document.put("number_of_mails_for_expiry", 0);
 							System.out.println("--- Document " + documentId + " unpublished ---");
 						}
-						toolRepository.updateDocument(document);
+						toolRepository.update(document);
 					}
 				}
 			} catch (ParseException e) {

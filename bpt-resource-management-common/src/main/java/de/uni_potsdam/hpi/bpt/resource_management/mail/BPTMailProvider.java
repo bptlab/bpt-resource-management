@@ -486,7 +486,7 @@ public class BPTMailProvider {
 				
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("The following published entries has been last updated 90 or more days ago:" + newLine + newLine);
+				content.append("The following published entries have been last updated 90 or more days ago:" + newLine + newLine);
 				for (String documentNameAndId : namesOfOldDocuments) {
 					content.append(documentNameAndId + newLine);
 				}
