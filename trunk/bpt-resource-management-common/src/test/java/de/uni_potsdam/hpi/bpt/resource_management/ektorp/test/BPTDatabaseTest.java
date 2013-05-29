@@ -46,7 +46,9 @@ public class BPTDatabaseTest {
 		userId,
 		new Date(),
 		new Date(),
-		null
+		null, 
+		0, 
+		0
 	};
 	
 	private final Object[] secondTool = new Object[] {
@@ -68,7 +70,9 @@ public class BPTDatabaseTest {
 		userId,
 		new Date(),
 		new Date(),
-		null
+		null, 
+		0, 
+		0
 	};
 	
 	private final Object[] thirdTool = new Object[] {
@@ -90,7 +94,9 @@ public class BPTDatabaseTest {
 		userId,
 		new Date(),
 		new Date(),
-		null
+		null, 
+		0, 
+		0
 	};
 	
 	private final Object[] fourthTool = new Object[] {
@@ -112,7 +118,9 @@ public class BPTDatabaseTest {
 		userId,
 		new Date(),
 		new Date(),
-		null
+		null, 
+		0, 
+		0
 	};
 	
 	private final Object[] fifthTool = new Object[] {
@@ -134,10 +142,12 @@ public class BPTDatabaseTest {
 		userId,
 		new Date(),
 		new Date(),
-		null
+		null, 
+		0, 
+		0
 	};
 	
-	public BPTDatabaseTest(){
+	public BPTDatabaseTest() {
 		toolRepository = new BPTToolRepository();
 		toolRepository.disableMailProvider();
 		userRepository = new BPTUserRepository();

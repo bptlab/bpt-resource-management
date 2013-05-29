@@ -1,5 +1,8 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -90,6 +93,9 @@ public class BPTEntry extends CustomLayout {
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
 						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
+					} else if (id.equals("Last update")) {
+						Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						labelContent = formatter.format((Date)item.getItemProperty("Last update").getValue());
 					}
 					if (!labelContent.isEmpty()) {
 						Label label;

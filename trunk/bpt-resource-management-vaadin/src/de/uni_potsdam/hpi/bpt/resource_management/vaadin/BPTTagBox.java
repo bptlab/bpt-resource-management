@@ -98,7 +98,7 @@ public class BPTTagBox extends CustomComponent{
 		((BPTTagComponent) getParent().getParent()).refresh();
 	}
 	
-	public ArrayList<String> getTagValues(){
+	public ArrayList<String> getTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
 		for (int i = 0; i < searchTagList.size(); i++){
 			tagValues.add(searchTagList.get(i).getValue());

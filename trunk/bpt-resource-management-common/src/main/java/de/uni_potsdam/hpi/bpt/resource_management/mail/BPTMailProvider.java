@@ -94,7 +94,6 @@ public class BPTMailProvider {
 				content.append("As a moderator you may publish, reject or delete it on " + applicationURL + "." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
-				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 				
 				sendMail(recipient, subject, content.toString());
 			}
@@ -127,7 +126,6 @@ public class BPTMailProvider {
 				content.append("As a moderator you may have a look at it on " + applicationURL + "." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
-				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 				
 				sendMail(recipient, subject, content.toString());
 			}
@@ -153,7 +151,6 @@ public class BPTMailProvider {
 			content.append("Your entry '" + toolName + "' has been deleted by one of the moderators." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 			
 			sendMail(recipient, subject, content.toString());
 		}	
@@ -182,7 +179,6 @@ public class BPTMailProvider {
 				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
-				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 				
 				sendMail(recipient, subject, content.toString());
 			}
@@ -209,7 +205,6 @@ public class BPTMailProvider {
 			content.append("As a resource provider you may unpublish, edit or delete it on " + applicationURL + "." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 			
 			sendMail(recipient, subject, content.toString());
 		}
@@ -236,7 +231,6 @@ public class BPTMailProvider {
 			content.append("As a resource provider you may edit (to request for approval again) or delete it on " + applicationURL + "." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 			
 			sendMail(recipient, subject, content.toString());
 		}
@@ -262,7 +256,6 @@ public class BPTMailProvider {
 			content.append("As a resource provider you may edit (to request for approval again) or delete it on " + applicationURL + "." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 			
 			sendMail(recipient, subject, content.toString());
 		}		
@@ -292,7 +285,6 @@ public class BPTMailProvider {
 				content.append("As a moderator you may publish, reject or delete it on " + applicationURL + "." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
-				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 				
 				sendMail(recipient, subject, content.toString());
 			}
@@ -319,7 +311,6 @@ public class BPTMailProvider {
 			content.append("As a resource provider you may edit or delete it on " + applicationURL + "." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 			
 			sendMail(recipient, subject, content.toString());
 		}
@@ -351,7 +342,6 @@ public class BPTMailProvider {
 			content.append("Please note that your entry will be unpublished automatically if the URLs are still unavailable in the next two weeks." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 			
 			sendMail(recipient, subject, content.toString());
 //			System.out.println(content);
@@ -388,7 +378,6 @@ public class BPTMailProvider {
 						"after two weeks of the first dectection of an URL pointing to unavailable resources." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
-				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 				
 				sendMail(recipient, subject, content.toString());
 //				System.out.println(content);
@@ -397,15 +386,15 @@ public class BPTMailProvider {
 	}
 	
 	/**
-	 * Notifies a user that his entry has been updated a long time ago.
+	 * Notifies a user that his entry has been updated 90 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated a long time ago
-	 * @param documentId id of the entry that has been updated a long time ago
-	 * @param userId id of the user whose entry has been updated a long time ago
+	 * @param toolName name of the entry that has been updated 90 days ago
+	 * @param documentId id of the entry that has been updated 90 days ago
+	 * @param userId id of the user whose entry has been updated 90 days ago
 	 */
-	public void sendEmailForOldEntry(String toolName, String documentId, String userId) {
+	public void sendFirstEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ")";
+			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", first notification)";
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
@@ -413,12 +402,67 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 90 or more days ago." + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 90 days ago." + newLine);
 			content.append("As a resource provider you may have a look at it on " + applicationURL + "." + newLine);
-			content.append("Please note that your entry may be unpublished by one of the moderators if you entry is out of date." + newLine + newLine);
+			content.append("Please note that your entry will be unpublished in 14 days automatically if the entry is not updated." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
-			content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
+			
+			sendMail(recipient, subject, content.toString());
+//			System.out.println(content);
+		}
+	}
+	
+	/**
+	 * Notifies a user that his entry has been updated 90+7 days ago.
+	 * 
+	 * @param toolName name of the entry that has been updated 90+7 days ago
+	 * @param documentId id of the entry that has been updated 90+7 days ago
+	 * @param userId id of the user whose entry has been updated 90+7 days ago
+	 */
+	public void sendSecondEmailForOldEntry(String toolName, String documentId, String userId) {
+		if (enabled) {
+			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", second notification)";
+
+			Map<String, Object> resourceProvider = userRepository.getUser(userId);
+			
+			String recipient = (String) resourceProvider.get("mail_address");
+			
+			StringBuilder content = new StringBuilder();
+			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 97 days ago." + newLine);
+			content.append("As a resource provider you may have a look at it on " + applicationURL + "." + newLine);
+			content.append("Please note that your entry will be unpublished in 7 days automatically if the entry is not updated." + newLine + newLine);
+			content.append("Regards" + newLine);
+			content.append("-- bpm-conference.org" + newLine + newLine);
+			
+			sendMail(recipient, subject, content.toString());
+//			System.out.println(content);
+		}
+	}
+	
+	/**
+	 * Notifies a user that his entry has been updated 90+13 days ago.
+	 * 
+	 * @param toolName name of the entry that has been updated 90+13 days ago
+	 * @param documentId id of the entry that has been updated 90+13 days ago
+	 * @param userId id of the user whose entry has been updated 90+13 days ago
+	 */
+	public void sendThirdEmailForOldEntry(String toolName, String documentId, String userId) {
+		if (enabled) {
+			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", third notification)";
+
+			Map<String, Object> resourceProvider = userRepository.getUser(userId);
+			
+			String recipient = (String) resourceProvider.get("mail_address");
+			
+			StringBuilder content = new StringBuilder();
+			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 103 days ago." + newLine);
+			content.append("As a resource provider you may have a look at it on " + applicationURL + "." + newLine);
+			content.append("Please note that your entry will be unpublished in 1 day automatically if the entry is not updated." + newLine + newLine);
+			content.append("Regards" + newLine);
+			content.append("-- bpm-conference.org" + newLine + newLine);
 			
 			sendMail(recipient, subject, content.toString());
 //			System.out.println(content);
@@ -450,7 +494,6 @@ public class BPTMailProvider {
 				content.append("As a moderator you may unpublish them on " + applicationURL + " if they are out of date." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
-				content.append("THIS IS AN AUTOMATICALLY GENERATED EMAIL. DO NOT REPLY!");
 				
 				sendMail(recipient, subject, content.toString());
 //				System.out.println(content);

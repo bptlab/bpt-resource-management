@@ -73,14 +73,14 @@ public class BPTTagComponent extends CustomComponent {
 				Object value = searchInput.getValue();
 				if (value == null) return;
 				String valueString;
-				if(value instanceof String){
+				if (value instanceof String) {
 					valueString = ((String) value).trim().replaceAll(" +", " ");
 				}
 				else {
 					valueString = ((Label) value).getValue().toString().trim().replaceAll(" +", " ");
 				}
 				
-				if(!categories.contains(valueString)){
+				if (!categories.contains(valueString) && !tagBox.getTagValues().contains(valueString)) {
 					tagBox.addTag(valueString);
 					unselectedValues.remove(valueString);
 					searchInput.removeAllItems();
