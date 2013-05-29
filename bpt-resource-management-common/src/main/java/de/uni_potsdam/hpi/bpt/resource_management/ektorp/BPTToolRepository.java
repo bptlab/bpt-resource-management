@@ -33,7 +33,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 public class BPTToolRepository extends BPTDocumentRepository {
 	
 	private static BPTToolRepository instance = null;
-	private List<Map<String, Object>> tableEntries = new ArrayList<Map<String, Object>>();
+	private List<Map> tableEntries = new ArrayList<Map>();
 	private BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	
 	public BPTToolRepository() {
@@ -136,16 +136,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	    	map = "function(doc) { if (!doc.deleted && doc.status == 'Rejected') emit(doc._id, doc); }"
 	    	)
 	    })
-	public List<Map<String, Object>> getDocuments(String status) {
+	public List<Map> getDocuments(String status) {
 		ViewQuery query = new ViewQuery()
 							.designDocId("_design/Map")
 							.viewName(status + "_tools");
-		List<Map> result = db.queryView(query, Map.class);
-		List<Map<String, Object>> documents = new ArrayList<Map<String, Object>>();
-		for (Map<String, Object> document : result) {
-			documents.add(document);
-		}
-		return documents;
+		List<Map> result = db.queryView(query, Map.class);	
+		return result;
 	}
 	
 	/**
@@ -158,17 +154,13 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			name = "tools_by_user_id", 
 			map = "function(doc) { if (!doc.deleted) emit(doc.user_id, doc); }"
 	)
-	public List<Map<String, Object>> getDocumentsByUser(String user) {
+	public List<Map> getDocumentsByUser(String user) {
 		ViewQuery query = new ViewQuery()
 							  .designDocId("_design/Map")
 							  .viewName("tools_by_user_id")
 							  .key(user);
 		List<Map> result = db.queryView(query, Map.class);
-		List<Map<String, Object>> documents = new ArrayList<Map<String, Object>>();
-		for (Map<String, Object> document : result) {
-			documents.add(document);
-		}
-		return documents;
+		return result;
 	}
 	
 	/**
@@ -217,11 +209,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		}
 	}
 	
-	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		databaseDocument.put("status", BPTToolStatus.Unpublished);
 		databaseDocument.put("deleted", false);
+		databaseDocument.put("number_of__url_validation_fails", 0);
+		databaseDocument.put("number_of_mails_for_expiry", 0);
 		return databaseDocument;
 	}
 	
@@ -298,7 +291,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @return true if a document with the name exists in the database
 	 */
 	public Boolean containsName(String name){
-		List<Map<String, Object>> documents = getDocuments("all");
+		List<Map> documents = getDocuments("all");
 		for (int i = 0; i < documents.size(); i++) {
 			if(name.equals(documents.get(i).get("name"))) return true;
 		}
@@ -314,7 +307,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @return list of entries with the given states matching on tag search and full text search
 	 */
 	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags, String query) {
-		tableEntries = new ArrayList<Map<String, Object>>();
+		tableEntries.clear();
 		for (BPTToolStatus status : states) {
 			for (Map<String, Object> document : getDocuments(status.toString().toLowerCase())) {
 				tableEntries.add(document);

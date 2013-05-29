@@ -57,14 +57,14 @@ public class BPTContainerProvider {
 //	}
 	
 	/**
-	 * @param tagColumn the colum(s) from which the unique values (= tags) shall be retrieved
+	 * @param tagColumn the column(s) from which the unique values (= tags) shall be retrieved
 	 * @return the unique values (= tags)
 	 *
 	 */
 	public static ArrayList<String> getUniqueValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
-		List<Map<String, Object>> tools = toolRepository.getDocuments("all");
+		List<Map> tools = toolRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
 		
@@ -79,7 +79,7 @@ public class BPTContainerProvider {
 				availabilityTags.addAll(availabilityTagsOfTool);
 			}
 			Collections.sort(availabilityTags, comparator);
-			uniqueValues.addAll(availabilityTags); // hard_coded
+			uniqueValues.addAll(availabilityTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
 			uniqueValues.add("----- Model types -----");
@@ -89,7 +89,7 @@ public class BPTContainerProvider {
 				modelTypeTags.addAll(modelTypeTagsOfTool);
 			}
 			Collections.sort(modelTypeTags, comparator);
-			uniqueValues.addAll(modelTypeTags); // hard_coded
+			uniqueValues.addAll(modelTypeTags);
 		}
 		if (tagColumn == "all" || tagColumn == "platforms") {
 			uniqueValues.add("----- Platforms -----");
@@ -99,7 +99,7 @@ public class BPTContainerProvider {
 				platformTags.addAll(platformTagsOfTool);
 			}
 			Collections.sort(platformTags, comparator);
-			uniqueValues.addAll(platformTags); // hard_coded
+			uniqueValues.addAll(platformTags);
 		}
 		if (tagColumn == "all" || tagColumn == "supportedFunctionalities") {
 			uniqueValues.add("----- Supported functionalities -----");
@@ -109,7 +109,7 @@ public class BPTContainerProvider {
 				supportedFunctionalityTags.addAll(supportedFunctionalityTagsOfTool);
 			}
 			Collections.sort(supportedFunctionalityTags, comparator);
-			uniqueValues.addAll(supportedFunctionalityTags); // hard_coded
+			uniqueValues.addAll(supportedFunctionalityTags);
 		}
 		
 		return new ArrayList<String>(uniqueValues);
