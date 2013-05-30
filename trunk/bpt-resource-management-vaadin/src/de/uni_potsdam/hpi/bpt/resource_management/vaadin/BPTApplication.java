@@ -25,6 +25,10 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 @SuppressWarnings({ "unchecked", "serial" })
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	
+	//Change themeName for different side
+	private final String themeName = "bpt";
+//	private final String themeName = "bpmai";
+	
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn, loggingIn, moderated;
@@ -45,8 +49,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		Window mainWindow = new Window("Tools for BPM");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
-		setTheme("bpt");
-		CustomLayout custom = new CustomLayout("mainlayout");
+		setTheme(themeName);
+		CustomLayout custom = new CustomLayout(themeName + "_mainlayout");
 		custom.setHeight("100%");
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
