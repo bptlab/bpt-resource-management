@@ -21,8 +21,6 @@ public class BPTSidebar extends CustomComponent{
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		setCompositionRoot(layout);
-		addStyleName("scroll");
-		layout.addStyleName("scroll");
 		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
 		searchComponent = new BPTSearchComponent(application, "all", false);
 		init(layout);		
