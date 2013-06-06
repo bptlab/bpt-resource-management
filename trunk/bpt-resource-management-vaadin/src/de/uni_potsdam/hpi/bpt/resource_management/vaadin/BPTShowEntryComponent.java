@@ -33,7 +33,6 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
 		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), null);
-		addStyleName("scroll");
 	}
 	
 	public void showEntries(IndexedContainer dataSource) {
