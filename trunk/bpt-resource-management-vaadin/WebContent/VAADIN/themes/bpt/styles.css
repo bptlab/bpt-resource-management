@@ -180,3 +180,11 @@ div.scroll{
 .v-select-option.v-radiobutton {
 	padding-right: 10px !important;
 }
+
+div{
+	overflow: visible !important;
+}
+
+body{
+	overflow: auto !important;
+}
