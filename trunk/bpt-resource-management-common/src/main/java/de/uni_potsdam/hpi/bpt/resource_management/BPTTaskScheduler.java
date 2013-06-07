@@ -30,7 +30,7 @@ public class BPTTaskScheduler {
 	BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	public static final int DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH = 14;
-	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 90;
+	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 180;
 	public static final int MAXIMUM_PERIOD_OF_FIRST_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 7;
 	public static final int MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 13;
 	public static final int MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 14;
@@ -129,10 +129,10 @@ public class BPTTaskScheduler {
 	
 	/**
 	 * Checks when the entries have been last updated.
-	 * If an entry has been updated 90 days ago, a first notification is sent to the resource provider.
-	 * If an entry has been updated 97 days ago, a second notification is sent to the resource provider.
-	 * If an entry has been updated 103 days ago, a third and last notification is sent to the resource provider.
-	 * If an entry has been updated 104 days ago, the entry is unpublished automatically.
+	 * If an entry has been updated 180 days ago, a first notification is sent to the resource provider.
+	 * If an entry has been updated 187 days ago, a second notification is sent to the resource provider.
+	 * If an entry has been updated 193 days ago, a third and last notification is sent to the resource provider.
+	 * If an entry has been updated 194 days ago, the entry is unpublished automatically.
 	 * A summary listing all entries that have been last updated 90 or more days ago is sent to the moderators after the check.
 	 * 
 	 * @author tw
@@ -142,7 +142,7 @@ public class BPTTaskScheduler {
 
 		public void run() {
 			System.out.println(new Date() + " - Check for old entries started ...");
-			List<String> namesOfOldDocuments = new ArrayList<String>();
+			Map<String, Integer> namesOfOldDocuments = new HashMap<String, Integer>();
 			List<Map> documents = toolRepository.getDocuments("published");
 			try {
 				for (Map<String, Object> document : documents) {
@@ -156,19 +156,19 @@ public class BPTTaskScheduler {
 							if ((Integer) document.get("number_of_mails_for_expiry") == 0) {
 								mailProvider.sendFirstEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 								document.put("number_of_mails_for_expiry", 1);
-								namesOfOldDocuments.add(documentName + " (" + documentId + ")");
+								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 1);
 							}
 						} else if (differenceInDays < EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							if ((Integer) document.get("number_of_mails_for_expiry") <= 1) {
 								mailProvider.sendSecondEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 								document.put("number_of_mails_for_expiry", 2);
-								namesOfOldDocuments.add(documentName + " (" + documentId + ")");
+								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 2);
 							}
 						} else if (differenceInDays < EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							if ((Integer) document.get("number_of_mails_for_expiry") <= 2) {
 								mailProvider.sendThirdEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 								document.put("number_of_mails_for_expiry", 3);
-								namesOfOldDocuments.add(documentName + " (" + documentId + ")");
+								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 3);
 							}
 						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							toolRepository.unpublishDocument(documentId, true);
