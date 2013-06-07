@@ -3,11 +3,15 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.tools.ant.taskdefs.Sleep;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 
@@ -29,7 +33,13 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		entryList = new ArrayList<BPTEntry>();
 		this.application = application;
 		isInitial = true;
-		sortSelect = new NativeSelect("Sort entries by", Arrays.asList("Name", "Provider", "Last update", "Date created"));
+		HorizontalLayout selectLayout = new HorizontalLayout();
+//		sortSelect = new NativeSelect(Arrays.asList("Name", "Provider", "Last update", "Date created"));
+		sortSelect = new NativeSelect();
+		sortSelect.addItem("Name");
+		sortSelect.addItem("Provider");
+		sortSelect.addItem("Last update");
+		sortSelect.addItem("Date created");
 		sortSelect.setValue("Name");
 		sortSelect.setNullSelectionAllowed(false);
 		sortSelect.addListener(new Property.ValueChangeListener() {
@@ -38,9 +48,11 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 			}
 		});
 		sortSelect.setImmediate(true);
+		selectLayout.addComponent(new Label("Sort entries by"));
+		selectLayout.addComponent(sortSelect);
 		
 		addComponent(layout);
-		layout.addComponent(sortSelect, "sortSelect");
+		layout.addComponent(selectLayout, "sortSelect");
 		layout.addComponent(vertical, "cards");
 		show(dataSource);
 		isInitial = false;
