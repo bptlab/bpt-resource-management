@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.mail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -386,11 +387,11 @@ public class BPTMailProvider {
 	}
 	
 	/**
-	 * Notifies a user that his entry has been updated 90 days ago.
+	 * Notifies a user that his entry has been updated 180 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated 90 days ago
-	 * @param documentId id of the entry that has been updated 90 days ago
-	 * @param userId id of the user whose entry has been updated 90 days ago
+	 * @param toolName name of the entry that has been updated 180 days ago
+	 * @param documentId id of the entry that has been updated 180 days ago
+	 * @param userId id of the user whose entry has been updated 180 days ago
 	 */
 	public void sendFirstEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
@@ -402,7 +403,7 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 90 days ago." + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 180 days ago." + newLine);
 			content.append("As a resource provider you may have a look at it on " + applicationURL + "." + newLine);
 			content.append("Please note that your entry will be unpublished in 14 days automatically if the entry is not updated." + newLine + newLine);
 			content.append("Regards" + newLine);
@@ -414,11 +415,11 @@ public class BPTMailProvider {
 	}
 	
 	/**
-	 * Notifies a user that his entry has been updated 90+7 days ago.
+	 * Notifies a user that his entry has been updated 180+7 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated 90+7 days ago
-	 * @param documentId id of the entry that has been updated 90+7 days ago
-	 * @param userId id of the user whose entry has been updated 90+7 days ago
+	 * @param toolName name of the entry that has been updated 180+7 days ago
+	 * @param documentId id of the entry that has been updated 180+7 days ago
+	 * @param userId id of the user whose entry has been updated 180+7 days ago
 	 */
 	public void sendSecondEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
@@ -430,7 +431,7 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 97 days ago." + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 187 days ago." + newLine);
 			content.append("As a resource provider you may have a look at it on " + applicationURL + "." + newLine);
 			content.append("Please note that your entry will be unpublished in 7 days automatically if the entry is not updated." + newLine + newLine);
 			content.append("Regards" + newLine);
@@ -442,11 +443,11 @@ public class BPTMailProvider {
 	}
 	
 	/**
-	 * Notifies a user that his entry has been updated 90+13 days ago.
+	 * Notifies a user that his entry has been updated 180+13 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated 90+13 days ago
-	 * @param documentId id of the entry that has been updated 90+13 days ago
-	 * @param userId id of the user whose entry has been updated 90+13 days ago
+	 * @param toolName name of the entry that has been updated 180+13 days ago
+	 * @param documentId id of the entry that has been updated 180+13 days ago
+	 * @param userId id of the user whose entry has been updated 180+13 days ago
 	 */
 	public void sendThirdEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
@@ -458,7 +459,7 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 103 days ago." + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 193 days ago." + newLine);
 			content.append("As a resource provider you may have a look at it on " + applicationURL + "." + newLine);
 			content.append("Please note that your entry will be unpublished in 1 day automatically if the entry is not updated." + newLine + newLine);
 			content.append("Regards" + newLine);
@@ -474,8 +475,23 @@ public class BPTMailProvider {
 	 * 
 	 * @param namesOfOldDocuments list of names of entries that have been updated a long time ago
 	 */
-	public void sendSummaryForOldEntriesCheck(List<String> namesOfOldDocuments) {
+	public void sendSummaryForOldEntriesCheck(Map<String, Integer> namesOfOldDocuments) {
 		if (enabled) {
+			
+			List<String> namesOfDocumentsWithFirstNotification = new ArrayList<String>();
+			List<String> namesOfDocumentsWithSecondNotification = new ArrayList<String>();
+			List<String> namesOfDocumentsWithThirdNotification = new ArrayList<String>();
+			
+			for (String documentNameAndId : namesOfOldDocuments.keySet()) {
+				if (namesOfOldDocuments.get(documentNameAndId) == 1) {
+					namesOfDocumentsWithFirstNotification.add(documentNameAndId);
+				} else if (namesOfOldDocuments.get(documentNameAndId) == 2) {
+					namesOfDocumentsWithSecondNotification.add(documentNameAndId);
+				} else if (namesOfOldDocuments.get(documentNameAndId) == 3) {
+					namesOfDocumentsWithThirdNotification.add(documentNameAndId);
+				}
+			}
+			
 			String subject = "[Tools for BPM] One or several entries are out of date";
 
 			List<Map> moderators = userRepository.getModerators();
@@ -486,12 +502,28 @@ public class BPTMailProvider {
 				
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("The following published entries have been last updated 90 or more days ago:" + newLine + newLine);
-				for (String documentNameAndId : namesOfOldDocuments) {
-					content.append(documentNameAndId + newLine);
+				if (!namesOfDocumentsWithFirstNotification.isEmpty()) {
+					content.append("A first notification has been sent to the providers of the following published entries that have been last updated 180-186 days ago:" + newLine + newLine);
+					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
+						content.append(documentNameAndId + newLine);
+					}
+					content.append(newLine);
 				}
-				content.append(newLine);
-				content.append("As a moderator you may unpublish them on " + applicationURL + " if they are out of date." + newLine + newLine);
+				if (!namesOfDocumentsWithSecondNotification.isEmpty()) {
+					content.append("A second notification has been sent to the providers of the following published entries thathave been last updated 187-192 days ago:" + newLine + newLine);
+					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
+						content.append(documentNameAndId + newLine);
+					}
+					content.append(newLine);
+				}
+				if (!namesOfDocumentsWithThirdNotification.isEmpty()) {
+					content.append("A third notification has been sent to the providers of the following published entries that have been last updated 193 days ago:" + newLine + newLine);
+					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
+						content.append(documentNameAndId + newLine);
+					}
+					content.append(newLine);
+				}
+				content.append("Please note that an entry will be unpublished automatically after 194 days if the entry is not updated." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
 				

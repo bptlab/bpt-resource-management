@@ -48,8 +48,9 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 			}
 		});
 		sortSelect.setImmediate(true);
-		selectLayout.addComponent(new Label("Sort entries by"));
+		selectLayout.addComponent(new Label("Sort entries by&nbsp;&nbsp;", Label.CONTENT_XHTML));
 		selectLayout.addComponent(sortSelect);
+		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
 		
 		addComponent(layout);
 		layout.addComponent(selectLayout, "sortSelect");
