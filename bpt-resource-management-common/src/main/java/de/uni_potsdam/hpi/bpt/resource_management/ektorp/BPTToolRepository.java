@@ -67,7 +67,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = super.updateDocument(document);
 		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished) {
-			mailProvider.sendEmailForUpdatedEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+			mailProvider.sendEmailForUpdatedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("_id"), (String)databaseDocument.get("user_id"));
 		}
 		return databaseDocument;
 	}
