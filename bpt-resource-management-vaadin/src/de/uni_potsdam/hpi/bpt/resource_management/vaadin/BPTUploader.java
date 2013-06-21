@@ -278,7 +278,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
 					newValues.put("notification_date", null);
-					toolRepository.updateDocument(newValues);
 					
 					Map<String, Object> document = toolRepository.updateDocument(newValues);
 					String documentRevision = (String)document.get("_rev");
