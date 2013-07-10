@@ -393,5 +393,60 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	public void refreshData() {
 		tableEntries = getDocuments("all");
 	}
+	
+	/**
+	 * Full text search in all entries that are stored in CouchDB.
+	 * Uses Apache Lucene via couchdb-lucene.
+	 * 
+	 * @param queryString handled by Lucene
+	 * @param skip the number of entries to skip (offset)
+	 * @param limit the maximum number of entries to return
+	 * @param sortString attribute used for sorting - example: /name for ascending sort by name, 
+	 * \provider for descending sort by provider, /last_update<date> for ascending sort by last update. 
+	 * See BPTDocumentTypes for the exact name of an attribute.
+	 * @return list of entries matching on the query
+	 */
+	@FullText({
+	    @Index(
+	        name = "fullSearch2",
+	        index = "function(doc) { " +
+	                    "var res = new Document(); " +
+	                    "res.add(doc.name); " + 
+	                    "res.add(doc.description); " + 
+	                    "res.add(doc.provider); " + 
+	                    "res.add(doc.download_url); " + 
+	                    "res.add(doc.documentation_url); " + 
+	                    "res.add(doc.screencast_url); " + 
+	                    "res.add(doc.contact_name); " +
+//	                    "res.add(doc._id, {field: \"_id\", store: \"yes\"} ); " +
+//	                    "res.add(doc.name, {field: \"name\", store: \"yes\"} ); " +
+	                    "return res; " +
+	                "}")
+	})
+	public List<Map> fullSearch(String queryString, int skip, int limit, String sortString) {
+		LuceneQuery query = new LuceneQuery("Map", "fullSearch2");
+		query.setStaleOk(false);
+		if (queryString != null) {
+			query.setQuery(queryString);			
+		}
+		query.setSkip(skip);
+		query.setLimit(limit);
+		query.setSort(sortString);
+		query.setIncludeDocs(true);
+		
+		TypeReference resultDocType = new TypeReference<CustomLuceneResult<Map>>() {};
+		try {
+			CustomLuceneResult<Map> luceneResult = db.queryLucene(query, resultDocType);
+	        List<CustomLuceneResult.Row<Map>> luceneResultRows = luceneResult.getRows();
+	        
+	        List<Map> result = new ArrayList<Map>();
+	        for (CustomLuceneResult.Row<Map> row : luceneResultRows) {
+	            result.add(row.getDoc());
+	        }
+	        return result;
+		} catch (DbAccessException e) {
+			return new ArrayList<Map>();
+		}
+	}
 
 }
