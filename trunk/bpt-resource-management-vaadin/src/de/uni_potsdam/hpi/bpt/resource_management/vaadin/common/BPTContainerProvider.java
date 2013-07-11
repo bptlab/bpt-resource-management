@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -141,14 +142,57 @@ public class BPTContainerProvider {
 		}
 	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
-		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
+//	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
+//		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
+////		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
+//		IndexedContainer container = generateContainer(tools);
+//		return container;
+//	}
+	
+	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute) {
+		String db_sortAttribute;
+		boolean ascending;
+		if(sortAttribute.equals("Name")){
+			db_sortAttribute = "name";
+			ascending = true;
+		}
+		else if(sortAttribute.equals("Provider")){
+			db_sortAttribute = "provider";
+			ascending = true;
+		}
+		else if(sortAttribute.equals("Last Update")){
+			db_sortAttribute = "last_update";
+			ascending = false;
+		}
+		else{
+			db_sortAttribute = "date_created";
+			ascending = false;
+		}
+		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, 0, 10, db_sortAttribute, ascending);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> tags, String query) {
-		List<Map> tools = toolRepository.getVisibleEntriesByUser(user, tags, query);
+	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute) {
+		String db_sortAttribute;
+		boolean ascending;
+		if(sortAttribute.equals("Name")){
+			db_sortAttribute = "name";
+			ascending = true;
+		}
+		else if(sortAttribute.equals("Provider")){
+			db_sortAttribute = "provider";
+			ascending = true;
+		}
+		else if(sortAttribute.equals("Last Update")){
+			db_sortAttribute = "last_update";
+			ascending = false;
+		}
+		else{
+			db_sortAttribute = "date_created";
+			ascending = false;
+		}
+		List<Map> tools = toolRepository.search(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, 0, 10, db_sortAttribute, ascending);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}

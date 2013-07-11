@@ -73,7 +73,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		if (entries.size() == 0) {
 			return;
 		}
-		IndexedContainer sortedEntries = sortEntries(entries);
+		IndexedContainer sortedEntries = entries;
 		for (Object id : sortedEntries.getItemIds()) {
 			Item item = entries.getItem(id);
 			System.out.println(item.getItemPropertyIds());
@@ -92,14 +92,14 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 
 	}
 
-	private IndexedContainer sortEntries(IndexedContainer entries) {
-		String sort = (String) sortSelect.getValue();
-		Object[] propertyId = {sort};
-		boolean[] ascending = {sort=="Name" || sort=="Provider"};
-		entries.setItemSorter(new CaseInsensitiveItemSorter());
-		entries.sort(propertyId, ascending);
-		return entries;
-	}
+//	private IndexedContainer sortEntries(IndexedContainer entries) {
+//		String sort = (String) sortSelect.getValue();
+//		Object[] propertyId = {sort};
+//		boolean[] ascending = {sort=="Name" || sort=="Provider"};
+//		entries.setItemSorter(new CaseInsensitiveItemSorter());
+//		entries.sort(propertyId, ascending);
+//		return entries;
+//	}
 
 	public void addConfirmationWindowTo(String entryId, String status) {
 		_id = entryId;
@@ -157,4 +157,8 @@ public class BPTEntryCards extends BPTShowEntryComponent {
             return r;
         }
     }
+	
+	public String getSortValue(){
+		return (String) sortSelect.getValue();
+	}
 }

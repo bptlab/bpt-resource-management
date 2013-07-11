@@ -152,7 +152,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		return entryComponent;
 	}
 
-	@Override
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> map = request.getParameterMap();
 		
@@ -237,7 +236,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 //        }
 //	}
 
-	@Override
 	public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
 	}
 
@@ -254,34 +252,20 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		if (loggedIn) {
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
-					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-//					try {
-						dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), selectedTags, query);
-//					} catch (DbAccessException e) {
-//						getMainWindow().showNotification("Full search is invalid", "Please use punctuation marks with care (opening and closing marks)", Notification.TYPE_ERROR_MESSAGE);
-//						return;
-//					}
+					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
 				} else {
-					ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
-					states.add(BPTToolStatus.Published);
-					ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-//					try {
-						dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
-//					} catch (DbAccessException e) {
-//						getMainWindow().showNotification("Full search is invalid", "Please use punctuation marks with care (opening and closing marks)", Notification.TYPE_ERROR_MESSAGE);
-//						return;
-//					}
+					ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+					statusList.add(BPTToolStatus.Published);
+					dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
 				}
 			} else {
-				ArrayList<BPTToolStatus> states = sidebar.getSearchComponent().getSelectedStates();
-				ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-				dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+				ArrayList<BPTToolStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
+				dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
 			}
 		} else {
-			ArrayList<BPTToolStatus> states = new ArrayList<BPTToolStatus>();
-			states.add(BPTToolStatus.Published);
-			ArrayList<String> selectedTags = tagSearchComponent.getSelectedTags();
-			dataSource = BPTContainerProvider.getVisibleEntries(states, selectedTags, query);
+			ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+			statusList.add(BPTToolStatus.Published);
+			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
 		}
 		
 		entryComponent.showEntries(dataSource);

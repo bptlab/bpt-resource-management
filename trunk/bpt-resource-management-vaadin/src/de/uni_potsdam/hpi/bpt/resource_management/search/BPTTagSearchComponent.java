@@ -34,5 +34,21 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 		tagBox = new BPTSearchTagBoxes();
 		layout.addComponent(tagBox);
 	}
+	
+	public ArrayList<String> getAvailabiltyTags() {
+		return ((BPTSearchTagBoxes)tagBox).getAvailabilityTagValues();
+	}
+	
+	public ArrayList<String> getModelTypeTags() {
+		return ((BPTSearchTagBoxes)tagBox).getModelTypesTagValues();
+	}
+	
+	public ArrayList<String> getPlatformsTags() {
+		return ((BPTSearchTagBoxes)tagBox).getPlatformsTypesTagValues();
+	}
+	
+	public ArrayList<String> getSupportedFunctionalityTags() {
+		return ((BPTSearchTagBoxes)tagBox).getsupportedFunctionalitiesTypesTagValues();
+	}
 
 }
