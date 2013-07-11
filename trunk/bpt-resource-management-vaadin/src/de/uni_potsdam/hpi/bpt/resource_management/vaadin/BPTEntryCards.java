@@ -29,7 +29,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private Boolean isInitial;
 	private NativeSelect sortSelect;
 	
-	public BPTEntryCards(BPTApplication application) {
+	public BPTEntryCards(final BPTApplication application) {
 		
 		super();
 		layout = new CustomLayout("cards");
@@ -48,7 +48,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		sortSelect.setNullSelectionAllowed(false);
 		sortSelect.addListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
-				show(dataSource);
+				application.refresh();
 			}
 		});
 		sortSelect.setImmediate(true);
