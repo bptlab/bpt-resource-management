@@ -12,7 +12,15 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 
 	private GridLayout availabilitiesLayout, modelTypesLayout, platformsLayout, supportedFunctionalitiesLayout;
 	private ArrayList<String> availabilitiesTags, modelTypesTags, platformsTags, supportedFunctionalitiesTags;
+	private ArrayList<BPTSearchTag> availabilityTagList, modelTypesTagList, platformsTagList, supportedFunctionalitiesTagList;
 
+	public BPTSearchTagBoxes(){
+		super();
+		availabilityTagList = new ArrayList<BPTSearchTag>();
+		modelTypesTagList = new ArrayList<BPTSearchTag>();
+		platformsTagList = new ArrayList<BPTSearchTag>();
+		supportedFunctionalitiesTagList = new ArrayList<BPTSearchTag>();
+	}
 	@Override
 	protected void addGridsToComponent() {
 		availabilitiesTags = BPTContainerProvider.getUniqueValues("availabilities");
@@ -44,15 +52,19 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	public void removeTag(BPTSearchTag searchTag) {
 		String value = searchTag.getValue();
 		if(availabilitiesTags.contains(value)){
+			availabilityTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, availabilitiesLayout);
 		}
 		else if (modelTypesTags.contains(value)){
+			modelTypesTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, modelTypesLayout);
 		}
 		else if (platformsTags.contains(value)){
+			platformsTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, platformsLayout);
 		}
 		else if (supportedFunctionalitiesTags.contains(value)){
+			supportedFunctionalitiesTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, supportedFunctionalitiesLayout);
 		}
 		
@@ -60,29 +72,71 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	
 	@Override
 	public void addTag(String value){
+		BPTSearchTag searchTag;
 		if(availabilitiesTags.contains(value)){
-			addTagToLayout(value, "Availability", availabilitiesLayout);
+			searchTag = new BPTSearchTag(this, "Availability", value);
+			availabilityTagList.add(searchTag);
 		}
 		else if (modelTypesTags.contains(value)){
-			addTagToLayout(value, "Model type", modelTypesLayout);
+			searchTag = new BPTSearchTag(this, "Model type", value);
+			modelTypesTagList.add(searchTag);
 		}
 		else if (platformsTags.contains(value)){
-			addTagToLayout(value, "Platform", platformsLayout);
+			searchTag = new BPTSearchTag(this, "Platform", value);
+			platformsTagList.add(searchTag);
 		}
-		else if (supportedFunctionalitiesTags.contains(value)){
-			addTagToLayout(value, "Supported functionality", supportedFunctionalitiesLayout);
+		else {//if (supportedFunctionalitiesTags.contains(value)){
+			searchTag = new BPTSearchTag(this, "Supported functionality", value);
+			supportedFunctionalitiesTagList.add(searchTag);
 		}
+		addTagToLayout(searchTag, availabilitiesLayout);
 	}
 	
 	@Override
 	public void removeAllTags() {
 		if (!searchTagList.isEmpty()) {
 			searchTagList.clear();
+			availabilityTagList.clear();
+			modelTypesTagList.clear();
+			platformsTagList.clear();
+			supportedFunctionalitiesTagList.clear();
 			availabilitiesLayout.removeAllComponents();
 			modelTypesLayout.removeAllComponents();
 			platformsLayout.removeAllComponents();
 			supportedFunctionalitiesLayout.removeAllComponents();
 			refresh();
 		}
+	}
+	
+	public ArrayList<String> getAvailabilityTagValues() {
+		ArrayList<String> tagValues = new ArrayList<String>();
+		for (BPTSearchTag searchTag : availabilityTagList){
+			tagValues.add(searchTag.getValue());
+		}
+		return tagValues;
+	}
+	
+	public ArrayList<String> getModelTypesTagValues() {
+		ArrayList<String> tagValues = new ArrayList<String>();
+		for (BPTSearchTag searchTag : modelTypesTagList){
+			tagValues.add(searchTag.getValue());
+		}
+		return tagValues;
+	}
+	
+	public ArrayList<String> getPlatformsTypesTagValues() {
+		ArrayList<String> tagValues = new ArrayList<String>();
+		for (BPTSearchTag searchTag : platformsTagList){
+			tagValues.add(searchTag.getValue());
+		}
+		return tagValues;
+	}
+	
+	public ArrayList<String> getsupportedFunctionalitiesTypesTagValues() {
+		ArrayList<String> tagValues = new ArrayList<String>();
+		for (BPTSearchTag searchTag : supportedFunctionalitiesTagList){
+			tagValues.add(searchTag.getValue());
+		}
+		return tagValues;
 	}
 }

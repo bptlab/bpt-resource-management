@@ -143,7 +143,6 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		openIdRealm = resourceBundle.getString("OPENID_REALM");
 	}
 
-	@Override
 	public void valueChange(ValueChangeEvent event) {
 		openIdProvider = event.getProperty().toString();
 		((BPTApplication) getApplication()).setOpenIdProvider(openIdProvider);

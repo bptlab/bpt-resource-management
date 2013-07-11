@@ -341,7 +341,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		parent.addComponent(upload);
 	}
 	
-	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		imageType = mimeType;
 		logo = new File(filename);
@@ -357,7 +356,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
         return outputStream;
 	}
 	
-	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource imageResource = new FileResource(logo, getApplication());
 		Embedded image = new Embedded(event.getFilename(), imageResource);
@@ -389,7 +387,6 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		});
 	}
 	
-	@Override
 	public void uploadFailed(FailedEvent event) {
 		getWindow().showNotification(
                 "Upload failed",

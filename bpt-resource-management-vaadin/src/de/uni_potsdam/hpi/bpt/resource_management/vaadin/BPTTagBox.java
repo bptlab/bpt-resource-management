@@ -44,6 +44,10 @@ public class BPTTagBox extends CustomComponent{
 		addSearchTag(searchTag, layout);
 	}
 	
+	public void addTagToLayout(BPTSearchTag searchTag, GridLayout layout){
+		addSearchTag(searchTag, layout);
+	}
+	
 	private void addSearchTag(BPTSearchTag searchTag, GridLayout layout) {
 		searchTagList.add(searchTag);
 		layout.addComponent(searchTag);
@@ -100,8 +104,8 @@ public class BPTTagBox extends CustomComponent{
 	
 	public ArrayList<String> getTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (int i = 0; i < searchTagList.size(); i++){
-			tagValues.add(searchTagList.get(i).getValue());
+		for (BPTSearchTag searchTag : searchTagList){
+			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
 	}
