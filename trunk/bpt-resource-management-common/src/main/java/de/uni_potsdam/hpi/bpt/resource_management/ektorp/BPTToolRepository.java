@@ -396,10 +396,35 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	/**
-	 * Full text search in all entries that are stored in CouchDB.
+	 * Returns the total number of entries based on the search using Apache Lucene via couchdb-lucene.
+	 * 
+	 * @param statusList list of document status
+	 * @param userId OpenID of resource provider
+	 * @param fullTextSearchString string from full text search
+	 * @param availabilityTags availability tags as list
+	 * @param modelTypeTags model type tags as list
+	 * @param platformTags platform tags as list
+	 * @param supportedFunctionalityTags supported functionality tags as list
+	 * @return number of entries matching the given values
+	 */
+	public int getNumberOfEntries(List<BPTToolStatus> statusList, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags) {
+		String queryString = buildQueryString(statusList, userId, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+		if (queryString.isEmpty()) {
+			return 0;
+		}
+		LuceneQuery query = new LuceneQuery("Map", "search");
+		query.setStaleOk(false);
+		query.setIncludeDocs(true);
+		query.setQuery(queryString);
+		return search(query).size();
+	}
+	
+	/**
+	 * Search in all entries that are stored in CouchDB.
+	 * If no document status is provided, the returned list of entries is empty.
 	 * Uses Apache Lucene via couchdb-lucene.
 	 * 
-	 * @param status document status
+	 * @param statusList list of document status
 	 * @param userId OpenID of resource provider
 	 * @param fullTextSearchString string from full text search
 	 * @param availabilityTags availability tags as list
@@ -410,20 +435,55 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param limit the maximum number of entries to return
 	 * @param sortAttribute attribute used for sorting
 	 * @param ascending true if ascending sort of attribute
-	 * @return
+	 * @return entries matching the given values
 	 */
-	public List<Map> search(BPTToolStatus status, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags, int skip, int limit, String sortAttribute, boolean ascending) {
+	public List<Map> search(List<BPTToolStatus> statusList, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags, int skip, int limit, String sortAttribute, boolean ascending) {
+		String queryString = buildQueryString(statusList, userId, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+		if (queryString.isEmpty()) {
+			return new ArrayList<Map>();
+		}
 		LuceneQuery query = new LuceneQuery("Map", "search");
 		query.setStaleOk(false);
+		query.setIncludeDocs(true);
+		query.setQuery(queryString);
+		if (skip >= 0) {
+			query.setSkip(skip);
+		}
+		if (skip > 0) {
+			query.setLimit(limit);
+		}
+		if (sortAttribute != null && !sortAttribute.isEmpty()) {
+			StringBuffer sbSort = new StringBuffer();
+			sbSort.append(ascending ? "/" : "\\");
+			sbSort.append(sortAttribute);
+			if (sortAttribute.equals("date_created") || sortAttribute.equals("last_update")) {
+				sbSort.append("<date>");
+			}
+			query.setSort(sbSort.toString());
+		}
+		
+		return search(query);
+	}
+	
+	private String buildQueryString(List<BPTToolStatus> statusList,
+			String userId, String fullTextSearchString,
+			List<String> availabilityTags, List<String> modelTypeTags,
+			List<String> platformTags, List<String> supportedFunctionalityTags) {
 		List<String> queryContent = new ArrayList<String>();
+		// only entries that are not deleted
+		queryContent.add("deleted:\"false\"");
 		if (fullTextSearchString != null && !fullTextSearchString.isEmpty()) {
 			queryContent.add(fullTextSearchString);
 		}
 		if (userId != null && !userId.isEmpty()) {
 			queryContent.add("user_id:\"" + userId + "\"");
 		}
-		if (status != null) {
-			queryContent.add("status:" + status);
+		if (statusList != null && !statusList.isEmpty()) {
+			for (BPTToolStatus status : statusList) {
+				queryContent.add("status:\"" + status + "\"");
+			}
+		} else {
+			return new String();
 		}
 		if (availabilityTags != null) {
 			for (String tag : availabilityTags) {
@@ -445,39 +505,17 @@ public class BPTToolRepository extends BPTDocumentRepository {
 				queryContent.add("supported_functionalities:\"" + tag + "\"");
 			}
 		}
-		if (queryContent.isEmpty()) {
-			return getDocuments("all");
-		} else {
-			Iterator<String> queryContentIterator = queryContent.iterator();
-			StringBuffer sbQuery = new StringBuffer();
-			while (queryContentIterator.hasNext()) {
-				sbQuery.append(queryContentIterator.next());
-				if (queryContentIterator.hasNext()) {
-					sbQuery.append(" AND ");
-				}
+		Iterator<String> queryContentIterator = queryContent.iterator();
+		StringBuffer sbQuery = new StringBuffer();
+		while (queryContentIterator.hasNext()) {
+			sbQuery.append(queryContentIterator.next());
+			if (queryContentIterator.hasNext()) {
+				sbQuery.append(" AND ");
 			}
-			query.setQuery(sbQuery.toString());
-			if (skip >= 0) {
-				query.setSkip(skip);
-			}
-			if (skip > 0) {
-				query.setLimit(limit);
-			}
-			if (sortAttribute != null && !sortAttribute.isEmpty()) {
-				StringBuffer sbSort = new StringBuffer();
-				sbSort.append(ascending ? "/" : "\\");
-				sbSort.append(sortAttribute);
-				if (sortAttribute.equals("date_created") || sortAttribute.equals("last_update")) {
-					sbSort.append("<date>");
-				}
-				query.setSort(sbSort.toString());
-			}
-			query.setIncludeDocs(true);
-			
-			return search(query);
 		}
+		return sbQuery.toString();
 	}
-	
+
 	@FullText({
 	    @Index(
 	        name = "search",
@@ -495,6 +533,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	                    "for (var i in doc.platforms) { res.add(doc.platforms[i], {\\\"field\\\": \\\"platforms\\\"}); }" +
 	                    "for (var i in doc.supported_functionalities) { res.add(doc.supported_functionalities[i], {\\\"field\\\": \\\"supported_functionalities\\\"}); }" +
 	                    "res.add(doc.status, {\\\"field\\\": \\\"status\\\"});" +
+	                    "res.add(doc.deleted, {\\\"field\\\": \\\"deleted\\\"});" +
 	                    "res.add(doc.date_created, {\\\"field\\\": \\\"date_created\\\"});" + 
 	                    "res.add(doc.last_update, {\\\"field\\\": \\\"last_update\\\"});" +
 	                    "res.add(doc.user_id, {\\\"field\\\": \\\"user_id\\\"});" + 
