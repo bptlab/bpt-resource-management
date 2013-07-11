@@ -445,29 +445,37 @@ public class BPTToolRepository extends BPTDocumentRepository {
 				queryContent.add("supported_functionalities:\"" + tag + "\"");
 			}
 		}
-		StringBuffer sbQuery = new StringBuffer();
-		Iterator<String> queryContentIterator = queryContent.iterator();
-		while (queryContentIterator.hasNext()) {
-			sbQuery.append(queryContentIterator.next());
-			if (queryContentIterator.hasNext()) {
-				sbQuery.append(" AND ");
+		if (queryContent.isEmpty()) {
+			return getDocuments("all");
+		} else {
+			Iterator<String> queryContentIterator = queryContent.iterator();
+			StringBuffer sbQuery = new StringBuffer();
+			while (queryContentIterator.hasNext()) {
+				sbQuery.append(queryContentIterator.next());
+				if (queryContentIterator.hasNext()) {
+					sbQuery.append(" AND ");
+				}
 			}
-		}
-		query.setQuery(sbQuery.toString());
-		query.setSkip(skip);
-		query.setLimit(limit);
-		if (sortAttribute != null && !sortAttribute.isEmpty()) {
-			StringBuffer sbSort = new StringBuffer();
-			sbSort.append(ascending ? "/" : "\\");
-			sbSort.append(sortAttribute);
-			if (sortAttribute.equals("date_created") || sortAttribute.equals("last_update")) {
-				sbSort.append("<date>");
+			query.setQuery(sbQuery.toString());
+			if (skip >= 0) {
+				query.setSkip(skip);
 			}
-			query.setSort(sbSort.toString());
+			if (skip > 0) {
+				query.setLimit(limit);
+			}
+			if (sortAttribute != null && !sortAttribute.isEmpty()) {
+				StringBuffer sbSort = new StringBuffer();
+				sbSort.append(ascending ? "/" : "\\");
+				sbSort.append(sortAttribute);
+				if (sortAttribute.equals("date_created") || sortAttribute.equals("last_update")) {
+					sbSort.append("<date>");
+				}
+				query.setSort(sbSort.toString());
+			}
+			query.setIncludeDocs(true);
+			
+			return search(query);
 		}
-		query.setIncludeDocs(true);
-		
-		return search(query);
 	}
 	
 	@FullText({
