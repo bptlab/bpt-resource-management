@@ -521,22 +521,22 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	        name = "search",
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
-	                    "res.add(doc.name, {\\\"field\\\": \\\"name\\\"});" + 
+	                    "res.add(doc.name, {\"field\": \"name\"});" + 
 	                    "res.add(doc.description); " + 
 	                    "res.add(doc.provider); " + 
 	                    "res.add(doc.download_url); " + 
 	                    "res.add(doc.documentation_url); " + 
 	                    "res.add(doc.screencast_url); " + 
 	                    "res.add(doc.contact_name); " +
-	                    "for (var i in doc.availabilities) { res.add(doc.availabilities[i], {\\\"field\\\": \\\"availabilities\\\"}); }" +
-	                    "for (var i in doc.model_types) { res.add(doc.model_types[i], {\\\"field\\\": \\\"model_types\\\"}); }" +
-	                    "for (var i in doc.platforms) { res.add(doc.platforms[i], {\\\"field\\\": \\\"platforms\\\"}); }" +
-	                    "for (var i in doc.supported_functionalities) { res.add(doc.supported_functionalities[i], {\\\"field\\\": \\\"supported_functionalities\\\"}); }" +
-	                    "res.add(doc.status, {\\\"field\\\": \\\"status\\\"});" +
-	                    "res.add(doc.deleted, {\\\"field\\\": \\\"deleted\\\"});" +
-	                    "res.add(doc.date_created, {\\\"field\\\": \\\"date_created\\\"});" + 
-	                    "res.add(doc.last_update, {\\\"field\\\": \\\"last_update\\\"});" +
-	                    "res.add(doc.user_id, {\\\"field\\\": \\\"user_id\\\"});" + 
+	                    "for (var i in doc.availabilities) { res.add(doc.availabilities[i], {\"field\": \"availabilities\"}); }" +
+	                    "for (var i in doc.model_types) { res.add(doc.model_types[i], {\"field\": \"model_types\"}); }" +
+	                    "for (var i in doc.platforms) { res.add(doc.platforms[i], {\"field\": \"platforms\"}); }" +
+	                    "for (var i in doc.supported_functionalities) { res.add(doc.supported_functionalities[i], {\"field\": \"supported_functionalities\"}); }" +
+	                    "res.add(doc.status, {\"field\": \"status\"});" +
+	                    "res.add(doc.deleted, {\"field\": \"deleted\"});" +
+	                    "res.add(doc.date_created, {\"field\": \"date_created\"});" + 
+	                    "res.add(doc.last_update, {\"field\": \"last_update\"});" +
+	                    "res.add(doc.user_id, {\"field\": \"user_id\"});" + 
 	                    "return res; " +
 	                "}")
 	})
