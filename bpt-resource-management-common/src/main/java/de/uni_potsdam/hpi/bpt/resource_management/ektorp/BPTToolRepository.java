@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -172,7 +173,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 */
 	@FullText({
 	    @Index(
-	        name = "fullSearch",
+	        name = "fullSearch2",
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
 	                    "res.add(doc.name); " + 
@@ -188,7 +189,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	                "}")
 	})
 	private List<Map> fullSearch(String queryString) {
-		LuceneQuery query = new LuceneQuery("Map", "fullSearch");
+		LuceneQuery query = new LuceneQuery("Map", "fullSearch2");
 		query.setStaleOk(false);
 		query.setQuery(queryString);
 		query.setIncludeDocs(true);
@@ -398,41 +399,101 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * Full text search in all entries that are stored in CouchDB.
 	 * Uses Apache Lucene via couchdb-lucene.
 	 * 
-	 * @param queryString handled by Lucene
+	 * @param status document status
+	 * @param userId OpenID of resource provider
+	 * @param fullTextSearchString string from full text search
+	 * @param availabilityTags availability tags as list
+	 * @param modelTypeTags model type tags as list
+	 * @param platformTags platform tags as list
+	 * @param supportedFunctionalityTags supported functionality tags as list
 	 * @param skip the number of entries to skip (offset)
 	 * @param limit the maximum number of entries to return
-	 * @param sortString attribute used for sorting - example: /name for ascending sort by name, 
-	 * \provider for descending sort by provider, /last_update<date> for ascending sort by last update. 
-	 * See BPTDocumentTypes for the exact name of an attribute.
-	 * @return list of entries matching on the query
+	 * @param sortAttribute attribute used for sorting
+	 * @param ascending true if ascending sort of attribute
+	 * @return
 	 */
+	public List<Map> search(BPTToolStatus status, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags, int skip, int limit, String sortAttribute, boolean ascending) {
+		LuceneQuery query = new LuceneQuery("Map", "search");
+		query.setStaleOk(false);
+		List<String> queryContent = new ArrayList<String>();
+		if (fullTextSearchString != null && !fullTextSearchString.isEmpty()) {
+			queryContent.add(fullTextSearchString);
+		}
+		if (userId != null && !userId.isEmpty()) {
+			queryContent.add("user_id:\"" + userId + "\"");
+		}
+		if (status != null) {
+			queryContent.add("status:" + status);
+		}
+		if (availabilityTags != null) {
+			for (String tag : availabilityTags) {
+				queryContent.add("availabilities:\"" + tag + "\"");
+			}
+		}
+		if (modelTypeTags != null) {
+			for (String tag : modelTypeTags) {
+				queryContent.add("model_types:\"" + tag + "\"");
+			}
+		}
+		if (platformTags != null) {
+			for (String tag : platformTags) {
+				queryContent.add("platforms:\"" + tag + "\"");
+			}
+		}
+		if (supportedFunctionalityTags != null) {
+			for (String tag : supportedFunctionalityTags) {
+				queryContent.add("supported_functionalities:\"" + tag + "\"");
+			}
+		}
+		StringBuffer sbQuery = new StringBuffer();
+		Iterator<String> queryContentIterator = queryContent.iterator();
+		while (queryContentIterator.hasNext()) {
+			sbQuery.append(queryContentIterator.next());
+			if (queryContentIterator.hasNext()) {
+				sbQuery.append(" AND ");
+			}
+		}
+		query.setQuery(sbQuery.toString());
+		query.setSkip(skip);
+		query.setLimit(limit);
+		if (sortAttribute != null && !sortAttribute.isEmpty()) {
+			StringBuffer sbSort = new StringBuffer();
+			sbSort.append(ascending ? "/" : "\\");
+			sbSort.append(sortAttribute);
+			if (sortAttribute.equals("date_created") || sortAttribute.equals("last_update")) {
+				sbSort.append("<date>");
+			}
+			query.setSort(sbSort.toString());
+		}
+		query.setIncludeDocs(true);
+		
+		return search(query);
+	}
+	
 	@FullText({
 	    @Index(
-	        name = "fullSearch2",
+	        name = "search",
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
-	                    "res.add(doc.name); " + 
+	                    "res.add(doc.name, {\\\"field\\\": \\\"name\\\"});" + 
 	                    "res.add(doc.description); " + 
 	                    "res.add(doc.provider); " + 
 	                    "res.add(doc.download_url); " + 
 	                    "res.add(doc.documentation_url); " + 
 	                    "res.add(doc.screencast_url); " + 
 	                    "res.add(doc.contact_name); " +
-//	                    "res.add(doc._id, {field: \"_id\", store: \"yes\"} ); " +
-//	                    "res.add(doc.name, {field: \"name\", store: \"yes\"} ); " +
+	                    "for (var i in doc.availabilities) { res.add(doc.availabilities[i], {\\\"field\\\": \\\"availabilities\\\"}); }" +
+	                    "for (var i in doc.model_types) { res.add(doc.model_types[i], {\\\"field\\\": \\\"model_types\\\"}); }" +
+	                    "for (var i in doc.platforms) { res.add(doc.platforms[i], {\\\"field\\\": \\\"platforms\\\"}); }" +
+	                    "for (var i in doc.supported_functionalities) { res.add(doc.supported_functionalities[i], {\\\"field\\\": \\\"supported_functionalities\\\"}); }" +
+	                    "res.add(doc.status, {\\\"field\\\": \\\"status\\\"});" +
+	                    "res.add(doc.date_created, {\\\"field\\\": \\\"date_created\\\"});" + 
+	                    "res.add(doc.last_update, {\\\"field\\\": \\\"last_update\\\"});" +
+	                    "res.add(doc.user_id, {\\\"field\\\": \\\"user_id\\\"});" + 
 	                    "return res; " +
 	                "}")
 	})
-	public List<Map> fullSearch(String queryString, int skip, int limit, String sortString) {
-		LuceneQuery query = new LuceneQuery("Map", "fullSearch2");
-		query.setStaleOk(false);
-		if (queryString != null) {
-			query.setQuery(queryString);			
-		}
-		query.setSkip(skip);
-		query.setLimit(limit);
-		query.setSort(sortString);
-		query.setIncludeDocs(true);
+	private List<Map> search(LuceneQuery query) {
 		
 		TypeReference resultDocType = new TypeReference<CustomLuceneResult<Map>>() {};
 		try {
