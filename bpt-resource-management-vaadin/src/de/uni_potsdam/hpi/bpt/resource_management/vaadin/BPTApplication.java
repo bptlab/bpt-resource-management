@@ -246,26 +246,31 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void refresh() {
+		refresh(0);
+	}
+	
+	public void refresh(int skip) {
 		IndexedContainer dataSource;
+		int limit = skip + 10;
 		BPTTagSearchComponent tagSearchComponent = sidebar.getSearchComponent().getTagSearchComponent();
 		String query = sidebar.getSearchComponent().getFullSearchComponent().getQuery();
 		if (loggedIn) {
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
-					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
+					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				} else {
 					ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 					statusList.add(BPTToolStatus.Published);
-					dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
+					dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				}
 			} else {
 				ArrayList<BPTToolStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
-				dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
+				dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 			}
 		} else {
 			ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 			statusList.add(BPTToolStatus.Published);
-			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue());
+			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 		}
 		
 		entryComponent.showEntries(dataSource);

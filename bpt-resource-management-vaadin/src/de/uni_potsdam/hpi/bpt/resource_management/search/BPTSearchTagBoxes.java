@@ -76,20 +76,23 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		if(availabilitiesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Availability", value);
 			availabilityTagList.add(searchTag);
+			addTagToLayout(searchTag, availabilitiesLayout);
 		}
 		else if (modelTypesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Model type", value);
 			modelTypesTagList.add(searchTag);
+			addTagToLayout(searchTag, modelTypesLayout);
 		}
 		else if (platformsTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Platform", value);
 			platformsTagList.add(searchTag);
+			addTagToLayout(searchTag, platformsLayout);
 		}
 		else {//if (supportedFunctionalitiesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Supported functionality", value);
 			supportedFunctionalitiesTagList.add(searchTag);
+			addTagToLayout(searchTag, supportedFunctionalitiesLayout);
 		}
-		addTagToLayout(searchTag, availabilitiesLayout);
 	}
 	
 	@Override
