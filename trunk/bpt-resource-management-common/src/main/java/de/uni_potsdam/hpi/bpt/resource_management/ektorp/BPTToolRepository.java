@@ -437,7 +437,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param ascending true if ascending sort of attribute
 	 * @return entries matching the given values
 	 */
-	public List<Map> search(List<BPTToolStatus> statusList, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags, int skip, int limit, String sortAttribute, boolean ascending) {
+	public List<Map> search(List<BPTToolStatus> statusList, 
+			String userId, String fullTextSearchString, 
+			List<String> availabilityTags, List<String> modelTypeTags, 
+			List<String> platformTags, List<String> supportedFunctionalityTags, 
+			int skip, int limit, 
+			String sortAttribute, boolean ascending) {
 		String queryString = buildQueryString(statusList, userId, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 		if (queryString.isEmpty()) {
 			return new ArrayList<Map>();
@@ -449,7 +454,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		if (skip >= 0) {
 			query.setSkip(skip);
 		}
-		if (skip > 0) {
+		if (limit > 0) {
 			query.setLimit(limit);
 		}
 		if (sortAttribute != null && !sortAttribute.isEmpty()) {
@@ -469,6 +474,26 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			String userId, String fullTextSearchString,
 			List<String> availabilityTags, List<String> modelTypeTags,
 			List<String> platformTags, List<String> supportedFunctionalityTags) {
+		
+		List<String> statusContent = new ArrayList<String>();
+		if (statusList != null && !statusList.isEmpty()) {
+			for (BPTToolStatus status : statusList) {
+				statusContent.add("status:\"" + status + "\"");
+			}
+		} else {
+			return new String();
+		}
+		Iterator<String> statusIterator = statusContent.iterator();
+		StringBuffer sbStatus = new StringBuffer();
+		sbStatus.append("(");
+		while (statusIterator.hasNext()) {
+			sbStatus.append(statusIterator.next());
+			if (statusIterator.hasNext()) {
+				sbStatus.append(" OR ");
+			}
+		}
+		sbStatus.append(")");
+		
 		List<String> queryContent = new ArrayList<String>();
 		// only entries that are not deleted
 		queryContent.add("deleted:\"false\"");
@@ -477,13 +502,6 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		}
 		if (userId != null && !userId.isEmpty()) {
 			queryContent.add("user_id:\"" + userId + "\"");
-		}
-		if (statusList != null && !statusList.isEmpty()) {
-			for (BPTToolStatus status : statusList) {
-				queryContent.add("status:\"" + status + "\"");
-			}
-		} else {
-			return new String();
 		}
 		if (availabilityTags != null) {
 			for (String tag : availabilityTags) {
@@ -509,10 +527,9 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		StringBuffer sbQuery = new StringBuffer();
 		while (queryContentIterator.hasNext()) {
 			sbQuery.append(queryContentIterator.next());
-			if (queryContentIterator.hasNext()) {
-				sbQuery.append(" AND ");
-			}
+			sbQuery.append(" AND ");
 		}
+		sbQuery.append(sbStatus.toString());
 		return sbQuery.toString();
 	}
 
@@ -521,9 +538,9 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	        name = "search",
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
-	                    "res.add(doc.name, {\"field\": \"name\"});" + 
+	                    "res.add(doc.name, {\"field\": \"name\", \"index\": \"not_analyzed\", \"type\": \"string\"});" + 
 	                    "res.add(doc.description); " + 
-	                    "res.add(doc.provider); " + 
+	                    "res.add(doc.provider, {\"field\": \"provider\", \"index\": \"not_analyzed\", \"type\": \"string\"}); " + 
 	                    "res.add(doc.download_url); " + 
 	                    "res.add(doc.documentation_url); " + 
 	                    "res.add(doc.screencast_url); " + 
@@ -534,8 +551,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	                    "for (var i in doc.supported_functionalities) { res.add(doc.supported_functionalities[i], {\"field\": \"supported_functionalities\"}); }" +
 	                    "res.add(doc.status, {\"field\": \"status\"});" +
 	                    "res.add(doc.deleted, {\"field\": \"deleted\"});" +
-	                    "res.add(doc.date_created, {\"field\": \"date_created\"});" + 
-	                    "res.add(doc.last_update, {\"field\": \"last_update\"});" +
+	                    "res.add(doc.date_created, {\"field\": \"date_created\", \"type\": \"date\"});" + 
+	                    "res.add(doc.last_update, {\"field\": \"last_update\", \"type\": \"date\"});" +
 	                    "res.add(doc.user_id, {\"field\": \"user_id\"});" + 
 	                    "return res; " +
 	                "}")
