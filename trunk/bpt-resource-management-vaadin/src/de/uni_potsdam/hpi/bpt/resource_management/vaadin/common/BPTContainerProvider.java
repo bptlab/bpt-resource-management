@@ -149,7 +149,7 @@ public class BPTContainerProvider {
 //		return container;
 //	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute) {
+	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("Name")){
@@ -168,12 +168,12 @@ public class BPTContainerProvider {
 			db_sortAttribute = "date_created";
 			ascending = false;
 		}
-		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, 0, 10, db_sortAttribute, ascending);
+		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute) {
+	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("Name")){
@@ -192,12 +192,17 @@ public class BPTContainerProvider {
 			db_sortAttribute = "date_created";
 			ascending = false;
 		}
-		List<Map> tools = toolRepository.search(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, 0, 10, db_sortAttribute, ascending);
+		List<Map> tools = toolRepository.search(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
 	public static void refreshFromDatabase() {
 		toolRepository.refreshData();
+	}
+	
+	public static int getNumberOfEntries(){
+		//TODO
+		return 1;
 	}
 }
