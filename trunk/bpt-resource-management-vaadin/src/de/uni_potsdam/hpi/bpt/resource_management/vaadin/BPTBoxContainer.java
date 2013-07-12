@@ -85,7 +85,7 @@ public class BPTBoxContainer extends CustomComponent {
 	}
 	
 	private void refresh() {
-		((BPTApplication) getApplication()).refresh();
+		((BPTApplication) getApplication()).refreshAndClean();
 	}
 
 	public ArrayList<BPTToolStatus> getSelectedStates() {

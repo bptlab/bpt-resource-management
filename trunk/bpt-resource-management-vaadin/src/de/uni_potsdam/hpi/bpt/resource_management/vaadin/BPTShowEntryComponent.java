@@ -187,7 +187,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 					toolRepository.unpublishDocument(_id, fromRejected);
 				}
 				BPTContainerProvider.refreshFromDatabase();
-				((BPTApplication) getApplication()).refresh();
+				((BPTApplication) getApplication()).refreshAndClean();
 				getWindow().removeWindow(confirmationWindow);
 				if(popupWindow != null){
 					getWindow().removeWindow(popupWindow);

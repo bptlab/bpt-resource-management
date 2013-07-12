@@ -135,7 +135,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void finder() {
 		sidebar.finder();
-		refresh();
+		refreshAndClean();
 		mainFrame.add(entryComponent);
 		
 	}
@@ -245,11 +245,16 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		sidebar.upload();
 	}
 	
-	public void refresh() {
-		refresh(0);
+	public void refreshAndClean() {
+		refreshAndClean(0);
 	}
 	
-	public void refresh(int skip) {
+	public void refreshAndClean(int skip) {
+		refresh(skip);
+		Runtime.getRuntime().gc();
+	}
+
+	private void refresh(int skip) {
 		IndexedContainer dataSource;
 		int limit = skip + 10;
 		BPTTagSearchComponent tagSearchComponent = sidebar.getSearchComponent().getTagSearchComponent();
@@ -272,7 +277,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			statusList.add(BPTToolStatus.Published);
 			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 		}
-		
 		entryComponent.showEntries(dataSource);
 	}
 }
