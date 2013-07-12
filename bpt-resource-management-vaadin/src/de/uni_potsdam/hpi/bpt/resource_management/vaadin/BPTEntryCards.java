@@ -48,7 +48,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		sortSelect.setNullSelectionAllowed(false);
 		sortSelect.addListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
-				application.refresh();
+				application.refreshAndClean();
 			}
 		});
 		sortSelect.setImmediate(true);

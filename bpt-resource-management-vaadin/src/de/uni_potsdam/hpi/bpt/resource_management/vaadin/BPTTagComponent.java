@@ -119,7 +119,7 @@ public class BPTTagComponent extends CustomComponent {
 				searchInput.addItem(new Label(uniqueValue));
 			}
 		}
-		application.refresh();
+		application.refreshAndClean();
 	}
 	
 	public void addChosenTag(String value) {

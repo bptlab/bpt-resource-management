@@ -65,7 +65,7 @@ public class BPTFullSearchComponent extends CustomComponent {
 	}
 
 	private void refresh() {
-		application.refresh();
+		application.refreshAndClean();
 	}
 	
 	public String getQuery() {

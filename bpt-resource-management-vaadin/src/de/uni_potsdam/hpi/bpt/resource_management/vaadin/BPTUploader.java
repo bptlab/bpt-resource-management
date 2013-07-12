@@ -361,7 +361,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		Embedded image = new Embedded(event.getFilename(), imageResource);
         addImageToPanel(image);
         logoDeleted = false;
-        application.refresh();
+        application.refreshAndClean();
 	}
 
 	private void addImageToPanel(Embedded image) {
