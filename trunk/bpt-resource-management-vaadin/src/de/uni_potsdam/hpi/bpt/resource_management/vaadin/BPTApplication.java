@@ -248,7 +248,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void refreshAndClean() {
 		refreshAndClean(0);
-		((BPTEntryCards) entryComponent).getPageSelector().setNumberOfEntries(numberOfEntries);
+		((BPTEntryCards) entryComponent).getBPTPageSelector().setNumberOfEntries(numberOfEntries);
 	}
 	
 	public void refreshAndClean(int skip) {
