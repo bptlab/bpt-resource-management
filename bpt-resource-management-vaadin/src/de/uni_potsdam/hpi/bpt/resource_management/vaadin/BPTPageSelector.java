@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.ui.Button;
@@ -21,9 +22,14 @@ public class BPTPageSelector extends HorizontalLayout {
 		this.application = application;
 		entryFromTo = new Label();
 		this.addComponent(entryFromTo);
+		pageButtonList = new ArrayList<Button>();
 	}
 	
 	public void setNumberOfEntries(int numberOfEntries) {
+		for(Button button : pageButtonList){
+			removeComponent(button);
+		}
+		pageButtonList.clear();
 		if(numberOfEntries == 0){
 			entryFromTo.setCaption("No Entry matches your search parameters");
 		}
@@ -42,6 +48,7 @@ public class BPTPageSelector extends HorizontalLayout {
 				final int x = i * 10;
 				final Button pageButton = new Button(i.toString());
 				pageButton.setStyleName(BaseTheme.BUTTON_LINK);
+				pageButtonList.add(pageButton);
 				pageButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						for(Button button : pageButtonList){
