@@ -8,20 +8,21 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 
 
-public class PageSelector extends HorizontalLayout{
+public class BPTPageSelector extends HorizontalLayout {
 	
 	private BPTApplication application;
 	private Label entryFromTo;
 	private int numberOfEntries;
 	private List<Button> pageButtonList;
 	
-	public PageSelector(){
+	public BPTPageSelector(BPTApplication application) {
 		super();
+		this.application = application;
 		entryFromTo = new Label();
 		this.addComponent(entryFromTo);
 	}
 	
-	public void setNumberOfEntries(int numberOfEntries){
+	public void setNumberOfEntries(int numberOfEntries) {
 		if(numberOfEntries == 0){
 			entryFromTo.setCaption("No Entry matches your search parameters");
 		}
@@ -51,7 +52,7 @@ public class PageSelector extends HorizontalLayout{
 		}
 	}
 	
-	private void switchToPage(int pageNumber){
+	private void switchToPage(int pageNumber) {
 		int lastEntry;
 		int firstEntry = (pageNumber * 10) + 1;
 		if((pageNumber * 10) + 10 < numberOfEntries){
