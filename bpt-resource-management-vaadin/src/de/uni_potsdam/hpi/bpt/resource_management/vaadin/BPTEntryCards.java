@@ -19,6 +19,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
+
 @SuppressWarnings("serial")
 public class BPTEntryCards extends BPTShowEntryComponent {
 	
@@ -28,6 +31,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private ArrayList<BPTEntry> entryList;
 	private Boolean isInitial;
 	private NativeSelect sortSelect;
+	private PageSelector pageSelector;
 	
 	public BPTEntryCards(final BPTApplication application) {
 		
@@ -37,6 +41,13 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		entryList = new ArrayList<BPTEntry>();
 		this.application = application;
 		isInitial = true;
+		setPageSelector(new PageSelector());
+		
+		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+		statusList.add(BPTToolStatus.Published);
+		int numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null);
+		getPageSelector().setNumberOfEntries(numberOfEntries);
+		
 		HorizontalLayout selectLayout = new HorizontalLayout();
 //		sortSelect = new NativeSelect(Arrays.asList("Name", "Provider", "Last update", "Date created"));
 		sortSelect = new NativeSelect();
@@ -57,6 +68,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
 		
 		addComponent(layout);
+		layout.addComponent(getPageSelector(), "pageSelection");
 		layout.addComponent(selectLayout, "sortSelect");
 		layout.addComponent(vertical, "cards");
 		show(dataSource);
@@ -160,5 +172,13 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	public String getSortValue(){
 		return (String) sortSelect.getValue();
+	}
+
+	public PageSelector getPageSelector() {
+		return pageSelector;
+	}
+
+	private void setPageSelector(PageSelector pageSelector) {
+		this.pageSelector = pageSelector;
 	}
 }
