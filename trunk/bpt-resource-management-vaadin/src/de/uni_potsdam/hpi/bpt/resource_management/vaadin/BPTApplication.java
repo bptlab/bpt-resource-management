@@ -38,6 +38,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private BPTUploader uploader;
 	private BPTToolRepository toolRepository;
 	private BPTUserRepository userRepository;
+	private int numberOfEntries;
 	
 	@Override
 	public void init() {
@@ -247,6 +248,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void refreshAndClean() {
 		refreshAndClean(0);
+		((BPTEntryCards) entryComponent).getPageSelector().setNumberOfEntries(numberOfEntries);
 	}
 	
 	public void refreshAndClean(int skip) {
@@ -263,19 +265,23 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
 					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					numberOfEntries = BPTContainerProvider.getNumberOfEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
 					ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 					statusList.add(BPTToolStatus.Published);
 					dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				}
 			} else {
 				ArrayList<BPTToolStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
 				dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+				numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 			}
 		} else {
 			ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 			statusList.add(BPTToolStatus.Published);
 			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+			numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 		}
 		entryComponent.showEntries(dataSource);
 	}
