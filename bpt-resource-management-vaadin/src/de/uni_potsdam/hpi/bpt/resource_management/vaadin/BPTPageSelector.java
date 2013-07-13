@@ -6,6 +6,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
 
 
 public class BPTPageSelector extends HorizontalLayout {
@@ -27,7 +28,6 @@ public class BPTPageSelector extends HorizontalLayout {
 			entryFromTo.setCaption("No Entry matches your search parameters");
 		}
 		else{
-			Button pageButton;
 			this.numberOfEntries = numberOfEntries;
 			this.removeAllComponents();
 			int lastentry;
@@ -40,13 +40,20 @@ public class BPTPageSelector extends HorizontalLayout {
 			entryFromTo = new Label("Entry 1 to " + lastentry +  " from " + numberOfEntries);
 			for(Integer i = 0; (i* 10) < numberOfEntries; i++){
 				final int x = i * 10;
-				pageButton = new Button(i.toString());
+				final Button pageButton = new Button(i.toString());
+				pageButton.setStyleName(BaseTheme.BUTTON_LINK);
 				pageButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
+						for(Button button : pageButtonList){
+							button.setEnabled(true);
+						}
+						pageButton.setEnabled(false);
 						application.refreshAndClean(x);
 					}
 				});
-				pageButton.setDisableOnClick(true);
+				if(i == 0){
+					pageButton.setEnabled(false);
+				}
 				this.addComponent(pageButton);
 			}
 		}
