@@ -43,7 +43,7 @@ public class BPTPageSelector extends HorizontalLayout {
 			else{
 				lastentry = 10;
 			}
-			entryFromTo = new Label("Entry 1 to " + lastentry +  " from " + numberOfEntries);
+			entryFromTo.setCaption("Entry 1 to " + lastentry +  " from " + numberOfEntries);
 			for(Integer i = 0; (i* 10) < numberOfEntries; i++){
 				final int x = i * 10;
 				final Button pageButton = new Button(i.toString());
