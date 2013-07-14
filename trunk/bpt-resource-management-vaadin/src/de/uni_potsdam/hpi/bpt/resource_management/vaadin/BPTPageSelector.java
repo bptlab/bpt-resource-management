@@ -46,7 +46,7 @@ public class BPTPageSelector extends HorizontalLayout {
 			entryFromTo.setCaption("Entry 1 to " + lastentry +  " from " + numberOfEntries);
 			for(Integer i = 0; (i* 10) < numberOfEntries; i++){
 				final int x = i * 10;
-				final Button pageButton = new Button(i.toString());
+				final Button pageButton = new Button(" " + i.toString() + " ");
 				pageButton.setStyleName(BaseTheme.BUTTON_LINK);
 				pageButtonList.add(pageButton);
 				pageButton.addListener(new Button.ClickListener(){
