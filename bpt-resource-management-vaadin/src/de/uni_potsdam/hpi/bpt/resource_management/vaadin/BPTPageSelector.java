@@ -20,18 +20,15 @@ public class BPTPageSelector extends HorizontalLayout {
 	public BPTPageSelector(BPTApplication application) {
 		super();
 		this.application = application;
-		entryFromTo = new Label();
-		this.addComponent(entryFromTo);
 		pageButtonList = new ArrayList<Button>();
 	}
 	
 	public void setNumberOfEntries(int numberOfEntries) {
-		for(Button button : pageButtonList){
-			removeComponent(button);
-		}
+		removeAllComponents();
 		pageButtonList.clear();
 		if(numberOfEntries == 0){
-			entryFromTo.setCaption("No Entry matches your search parameters");
+			entryFromTo = new Label("No Entry matches your search parameters");
+			addComponent(entryFromTo);
 		}
 		else{
 			this.numberOfEntries = numberOfEntries;
@@ -43,11 +40,15 @@ public class BPTPageSelector extends HorizontalLayout {
 			else{
 				lastentry = 10;
 			}
-			entryFromTo.setCaption("Entry 1 to " + lastentry +  " from " + numberOfEntries);
+			entryFromTo = new Label("Entry 1 to " + lastentry +  " from " + numberOfEntries);
+			entryFromTo.setWidth("175px");
+			entryFromTo.setImmediate(true);
+			addComponent(entryFromTo);
 			for(Integer i = 0; (i* 10) < numberOfEntries; i++){
 				final int x = i * 10;
-				final Button pageButton = new Button(" " + i.toString() + " ");
+				final Button pageButton = new Button(i.toString());
 				pageButton.setStyleName(BaseTheme.BUTTON_LINK);
+				pageButton.setWidth("12px");
 				pageButtonList.add(pageButton);
 				pageButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -66,15 +67,15 @@ public class BPTPageSelector extends HorizontalLayout {
 		}
 	}
 	
-	private void switchToPage(int pageNumber) {
+	public void switchToPage(int skippedEntries) {
 		int lastEntry;
-		int firstEntry = (pageNumber * 10) + 1;
-		if((pageNumber * 10) + 10 < numberOfEntries){
-			lastEntry = (pageNumber * 10) + 10;
+		int firstEntry = skippedEntries + 1;
+		if(skippedEntries + 10 < numberOfEntries){
+			lastEntry = skippedEntries + 10;
 		}
 		else{
 			lastEntry = numberOfEntries;
 		}
-		entryFromTo.setCaption("Entry " + firstEntry + " to " + lastEntry + " from " + numberOfEntries);		 
+		entryFromTo.setCaption("Entry " + firstEntry + " to " + lastEntry + " from " + numberOfEntries);
 	}
 }
