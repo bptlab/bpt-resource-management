@@ -201,7 +201,7 @@ public class BPTEntry extends CustomLayout {
 			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
 			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
-			System.out.println("renderDeleteButton" + entryId);
+//			System.out.println("renderDeleteButton" + entryId);
 		}
 		
 		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);

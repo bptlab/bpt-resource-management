@@ -24,7 +24,8 @@ public class BPTDocumentTypes {
 				"download_url", "documentation_url", "screencast_url", "tutorial_url", 
 				"availabilities", "model_types", "platforms", "supported_functionalities", 
 				"contact_name", "contact_mail", "user_id", "date_created", "last_update", 
-				"notification_date", "number_of_url_validation_fails", "number_of_mails_for_expiry"
+				"notification_date", "number_of_url_validation_fails", "number_of_mails_for_expiry",
+				"name_lowercase", "provider_lowercase"
 			};
 		}
 		if (type.equals("bpt_resources_users")) {
