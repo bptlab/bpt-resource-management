@@ -88,7 +88,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		IndexedContainer sortedEntries = entries;
 		for (Object id : sortedEntries.getItemIds()) {
 			Item item = entries.getItem(id);
-			System.out.println(item.getItemPropertyIds());
+//			System.out.println(item.getItemPropertyIds());
 			
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);

@@ -536,11 +536,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	@FullText({
 	    @Index(
 	        name = "search",
+	        analyzer = "snowball:German",
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
-	                    "res.add(doc.name, {\"field\": \"name\", \"index\": \"not_analyzed\", \"type\": \"string\"});" + 
+	                    "res.add(doc.name_lowercase, {\"field\": \"name\", \"index\": \"not_analyzed_no_norms\", \"type\": \"string\"});" + 
 	                    "res.add(doc.description); " + 
-	                    "res.add(doc.provider, {\"field\": \"provider\", \"index\": \"not_analyzed\", \"type\": \"string\"}); " + 
+	                    "res.add(doc.provider_lowercase, {\"field\": \"provider\", \"index\": \"not_analyzed_no_norms\", \"type\": \"string\"}); " + 
 	                    "res.add(doc.download_url); " + 
 	                    "res.add(doc.documentation_url); " + 
 	                    "res.add(doc.screencast_url); " + 

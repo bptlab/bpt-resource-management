@@ -29,13 +29,14 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private TextArea reasonForRejectionTextArea;
 	
-	public BPTShowEntryComponent(){
+	public BPTShowEntryComponent() {
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
 		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10);
 	}
 	
 	public void showEntries(IndexedContainer dataSource) {
+		this.dataSource.removeAllItems();
 		this.dataSource = dataSource;
 		show(dataSource);
 	}

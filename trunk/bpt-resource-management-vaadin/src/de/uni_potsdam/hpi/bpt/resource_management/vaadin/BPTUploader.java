@@ -240,8 +240,9 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						(String)contactMailInput.getValue(),
 						(String)application.getUser(), 
 						new Date(),
-						new Date(), 
-						null
+						new Date(),
+						((String)toolNameInput.getValue()).toLowerCase(),
+						((String)providerInput.getValue()).toLowerCase()
 					}));
 						
 					if (!logoDeleted) { // logo.exists()
@@ -278,6 +279,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
 					newValues.put("notification_date", null);
+					newValues.put("name_lowercase", ((String)toolNameInput.getValue()).toLowerCase());
+					newValues.put("provider_lowercase",	((String)providerInput.getValue()).toLowerCase());
 					
 					Map<String, Object> document = toolRepository.updateDocument(newValues);
 					String documentRevision = (String)document.get("_rev");
