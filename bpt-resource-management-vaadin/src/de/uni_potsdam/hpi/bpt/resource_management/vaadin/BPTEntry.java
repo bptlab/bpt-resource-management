@@ -56,6 +56,9 @@ public class BPTEntry extends CustomLayout {
 			image.addStyleName("bptlogo");
 		} else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
 			Object value = item.getItemProperty(id).getValue();
+			if(value == null){
+				return;
+			}
 			if (value.getClass() == Link.class) {
 				String url = ((Link) value).getCaption();
 				if (!url.isEmpty()) {

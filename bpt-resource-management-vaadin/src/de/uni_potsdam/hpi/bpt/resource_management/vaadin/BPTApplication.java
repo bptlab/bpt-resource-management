@@ -248,7 +248,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public void refreshAndClean() {
 		refreshAndClean(0);
-		((BPTEntryCards) entryComponent).getBPTPageSelector().setNumberOfEntries(numberOfEntries);
+		((BPTEntryCards) entryComponent).getBPTPageSelector().showNumberOfEntries(numberOfEntries);
 	}
 	
 	public void refreshAndClean(int skip) {
@@ -284,6 +284,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 			numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 		}
-		entryComponent.showEntries(dataSource);
+		entryComponent.show(dataSource);
 	}
 }
