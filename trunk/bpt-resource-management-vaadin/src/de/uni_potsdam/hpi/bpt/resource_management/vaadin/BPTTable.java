@@ -8,21 +8,11 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public class BPTTable extends BPTShowEntryComponent {
 
-	private Table table;
-	
-	public BPTTable(){
-		super();
-		table = new Table();
-		table.setImmediate(true);
-		table.setSelectable(true);
-		table.setColumnReorderingAllowed(true);
-        table.setColumnCollapsingAllowed(true);
-        table.setWidth("100%");
-        addComponent(table);
-        addListenerToTable();
-        show(dataSource);
-       
+	public BPTTable(BPTApplication application) {
+		super(application);
 	}
+
+	private Table table;
 	
 	private void addListenerToTable() {
 		table.addListener(new Table.ValueChangeListener() {
@@ -37,7 +27,24 @@ public class BPTTable extends BPTShowEntryComponent {
 
 	@Override
 	protected void show(IndexedContainer tableEntries) {
-		table.setContainerDataSource(dataSource);
+		table.setContainerDataSource(tableEntries);
 		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes());
+	}
+
+	@Override
+	protected void buildLayout() {
+		table = new Table();
+		table.setImmediate(true);
+		table.setSelectable(true);
+		table.setColumnReorderingAllowed(true);
+        table.setColumnCollapsingAllowed(true);
+        table.setWidth("100%");
+        addComponent(table);
+        addListenerToTable();
+	}
+
+	@Override
+	protected void showNumberOfEntries(int numberOfEntries) {
+		// do nothing?
 	}
 }

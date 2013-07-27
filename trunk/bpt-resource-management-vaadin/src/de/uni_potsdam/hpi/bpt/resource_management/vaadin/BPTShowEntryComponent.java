@@ -24,22 +24,29 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
-	protected IndexedContainer dataSource;
 	protected String _id;
+	protected BPTApplication application;
 	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private TextArea reasonForRejectionTextArea;
 	
-	public BPTShowEntryComponent() {
+	public BPTShowEntryComponent(final BPTApplication application) {
+		this.application = application;
+		buildLayout();
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
-		dataSource = BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10);
+		showNumberOfEntries(BPTContainerProvider.getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
+		show(BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
 	}
 	
-	public void showEntries(IndexedContainer dataSource) {
-		this.dataSource.removeAllItems();
-		this.dataSource = dataSource;
-		show(dataSource);
-	}
+	protected abstract void buildLayout();
+	
+	
+	/**
+	 * @abstract to be overwritten by subclass
+	 * 
+	 * @param numberOfEntries
+	 */
+	protected abstract void showNumberOfEntries(int numberOfEntries);
 	
 	/**
 	 * @abstract to be overwritten by subclass

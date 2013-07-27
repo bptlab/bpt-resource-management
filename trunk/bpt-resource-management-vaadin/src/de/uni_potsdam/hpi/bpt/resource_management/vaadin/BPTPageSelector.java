@@ -23,7 +23,7 @@ public class BPTPageSelector extends HorizontalLayout {
 		pageButtonList = new ArrayList<Button>();
 	}
 	
-	public void setNumberOfEntries(int numberOfEntries) {
+	public void showNumberOfEntries(int numberOfEntries) {
 		removeAllComponents();
 		pageButtonList.clear();
 		entryFromTo = new Label("", Label.CONTENT_XHTML);

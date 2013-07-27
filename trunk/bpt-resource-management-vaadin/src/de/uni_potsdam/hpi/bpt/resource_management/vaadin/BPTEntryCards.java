@@ -5,6 +5,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.tools.ant.taskdefs.Sleep;
 
@@ -26,30 +27,28 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	private CustomLayout layout;
-	private BPTApplication application;
-	private VerticalLayout vertical;
-	private ArrayList<BPTEntry> entryList;
+//	private VerticalLayout vertical;
+//	private ArrayList<BPTEntry> entryList;
 	private Boolean isInitial;
 	private NativeSelect sortSelect;
 	private BPTPageSelector pageSelector;
 	
 	public BPTEntryCards(final BPTApplication application) {
 		
-		super();
+		super(application);
+		//TODO: brauchen wir das?
+		isInitial = false;
+	}
+
+	@Override
+	protected void buildLayout() {
 		layout = new CustomLayout("cards");
-		vertical = new VerticalLayout();
-		entryList = new ArrayList<BPTEntry>();
-		this.application = application;
+		VerticalLayout vertical = new VerticalLayout();
+//		entryList = new ArrayList<BPTEntry>();
 		isInitial = true;
 		setBPTPageSelector(new BPTPageSelector(application));
 		
-		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-		statusList.add(BPTToolStatus.Published);
-		int numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null);
-		getBPTPageSelector().setNumberOfEntries(numberOfEntries);
-		
 		HorizontalLayout selectLayout = new HorizontalLayout();
-//		sortSelect = new NativeSelect(Arrays.asList("Name", "Provider", "Last update", "Date created"));
 		sortSelect = new NativeSelect();
 		sortSelect.addItem("Name");
 		sortSelect.addItem("Provider");
@@ -71,47 +70,34 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		layout.addComponent(getBPTPageSelector(), "pageSelection");
 		layout.addComponent(selectLayout, "sortSelect");
 		layout.addComponent(vertical, "cards");
-		show(dataSource);
-		isInitial = false;
 	}
 
 	@Override
+	protected void showNumberOfEntries(int numberOfEntries) {
+		getBPTPageSelector().showNumberOfEntries(numberOfEntries);
+	}
+	
+	@Override
 	protected void show(IndexedContainer entries) {
-		vertical.removeAllComponents();
-		for (BPTEntry entry : entryList) {
-			entry.removeAllComponents();
-		}
-		entryList.clear();
+		List<BPTEntry> entryList = new ArrayList<BPTEntry>();
+		VerticalLayout vertical = new VerticalLayout();
 		if (entries.size() == 0) {
 			return;
 		}
-		IndexedContainer sortedEntries = entries;
-		for (Object id : sortedEntries.getItemIds()) {
+		for (Object id : entries.getItemIds()) {
 			Item item = entries.getItem(id);
-//			System.out.println(item.getItemPropertyIds());
-			
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
 			entryList.add(entry);
-			
 			if (!isInitial) {
 				for (int i = 0; i < entryList.size(); i++) {
 					entryList.get(i).hideJavaScript();
 				}
 			}
-			
 		}
-
+		layout.removeComponent("cards");
+		layout.addComponent(vertical, "cards");
 	}
-
-//	private IndexedContainer sortEntries(IndexedContainer entries) {
-//		String sort = (String) sortSelect.getValue();
-//		Object[] propertyId = {sort};
-//		boolean[] ascending = {sort=="Name" || sort=="Provider"};
-//		entries.setItemSorter(new CaseInsensitiveItemSorter());
-//		entries.sort(propertyId, ascending);
-//		return entries;
-//	}
 
 	public void addConfirmationWindowTo(String entryId, String status) {
 		_id = entryId;
@@ -181,4 +167,5 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private void setBPTPageSelector(BPTPageSelector pageSelector) {
 		this.pageSelector = pageSelector;
 	}
+
 }
