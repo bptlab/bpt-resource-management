@@ -219,6 +219,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 			}
 
 			private void finishUpload() {
+				Label subWindowLabel;
 				if (documentId == null) { 
 				
 					documentId = toolRepository.createDocument(generateDocument(new Object[] {
@@ -253,8 +254,13 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						
 						logo.delete();
 					}
-					
-					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
+					//TODO:
+					subWindowLabel = new Label("Thank you for submitting your tool " 
+							+ (String)toolNameInput.getValue() + ". "
+							+ "Your entry will be reviewed and hopefully published shortly. "
+							+ "You can keep track of your submitted tools by selecting" 
+							+ "\"own entries\"  at the entry overview.");
+//					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
 
 				} else {
 					Map<String, Object> newValues = new HashMap<String, Object>();
@@ -290,12 +296,29 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					} else if (logo != null) {
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
 					}
-					
-					getWindow().showNotification("Updated entry: " + (String)toolNameInput.getValue());
+					//TODO:
+					subWindowLabel = new Label("Thank you for updating your tool " 
+							+ (String)toolNameInput.getValue() + ". "
+							+ "Your entry will be reviewed but remains published. "
+							+ "You can keep track of your submitted tools by selecting" 
+							+ " \"own entries\"  at the entry overview.");
+//					getWindow().showNotification("Updated entry: " + (String)toolNameInput.getValue());
 				}
 				
+				final Window subwindow = new Window((String)toolNameInput.getValue());
+				subwindow.setWidth("500px");
+				subwindow.addComponent(subWindowLabel);
+				subwindow.setModal(true);
+		        Button close = new Button("Close", new Button.ClickListener() {
+		            // inline click-listener
+		            public void buttonClick(ClickEvent event) {
+		                // close the window by removing it from the parent window
+		                (subwindow.getParent()).removeWindow(subwindow);
+		            }
+		        });
+		        subwindow.addComponent(close);
+				getWindow().addWindow(subwindow);
 				((BPTApplication)getApplication()).finder();
-				
 			}
 
 			private void addWarningWindow(final Window window) {
