@@ -5,6 +5,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.taskdefs.Sleep;
@@ -29,7 +30,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private CustomLayout layout;
 //	private VerticalLayout vertical;
 //	private ArrayList<BPTEntry> entryList;
-	private Boolean isInitial;
+//	private Boolean isInitial;
 	private NativeSelect sortSelect;
 	private BPTPageSelector pageSelector;
 	
@@ -37,7 +38,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		
 		super(application);
 		//TODO: brauchen wir das?
-		isInitial = false;
+//		isInitial = false;
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		layout = new CustomLayout("cards");
 		VerticalLayout vertical = new VerticalLayout();
 //		entryList = new ArrayList<BPTEntry>();
-		isInitial = true;
+//		isInitial = true;
 		setBPTPageSelector(new BPTPageSelector(application));
 		
 		HorizontalLayout selectLayout = new HorizontalLayout();
@@ -79,7 +80,9 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	@Override
 	protected void show(IndexedContainer entries) {
-		List<BPTEntry> entryList = new ArrayList<BPTEntry>();
+//		((VerticalLayout) layout.getComponent("cards")).removeAllComponents();
+		
+		layout.removeComponent("cards");
 		VerticalLayout vertical = new VerticalLayout();
 		if (entries.size() == 0) {
 			return;
@@ -88,14 +91,13 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 			Item item = entries.getItem(id);
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
-			entryList.add(entry);
-			if (!isInitial) {
-				for (int i = 0; i < entryList.size(); i++) {
-					entryList.get(i).hideJavaScript();
-				}
-			}
+//			entryList.add(entry);
+//			if (!isInitial) {
+//				for (int i = 0; i < entryList.size(); i++) {
+//					entryList.get(i).hideJavaScript();
+//				}
+//			}
 		}
-		layout.removeComponent("cards");
 		layout.addComponent(vertical, "cards");
 	}
 

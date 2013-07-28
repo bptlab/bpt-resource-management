@@ -92,6 +92,29 @@ public class BPTEntry extends CustomLayout {
 						} else if (labelContent.isEmpty()) {
 							labelContent = "This tool has no description.";
 						}
+						String shortDescription;
+						Label shortDescriptionLabel;
+						int lastIndex = 0;
+						String[] words = labelContent.split("\\s+");
+						if(words.length > 75){
+							for(int i = 0; i < 50; i++){
+								lastIndex = lastIndex + words[i].length() + 1;
+							}
+							while(!(labelContent.charAt(lastIndex) == '.')){
+								lastIndex++;
+							}
+							//dot should be shown aswell
+							lastIndex++;
+							shortDescription = labelContent.substring(0, lastIndex) + " ...";
+						}
+						else{
+							shortDescription = labelContent;
+						}
+						shortDescriptionLabel = new Label("<span style=\"display: block\">" + shortDescription + "</span>");
+						shortDescriptionLabel.setContentMode(Label.CONTENT_XHTML);
+						shortDescriptionLabel.setWidth("90%");
+						this.addComponent(shortDescriptionLabel, "ShortDescription");
+
 					} else if (id.equals("Contact name")) {
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
@@ -145,18 +168,6 @@ public class BPTEntry extends CustomLayout {
 				addOtherButtons();
 				getWindow().executeJavaScript(getJavaScriptStringShow());
 				entry.setHeight("");
-			}
-
-			private String getJavaScriptStringShow() {
-				String js = 
-		        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-				"for(i=0; i<nodes.length; i+=1){" +
-					"if(nodes[i].className == 'extension'){" +
-						"nodes[i].style.display = 'block';}" +
-					"if(nodes[i].className == 'button more'){" +
-						"nodes[i].style.display = 'none';}" +
-					"}";
-				return js;
 			}
 		});
 		
@@ -282,6 +293,21 @@ public class BPTEntry extends CustomLayout {
 		return js;
 	}
 	
+	private String getJavaScriptStringShow() {
+		String js = 
+        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+		"for(i=0; i<nodes.length; i+=1){" +
+			"if(nodes[i].className == 'extension'){" +
+				"nodes[i].style.display = 'block';}" +
+			"if(nodes[i].className == 'Description extension'){" +
+				"nodes[i].style.display = 'block';}" +
+			"if(nodes[i].className == 'button more'){" +
+				"nodes[i].style.display = 'none';}" +
+			"if(nodes[i].className == 'ShortDescription'){" +
+				"nodes[i].style.display = 'none';}" +
+			"}";
+		return js;
+	}
 
 	private String getJavaScriptStringHide() {
 		String js = 
@@ -289,7 +315,11 @@ public class BPTEntry extends CustomLayout {
 		"for(i=0; i<nodes.length; i+=1){" +
 			"if(nodes[i].className == 'extension'){" +
 				"nodes[i].style.display = 'none';}" +
+			"if(nodes[i].className == 'Description extension'){" +
+				"nodes[i].style.display = 'none';}" +
 			"if(nodes[i].className == 'button more'){" +
+				"nodes[i].style.display = 'block';}" +
+			"if(nodes[i].className == 'ShortDescription'){" +
 				"nodes[i].style.display = 'block';}" +
 			"}";
 		return js;
