@@ -104,7 +104,7 @@ public class BPTEntry extends CustomLayout {
 								lastIndex++;
 							}
 							//dot should be shown aswell
-							lastIndex++;
+//							lastIndex++;
 							shortDescription = labelContent.substring(0, lastIndex) + " ...";
 						}
 						else{
