@@ -2,13 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.Serializable;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.tools.ant.taskdefs.Sleep;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -20,9 +14,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
-
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
 public class BPTEntryCards extends BPTShowEntryComponent {
