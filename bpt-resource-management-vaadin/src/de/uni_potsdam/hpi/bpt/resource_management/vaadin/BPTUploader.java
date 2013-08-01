@@ -257,9 +257,11 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					//TODO:
 					subWindowLabel = new Label("Thank you for submitting your tool " 
 							+ (String)toolNameInput.getValue() + ". "
-							+ "Your entry will be reviewed and hopefully published shortly. "
+							+ "Your entry will be reviewed." 
+							+ " In the usual case, your entry is submitted shortly. "
 							+ "You can keep track of your submitted tools by selecting" 
-							+ "\"own entries\"  at the entry overview.");
+							+ "\"own entries\"  at the entry overview."
+							+ "If you have any question, please contact bptresourcemanagement@gmail.com.");
 //					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
 
 				} else {
@@ -301,7 +303,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 							+ (String)toolNameInput.getValue() + ". "
 							+ "Your entry will be reviewed but remains published. "
 							+ "You can keep track of your submitted tools by selecting" 
-							+ " \"own entries\"  at the entry overview.");
+							+ " \"own entries\"  at the entry overview."
+							+ "If you have any question, please contact bptresourcemanagement@gmail.com.");
 //					getWindow().showNotification("Updated entry: " + (String)toolNameInput.getValue());
 				}
 				
