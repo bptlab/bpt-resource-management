@@ -110,7 +110,7 @@ public class BPTEntry extends CustomLayout {
 						else{
 							shortDescription = labelContent;
 						}
-						shortDescriptionLabel = new Label("<span style=\"display: block\">" + shortDescription + "</span>");
+						shortDescriptionLabel = new Label("<span style=\"display: block\">" + shortDescription + "</span><br/>");
 						shortDescriptionLabel.setContentMode(Label.CONTENT_XHTML);
 						shortDescriptionLabel.setWidth("90%");
 						this.addComponent(shortDescriptionLabel, "ShortDescription");

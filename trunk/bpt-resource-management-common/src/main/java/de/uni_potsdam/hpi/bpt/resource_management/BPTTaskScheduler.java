@@ -2,7 +2,6 @@ package de.uni_potsdam.hpi.bpt.resource_management;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
