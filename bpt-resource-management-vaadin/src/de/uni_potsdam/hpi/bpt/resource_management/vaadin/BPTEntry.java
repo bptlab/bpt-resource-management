@@ -96,14 +96,14 @@ public class BPTEntry extends CustomLayout {
 						Label shortDescriptionLabel;
 						int lastIndex = 0;
 						String[] words = labelContent.split("\\s+");
-						if(words.length > 75){
-							for(int i = 0; i < 50; i++){
+						if (words.length > 75) {
+							for (int i = 0; i < 50; i++) {
 								lastIndex = lastIndex + words[i].length() + 1;
 							}
-							while(!(labelContent.charAt(lastIndex) == '.')){
+							while (!(labelContent.charAt(lastIndex) == '.')) {
 								lastIndex++;
 							}
-							//dot should be shown aswell
+							//dot should be shown as well
 //							lastIndex++;
 							shortDescription = labelContent.substring(0, lastIndex) + " ...";
 						}
@@ -125,8 +125,10 @@ public class BPTEntry extends CustomLayout {
 					}
 					if (!labelContent.isEmpty()) {
 						Label label;
-						if (id == "Name" || id == "Description") {
+						if (id == "Name") {
 							label = new Label("<span style=\"display: block\">" + labelContent + "</span>");
+						} else if (id == "Description") {
+							label = new Label("<span style=\"display: block\">" + labelContent + "</span></br>");
 						} else if (id == "Contact name") {
 							label = new Label("<i><span style=\"margin-left: -1em\">Contact</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
 						} else {
