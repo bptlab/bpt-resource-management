@@ -1,22 +1,22 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 
 @SuppressWarnings("serial")
 public class BPTEntry extends CustomLayout {
@@ -27,8 +27,9 @@ public class BPTEntry extends CustomLayout {
 	private Item item;
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
-	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
-	private BPTUserRepository userRepository = BPTUserRepository.getInstance();
+	private BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
+	private TabSheet tabsheet;
+	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -42,126 +43,63 @@ public class BPTEntry extends CustomLayout {
 		
 		addButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
-			addToLayout(attributeName.toString());
+			System.out.println(attributeName);
+			System.out.println(item.getItemProperty(attributeName).getValue());
+			if (attributeName != "Attachment names") {
+				addToLayout(attributeName.toString());
+			}
 		}
 	}
 
 	private void addToLayout(String id) {
-		if (id.equals("Logo")) {
+		//TODO: links zu allen Dokumenten die hochgeladen wurden
+		if (!id.equals("User ID") && !id.equals("ID") && !id.equals("set_id") && !id.equals("Contact mail")) {
 			Object value = item.getItemProperty(id).getValue();
-			Embedded image = (Embedded) value;
-			image.setWidth("");
-			image.setHeight("");
-			this.addComponent(image, id.toString());
-			image.addStyleName("bptlogo");
-		} else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
-			Object value = item.getItemProperty(id).getValue();
-			if(value == null){
-				return;
-			}
 			if (value.getClass() == Link.class) {
-				String url = ((Link) value).getCaption();
-				if (!url.isEmpty()) {
-					Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + url + "' target='_blank'>" + url + "</a></span>");
-					label.setContentMode(Label.CONTENT_XHTML);
-					label.setWidth("90%");
-					this.addComponent(label, id.toString());
-				}
-			} else {
-				if (id.equals("Provider")) {
-					String providerURL = ((Link) item.getItemProperty("Provider URL").getValue()).getCaption();
-					if (providerURL.isEmpty()) {
-						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/><span style=\"margin-left: 1em; display: block\">" + (String) value + "</span>");
-						label.setContentMode(Label.CONTENT_XHTML);
-						label.setWidth("90%");
-						this.addComponent(label, id.toString());
-					} else {
-						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + providerURL + "' target='_blank'>" + (String) value + "</a></span>");
-						label.setContentMode(Label.CONTENT_XHTML);
-						this.addComponent(label, id.toString());
-					}
+				Link link = (Link) value;
+				if (link.getCaption().isEmpty()) {
+					addDefaultComponent(id.toString());
 				} else {
+					this.addComponent(link, id.toString());
+				}
+			} 
+			else {
 					String labelContent = value.toString();
-					if (id == "Description") {
-						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();
-						if (!descriptionURL.isEmpty()) {
-							if (labelContent.isEmpty()) {
-								labelContent = "For a description of this tool see";
-							}
-							labelContent = labelContent + "&nbsp;<a href='" + descriptionURL + "' target='_blank'>more</a>";
-						} else if (labelContent.isEmpty()) {
-							labelContent = "This tool has no description.";
-						}
-						String shortDescription;
-						Label shortDescriptionLabel;
-						int lastIndex = 0;
-						String[] words = labelContent.split("\\s+");
-						if (words.length > 75) {
-							for (int i = 0; i < 50; i++) {
-								lastIndex = lastIndex + words[i].length() + 1;
-							}
-							while (!(labelContent.charAt(lastIndex) == '.')) {
-								lastIndex++;
-							}
-							//dot should be shown as well
-//							lastIndex++;
-							shortDescription = labelContent.substring(0, lastIndex) + " ...";
-						}
-						else{
-							shortDescription = labelContent;
-						}
-						shortDescriptionLabel = new Label("<span style=\"display: block\">" + shortDescription + "</span><br/>");
-						shortDescriptionLabel.setContentMode(Label.CONTENT_XHTML);
-						shortDescriptionLabel.setWidth("90%");
-						this.addComponent(shortDescriptionLabel, "ShortDescription");
-
-					} else if (id.equals("Contact name")) {
+					Label label = new Label(labelContent);
+					if (id.equals("Contact name")) {
+						label.setContentMode(Label.CONTENT_XHTML);
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
 						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
-					} else if (id.equals("Last update")) {
-						Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						labelContent = formatter.format((Date)item.getItemProperty("Last update").getValue());
+						label.setValue(labelContent);
 					}
-					if (!labelContent.isEmpty()) {
-						Label label;
-						if (id == "Name") {
-							label = new Label("<span style=\"display: block\">" + labelContent + "</span>");
-						} else if (id == "Description") {
-							label = new Label("<span style=\"display: block\">" + labelContent + "</span></br>");
-						} else if (id == "Contact name") {
-							label = new Label("<i><span style=\"margin-left: -1em\">Contact</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
-						} else {
-							label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
-						}
-						label.setContentMode(Label.CONTENT_XHTML);
-						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+					label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+					if (labelContent.isEmpty()) {
+						addDefaultComponent(id.toString());
+					} else {
 						this.addComponent(label, id.toString());
 					}
-				}
 			}
-		} else if (id.equals("User ID") && application.isModerated()) {
-			String userId = item.getItemProperty(id).getValue().toString();
-			Label label = new Label("<i><span style=\"margin-left: -1em\">OpenID of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + userId + "</span>");
-			label.setContentMode(Label.CONTENT_XHTML);
-			label.setWidth("90%");
-			this.addComponent(label, "OpenID of resource provider");
-			Map<String, Object> document = userRepository.readDocument(userId);
-			String name = (String) document.get("name");
-			String mailAddress = (String) document.get("mail_address");
-			mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
-			label = new Label("<i><span style=\"margin-left: -1em\">Contact of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + name + "&nbsp;&lt;" + mailAddress + "&gt;" + "</span>");
-			label.setContentMode(Label.CONTENT_XHTML);
-			label.setWidth("90%");
-			this.addComponent(label, "Contact of resource provider");
-		} 
+		}
+		tabsheet = new TabSheet();
+		this.addComponent(tabsheet, "Tabs");
+//		tabsheet.addStyleName("border");
+		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
+		for(Map entry : relatedEntries){
+			BPTSubEntry subEntry = new BPTSubEntry(entry);
+			tabsheet.addComponent(subEntry);
+			tabsheet.getTab(subEntry).setCaption((String) entry.get("language"));
+			if(entry.get("language").equals(application.getSelectedLanguage())){
+				tabsheet.setSelectedTab(subEntry);
+			}
+		}
 	}
 
-//	private void addDefaultComponent(String location) {
-//		Label label = new Label("(none)");
-//		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-//		this.addComponent(label, location);
-//	}
+	private void addDefaultComponent(String location) {
+		Label label = new Label("(none)");
+		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+		this.addComponent(label, location);
+	}
 
 	public void addButtons() {
 		Button more = new Button("more");
@@ -171,10 +109,23 @@ public class BPTEntry extends CustomLayout {
 				getWindow().executeJavaScript(getJavaScriptStringShow());
 				entry.setHeight("");
 			}
+
+			private String getJavaScriptStringShow() {
+				String js = 
+		        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+				"for(i=0; i<nodes.length; i+=1){" +
+					"if(nodes[i].className == 'extension'){" +
+						"nodes[i].style.display = 'block';}" +
+					"if(nodes[i].className == 'button more'){" +
+						"nodes[i].style.display = 'none';}" +
+					"}";
+				return js;
+			}
 		});
 		
 		more.setStyleName(BaseTheme.BUTTON_LINK);
 		more.addStyleName("bpt");
+		more.addStyleName("redButtonHover");
 		this.addComponent(more, "button more");
 		Button less = new Button("less");
 		less.addListener(new Button.ClickListener(){
@@ -185,6 +136,7 @@ public class BPTEntry extends CustomLayout {
 		});
 		less.setStyleName(BaseTheme.BUTTON_LINK);
 		less.addStyleName("bpt");
+		less.addStyleName("redButtonHover");
 		this.addComponent(less, "button less");
 		
 	}
@@ -201,6 +153,7 @@ public class BPTEntry extends CustomLayout {
 			
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
+			edit.addStyleName("redButtonHover");
 			this.addComponent(edit, "button edit");
 			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
@@ -215,14 +168,15 @@ public class BPTEntry extends CustomLayout {
 			
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
+			delete.addStyleName("redButtonHover");
 			this.addComponent(delete, "button delete");
 			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
-//			System.out.println("renderDeleteButton" + entryId);
+			System.out.println("renderDeleteButton" + entryId);
 		}
 		
-		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
+		BPTExerciseStatus actualState = toolRepository.getDocumentStatus(entryId);
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Unpublished){
+		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Unpublished){
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -232,6 +186,7 @@ public class BPTEntry extends CustomLayout {
 		
 			publish.setStyleName(BaseTheme.BUTTON_LINK);
 			publish.addStyleName("bpt");
+			publish.addStyleName("redButtonHover");
 			this.addComponent(publish, "button publish");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
 			
@@ -244,11 +199,12 @@ public class BPTEntry extends CustomLayout {
 			
 			reject.setStyleName(BaseTheme.BUTTON_LINK);
 			reject.addStyleName("bpt");
+			reject.addStyleName("redButtonHover");
 			this.addComponent(reject, "button reject");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
 		}
 		
-		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTToolStatus.Published){
+		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTExerciseStatus.Published){
 			Button unpublish = new Button("unpublish");
 			unpublish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -258,12 +214,13 @@ public class BPTEntry extends CustomLayout {
 			
 			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 			unpublish.addStyleName("bpt");
+			unpublish.addStyleName("redButtonHover");
 			this.addComponent(unpublish, "button unpublish");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
 		
 		}
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Rejected){
+		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Rejected){
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -273,6 +230,7 @@ public class BPTEntry extends CustomLayout {
 			
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
+			propose.addStyleName("redButtonHover");
 			this.addComponent(propose, "button propose");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
 		}
@@ -295,21 +253,6 @@ public class BPTEntry extends CustomLayout {
 		return js;
 	}
 	
-	private String getJavaScriptStringShow() {
-		String js = 
-        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-		"for(i=0; i<nodes.length; i+=1){" +
-			"if(nodes[i].className == 'extension'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'Description extension'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'button more'){" +
-				"nodes[i].style.display = 'none';}" +
-			"if(nodes[i].className == 'ShortDescription'){" +
-				"nodes[i].style.display = 'none';}" +
-			"}";
-		return js;
-	}
 
 	private String getJavaScriptStringHide() {
 		String js = 
@@ -317,11 +260,7 @@ public class BPTEntry extends CustomLayout {
 		"for(i=0; i<nodes.length; i+=1){" +
 			"if(nodes[i].className == 'extension'){" +
 				"nodes[i].style.display = 'none';}" +
-			"if(nodes[i].className == 'Description extension'){" +
-				"nodes[i].style.display = 'none';}" +
 			"if(nodes[i].className == 'button more'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'ShortDescription'){" +
 				"nodes[i].style.display = 'block';}" +
 			"}";
 		return js;

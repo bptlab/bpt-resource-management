@@ -2,8 +2,8 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +11,11 @@ import java.util.Map;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 
 /**
- * Provides data for the table and the search component.
- * 
- * public static IndexedContainer getContainer()
- * public static Set<String> getUniqueValues(String tagColumn)
+ * Provides data for the entries display and the search component.
  * 
  * @author bu
  * @author tw
@@ -27,7 +24,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTContainerProvider {
 	
-	private static BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private static BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
 	
 //	/**
 //	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
@@ -58,64 +55,73 @@ public class BPTContainerProvider {
 //	}
 	
 	/**
-	 * @param tagColumn the column(s) from which the unique values (= tags) shall be retrieved
+	 * @param tagColumn the colum(s) from which the unique values (= tags) shall be retrieved
 	 * @return the unique values (= tags)
 	 *
 	 */
-	public static ArrayList<String> getUniqueValues(String tagColumn) {
+	public static ArrayList<String> getUniqueTagValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
-		
-		// TODO: refactor to have it generic
-		
+		System.out.println(tools);
 		Collator comparator = Collator.getInstance();
 		comparator.setStrength(Collator.PRIMARY);
 		
-		if (tagColumn == "all" || tagColumn == "availabilities") {
-			uniqueValues.add("----- Availabilities -----");
-			ArrayList<String> availabilityTags = new ArrayList<String>();
+		if (tagColumn == "all" || tagColumn == "topics") {
+			uniqueValues.add("----- Topics -----");
+			ArrayList<String> topicTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> availabilityTagsOfTool = (ArrayList<String>)tool.get("availabilities");  // cast
-				availabilityTags.addAll(availabilityTagsOfTool);
+				ArrayList<String> topicTagsOfTool = (ArrayList<String>)tool.get("topics");
+				topicTags.addAll(topicTagsOfTool);
 			}
-			Collections.sort(availabilityTags, comparator);
-			uniqueValues.addAll(availabilityTags);
+			Collections.sort(topicTags, comparator);
+			uniqueValues.addAll(topicTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
-			uniqueValues.add("----- Model types -----");
+			uniqueValues.add("----- Modelling languages -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("model_types");  // cast
+				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modelling_languages");
 				modelTypeTags.addAll(modelTypeTagsOfTool);
 			}
 			Collections.sort(modelTypeTags, comparator);
 			uniqueValues.addAll(modelTypeTags);
 		}
-		if (tagColumn == "all" || tagColumn == "platforms") {
-			uniqueValues.add("----- Platforms -----");
-			ArrayList<String> platformTags = new ArrayList<String>();
+		if (tagColumn == "all" || tagColumn == "taskTypes") {
+			uniqueValues.add("----- Task types -----");
+			ArrayList<String> taskTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> platformTagsOfTool = (ArrayList<String>)tool.get("platforms");  // cast
-				platformTags.addAll(platformTagsOfTool);
+				ArrayList<String> taskTypeTagsOfTool = (ArrayList<String>)tool.get("task_types");
+				taskTypeTags.addAll(taskTypeTagsOfTool);
 			}
-			Collections.sort(platformTags, comparator);
-			uniqueValues.addAll(platformTags);
+			Collections.sort(taskTypeTags, comparator);
+			uniqueValues.addAll(taskTypeTags);
 		}
-		if (tagColumn == "all" || tagColumn == "supportedFunctionalities") {
-			uniqueValues.add("----- Supported functionalities -----");
-			ArrayList<String> supportedFunctionalityTags = new ArrayList<String>();
+		if (tagColumn == "all" || tagColumn == "otherTags") {
+			uniqueValues.add("----- Other tags -----");
+			ArrayList<String> otherTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> supportedFunctionalityTagsOfTool = (ArrayList<String>)tool.get("supported_functionalities");  // cast
-				supportedFunctionalityTags.addAll(supportedFunctionalityTagsOfTool);
+				ArrayList<String> otherTagsOfTool = (ArrayList<String>)tool.get("other_tags");
+				otherTags.addAll(otherTagsOfTool);
 			}
-			Collections.sort(supportedFunctionalityTags, comparator);
-			uniqueValues.addAll(supportedFunctionalityTags);
+			Collections.sort(otherTags, comparator);
+			uniqueValues.addAll(otherTags);
 		}
 		
 		return new ArrayList<String>(uniqueValues);
 	}
 	
+	public static ArrayList<String> getUniqueLanguages(){
+		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
+		List<Map> tools = toolRepository.getDocuments("all");
+		for (Map<String, Object> tool : tools) {
+			String attributeString = (String) tool.get("language");
+			uniqueValues.add(attributeString);
+		}
+		ArrayList<String> uniqueList = new ArrayList<String>(uniqueValues);
+//		Collections.sort(uniqueList, Comparator<T>)
+		return new ArrayList<String>(uniqueValues);
+	}
 	private static IndexedContainer initializeContainerWithProperties() {
 		IndexedContainer container = new IndexedContainer();
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
@@ -124,10 +130,10 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private static IndexedContainer generateContainer(List<Map> tools) {
+	public static IndexedContainer generateContainer(List<Map> exercises) {
 		IndexedContainer container = initializeContainerWithProperties();
-		for (int i = 0; i < tools.size(); i++) {
-			Map<String, Object> tool = tools.get(i);
+		for (int i = 0; i < exercises.size(); i++) {
+			Map<String, Object> tool = exercises.get(i);
 			Item item = container.addItem(i);
 //				System.out.println("print map here: " + tool);
 			setItemPropertyValues(item, tool);
@@ -142,70 +148,20 @@ public class BPTContainerProvider {
 		}
 	}
 	
-//	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
-//		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
-////		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
-//		IndexedContainer container = generateContainer(tools);
-//		return container;
-//	}
-	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
-		String db_sortAttribute;
-		boolean ascending;
-		if(sortAttribute.equals("Name")){
-			db_sortAttribute = "name";
-			ascending = true;
-		}
-		else if(sortAttribute.equals("Provider")){
-			db_sortAttribute = "provider";
-			ascending = true;
-		}
-		else if(sortAttribute.equals("Last Update")){
-			db_sortAttribute = "last_update";
-			ascending = false;
-		}
-		else{
-			db_sortAttribute = "date_created";
-			ascending = false;
-		}
-		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
+	public static IndexedContainer getVisibleEntries(String language, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> tags, String query) {
+		// TODO: support different languages of an entry		
+		List<Map> tools = toolRepository.getVisibleEntries(language, statusList, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
-		String db_sortAttribute;
-		boolean ascending;
-		if(sortAttribute.equals("Name")){
-			db_sortAttribute = "name";
-			ascending = true;
-		}
-		else if(sortAttribute.equals("Provider")){
-			db_sortAttribute = "provider";
-			ascending = true;
-		}
-		else if(sortAttribute.equals("Last Update")){
-			db_sortAttribute = "last_update";
-			ascending = false;
-		}
-		else{
-			db_sortAttribute = "date_created";
-			ascending = false;
-		}
-		List<Map> tools = toolRepository.search(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
+	public static IndexedContainer getVisibleEntriesByUser(String language, String user, ArrayList<String> tags, String query) {
+		List<Map> tools = toolRepository.getVisibleEntriesByUser(language, user, tags, query);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
 	public static void refreshFromDatabase() {
 		toolRepository.refreshData();
-	}
-	
-	public static int getNumberOfEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
-		return toolRepository.getNumberOfEntries(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
-	}
-	
-	public static int getNumberOfEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
-		return toolRepository.getNumberOfEntries(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 }

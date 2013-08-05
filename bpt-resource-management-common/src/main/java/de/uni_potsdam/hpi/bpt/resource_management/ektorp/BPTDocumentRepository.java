@@ -182,7 +182,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		return revision;
 	}
 	
-	private Integer nextAvailableId() {
+	protected Integer nextAvailableId() {
 		
 		List<String> allDocIdsString = db.getAllDocIds();
 		List<Integer> allDocIdsConverted = new ArrayList<Integer>();

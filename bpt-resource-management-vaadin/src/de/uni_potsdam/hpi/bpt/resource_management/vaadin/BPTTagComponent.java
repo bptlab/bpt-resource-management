@@ -23,7 +23,7 @@ public class BPTTagComponent extends CustomComponent {
 	protected BPTTagBox tagBox;
 	protected VerticalLayout layout;
 	protected BPTApplication application;
-	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
+	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Topics -----", "----- Modelling languages -----", "----- Task types -----", "----- Other tags -----")); 
 		
 	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		this.application = application;
@@ -32,7 +32,7 @@ public class BPTTagComponent extends CustomComponent {
 	
 	private void init(String tagColumns, boolean newTagsAllowed) {
 		// TODO: update unique values on entry addition or deletion
-		uniqueValues = BPTContainerProvider.getUniqueValues(tagColumns);
+		uniqueValues = BPTContainerProvider.getUniqueTagValues(tagColumns);
 		layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
@@ -73,14 +73,14 @@ public class BPTTagComponent extends CustomComponent {
 				Object value = searchInput.getValue();
 				if (value == null) return;
 				String valueString;
-				if (value instanceof String) {
+				if(value instanceof String){
 					valueString = ((String) value).trim().replaceAll(" +", " ");
 				}
 				else {
 					valueString = ((Label) value).getValue().toString().trim().replaceAll(" +", " ");
 				}
 				
-				if (!categories.contains(valueString) && !tagBox.getTagValues().contains(valueString)) {
+				if(!categories.contains(valueString)){
 					tagBox.addTag(valueString);
 					unselectedValues.remove(valueString);
 					searchInput.removeAllItems();
@@ -119,7 +119,6 @@ public class BPTTagComponent extends CustomComponent {
 				searchInput.addItem(new Label(uniqueValue));
 			}
 		}
-		application.refreshAndClean();
 	}
 	
 	public void addChosenTag(String value) {

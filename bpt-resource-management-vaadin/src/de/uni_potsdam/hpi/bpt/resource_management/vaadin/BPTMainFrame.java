@@ -15,6 +15,8 @@ public class BPTMainFrame extends CustomComponent{
 		setCompositionRoot(layout);
 		setWidth("100%");
 		layout.addComponent(component);
+		addStyleName("scroll");
+		layout.addStyleName("scroll");
 	}
 	
 	public void add(Component component){

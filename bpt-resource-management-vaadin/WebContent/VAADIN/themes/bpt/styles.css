@@ -77,11 +77,12 @@ ul#resource-list {
 	display: inline;
 }
 
+
 #resource-list .entry .button:hover {
 	text-decoration: none;
 	background-color: #004870;
 }
-/*
+
 #resource-list div[class="Provider"]:before,
 #resource-list div[class="Download URL"]:before,
 #resource-list div[class="Documentation URL"]:before,
@@ -114,7 +115,6 @@ ul#resource-list {
 #resource-list div[class="Last update"]:before{
 	content: "Last update";
 }
-*/
 
 #resource-list div[class="Description"],
 #resource-list div[class="Provider"],
@@ -127,9 +127,7 @@ ul#resource-list {
 #resource-list div[class="Platform"],
 #resource-list div[class="Supported functionality"],
 #resource-list div[class="Contact name"],
-#resource-list div[class="Last update"],
-#resource-list div[class="OpenID of resource provider"],
-#resource-list div[class="Contact of resource provider"] {
+#resource-list div[class="Last update"] {
 	padding: 0 0 0 1em;
 	margin-bottom: 0.8em;
 }
@@ -142,13 +140,15 @@ ul#resource-list {
 	padding-left: 0em;	
 }
 
-/*
 #resource-list div[class="Contact name"]:before {
+	/*
 	display: inline;
 	margin: 0 1em 0 -1em;
+	*/
 	content: "Contact";
 }
 
+/*
 #resource-list div[class="Contact mail"]:before {
 	content: "<";
 }
@@ -156,9 +156,11 @@ ul#resource-list {
 	content: ">";
 }
 
-#resource-list div[class="Contact name"] {
+#resource-list div[class="Contact name"],
+#resource-list div[class="Contact mail"] {
 	display: inline;
-}*/
+}
+*/
 
 #resource-list div[class="Date created"] {
 	display: none;
@@ -167,6 +169,7 @@ ul#resource-list {
 div.scroll{
 	overflow: auto !important;
 }
+
 
 .v-select-optiongroup-horizontal .v-select-option {
 	display: inline !important;
@@ -179,12 +182,4 @@ div.scroll{
 .v-select-optiongroup-horizontal
 .v-select-option.v-radiobutton {
 	padding-right: 10px !important;
-}
-
-div{
-	overflow: visible !important;
-}
-
-body{
-	overflow: auto !important;
 }

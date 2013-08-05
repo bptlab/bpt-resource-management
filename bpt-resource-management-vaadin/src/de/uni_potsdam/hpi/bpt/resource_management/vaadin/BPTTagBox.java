@@ -14,7 +14,7 @@ public class BPTTagBox extends CustomComponent{
 	
 	protected VerticalLayout baseLayout;
 	private GridLayout layout;
-	protected ArrayList<BPTSearchTag> searchTagList;
+	private ArrayList<BPTSearchTag> searchTagList;
 
 	public BPTTagBox() {
 		baseLayout = new VerticalLayout();
@@ -41,10 +41,6 @@ public class BPTTagBox extends CustomComponent{
 
 	public void addTagToLayout(String value, String type, GridLayout layout){
 		BPTSearchTag searchTag = new BPTSearchTag(this, type, value);
-		addSearchTag(searchTag, layout);
-	}
-	
-	public void addTagToLayout(BPTSearchTag searchTag, GridLayout layout){
 		addSearchTag(searchTag, layout);
 	}
 	
@@ -91,21 +87,19 @@ public class BPTTagBox extends CustomComponent{
 	}
 	
 	public void removeAllTags() {
-		if (!searchTagList.isEmpty()) {
-			searchTagList.clear();
-			layout.removeAllComponents();
-			refresh();
-		}
+		searchTagList.clear();
+		layout.removeAllComponents();
+		refresh();
 	}
 	
-	protected void refresh() {
+	private void refresh() {
 		((BPTTagComponent) getParent().getParent()).refresh();
 	}
 	
-	public ArrayList<String> getTagValues() {
+	public ArrayList<String> getTagValues(){
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : searchTagList){
-			tagValues.add(searchTag.getValue());
+		for (int i = 0; i < searchTagList.size(); i++){
+			tagValues.add(searchTagList.get(i).getValue());
 		}
 		return tagValues;
 	}

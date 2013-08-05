@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -11,12 +12,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
@@ -24,42 +24,27 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
+	protected IndexedContainer dataSource;
 	protected String _id;
-	protected BPTApplication application;
-	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
-	private TextArea reasonForRejectionTextArea;
+	protected BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
 	
-	public BPTShowEntryComponent(final BPTApplication application) {
-		this.application = application;
-		buildLayout();
-		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-		statusList.add(BPTToolStatus.Published);
-		showNumberOfEntries(BPTContainerProvider.getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		show(BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
+	public BPTShowEntryComponent(){
+		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+		statusList.add(BPTExerciseStatus.Published);
+		String language = "Deutsch";
+		dataSource = BPTContainerProvider.getVisibleEntries(language, statusList, new ArrayList<String>(), null);
+		addStyleName("scroll");
 	}
 	
-	protected abstract void buildLayout();
+	public void showEntries(IndexedContainer dataSource) {
+		this.dataSource = dataSource;
+		show(dataSource);
+	}
 	
-	
-	/**
-	 * @abstract to be overwritten by subclass
-	 * 
-	 * @param numberOfEntries
-	 */
-	protected abstract void showNumberOfEntries(int numberOfEntries);
-	
-	/**
-	 * @abstract to be overwritten by subclass
-	 * 
-	 * @param tableEntries
-	 */
+	// to be overwritten in subclass
 	protected abstract void show(IndexedContainer tableEntries); 
 	
-	/**
-	 * default solution (entries will be shown in popup), to be overwritten in subclass
-	 * 
-	 * @param item
-	 */
+	// default solution (entries will be shown in popup), can be overwritten in Subclasses
 	protected void showSelectedEntry(final Item item) {
 		final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 		popupWindow.setWidth("600px");
@@ -110,9 +95,9 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(editButton);
 			}
-			BPTToolStatus actualState = toolRepository.getDocumentStatus(_id);
+			BPTExerciseStatus actualState = toolRepository.getDocumentStatus(_id);
 			
-			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
+			if (actualState == BPTExerciseStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
 				
 				Button publishButton = new Button("publish");
 				publishButton.addListener(new Button.ClickListener(){
@@ -131,7 +116,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				layout.addComponent(rejectButton);						
 				
 			}
-			else if (actualState == BPTToolStatus.Published) {
+			else if (actualState == BPTExerciseStatus.Published) {
 				Button unpublishButton = new Button("unpublish");
 				unpublishButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -140,7 +125,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(unpublishButton);	
 			}
-			else if (actualState == BPTToolStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
+			else if (actualState == BPTExerciseStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
 				Button proposeButton = new Button("propose");
 				proposeButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -166,12 +151,6 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
 		} else if (status.equals("reject")) {
 			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
-			reasonForRejectionTextArea = new TextArea();
-			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
-			reasonForRejectionTextArea.setRows(5);
-			reasonForRejectionTextArea.setWidth("95%");
-			reasonForRejectionTextArea.setWordwrap(true);
-			confirmationWindow.addComponent(reasonForRejectionTextArea);
 		} else if (status.equals("unpublish")) { 
 			confirmationWindow.addComponent(new Label("Unpublishing this entry - are you sure?"));
 		} else { // if status.equals("propose")
@@ -186,7 +165,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				} else if (status.equals("publish")) {
 					toolRepository.publishDocument(_id);
 				} else if (status.equals("reject")) {
-					toolRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
+					toolRepository.rejectDocument(_id);
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
 					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
@@ -195,7 +174,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 					toolRepository.unpublishDocument(_id, fromRejected);
 				}
 				BPTContainerProvider.refreshFromDatabase();
-				((BPTApplication) getApplication()).refreshAndClean();
+				((BPTApplication) getApplication()).refresh();
 				getWindow().removeWindow(confirmationWindow);
 				if(popupWindow != null){
 					getWindow().removeWindow(popupWindow);
