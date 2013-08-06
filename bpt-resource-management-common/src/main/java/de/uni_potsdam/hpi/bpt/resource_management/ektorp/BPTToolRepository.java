@@ -67,7 +67,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	@Override
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = super.updateDocument(document);
-		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished) {
+		if (BPTExerciseStatus.valueOf((String) databaseDocument.get("status")) != BPTExerciseStatus.Unpublished) {
 			mailProvider.sendEmailForUpdatedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("_id"), (String)databaseDocument.get("user_id"));
 		}
 		return databaseDocument;
@@ -211,7 +211,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
-		databaseDocument.put("status", BPTToolStatus.Unpublished);
+		databaseDocument.put("status", BPTExerciseStatus.Unpublished);
 		databaseDocument.put("deleted", false);
 		databaseDocument.put("number_of_url_validation_fails", 0);
 		databaseDocument.put("number_of_mails_for_expiry", 0);
@@ -220,7 +220,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	public Map<String, Object> publishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTToolStatus.Published);
+		databaseDocument.put("status", BPTExerciseStatus.Published);
 		db.update(databaseDocument);
 		mailProvider.sendEmailForPublishedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
 		return databaseDocument;
@@ -228,7 +228,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	private Map<String, Object> unpublishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTToolStatus.Unpublished);
+		databaseDocument.put("status", BPTExerciseStatus.Unpublished);
 		db.update(databaseDocument);
 		return databaseDocument;
 	}
@@ -273,15 +273,15 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	public Map<String, Object> rejectDocument(String _id, String reason) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		databaseDocument.put("status", BPTToolStatus.Rejected);
+		databaseDocument.put("status", BPTExerciseStatus.Rejected);
 		db.update(databaseDocument);
 		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"), reason);
 		return databaseDocument;
 	}
 	
-	public BPTToolStatus getDocumentStatus(String _id){
+	public BPTExerciseStatus getDocumentStatus(String _id){
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
-		return BPTToolStatus.valueOf((String) databaseDocument.get("status"));
+		return BPTExerciseStatus.valueOf((String) databaseDocument.get("status"));
 	}
 	
 	/**
@@ -306,9 +306,9 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param query full text search query handled by Lucene
 	 * @return list of entries with the given states matching on tag search and full text search
 	 */
-	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags, String query) {
+	public List<Map> getVisibleEntries(List<BPTExerciseStatus> states, ArrayList<String> tags, String query) {
 		tableEntries.clear();
-		for (BPTToolStatus status : states) {
+		for (BPTExerciseStatus status : states) {
 			for (Map<String, Object> document : getDocuments(status.toString().toLowerCase())) {
 				tableEntries.add(document);
 			}
@@ -407,7 +407,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param supportedFunctionalityTags supported functionality tags as list
 	 * @return number of entries matching the given values
 	 */
-	public int getNumberOfEntries(List<BPTToolStatus> statusList, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags) {
+	public int getNumberOfEntries(List<BPTExerciseStatus> statusList, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags) {
 		String queryString = buildQueryString(statusList, userId, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 		if (queryString.isEmpty()) {
 			return 0;
@@ -437,7 +437,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param ascending true if ascending sort of attribute
 	 * @return entries matching the given values
 	 */
-	public List<Map> search(List<BPTToolStatus> statusList, 
+	public List<Map> search(List<BPTExerciseStatus> statusList, 
 			String userId, String fullTextSearchString, 
 			List<String> availabilityTags, List<String> modelTypeTags, 
 			List<String> platformTags, List<String> supportedFunctionalityTags, 
@@ -470,14 +470,14 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return search(query);
 	}
 	
-	private String buildQueryString(List<BPTToolStatus> statusList,
+	private String buildQueryString(List<BPTExerciseStatus> statusList,
 			String userId, String fullTextSearchString,
 			List<String> availabilityTags, List<String> modelTypeTags,
 			List<String> platformTags, List<String> supportedFunctionalityTags) {
 		
 		List<String> statusContent = new ArrayList<String>();
 		if (statusList != null && !statusList.isEmpty()) {
-			for (BPTToolStatus status : statusList) {
+			for (BPTExerciseStatus status : statusList) {
 				statusContent.add("status:\"" + status + "\"");
 			}
 		} else {
