@@ -258,13 +258,14 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					subWindowLabel = new Label("Thank you for submitting your tool " 
 							+ (String)toolNameInput.getValue() + ". "
 							+ "Your entry will be reviewed." 
-							+ " In the usual case, your entry is submitted shortly. "
+							+ " In the usual case, your entry is published shortly. "
 							+ "You can keep track of your submitted tools by selecting" 
 							+ "\"own entries\"  at the entry overview."
 							+ "If you have any question, please contact bptresourcemanagement@gmail.com.");
 //					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
 
 				} else {
+					BPTToolStatus oldToolStatus = BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"));
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
 					newValues.put("name", toolNameInput.getValue().toString());
@@ -299,13 +300,19 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
 					}
 					//TODO:
+					String statusString;
+					if(oldToolStatus.equals(BPTToolStatus.Published)){
+						statusString = "Your entry will be reviewed. In the usual case, your entry is published shortly.";
+					}
+					else{
+						statusString = "Your entry will be reviewed but remains published.";
+					}
 					subWindowLabel = new Label("Thank you for updating your tool " 
 							+ (String)toolNameInput.getValue() + ". "
-							+ "Your entry will be reviewed but remains published. "
+							+ statusString
 							+ "You can keep track of your submitted tools by selecting" 
 							+ " \"own entries\"  at the entry overview."
 							+ "If you have any question, please contact bptresourcemanagement@gmail.com.");
-//					getWindow().showNotification("Updated entry: " + (String)toolNameInput.getValue());
 				}
 				
 				final Window subwindow = new Window((String)toolNameInput.getValue());
