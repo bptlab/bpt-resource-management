@@ -11,6 +11,7 @@ import java.util.Map;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 
@@ -27,7 +28,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTContainerProvider {
 	
-	private static BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private static BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	
 //	/**
 //	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
@@ -65,7 +66,7 @@ public class BPTContainerProvider {
 	public static ArrayList<String> getUniqueValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
-		List<Map> tools = toolRepository.getDocuments("all");
+		List<Map> tools = exerciseRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
 		
@@ -86,7 +87,7 @@ public class BPTContainerProvider {
 			uniqueValues.add("----- Modelling languages -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modelling_languages");  // cast
+				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modeling_languages");  // cast
 				modelTypeTags.addAll(modelTypeTagsOfTool);
 			}
 			Collections.sort(modelTypeTags, comparator);
@@ -124,7 +125,7 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private static IndexedContainer generateContainer(List<Map> exercises) {
+	public static IndexedContainer generateContainer(List<Map> exercises) {
 		IndexedContainer container = initializeContainerWithProperties();
 		for (int i = 0; i < exercises.size(); i++) {
 			Map<String, Object> tool = exercises.get(i);
@@ -138,7 +139,7 @@ public class BPTContainerProvider {
 	
 	private static void setItemPropertyValues(Item item, Map<String, Object> tool) {
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
-			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
+			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
 		}
 	}
 	
@@ -149,7 +150,7 @@ public class BPTContainerProvider {
 //		return container;
 //	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+	public static IndexedContainer getVisibleEntries(String language, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("ID")){
@@ -164,12 +165,12 @@ public class BPTContainerProvider {
 			db_sortAttribute = "last_update";
 			ascending = false;
 		}
-		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
+		List<Map> tools = exerciseRepository.search(language, statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+	public static IndexedContainer getVisibleEntriesByUser(String language, String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("ID")){
@@ -184,26 +185,26 @@ public class BPTContainerProvider {
 			db_sortAttribute = "last_update";
 			ascending = false;
 		}
-		List<Map> tools = toolRepository.search(Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
+		List<Map> tools = exerciseRepository.search(language, Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
 		IndexedContainer container = generateContainer(tools);
 		return container;
 	}
 	
 	public static void refreshFromDatabase() {
-		toolRepository.refreshData();
+		exerciseRepository.refreshData();
 	}
 	
-	public static int getNumberOfEntries(ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
-		return toolRepository.getNumberOfEntries(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+	public static int getNumberOfEntries(String language, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
+		return exerciseRepository.getNumberOfEntries(language, statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
-	public static int getNumberOfEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
-		return toolRepository.getNumberOfEntries(Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+	public static int getNumberOfEntriesByUser(String language, String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
+		return exerciseRepository.getNumberOfEntries(language, Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
 	public static ArrayList<String> getUniqueLanguages(){
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
-		List<Map> tools = toolRepository.getDocuments("all");
+		List<Map> tools = exerciseRepository.getDocuments("all");
 		for (Map<String, Object> tool : tools) {
 			String attributeString = (String) tool.get("language");
 			uniqueValues.add(attributeString);

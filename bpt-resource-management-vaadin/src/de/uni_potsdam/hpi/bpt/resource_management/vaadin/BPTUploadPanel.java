@@ -47,7 +47,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	private VerticalLayout layout;
 	private Upload upload;
-	private TextField subTitleInput, exerciseURLInput;
+	private TextField titleInput, exerciseURLInput;
 	private ComboBox languageInput;
 	private RichTextArea descriptionInput;
 	private BPTUploader uploader;
@@ -59,7 +59,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel documentPanel;
-	private Label subTitleLabel, languageLabel, descriptionLabel, exerciseURLLabel;
+	private Label titleLabel, languageLabel, descriptionLabel, exerciseURLLabel;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -70,11 +70,11 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		
 		documentId = null;
 		
-        subTitleLabel = new Label("Subtitle");
-		layout.addComponent(subTitleLabel);
-		subTitleInput = new TextField();
-		subTitleInput.setWidth("100%");
-		layout.addComponent(subTitleInput);
+        titleLabel = new Label("Title");
+		layout.addComponent(titleLabel);
+		titleInput = new TextField();
+		titleInput.setWidth("100%");
+		layout.addComponent(titleInput);
 		
 		languageLabel = new Label("Language");
 		layout.addComponent(languageLabel);
@@ -107,7 +107,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	subTitleInput.setValue((item.getItemProperty("Subtitle").getValue()));
+        	titleInput.setValue((item.getItemProperty("Subtitle").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
         }
 
@@ -161,12 +161,12 @@ private void addDocumentToPanel(FileResource documentRessource) {
 	private void setLanguageTo(String value) {
 		getBptUploader().getTabSheet().getTab(this).setCaption(value);
 		if(value.equals("Deutsch")){
-			subTitleLabel.setValue("Untertitel");
+			titleLabel.setValue("Titel");
 			languageLabel.setValue("Sprache");
 			descriptionLabel.setValue("Beschreibung");
 		}
 		else{
-			subTitleLabel.setValue("Subtitle");
+			titleLabel.setValue("Title");
 			languageLabel.setValue("Language");
 			descriptionLabel.setValue("Description");
 		}
@@ -190,7 +190,7 @@ private void addDocumentToPanel(FileResource documentRessource) {
 	}
 
 	public String getSubtitleFromInput() {
-		return (String)subTitleInput.getValue();
+		return (String)titleInput.getValue();
 	}
 
 	public String getLanguageFromInput() {
