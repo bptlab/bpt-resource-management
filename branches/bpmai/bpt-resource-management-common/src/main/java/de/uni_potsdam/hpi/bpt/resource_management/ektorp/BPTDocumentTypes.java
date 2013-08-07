@@ -21,7 +21,7 @@ public class BPTDocumentTypes {
 		if (type.equals("bpmai_exercises")) {
 			return new String[] {
 					"set_id", "title", "language", "description", 
-					"topics", "modelling_languages", "task_types", "other_tags",
+					"topics", "modeling_languages", "task_types", "other_tags",
 					"exercise_url",
 					"contact_name", "contact_mail", "user_id",
 					"date_created", "last_update",
