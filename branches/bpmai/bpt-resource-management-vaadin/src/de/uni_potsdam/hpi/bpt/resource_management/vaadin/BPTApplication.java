@@ -16,8 +16,9 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
@@ -26,8 +27,8 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	
 	//Change themeName for different side
-	private final String themeName = "bpt";
-//	private final String themeName = "bpmai";
+//	private final String themeName = "bpt";
+	private final String themeName = "bpmai";
 	
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
@@ -36,13 +37,15 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
+
+	private BPTExerciseRepository exerciseRepository;
 	private BPTToolRepository toolRepository;
 	private BPTUserRepository userRepository;
 	private int numberOfEntries;
 	
 	@Override
 	public void init() {
-		toolRepository = BPTToolRepository.getInstance();
+		exerciseRepository = BPTExerciseRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		
 		setProperties();
@@ -143,6 +146,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	
 	public BPTToolRepository getToolRepository() {
 		return toolRepository;
+	}
+	
+		public BPTExerciseRepository getExerciseRepository() {
+		return exerciseRepository;
 	}
 	
 	public BPTUserRepository getUserRepository() {
@@ -257,6 +264,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		((BPTEntryCards) entryComponent).getBPTPageSelector().switchToPage(skip);
 	}
 
+	//TODO: language dazunehmen
 	private void refresh(int skip) {
 		IndexedContainer dataSource;
 		int limit = skip + 10;
@@ -268,22 +276,26 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 					dataSource = BPTContainerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = BPTContainerProvider.getNumberOfEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
-					ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-					statusList.add(BPTToolStatus.Published);
+					ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+					statusList.add(BPTExerciseStatus.Published);
 					dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				}
 			} else {
-				ArrayList<BPTToolStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
+				ArrayList<BPTExerciseStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
 				dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 			}
 		} else {
-			ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-			statusList.add(BPTToolStatus.Published);
+			ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+			statusList.add(BPTExerciseStatus.Published);
 			dataSource = BPTContainerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 			numberOfEntries = BPTContainerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 		}
 		entryComponent.show(dataSource);
+	}
+	
+		public String getSelectedLanguage(){
+		return sidebar.getSearchComponent().getLanguageSelector().getLanguage();
 	}
 }
