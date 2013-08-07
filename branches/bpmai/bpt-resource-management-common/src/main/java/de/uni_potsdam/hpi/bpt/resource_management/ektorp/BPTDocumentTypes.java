@@ -18,35 +18,37 @@ public class BPTDocumentTypes {
 	 * 
 	 */
 	public static String[] getDocumentKeys(String type) {
-		if (type.equals("bpt_resources_tools")) {
+		if (type.equals("bpmai_exercises")) {
 			return new String[] {
-				"name", "description", "description_url", "provider", "provider_url", 
-				"download_url", "documentation_url", "screencast_url", "tutorial_url", 
-				"availabilities", "model_types", "platforms", "supported_functionalities", 
-				"contact_name", "contact_mail", "user_id", "date_created", "last_update", 
-				"notification_date", "number_of_url_validation_fails", "number_of_mails_for_expiry",
-				"name_lowercase", "provider_lowercase"
+					"set_id", "title", "language", "description", 
+					"topics", "modelling_languages", "task_types", "other_tags",
+					"exercise_url",
+					"contact_name", "contact_mail", "user_id",
+					"date_created", "last_update",
+					"notification_date",
+					"number_of_url_validation_fails", "number_of_mails_for_expiry",
+					"title_lowercase"
 			};
 		}
-		if (type.equals("bpt_resources_users")) {
+		if (type.equals("bpmai_users")) {
 			return new String[] {
 				"_id", "name", "mail_address"
 			};
-		}		
+		}
 		return null;
 	}
-	/**
-	 * Returns document type specific attributes.
-	 * 
-	 * @param type the document type
-	 * @return attributes used for storing URLs as a String array
-	 * 
-	 */
+	
+//	/**
+//	 * Returns document type specific attributes.
+//	 * 
+//	 * @param type the document type
+//	 * @return attributes used for storing URLs as a String array
+//	 * 
+//	 */
 	public static String[] getDocumentKeysStoringURLs(String type) {
-		if (type.equals("bpt_resources_tools")) {
+		if (type.equals("bpmai_exercises")) {
 			return new String[] {
-				"description_url", "provider_url", "download_url", 
-				"documentation_url", "screencast_url", "tutorial_url"
+				"exercise_url"
 			};
 		}
 		return null;

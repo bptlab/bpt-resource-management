@@ -35,10 +35,11 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	
 	private static BPTExerciseRepository instance = null;
 	private List<Map> tableEntries = new ArrayList<Map>();
-//	private BPTMailProvider mailProvider = BPTMailProvider.getInstance();
+	private BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	
 	public BPTExerciseRepository() {
 		super("bpmai_exercises");
+		disableMailProvider();
 	}
 	
 	public static BPTExerciseRepository getInstance() {
