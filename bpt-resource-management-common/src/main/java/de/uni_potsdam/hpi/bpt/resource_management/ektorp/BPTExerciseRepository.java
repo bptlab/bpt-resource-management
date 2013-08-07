@@ -65,17 +65,70 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	}
 	
 	/**
-	 * Fetches next available exercise set identifier.
+	 * Fetches next available exercise set identifier by topic.
 	 * 
+	 * @param topicName primary topic of the exercise set
 	 * @return next available set_id
 	 */
-	@View(
-		name = "next_available_set_id", 
-		map = "function(doc) { emit(null, doc.set_id); }",
-		reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
-		)
-	public String nextAvailableSetId() {
-		ViewQuery query = createQuery("next_available_set_id");
+	@Views({
+		@View(
+			name = "next_available_set_id_foundbpm", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'FoundBPM'.length) === 'FoundBPM') emit(null, doc.set_id.substring('FoundBPM'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			), 
+		@View(
+			name = "next_available_set_id_foundpm", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'FoundPM'.length) === 'FoundPM') emit(null, doc.set_id.substring('FoundPM'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_pmodlang", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'PModLang'.length) === 'PModLang') emit(null, doc.set_id.substring('PModLang'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_pchor", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'PChor'.length) === 'PChor') emit(null, doc.set_id.substring('PChor'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_dataproc", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'DataProc'.length) === 'DataProc') emit(null, doc.set_id.substring('DataProc'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			), 
+		@View(
+			name = "next_available_set_id_panalys", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'PAnalys'.length) === 'PAnalys') emit(null, doc.set_id.substring('PAnalys'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_pmining", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'PMining'.length) === 'PMining') emit(null, doc.set_id.substring('PMining'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_pabstr", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'PAbstr'.length) === 'PAbstr') emit(null, doc.set_id.substring('PAbstr'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_pflex", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'PFlex'.length) === 'PFlex') emit(null, doc.set_id.substring('PFlex'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			), 
+		@View(
+			name = "next_available_set_id_bpmarch", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'BPMArch'.length) === 'BPMArch') emit(null, doc.set_id.substring('BPMArch'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			),
+		@View(
+			name = "next_available_set_id_bpmmethd", 
+			map = "function(doc) { if (doc.set_id.substring(0, 'BPMMethd'.length) === 'BPMMethd') emit(null, doc.set_id.substring('BPMMethd'.length, doc.set_id.length)); }",
+			reduce = "function (key, values, rereduce) { var max = 0; for(var i = 0; i < values.length; i++) { max = Math.max(values[i], max); } return max; }"
+			)
+	    })
+	public String nextAvailableSetId(BPTTopic topicName) {
+		ViewQuery query = createQuery("next_available_set_id_" + topicName.toString().toLowerCase());
 		ViewResult result = db.queryView(query);
 		try {
 			return new Integer(result.getRows().get(0).getValueAsInt() + 1).toString();
@@ -131,6 +184,27 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 			return 0;
 		}
 	}
+	
+// TODO: How to count number of exercises that are distinct by set_id?
+//	/**
+//     * @return the number of exercise sets that are not marked as deleted
+//     * 
+//     */
+//	@View(
+//		name = "number_of_exercise_sets", 
+//		map = "function(doc) { if (!doc.deleted) emit(\"count\", 1); }",
+//		reduce = "function(key, values, rereduce) { var count = 0; values.forEach(function(v) { count += 1; }); return count; }"
+//		/* NOTE: deleted documents will not be counted here */
+//		)
+//	public int numberOfExerciseSets() {
+//		ViewQuery query = createQuery("number_of_exercise_sets");
+//		ViewResult result = db.queryView(query);
+//		try {
+//			return result.getRows().get(0).getValueAsInt();
+//		} catch (IndexOutOfBoundsException e) {
+//			return 0;
+//		}
+//	}
 	
 	/**
 	 * Fetches the documents by status.
@@ -236,6 +310,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	                    "var res = new Document(); " +
 	                    "res.add(doc.title); " + 
 	                    "res.add(doc.description); " + 
+	                    "res.add(doc.exercise_url); " + 
 	                    "res.add(doc.contact_name); " +
 //	                    "res.add(doc._id, {field: \"_id\", store: \"yes\"} ); " +
 //	                    "res.add(doc.name, {field: \"name\", store: \"yes\"} ); " +
@@ -263,6 +338,8 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		databaseDocument.put("status", BPTExerciseStatus.Unpublished);
 		databaseDocument.put("deleted", false);
+		databaseDocument.put("number_of_url_validation_fails", 0);
+		databaseDocument.put("number_of_mails_for_expiry", 0);
 		return databaseDocument;
 	}
 	
@@ -333,15 +410,15 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	}
 	
 	/**
-	 * Checks if an entry with the given name (not id) exists in CouchDB.
+	 * Checks if an entry with the given title (not id) exists in CouchDB.
 	 * 
-	 * @param name name of the entry
-	 * @return true if a document with the name exists in the database
+	 * @param title tile of the entry
+	 * @return true if a document with the title exists in the database
 	 */
-	public Boolean containsName(String name){
+	public boolean contains(String title){
 		List<Map> documents = getDocuments("all");
 		for (int i = 0; i < documents.size(); i++) {
-			if(name.equals(documents.get(i).get("name"))) return true;
+			if(title.equals(documents.get(i).get("title"))) return true;
 		}
 		return false;
 	};
@@ -354,16 +431,17 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	 * @param query full text search query handled by Lucene
 	 * @return list of entries with the given states matching on tag search and full text search
 	 */
-	public List<Map> getVisibleEntries(String language, List<BPTExerciseStatus> states, ArrayList<String> tags, String query) {
+	public List<Map> getVisibleEntries(List<BPTExerciseStatus> states, ArrayList<String> tags, String query) {
 		tableEntries.clear();
 		for (BPTExerciseStatus status : states) {
-			tableEntries.addAll(getDocuments(status.toString().toLowerCase()));
+			for (Map<String, Object> document : getDocuments(status.toString().toLowerCase())) {
+				tableEntries.add(document);
+			}
 		}
-		
 		List<Map> newEntries = new ArrayList<Map>();
 		String[] tagAttributes = new String[] {"topics", "modelling_languages", "task_types", "other_tags"};
 		for (Map<String, Object> entry : tableEntries) {
-			if (containsAllTags(entry, tags, tagAttributes) && ((String) entry.get("language")).equals(language)) { 
+			if (containsAllTags(entry, tags, tagAttributes)) { 
 				newEntries.add(entry);
 			}
 		}
@@ -371,13 +449,30 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 		 * should find all entries by full search first
 		 * and then check if they are in matching state or contain the right tags
 		 */
-		if (query != null) {
-			if (!query.isEmpty()) {
-				List<Map> entriesByFullSearch = fullSearch(query);
-				newEntries.retainAll(entriesByFullSearch);
-			}
+		if (query != null && !query.isEmpty()) {
+			List<Map> entriesByFullSearch = fullSearch(query);
+			newEntries.retainAll(entriesByFullSearch);
 		}
 		return newEntries;
+	}
+	
+	/**
+	 * Composite search in entries that are not deleted.
+	 * 
+	 * @param language language of the entries
+	 * @param states search applies to the given states only
+	 * @param tags tags that the entries shall contain
+	 * @param query full text search query handled by Lucene
+	 * @return list of entries with the given states matching on tag search and full text search
+	 */
+	public List<Map> getVisibleEntries(String language, List<BPTExerciseStatus> states, ArrayList<String> tags, String query) {
+		List<Map> entries = getVisibleEntries(states, tags, query);
+		for (Map<String, Object> entry : entries) {
+			if (!((String) entry.get("language")).equals(language)) { 
+				entries.remove(entry);
+			}
+		}
+		return entries;
 	}
 	
 	/**
@@ -397,11 +492,9 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 				newEntries.add(entry);
 			}
 		}
-		if (query != null) {
-			if (!query.isEmpty()) {
-				List<Map> entriesByFullSearch = fullSearch(query);
-				newEntries.retainAll(entriesByFullSearch);
-			}
+		if (query != null && !query.isEmpty()) {
+			List<Map> entriesByFullSearch = fullSearch(query);
+			newEntries.retainAll(entriesByFullSearch);
 		}
 		return newEntries;
 	}
@@ -459,6 +552,186 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	// TODO: should not get all documents when refreshing
 	public void refreshData() {
 		tableEntries = getDocuments("all");
+	}
+	
+	/**
+	 * Returns the total number of entries based on the search using Apache Lucene via couchdb-lucene.
+	 * 
+	 * @param language language of the entries
+	 * @param statusList list of document status
+	 * @param userId OpenID of resource provider
+	 * @param fullTextSearchString string from full text search
+	 * @param topicTags topic tags as list
+	 * @param modelingLanguageTags modeling language tags as list
+	 * @param taskTypeTags task type tags as list
+	 * @param otherTags other tags as list
+	 * @return number of entries matching the given values
+	 */
+	public int getNumberOfEntries(String language, List<BPTExerciseStatus> statusList, String userId, String fullTextSearchString, List<String> topicTags, List<String> modelingLanguageTags, List<String> taskTypeTags, List<String> otherTags) {
+		String queryString = buildQueryString(language, statusList, userId, fullTextSearchString, topicTags, modelingLanguageTags, taskTypeTags, otherTags);
+		if (queryString.isEmpty()) {
+			return 0;
+		}
+		LuceneQuery query = new LuceneQuery("Map", "search");
+		query.setStaleOk(false);
+		query.setIncludeDocs(true);
+		query.setQuery(queryString);
+		return search(query).size();
+	}
+	
+	/**
+	 * Search in all entries that are stored in CouchDB.
+	 * If no document status is provided, the returned list of entries is empty.
+	 * Uses Apache Lucene via couchdb-lucene.
+	 * 
+	 * @param language language of the entries
+	 * @param statusList list of document status
+	 * @param userId OpenID of resource provider
+	 * @param fullTextSearchString string from full text search
+	 * @param topicTags topic tags as list
+	 * @param modelingLanguageTags modeling language tags as list
+	 * @param taskTypeTags task type tags as list
+	 * @param otherTags other tags as list
+	 * @param skip the number of entries to skip (offset)
+	 * @param limit the maximum number of entries to return
+	 * @param sortAttribute attribute used for sorting
+	 * @param ascending true if ascending sort of attribute
+	 * @return entries matching the given values
+	 */
+	public List<Map> search(String language, List<BPTExerciseStatus> statusList, 
+			String userId, String fullTextSearchString, 
+			List<String> topicTags, List<String> modelingLanguageTags, 
+			List<String> taskTypeTags, List<String> otherTags, 
+			int skip, int limit, 
+			String sortAttribute, boolean ascending) {
+		String queryString = buildQueryString(language, statusList, userId, fullTextSearchString, topicTags, modelingLanguageTags, taskTypeTags, otherTags);
+		if (queryString.isEmpty()) {
+			return new ArrayList<Map>();
+		}
+		LuceneQuery query = new LuceneQuery("Map", "search");
+		query.setStaleOk(false);
+		query.setIncludeDocs(true);
+		query.setQuery(queryString);
+		if (skip >= 0) {
+			query.setSkip(skip);
+		}
+		if (limit > 0) {
+			query.setLimit(limit);
+		}
+		if (sortAttribute != null && !sortAttribute.isEmpty()) {
+			StringBuffer sbSort = new StringBuffer();
+			sbSort.append(ascending ? "/" : "\\");
+			sbSort.append(sortAttribute);
+			if (sortAttribute.equals("date_created") || sortAttribute.equals("last_update")) {
+				sbSort.append("<date>");
+			}
+			query.setSort(sbSort.toString());
+		}
+		
+		return search(query);
+	}
+	
+	private String buildQueryString(String language, List<BPTExerciseStatus> statusList,
+			String userId, String fullTextSearchString,
+			List<String> topicTags, List<String> modelingLanguageTags,
+			List<String> taskTypeTags, List<String> otherTags) {
+		
+		List<String> statusContent = new ArrayList<String>();
+		if (statusList != null && !statusList.isEmpty()) {
+			for (BPTExerciseStatus status : statusList) {
+				statusContent.add("status:\"" + status + "\"");
+			}
+		} else {
+			return new String();
+		}
+		Iterator<String> statusIterator = statusContent.iterator();
+		StringBuffer sbStatus = new StringBuffer();
+		sbStatus.append("(");
+		while (statusIterator.hasNext()) {
+			sbStatus.append(statusIterator.next());
+			if (statusIterator.hasNext()) {
+				sbStatus.append(" OR ");
+			}
+		}
+		sbStatus.append(")");
+		
+		List<String> queryContent = new ArrayList<String>();
+		// only entries that are not deleted
+		queryContent.add("deleted:\"false\"");
+		if (fullTextSearchString != null && !fullTextSearchString.isEmpty()) {
+			queryContent.add(fullTextSearchString);
+		}
+		if (userId != null && !userId.isEmpty()) {
+			queryContent.add("user_id:\"" + userId + "\"");
+		}
+		if (topicTags != null) {
+			for (String tag : topicTags) {
+				queryContent.add("topics:\"" + tag + "\"");
+			}
+		}
+		if (modelingLanguageTags != null) {
+			for (String tag : modelingLanguageTags) {
+				queryContent.add("modeling_languages:\"" + tag + "\"");
+			}
+		}
+		if (taskTypeTags != null) {
+			for (String tag : taskTypeTags) {
+				queryContent.add("task_types:\"" + tag + "\"");
+			}
+		}
+		if (otherTags != null) {
+			for (String tag : otherTags) {
+				queryContent.add("other_tags:\"" + tag + "\"");
+			}
+		}
+		Iterator<String> queryContentIterator = queryContent.iterator();
+		StringBuffer sbQuery = new StringBuffer();
+		while (queryContentIterator.hasNext()) {
+			sbQuery.append(queryContentIterator.next());
+			sbQuery.append(" AND ");
+		}
+		sbQuery.append(sbStatus.toString());
+		sbQuery.append("AND language:\"" + language + "\"");
+		return sbQuery.toString();
+	}
+
+	@FullText({
+	    @Index(
+	        name = "search",
+	        analyzer = "snowball:German",
+	        index = "function(doc) { " +
+	                    "var res = new Document(); " +
+	                    "res.add(doc.title_lowercase, {\"field\": \"title\", \"index\": \"not_analyzed_no_norms\", \"type\": \"string\"});" + 
+	                    "res.add(doc.description); " + 
+	                    "res.add(doc.exercise_url); " + 
+	                    "res.add(doc.contact_name); " +
+	                    "for (var i in doc.topics) { res.add(doc.topics[i], {\"field\": \"topics\"}); }" +
+	                    "for (var i in doc.modeling_languages) { res.add(doc.modeling_languages[i], {\"field\": \"modeling_languages\"}); }" +
+	                    "for (var i in doc.task_types) { res.add(doc.task_types[i], {\"field\": \"task_types\"}); }" +
+	                    "for (var i in doc.other_tags) { res.add(doc.other_tags[i], {\"field\": \"other_tags\"}); }" +
+	                    "res.add(doc.status, {\"field\": \"status\"});" +
+	                    "res.add(doc.deleted, {\"field\": \"deleted\"});" +
+	                    "res.add(doc.date_created, {\"field\": \"date_created\", \"type\": \"date\"});" + 
+	                    "res.add(doc.last_update, {\"field\": \"last_update\", \"type\": \"date\"});" +
+	                    "res.add(doc.user_id, {\"field\": \"user_id\"});" + 
+	                    "return res; " +
+	                "}")
+	})
+	private List<Map> search(LuceneQuery query) {
+		
+		TypeReference resultDocType = new TypeReference<CustomLuceneResult<Map>>() {};
+		try {
+			CustomLuceneResult<Map> luceneResult = db.queryLucene(query, resultDocType);
+	        List<CustomLuceneResult.Row<Map>> luceneResultRows = luceneResult.getRows();
+	        
+	        List<Map> result = new ArrayList<Map>();
+	        for (CustomLuceneResult.Row<Map> row : luceneResultRows) {
+	            result.add(row.getDoc());
+	        }
+	        return result;
+		} catch (DbAccessException e) {
+			return new ArrayList<Map>();
+		}
 	}
 
 }
