@@ -6,9 +6,10 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTBoxContainer;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTLanguageSelector;
 
 @SuppressWarnings("serial")
 public class BPTSearchComponent extends CustomComponent {
@@ -18,11 +19,13 @@ public class BPTSearchComponent extends CustomComponent {
 	private HorizontalLayout boxLayout;
 	private BPTFullSearchComponent fullSearchComponent;
 	private BPTTagSearchComponent tagSearchComponent;
+	private BPTLanguageSelector languageSelector;
 	private BPTApplication application;
 
 	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		fullSearchComponent = new BPTFullSearchComponent(application);
 		tagSearchComponent = new BPTTagSearchComponent(application, tagColumns, newTagsAllowed);
+		languageSelector = (new BPTLanguageSelector(application));
 		this.application = application;
 		init();
 	}
@@ -36,6 +39,7 @@ public class BPTSearchComponent extends CustomComponent {
 		layout.addComponent(boxLayout);
 		layout.addComponent(fullSearchComponent);
 		layout.addComponent(tagSearchComponent);
+		layout.addComponent(languageSelector);
 	}
 
 	public BPTFullSearchComponent getFullSearchComponent() {
@@ -64,12 +68,16 @@ public class BPTSearchComponent extends CustomComponent {
 		boxLayout.removeAllComponents();
 	}
 	
-	public ArrayList<BPTToolStatus> getSelectedStates() {
+	public ArrayList<BPTExerciseStatus> getSelectedStates() {
 		return box.getSelectedStates();
 	}
 	
 	public boolean isOwnEntriesOptionSelected() {
 		return box.isOwnEntriesOptionSelected();
+	}
+
+	public BPTLanguageSelector getLanguageSelector() {
+		return languageSelector;
 	}
 
 }

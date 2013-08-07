@@ -54,6 +54,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private void addLoginButton() {
 		loginButton = new Button("Login");
         loginButton.setStyleName(BaseTheme.BUTTON_LINK);
+        loginButton.addStyleName("redButton");
         layout.addComponent(loginButton);
         
         loginButton.addListener(new Button.ClickListener(){
@@ -82,6 +83,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private void addLogoutButton() {
 		logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
+        logoutButton.addStyleName("redButton");
         layout.addComponent(logoutButton);
         
         logoutButton.addListener(new Button.ClickListener(){
