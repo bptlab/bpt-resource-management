@@ -36,8 +36,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private TabSheet tabSheet;
 	private Label topicLabel;
 	private BPTTagComponent topic;
-	private Label modellingLanguageLabel;
-	private BPTTagComponent modellingLanguage;
+	private Label modelingLanguageLabel;
+	private BPTTagComponent modelingLanguage;
 	private Label taskTypeLabel;
 	private BPTTagComponent taskType;
 	private Label additionalTagsLabel;
@@ -67,19 +67,18 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
-        	 List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
-        	 IndexedContainer entries = BPTContainerProvider.generateContainer(map);
-     		for(Object id : entries.getItemIds()){
-     				Item nextItem = entries.getItem(id);
-     				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
-     				this.tabSheet.addComponent(nextPanel);
-     				tabSheet.getTab(nextPanel).setClosable(true);
-     				nextPanel.putLanguageInput(nextItem.getItemProperty("Language").getValue().toString());
+        	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
+        	IndexedContainer entries = BPTContainerProvider.generateContainer(map);
+     		for (Object id : entries.getItemIds()) {
+ 				Item nextItem = entries.getItem(id);
+ 				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
+ 				this.tabSheet.addComponent(nextPanel);
+ 				tabSheet.getTab(nextPanel).setClosable(true);
+ 				nextPanel.putLanguageInput(nextItem.getItemProperty("Language").getValue().toString());
      		}
      		setTagValues(item);
         	setContactDates(item);
-        }
-        else{
+        } else {
         	//XXX
         	set_id = null;
         	BPTUploadPanel newEntryPanel = addNewUploadPanel("new Entry");
@@ -105,14 +104,14 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	}
 
 	private void addContactInputs() {
-		contactNameLabel = new Label("Contact name <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML);
+		contactNameLabel = new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML);
 		addComponent(contactNameLabel);
 		contactNameInput = new TextField();
 		contactNameInput.setValue(application.getName());
 		contactNameInput.setWidth("100%");
 		addComponent(contactNameInput);
 		
-		contactMailLabel = new Label("Contact mail <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML);
+		contactMailLabel = new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML);
 		addComponent(contactMailLabel);
 		contactMailInput = new TextField();
 		contactMailInput.setValue(application.getMailAddress());
@@ -126,9 +125,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 			String[] model_type = ((String) item.getItemProperty("Topics").getValue()).split(",");
 			for(int i = 0; i < model_type.length; i++) topic.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
 		}
-		if(!(item.getItemProperty("Modelling Languages").getValue().toString().equals(""))){
-			String[] platform = ((String) item.getItemProperty("Modelling Languages").getValue()).split(",");
-			for(int i = 0; i < platform.length; i++) modellingLanguage.addChosenTag(platform[i].trim().replaceAll(" +", " "));
+		if(!(item.getItemProperty("Modeling Languages").getValue().toString().equals(""))){
+			String[] platform = ((String) item.getItemProperty("Modeling Languages").getValue()).split(",");
+			for(int i = 0; i < platform.length; i++) modelingLanguage.addChosenTag(platform[i].trim().replaceAll(" +", " "));
 		}
 		if(!(item.getItemProperty("Task Types").getValue().toString().equals(""))){
 			String[] supported_functionality = ((String) item.getItemProperty("Task Types").getValue()).split(",");
@@ -141,19 +140,19 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	}
 
 	public void addTagComponents() {
-		topicLabel = new Label("Topic");
+		topicLabel = new Label("Topics *");
 		addComponent(topicLabel);
 		topic = new BPTTagComponent(application, "topics", false);
 		topic.setWidth("100%");
 		addComponent(topic);
 		
-		modellingLanguageLabel = new Label("Modelling Language");
-		addComponent(modellingLanguageLabel);
-		modellingLanguage = new BPTTagComponent(application, "modelTypes", true);
-		modellingLanguage.setWidth("100%");
-		addComponent(modellingLanguage);
+		modelingLanguageLabel = new Label("Modeling Languages");
+		addComponent(modelingLanguageLabel);
+		modelingLanguage = new BPTTagComponent(application, "modelTypes", true);
+		modelingLanguage.setWidth("100%");
+		addComponent(modelingLanguage);
 		
-		taskTypeLabel = new Label("Task Type");
+		taskTypeLabel = new Label("Task Types");
 		addComponent(taskTypeLabel);
 		taskType = new BPTTagComponent(application, "taskTypes", true);
 		taskType.setWidth("100%");
@@ -204,7 +203,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	}
 		
 	private void finishUpload() {
-		//XXX
 		if (set_id == null) {
 			set_id = exerciseRepository.nextAvailableSetId(BPTTopic.valueOf(topic.getTagValues().get(0)));
 		}
@@ -226,12 +224,11 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
 						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
 						set_id,
-//						(String)titleInput.getValue(),
 						title,
 						language,
 						description,
 						new ArrayList<String>(topic.getTagValues()),
-						new ArrayList<String>(modellingLanguage.getTagValues()),
+						new ArrayList<String>(modelingLanguage.getTagValues()),
 						new ArrayList<String>(taskType.getTagValues()),
 						new ArrayList<String>(other.getTagValues()),
 						exercise_url,
@@ -239,8 +236,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 						(String)contactMailInput.getValue(),
 						(String)application.getUser(),
 						new Date(),
-						new Date(), 
-	//					null
+						new Date()
 					}));
 				}
 				else {
@@ -252,7 +248,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					newValues.put("language", language);
 					newValues.put("description", description);
 					newValues.put("topics", new ArrayList<String>(topic.getTagValues()));
-					newValues.put("modelling_languages", new ArrayList<String>(modellingLanguage.getTagValues()));
+					newValues.put("modeling_languages", new ArrayList<String>(modelingLanguage.getTagValues()));
 					newValues.put("task_types", new ArrayList<String>(taskType.getTagValues()));
 					newValues.put("other_tags", new ArrayList<String>(other.getTagValues()));
 					if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) exerciseRepository.readDocument(documentId).get("status"))) {
@@ -262,7 +258,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					newValues.put("contact_name", contactNameInput.getValue().toString());
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
-					newValues.put("notification_date", null);
 					exerciseRepository.updateDocument(newValues);
 					
 					Map<String, Object> document = exerciseRepository.updateDocument(newValues);

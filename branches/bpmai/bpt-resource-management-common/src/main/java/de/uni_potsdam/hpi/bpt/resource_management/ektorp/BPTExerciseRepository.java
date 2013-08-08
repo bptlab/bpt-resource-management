@@ -396,11 +396,11 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
-	public Map<String, Object> rejectDocument(String _id) {
+	public Map<String, Object> rejectDocument(String _id, String reason) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTExerciseStatus.Rejected);
 		db.update(databaseDocument);
-//		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+//		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"), reason);
 		return databaseDocument;
 	}
 	
@@ -439,7 +439,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 			}
 		}
 		List<Map> newEntries = new ArrayList<Map>();
-		String[] tagAttributes = new String[] {"topics", "modelling_languages", "task_types", "other_tags"};
+		String[] tagAttributes = new String[] {"topics", "modeling_languages", "task_types", "other_tags"};
 		for (Map<String, Object> entry : tableEntries) {
 			if (containsAllTags(entry, tags, tagAttributes)) { 
 				newEntries.add(entry);

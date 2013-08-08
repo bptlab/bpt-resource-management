@@ -59,7 +59,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel documentPanel;
-	private Label titleLabel, languageLabel, descriptionLabel, exerciseURLLabel;
+	private Label titleLabel, languageLabel, descriptionLabel;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -70,13 +70,13 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		
 		documentId = null;
 		
-        titleLabel = new Label("Title");
+        titleLabel = new Label("Title *");
 		layout.addComponent(titleLabel);
 		titleInput = new TextField();
 		titleInput.setWidth("100%");
 		layout.addComponent(titleInput);
 		
-		languageLabel = new Label("Language");
+		languageLabel = new Label("Language *");
 		layout.addComponent(languageLabel);
 		languageInput = new ComboBox();
 		languageInput.setNewItemsAllowed(true);
@@ -89,7 +89,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		});
 		layout.addComponent(languageInput);
 		
-		descriptionLabel = new Label("Description");
+		descriptionLabel = new Label("Description *");
 		layout.addComponent(descriptionLabel);
 		descriptionInput = new RichTextArea();
 		descriptionInput.setWidth("100%");
@@ -107,7 +107,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	titleInput.setValue((item.getItemProperty("Subtitle").getValue()));
+        	titleInput.setValue((item.getItemProperty("Title").getValue()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
         }
 
@@ -146,7 +146,8 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		System.out.println(documentRessource);
         application.refreshAndClean();
 	}
-private void addDocumentToPanel(FileResource documentRessource) {
+	
+	private void addDocumentToPanel(FileResource documentRessource) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -159,42 +160,34 @@ private void addDocumentToPanel(FileResource documentRessource) {
 	}
 	
 	private void setLanguageTo(String value) {
-		getBptUploader().getTabSheet().getTab(this).setCaption(value);
-		if(value.equals("Deutsch")){
-			titleLabel.setValue("Titel");
-			languageLabel.setValue("Sprache");
-			descriptionLabel.setValue("Beschreibung");
+		uploader.getTabSheet().getTab(this).setCaption(value);
+		if (value.equals("Deutsch")) {
+			titleLabel.setValue("Titel *");
+			languageLabel.setValue("Sprache *");
+			descriptionLabel.setValue("Beschreibung *");
 		}
 		else{
-			titleLabel.setValue("Title");
-			languageLabel.setValue("Language");
-			descriptionLabel.setValue("Description");
+			titleLabel.setValue("Title *");
+			languageLabel.setValue("Language *");
+			descriptionLabel.setValue("Description *");
 		}
 	}
-
-	private BPTUploader getBptUploader() {
-		return uploader;
-	}
-
-	private void setBptUploader(BPTUploader bptUploader) {
-		this.uploader = bptUploader;
-	}
 	
-	public void putLanguageInput(String language){
+	public void putLanguageInput(String language) {
     	languageInput.addItem(language);
     	languageInput.setValue(language);
 	}
 	
-	public String getDocumentId(){
+	public String getDocumentId() {
 		return documentId;
 	}
 
 	public String getTitleFromInput() {
-		return (String)titleInput.getValue();
+		return (String) titleInput.getValue();
 	}
 
 	public String getLanguageFromInput() {
-		return (String)languageInput.getValue();
+		return (String) languageInput.getValue();
 	}
 
 	public String getDescriptionFromInput() {

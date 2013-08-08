@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
 /**
@@ -26,7 +26,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 public class BPTTaskScheduler {
 	
 	Timer timer = new Timer();
-	BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	public static final int DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH = 14;
 	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 180;
@@ -64,7 +64,7 @@ public class BPTTaskScheduler {
 		public void run() {
 			System.out.println(new Date() + " - URL check started ...");
 			Map<String, Set<String>> documentsWithUnavailableURLs = new HashMap<String, Set<String>>();
-			List<Map> documents = toolRepository.getDocuments("published");
+			List<Map> documents = exerciseRepository.getDocuments("published");
 			String[] keys = BPTDocumentTypes.getDocumentKeysStoringURLs("bpt_resources_tools");
 			for (Map<String, Object> document : documents) {
 				Set<String> unavailableURLs = new HashSet<String>();
@@ -79,12 +79,12 @@ public class BPTTaskScheduler {
 					String documentId = (String)document.get("_id");
 					if ((Integer) document.get("number_of_url_validation_fails") < 3) {
 						document.put("number_of_url_validation_fails", (Integer) document.get("number_of_url_validation_fails") + 1);
-						toolRepository.update(document);
+						exerciseRepository.update(document);
 					} else {
 						if (document.get("notification_date") == null) {
 							document.put("notification_date", new Date());
 							mailProvider.sendEmailForPublishedEntryWithUnavailableUrls((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"), unavailableURLs);
-							toolRepository.update(document);
+							exerciseRepository.update(document);
 							documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
 						} else {
 							try {
@@ -92,10 +92,10 @@ public class BPTTaskScheduler {
 								Date notificationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse((String) document.get("notification_date"));
 								int differenceInDays = (int) ((now.getTime() - notificationDate.getTime()) / DAY_IN_MILLISECONDS);
 								if (differenceInDays >= DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH) {
-									toolRepository.unpublishDocument(documentId, true);
+									exerciseRepository.unpublishDocument(documentId, true);
 									document.put("number_of_url_validation_fails", 0);
 									document.put("notification_date", null);
-									toolRepository.update(document);
+									exerciseRepository.update(document);
 									System.out.println("--- Document " + documentId + " unpublished ---");
 								} else {
 									documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
@@ -111,7 +111,7 @@ public class BPTTaskScheduler {
 						if (document.get("notification_date") != null) {
 							document.put("notification_date", null);
 						}
-						toolRepository.update(document);
+						exerciseRepository.update(document);
 					}
 				}
 			}
@@ -142,7 +142,7 @@ public class BPTTaskScheduler {
 		public void run() {
 			System.out.println(new Date() + " - Check for old entries started ...");
 			Map<String, Integer> namesOfOldDocuments = new HashMap<String, Integer>();
-			List<Map> documents = toolRepository.getDocuments("published");
+			List<Map> documents = exerciseRepository.getDocuments("published");
 			try {
 				for (Map<String, Object> document : documents) {
 					Date now = new Date();
@@ -170,11 +170,11 @@ public class BPTTaskScheduler {
 								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 3);
 							}
 						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
-							toolRepository.unpublishDocument(documentId, true);
+							exerciseRepository.unpublishDocument(documentId, true);
 							document.put("number_of_mails_for_expiry", 0);
 							System.out.println("--- Document " + documentId + " unpublished ---");
 						}
-						toolRepository.update(document);
+						exerciseRepository.update(document);
 					}
 				}
 			} catch (ParseException e) {

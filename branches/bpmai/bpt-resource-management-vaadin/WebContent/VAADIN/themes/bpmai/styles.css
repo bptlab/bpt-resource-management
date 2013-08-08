@@ -77,7 +77,7 @@ ul#resource-list {
 
 #resource-list div[class="Exercise URL"]:before,
 #resource-list div[class="Topics"]:before,
-#resource-list div[class="Modelling Languages"]:before,
+#resource-list div[class="Modeling Languages"]:before,
 #resource-list div[class="Task types"]:before,
 #resource-list div[class="Other Tags"]:before,
 #resource-list div[class="Contact name"]:before,
@@ -98,7 +98,7 @@ ul#resource-list {
 #resource-list div[class="Description"],
 #resource-list div[class="Exercise URL"],
 #resource-list div[class="Topics"],
-#resource-list div[class="Modelling Languages"],
+#resource-list div[class="Modeling Languages"],
 #resource-list div[class="Task types"],
 #resource-list div[class="Other Tags"],
 #resource-list div[class="Contact name"],
@@ -214,10 +214,11 @@ div.redButtonHover span.v-button-wrap span.v-button-caption:HOVER{
 }
 
 span.v-tabsheet-caption-close{
-		/*
+	/*
 	hier könnte das Bild ersetzt werden (auch für hover)
 	*/
-	background-image: none !important;
+	/* background-image: none !important; */
+	background-image: "images/x_black.png" !important;
 	
 }
 
