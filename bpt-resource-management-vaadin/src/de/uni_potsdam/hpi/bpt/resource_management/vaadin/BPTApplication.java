@@ -27,8 +27,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 @SuppressWarnings({ "unchecked", "serial" })
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	
-	//Change themeName for different side
-//	private final String themeName = "bpt";
+	// change theme name for different platform
 	private final String themeName = "bpmai";
 	
 	private BPTShowEntryComponent entryComponent;
@@ -51,7 +50,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		setProperties();
 		
-		Window mainWindow = new Window("Tools for BPM");
+		Window mainWindow = new Window("BPM Academic Initiative");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme(themeName);
