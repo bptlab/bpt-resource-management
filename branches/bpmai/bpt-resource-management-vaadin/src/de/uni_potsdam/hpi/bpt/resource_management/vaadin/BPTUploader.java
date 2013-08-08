@@ -205,7 +205,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
 	private void finishUpload() {
 		//XXX
-		if(set_id == null){
+		if (set_id == null) {
 			set_id = exerciseRepository.nextAvailableSetId(BPTTopic.valueOf(topic.getTagValues().get(0)));
 		}
 		Iterator<Component> tabIterator = tabSheet.getComponentIterator();

@@ -131,9 +131,9 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 		ViewQuery query = createQuery("next_available_set_id_" + topicName.toString().toLowerCase());
 		ViewResult result = db.queryView(query);
 		try {
-			return new Integer(result.getRows().get(0).getValueAsInt() + 1).toString();
+			return topicName.toString() + new Integer(result.getRows().get(0).getValueAsInt() + 1).toString();
 		} catch (IndexOutOfBoundsException e) {
-			return "1";
+			return topicName.toString() + "1";
 		}
 	}
 	
@@ -691,7 +691,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 			sbQuery.append(" AND ");
 		}
 		sbQuery.append(sbStatus.toString());
-		sbQuery.append("AND language:\"" + language + "\"");
+		sbQuery.append(" AND language:\"" + language + "\"");
 		return sbQuery.toString();
 	}
 
@@ -702,6 +702,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	        index = "function(doc) { " +
 	                    "var res = new Document(); " +
 	                    "res.add(doc.title_lowercase, {\"field\": \"title\", \"index\": \"not_analyzed_no_norms\", \"type\": \"string\"});" + 
+	                    "res.add(doc.language, {\"field\": \"language\"});" +
 	                    "res.add(doc.description); " + 
 	                    "res.add(doc.exercise_url); " + 
 	                    "res.add(doc.contact_name); " +
