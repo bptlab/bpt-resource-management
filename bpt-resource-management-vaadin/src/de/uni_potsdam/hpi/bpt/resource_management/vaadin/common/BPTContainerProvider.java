@@ -74,9 +74,8 @@ public class BPTContainerProvider {
 		Collator comparator = Collator.getInstance();
 		comparator.setStrength(Collator.PRIMARY);
 		
-		//TODO: umschreiben so dass immer alle enum-werte angezeigt werden?
 		if (tagColumn == "all" || tagColumn == "topics") {
-			uniqueValues.add("----- Topics -----");
+			if (tagColumn == "all") uniqueValues.add("----- Topics -----");
 			ArrayList<String> topicTags = new ArrayList<String>();
 			BPTTopic[] topics = BPTTopic.values();
 			for(BPTTopic topicTag : topics){
@@ -92,7 +91,7 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(topicTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
-			uniqueValues.add("----- Modeling languages -----");
+			if (tagColumn == "all") uniqueValues.add("----- Modeling languages -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modeling_languages");  // cast
@@ -102,7 +101,7 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(modelTypeTags);
 		}
 		if (tagColumn == "all" || tagColumn == "taskTypes") {
-			uniqueValues.add("----- Task types -----");
+			if (tagColumn == "all") uniqueValues.add("----- Task types -----");
 			ArrayList<String> taskTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> taskTypeTagsOfTool = (ArrayList<String>)tool.get("task_types");  // cast
@@ -112,7 +111,7 @@ public class BPTContainerProvider {
 			uniqueValues.addAll(taskTypeTags);
 		}
 		if (tagColumn == "all" || tagColumn == "otherTags") {
-			uniqueValues.add("----- Other tags -----");
+			if (tagColumn == "all") uniqueValues.add("----- Other tags -----");
 			ArrayList<String> otherTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> otherTagsOfTool = (ArrayList<String>)tool.get("other_tags");  // cast
