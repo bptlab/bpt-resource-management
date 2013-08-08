@@ -126,11 +126,11 @@ ul#resource-list {
 #resource-list div[class="Date created"] {
 	display: none;
 }
-
+/*
 div.scroll{
 	overflow: auto !important;
 }
-
+*/
 
 .v-select-optiongroup-horizontal .v-select-option {
 	display: inline !important;
@@ -217,9 +217,18 @@ span.v-tabsheet-caption-close{
 		/*
 	hier könnte das Bild ersetzt werden (auch für hover)
 	*/
+	background-image: none !important;
 	
 }
 
 div.v-tabsheet-content{
 	border-style: none none;
+}
+
+div{
+	overflow: visible !important;
+}
+
+body{
+	overflow: auto !important;
 }
