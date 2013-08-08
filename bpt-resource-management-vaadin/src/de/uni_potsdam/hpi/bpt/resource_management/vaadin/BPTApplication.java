@@ -18,7 +18,7 @@ import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
@@ -39,7 +39,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private BPTUploader uploader;
 
 	private BPTExerciseRepository exerciseRepository;
-	private BPTToolRepository toolRepository;
 	private BPTUserRepository userRepository;
 	private int numberOfEntries;
 	
@@ -144,8 +143,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 	}
 	
-	public BPTToolRepository getToolRepository() {
-		return toolRepository;
+	public BPTExerciseRepository getexerciseRepository() {
+		return exerciseRepository;
 	}
 	
 		public BPTExerciseRepository getExerciseRepository() {

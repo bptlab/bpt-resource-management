@@ -27,9 +27,8 @@ public class BPTEntry extends CustomLayout {
 	private Item item;
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
-	private BPTExerciseRepository toolRepository = BPTExerciseRepository.getInstance();
-	private TabSheet tabsheet;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
+	private TabSheet tabsheet;
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -51,7 +50,7 @@ public class BPTEntry extends CustomLayout {
 
 	private void addToLayout(String id) {
 		//TODO: links zu allen Dokumenten die hochgeladen wurden
-		if (!id.equals("User ID") && !id.equals("ID") && !id.equals("set_id") && !id.equals("Contact mail")) {
+		if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Exercise Set ID") && !id.equals("Contact mail")) {
 			Object value = item.getItemProperty(id).getValue();
 			if (value.getClass() == Link.class) {
 				Link link = (Link) value;
@@ -172,7 +171,7 @@ public class BPTEntry extends CustomLayout {
 			System.out.println("renderDeleteButton" + entryId);
 		}
 		
-		BPTExerciseStatus actualState = toolRepository.getDocumentStatus(entryId);
+		BPTExerciseStatus actualState = exerciseRepository.getDocumentStatus(entryId);
 		
 		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Unpublished){
 			Button publish = new Button("publish");

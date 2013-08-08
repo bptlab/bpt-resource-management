@@ -12,7 +12,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 
@@ -39,7 +39,7 @@ public class BPTContainerProvider {
 //		
 //		IndexedContainer container = createContainerWithProperties();
 //		
-//		List<Map> tools = toolRepository.getAll();
+//		List<Map> tools = exerciseRepository.getAll();
 //		
 //		for (int i = 0; i < tools.size(); i++) {
 //			Map<String, Object> tool = tools.get(i);
@@ -151,8 +151,8 @@ public class BPTContainerProvider {
 	}
 	
 //	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
-//		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
-////		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
+//		List<Map> tools = exerciseRepository.getVisibleEntries(statusList, tags, query);
+////		List<Map> tools = exerciseRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
 //		IndexedContainer container = generateContainer(tools);
 //		return container;
 //	}
