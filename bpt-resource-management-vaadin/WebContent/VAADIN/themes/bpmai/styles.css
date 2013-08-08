@@ -1,0 +1,234 @@
+@import "../reindeer/styles.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/RedDotPlugin/style.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/ImagePlugin/style.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/HeadlinesPlugin/style.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/BlogPlugin/style.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/SoaiSkin/layout.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/SoaiSkin/typo.css";
+@import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/SoaiSkin/print.css"
+
+span.displaynone { 
+	display:none; 
+}
+             
+ul#resource-list {
+	list-style-type:none;
+	margin: 0;
+	padding: 0;
+}
+
+#resource-list li.entry {
+	padding: 1em;
+	margin: 1em;
+	clear: left;
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-color: #000000;
+	border-style: solid;
+}
+
+#resource-list li.entry:nth-child(2n+1) {
+	background-color: #FFFFFF;
+}
+
+#resource-list .entry .extension{
+	display: none;
+}
+
+#resource-list .entry .button {
+	clear: left;
+	display: block;
+	position: relative;
+	padding: 0.2em 0.3em 0.4em;
+	margin: 0.4em 0 0.4em 90%;
+	text-align: center;
+	background-color: #00639C;
+	color: #fff;
+	border-width: 1px;
+	border-color: #000000;
+	border-style: solid;
+	
+	-webkit-transition: all 0.25s;
+	-moz-transition: all 0.25s;
+	-o-transition: all 0.25s;
+	transition: all 0.25s;
+}
+
+#resource-list .entry .button.edit {
+	margin: 0px;
+	margin-top: 10px;
+	float:left;
+	clear: none;
+	display: none;
+}
+
+#resource-list .entry .bpt .v-button-caption {
+	color: #000000;
+}
+#resource-list .entry .v-link.v-link-bpt2 {
+	display: inline;
+}
+
+
+#resource-list .entry .button:hover {
+	text-decoration: none;
+	background-color: #004870;
+}
+
+#resource-list div[class="Exercise URL"]:before,
+#resource-list div[class="Topics"]:before,
+#resource-list div[class="Modelling Languages"]:before,
+#resource-list div[class="Task types"]:before,
+#resource-list div[class="Other Tags"]:before,
+#resource-list div[class="Contact name"]:before,
+#resource-list div[class="Last update"]:before {
+	content: attr(class);
+	font-style: italic;
+	display: block;
+	margin-left: -2em;
+}
+
+#resource-list div[class="Excercise URL"]:before {
+	content: "Excercise URL";
+}
+#resource-list div[class="Last update"]:before{
+	content: "Last update";
+}
+
+#resource-list div[class="Description"],
+#resource-list div[class="Exercise URL"],
+#resource-list div[class="Topics"],
+#resource-list div[class="Modelling Languages"],
+#resource-list div[class="Task types"],
+#resource-list div[class="Other Tags"],
+#resource-list div[class="Contact name"],
+#resource-list div[class="Last update"] {
+	padding: 0 0 0 4em;
+	margin-bottom: 0.8em;
+}
+
+#resource-list div[class="Description"]:before {
+	display: inline;
+	margin: 0 1em 0 0;
+}
+#resource-list div[class="Description"]{
+	padding-left: 0em;	
+}
+
+#resource-list div[class="Contact name"]:before {
+	/*
+	display: inline;
+	margin: 0 1em 0 -1em;
+	*/
+	content: "Contact";
+}
+
+#resource-list div[class="Date created"] {
+	display: none;
+}
+/*
+div.scroll{
+	overflow: auto !important;
+}
+*/
+
+.v-select-optiongroup-horizontal .v-select-option {
+	display: inline !important;
+}
+
+.v-select-optiongroup-horizontal {
+	white-space: nowrap !important;
+}
+
+.v-select-optiongroup-horizontal
+.v-select-option.v-radiobutton {
+	padding-right: 10px !important;
+}
+
+div{
+	background-color:#FFFFFF !important;
+	overflow: visible !important;
+}
+
+body{
+	background-color:#FFFFFF !important;
+	 margin: 1em auto !important;
+	 width: 60em !important;
+	 overflow: auto !important;
+}
+
+td.v-tabsheet-tabitemcell { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-color: #0000000;
+	border-style: solid;
+	border-left-style: none;
+}
+
+td.v-tabsheet-tabitemcell-first { 
+	border-left-style: solid;
+}
+
+td.v-tabsheet-tabitemcell-selected { 
+	border-bottom-style: none;
+}
+
+td.v-tabsheet-tabitemcell div { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+}
+
+td.v-tabsheet-spacertd { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-color:#000000;
+	border-bottom-style: solid;
+}
+
+td.v-tabsheet-spacertd div { 
+	background-image:none !important;
+	background-color: #FFFFFF;
+}
+
+a.redHover:hover{
+	text-decoration: none !important;
+	color: #AA0000 !important;
+}
+
+div.redButton span.v-button-wrap span.v-button-caption{
+	text-decoration: none !important;
+	color: #AA0000 !important;
+}
+
+.border {
+	border-width: 1px;
+	border-color: #000000;
+	border-style: solid;
+}
+
+div.redButtonHover span.v-button-wrap span.v-button-caption:HOVER{
+	text-decoration: none !important;
+	color: #AA0000 !important;
+}
+
+span.v-tabsheet-caption-close{
+		/*
+	hier könnte das Bild ersetzt werden (auch für hover)
+	*/
+	background-image: none !important;
+	
+}
+
+div.v-tabsheet-content{
+	border-style: none none;
+}
+
+div{
+	overflow: visible !important;
+}
+
+body{
+	overflow: auto !important;
+}
