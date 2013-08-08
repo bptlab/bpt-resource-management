@@ -34,7 +34,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private TabSheet tabSheet;
-	private TextField titleInput;
 	private Label topicLabel;
 	private BPTTagComponent topic;
 	private Label modellingLanguageLabel;
@@ -68,7 +67,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
-        	titleInput.setValue((item.getItemProperty("Title").getValue()));
         	 List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
         	 IndexedContainer entries = BPTContainerProvider.generateContainer(map);
      		for(Object id : entries.getItemIds()){
@@ -145,25 +143,25 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	public void addTagComponents() {
 		topicLabel = new Label("Topic");
 		addComponent(topicLabel);
-		topic = new BPTTagComponent(application, "topic", true);
+		topic = new BPTTagComponent(application, "topics", false);
 		topic.setWidth("100%");
 		addComponent(topic);
 		
 		modellingLanguageLabel = new Label("Modelling Language");
 		addComponent(modellingLanguageLabel);
-		modellingLanguage = new BPTTagComponent(application, "modellingLanguage", true);
+		modellingLanguage = new BPTTagComponent(application, "modelTypes", true);
 		modellingLanguage.setWidth("100%");
 		addComponent(modellingLanguage);
 		
 		taskTypeLabel = new Label("Task Type");
 		addComponent(taskTypeLabel);
-		taskType = new BPTTagComponent(application, "taskType", true);
+		taskType = new BPTTagComponent(application, "taskTypes", true);
 		taskType.setWidth("100%");
 		addComponent(taskType);
 		
 		additionalTagsLabel = new Label("Additional Tags");
 		addComponent(additionalTagsLabel);
-		other = new BPTTagComponent(application, "additional", true);
+		other = new BPTTagComponent(application, "otherTags", true);
 		other.setWidth("100%");
 		addComponent(other);
 	}
@@ -189,9 +187,10 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
-				if (((String)titleInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Title' field is empty", Notification.TYPE_ERROR_MESSAGE);
-				} else if (((String)contactNameInput.getValue()).isEmpty()) {
+//				if (((String)titleInput.getValue()).isEmpty()) {
+//					getWindow().showNotification("'Title' field is empty", Notification.TYPE_ERROR_MESSAGE);
+//				}
+				if (((String)contactNameInput.getValue()).isEmpty()) {
 					getWindow().showNotification("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
 					getWindow().showNotification("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
@@ -212,13 +211,13 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		Iterator<Component> tabIterator = tabSheet.getComponentIterator();
 		
 		BPTUploadPanel uploadPanel;
-		String documentId, subTitle, language, description, exercise_url;
+		String documentId, title, language, description, exercise_url;
 		while(tabIterator.hasNext()){
 			uploadPanel = (BPTUploadPanel) tabIterator.next();
 			if(!uploadPanel.equals(lastPanel)){
 			
 				documentId = uploadPanel.getDocumentId();
-				subTitle = uploadPanel.getSubtitleFromInput();
+				title = uploadPanel.getTitleFromInput();
 				language = uploadPanel.getLanguageFromInput();
 				description = uploadPanel.getDescriptionFromInput();
 				exercise_url = uploadPanel.getExerciseURLFromInput();
@@ -227,8 +226,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
 						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
 						set_id,
-						(String)titleInput.getValue(),
-						subTitle,
+//						(String)titleInput.getValue(),
+						title,
 						language,
 						description,
 						new ArrayList<String>(topic.getTagValues()),
@@ -248,8 +247,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
 					newValues.put("set_id", set_id);
-					newValues.put("title", (String)titleInput.getValue());
-					newValues.put("subtitle", subTitle);
+//					newValues.put("title", (String)titleInput.getValue());
+					newValues.put("subtitle", title);
 					newValues.put("language", language);
 					newValues.put("description", description);
 					newValues.put("topics", new ArrayList<String>(topic.getTagValues()));
@@ -278,7 +277,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true);
 		String[] keys = keysList.toArray(new String[keysList.size()]);
 		for(int i = 0; i < keys.length; i++) {
-			document.put(keys[i], values[i]);
+				document.put(keys[i], values[i]);
 		}
 		return document;
 	}

@@ -32,28 +32,23 @@ public class BPTVaadinResources {
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
 	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
-	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
-	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+	    	add(new Object[] {"set_id", "Exercise Set ID", Integer.class, BPTPropertyValueType.IGNORE, null, true, false, false});
+//	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
+	    	add(new Object[] {"title", "Title", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+//	    	add(new Object[] {"subtitle", "Subtitle", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+	    	add(new Object[] {"language", "Language", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
-	    	add(new Object[] {"description_url", "Description URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
-	    	add(new Object[] {"provider", "Provider", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
-	    	add(new Object[] {"provider_url", "Provider URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
-	    	add(new Object[] {"download_url", "Download URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
-	    	add(new Object[] {"documentation_url", "Documentation URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
-	    	add(new Object[] {"screencast_url", "Screencast URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
-	    	add(new Object[] {"tutorial_url", "Tutorial URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
-	    	add(new Object[] {"availabilities", "Availability", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"model_types", "Model type", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"platforms", "Platform", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"supported_functionalities", "Supported functionality", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"topics", "Topics", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"modeling_languages", "Modelling Languages", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"task_types", "Task Types", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"other_tags", "Other tags", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+	    	add(new Object[] {"exercise_url", "Exercise URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
 	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
 	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
-	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
+	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, true, true});
 //	    	add(new Object[] {"notification_date", "Date of first notification", Date.class, BPTPropertyValueType.DATE, null, false, false, false});
-	    	add(new Object[] {"name_lowercase", "Name (lower case)", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
-	    	add(new Object[] {"provider_lowercase", "Provider (lower case)", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    }
 	};
 	

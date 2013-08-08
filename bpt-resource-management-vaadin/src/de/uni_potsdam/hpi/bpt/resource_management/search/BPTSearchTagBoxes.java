@@ -10,7 +10,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 @SuppressWarnings("serial")
 public class BPTSearchTagBoxes extends BPTTagBox{
 
-	private GridLayout availabilitiesLayout, modelTypesLayout, platformsLayout, supportedFunctionalitiesLayout;
+	private GridLayout topicssLayout, modelTypesLayout, taskTypesLayout, otherTagsLayout;
 	private ArrayList<String> availabilitiesTags, modelTypesTags, platformsTags, supportedFunctionalitiesTags;
 	private ArrayList<BPTSearchTag> availabilityTagList, modelTypesTagList, platformsTagList, supportedFunctionalitiesTagList;
 
@@ -23,11 +23,11 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	}
 	@Override
 	protected void addGridsToComponent() {
-		availabilitiesTags = BPTContainerProvider.getUniqueValues("availabilities");
-		availabilitiesLayout = new GridLayout(2,1);
-		availabilitiesLayout.setWidth("100%");
-		availabilitiesLayout.setHeight("100%");
-		baseLayout.addComponent(availabilitiesLayout);
+		availabilitiesTags = BPTContainerProvider.getUniqueValues("topics");
+		topicssLayout = new GridLayout(2,1);
+		topicssLayout.setWidth("100%");
+		topicssLayout.setHeight("100%");
+		baseLayout.addComponent(topicssLayout);
 		
 		modelTypesTags = BPTContainerProvider.getUniqueValues("modelTypes");
 		modelTypesLayout = new GridLayout(2,1);
@@ -35,17 +35,17 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		modelTypesLayout.setHeight("100%");
 		baseLayout.addComponent(modelTypesLayout);
 		
-		platformsTags = BPTContainerProvider.getUniqueValues("platforms");
-		platformsLayout = new GridLayout(2,1);
-		platformsLayout.setWidth("100%");
-		platformsLayout.setHeight("100%");
-		baseLayout.addComponent(platformsLayout);
+		platformsTags = BPTContainerProvider.getUniqueValues("taskTypes");
+		taskTypesLayout = new GridLayout(2,1);
+		taskTypesLayout.setWidth("100%");
+		taskTypesLayout.setHeight("100%");
+		baseLayout.addComponent(taskTypesLayout);
 		
-		supportedFunctionalitiesTags = BPTContainerProvider.getUniqueValues("supportedFunctionalities");
-		supportedFunctionalitiesLayout = new GridLayout(2,1);
-		supportedFunctionalitiesLayout.setWidth("100%");
-		supportedFunctionalitiesLayout.setHeight("100%");
-		baseLayout.addComponent(supportedFunctionalitiesLayout);
+		supportedFunctionalitiesTags = BPTContainerProvider.getUniqueValues("otherTags");
+		otherTagsLayout = new GridLayout(2,1);
+		otherTagsLayout.setWidth("100%");
+		otherTagsLayout.setHeight("100%");
+		baseLayout.addComponent(otherTagsLayout);
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		String value = searchTag.getValue();
 		if(availabilitiesTags.contains(value)){
 			availabilityTagList.remove(searchTag);
-			removeTagFromLayout(searchTag, availabilitiesLayout);
+			removeTagFromLayout(searchTag, topicssLayout);
 		}
 		else if (modelTypesTags.contains(value)){
 			modelTypesTagList.remove(searchTag);
@@ -61,11 +61,11 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		}
 		else if (platformsTags.contains(value)){
 			platformsTagList.remove(searchTag);
-			removeTagFromLayout(searchTag, platformsLayout);
+			removeTagFromLayout(searchTag, taskTypesLayout);
 		}
 		else if (supportedFunctionalitiesTags.contains(value)){
 			supportedFunctionalitiesTagList.remove(searchTag);
-			removeTagFromLayout(searchTag, supportedFunctionalitiesLayout);
+			removeTagFromLayout(searchTag, otherTagsLayout);
 		}
 		
 	}
@@ -76,7 +76,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		if(availabilitiesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Availability", value);
 			availabilityTagList.add(searchTag);
-			addTagToLayout(searchTag, availabilitiesLayout);
+			addTagToLayout(searchTag, topicssLayout);
 		}
 		else if (modelTypesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Model type", value);
@@ -86,12 +86,12 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		else if (platformsTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Platform", value);
 			platformsTagList.add(searchTag);
-			addTagToLayout(searchTag, platformsLayout);
+			addTagToLayout(searchTag, taskTypesLayout);
 		}
 		else {//if (supportedFunctionalitiesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Supported functionality", value);
 			supportedFunctionalitiesTagList.add(searchTag);
-			addTagToLayout(searchTag, supportedFunctionalitiesLayout);
+			addTagToLayout(searchTag, otherTagsLayout);
 		}
 	}
 	
@@ -103,10 +103,10 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 			modelTypesTagList.clear();
 			platformsTagList.clear();
 			supportedFunctionalitiesTagList.clear();
-			availabilitiesLayout.removeAllComponents();
+			topicssLayout.removeAllComponents();
 			modelTypesLayout.removeAllComponents();
-			platformsLayout.removeAllComponents();
-			supportedFunctionalitiesLayout.removeAllComponents();
+			taskTypesLayout.removeAllComponents();
+			otherTagsLayout.removeAllComponents();
 			refresh();
 		}
 	}

@@ -14,6 +14,7 @@ import com.vaadin.data.util.IndexedContainer;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 
 /**
  * Provides data for the table and the search component.
@@ -73,18 +74,25 @@ public class BPTContainerProvider {
 		Collator comparator = Collator.getInstance();
 		comparator.setStrength(Collator.PRIMARY);
 		
+		//TODO: umschreiben so dass immer alle enum-werte angezeigt werden?
 		if (tagColumn == "all" || tagColumn == "topics") {
 			uniqueValues.add("----- Topics -----");
 			ArrayList<String> topicTags = new ArrayList<String>();
-			for (Map<String, Object> tool : tools) {
-				ArrayList<String> topicTagsOfTool = (ArrayList<String>)tool.get("topics");  // cast
-				topicTags.addAll(topicTagsOfTool);
+			BPTTopic[] topics = BPTTopic.values();
+			for(BPTTopic topicTag : topics){
+				topicTags.add(topicTag.toString());
 			}
-			Collections.sort(topicTags, comparator);
+			
+			
+//			for (Map<String, Object> tool : tools) {
+//				ArrayList<String> topicTagsOfTool = (ArrayList<String>)tool.get("topics");  // cast
+//				topicTags.addAll(topicTagsOfTool);
+//			}
+//			Collections.sort(topicTags, comparator);
 			uniqueValues.addAll(topicTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
-			uniqueValues.add("----- Modelling languages -----");
+			uniqueValues.add("----- Modeling languages -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
 				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modeling_languages");  // cast

@@ -189,7 +189,7 @@ private void addDocumentToPanel(FileResource documentRessource) {
 		return documentId;
 	}
 
-	public String getSubtitleFromInput() {
+	public String getTitleFromInput() {
 		return (String)titleInput.getValue();
 	}
 
