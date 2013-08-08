@@ -256,12 +256,13 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 					}
 					//TODO:
 					subWindowLabel = new Label("Thank you for submitting your tool " 
-							+ (String)toolNameInput.getValue() + ". "
+							+ "<b>" + (String)toolNameInput.getValue() + "</b>" + ". "
 							+ "Your entry will be reviewed." 
 							+ " In the usual case, your entry is published shortly. "
 							+ "You can keep track of your submitted tools by selecting" 
 							+ "\"own entries\"  at the entry overview."
-							+ "If you have any question, please contact bptresourcemanagement@gmail.com.");
+							+ "If you have any question, please contact"
+							+ "<a href=\"mailto:bptresourcemanagement@gmail.com?subject=[Tools+for+BPM]+Feedback\"> bptresourcemanagement@gmail.com </a>.");
 //					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
 
 				} else {
@@ -308,13 +309,14 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 						statusString = "Your entry will be reviewed but remains published.";
 					}
 					subWindowLabel = new Label("Thank you for updating your tool " 
-							+ (String)toolNameInput.getValue() + ". "
+							+ "<b>" + (String)toolNameInput.getValue() + "</b>" + ". "
 							+ statusString
 							+ "You can keep track of your submitted tools by selecting" 
 							+ " \"own entries\"  at the entry overview."
-							+ "If you have any question, please contact bptresourcemanagement@gmail.com.");
+							+ "If you have any question, please contact"
+							+ "<a href=\"mailto:bptresourcemanagement@gmail.com?subject=[Tools+for+BPM]+Feedback\"> bptresourcemanagement@gmail.com </a>.");
 				}
-				
+				subWindowLabel.setContentMode(Label.CONTENT_XHTML);
 				final Window subwindow = new Window((String)toolNameInput.getValue());
 				subwindow.setWidth("500px");
 				subwindow.addComponent(subWindowLabel);
