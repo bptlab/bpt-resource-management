@@ -265,7 +265,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		((BPTEntryCards) entryComponent).getBPTPageSelector().switchToPage(skip);
 	}
 
-	//TODO: language dazunehmen
 	private void refresh(int skip) {
 		IndexedContainer dataSource;
 		int limit = skip + 10;
