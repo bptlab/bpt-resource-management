@@ -9,12 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import sun.awt.windows.ThemeReader;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.terminal.FileResource;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
@@ -39,6 +43,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
@@ -52,10 +57,11 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private RichTextArea descriptionInput;
 	private BPTUploader uploader;
 	
-	private File document;
+	private File tempAttachment;
+	private List<FileResource> attachments = new ArrayList<FileResource>();
 	private FileOutputStream outputStream;
-	private final String[] supportedDocumentTypes = new String[] {"application/pdf"};
-	private String documentId, documentType, language, set_id;
+	private final String[] supportedDocumentTypes;
+	private String documentId, language, set_id;
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel documentPanel;
@@ -64,11 +70,12 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
 		this.application = application;
-		layout = this;
+		this.supportedDocumentTypes = BPTMimeTypes.getMimeTypes();
+		this.layout = this;
 		this.uploader = uploader;
-		set_id = uploader.getSetId();
+		this.set_id = uploader.getSetId();
 		
-		documentId = null;
+		this.documentId = null;
 		
         titleLabel = new Label("Title *");
 		layout.addComponent(titleLabel);
@@ -114,7 +121,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 
 	private void createUploadComponent(Panel parent) {
-		upload = new Upload("Upload at least one Document (*.pdf, *.doc, *.docx)", this);
+		upload = new Upload("Upload at least one document (*.pdf, *.doc, *.docx)", this);
 		upload.setImmediate(false);
 		upload.setWidth("-1px");
 		upload.setHeight("-1px");
@@ -124,15 +131,13 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		documentType = mimeType;
-		document = new File(filename + "\\");
-		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
-		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
-
+		String documentType = mimeType;
+		tempAttachment = new File(filename);
+//		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
         try {
-//        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
-        		outputStream = new FileOutputStream(document);
-//        	}
+        	if (Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+        		outputStream = new FileOutputStream(tempAttachment);
+        	}
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -141,15 +146,25 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 	
 	public void uploadSucceeded(final SucceededEvent event) {
-		final FileResource documentRessource = new FileResource(document, getApplication());
+		final FileResource documentRessource = new FileResource(tempAttachment, getApplication());
 		addDocumentToPanel(documentRessource);
+		attachments.add(documentRessource);
 		System.out.println(documentRessource);
         application.refreshAndClean();
 	}
 	
 	private void addDocumentToPanel(FileResource documentRessource) {
-		// TODO Auto-generated method stub
-		
+		Link link = new Link(documentRessource.getFilename(), documentRessource);
+		link.setTargetName("_blank");
+		String mimeType = documentRessource.getMIMEType();
+		if (mimeType.equals(BPTMimeTypes.PDF.toString())) {
+			link.setIcon(new ThemeResource("images/logo-pdf-16px.png"));
+		} else if (mimeType.equals(BPTMimeTypes.DOC.toString())) {
+			link.setIcon(new ThemeResource("images/logo-doc-16px.png"));
+		} else if (mimeType.equals(BPTMimeTypes.DOCX.toString())) {
+			link.setIcon(new ThemeResource("images/logo-docx-16px.png"));
+		}
+		documentPanel.addComponent(link);
 	}
 
 	public void uploadFailed(FailedEvent event) {
@@ -197,6 +212,14 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 
 	public String getExerciseURLFromInput() {
 		return (String) exerciseURLInput.getValue();
+	}
+
+	public List<FileResource> getAttachments() {
+		return attachments;
+	}
+	
+	public void clearAttachments() {
+		attachments.clear();
 	}
 
 }

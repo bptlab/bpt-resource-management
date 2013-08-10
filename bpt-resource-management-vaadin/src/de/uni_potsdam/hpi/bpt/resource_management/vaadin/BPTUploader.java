@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -210,6 +211,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
 		BPTUploadPanel uploadPanel;
 		String documentId, title, language, description, exercise_url;
+		List<FileResource> attachments;
 		while(tabIterator.hasNext()){
 			uploadPanel = (BPTUploadPanel) tabIterator.next();
 			if(!uploadPanel.equals(lastPanel)){
@@ -219,6 +221,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 				language = uploadPanel.getLanguageFromInput();
 				description = uploadPanel.getDescriptionFromInput();
 				exercise_url = uploadPanel.getExerciseURLFromInput();
+				attachments = uploadPanel.getAttachments();
 				if (documentId == null) { 
 					
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
@@ -238,6 +241,13 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 						new Date(),
 						new Date()
 					}));
+					
+					for (FileResource attachment : attachments) {
+						 Map<String, Object> document = exerciseRepository.readDocument(documentId);
+						 String documentRevision = (String)document.get("_rev");
+						 exerciseRepository.createAttachment(documentId, documentRevision, attachment.getFilename(), attachment.getSourceFile(), attachment.getMIMEType());
+					}
+					uploadPanel.clearAttachments();
 				}
 				else {
 					Map<String, Object> newValues = new HashMap<String, Object>();
