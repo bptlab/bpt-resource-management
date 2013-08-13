@@ -11,13 +11,17 @@ import java.util.Map;
 
 import org.vaadin.imagefilter.Image;
 
+import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
 
 /**
  * Contains resources required by Vaadin to display various components.
@@ -41,13 +45,14 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"modeling_languages", "Modeling Languages", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"task_types", "Task Types", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"other_tags", "Other tags", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"exercise_url", "Exercise URL", String.class, BPTPropertyValueType.IGNORE, null, true, true, true});
+	    	add(new Object[] {"exercise_url", "Exercise URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
 	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
 	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
 	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, true, true});
 //	    	add(new Object[] {"notification_date", "Date of first notification", Date.class, BPTPropertyValueType.DATE, null, false, false, false});
+	    	add(new Object[] {"names_of_attachments", "Names of Attachments", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, false, false});
 	    }
 	};
 	
@@ -141,7 +146,7 @@ public class BPTVaadinResources {
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
+	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName, Application application) {
 		Object value = tool.get(documentColumnName);
 		switch (valueType) {
 			case LINK : return asLink((String)value);
@@ -149,7 +154,8 @@ public class BPTVaadinResources {
 			case LIST : return asFormattedString((ArrayList<String>)value);
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
-			case IMAGE : return asImage(repository, tool, attachmentName);
+//			case IMAGE : return asImage(repository, tool, attachmentName);
+			case LINK_ATTACHMENT : return asListOfAttachmentLinks(repository, tool, ((ArrayList<String>)value), application);
 			default : return value;
 		}
 	}
@@ -181,26 +187,49 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	private static Embedded asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
-		
-		if (tool.containsKey("_attachments")) {
-			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
-			Image image = new Image(attachmentInputStream, true);
-			try {
-				attachmentInputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
+//	private static Embedded asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
+//		
+//		if (tool.containsKey("_attachments")) {
+//			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
+//			Image image = new Image(attachmentInputStream, true);
+//			try {
+//				attachmentInputStream.close();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
+//
+//			// default image size is icon size
+//			image.setWidth("15px");
+//			image.setHeight("15px");
+//		    return image;
+//		} else {
+//			return new Embedded();
+//		}
+//	}
 
-			// default image size is icon size
-			image.setWidth("15px");
-			image.setHeight("15px");
-		    return image;
-		} else {
-			return new Embedded();
+	private static ArrayList<Link> asListOfAttachmentLinks(final BPTDocumentRepository repository, final Map<String, Object> tool, ArrayList<String> namesOfAttachments, Application application) {
+		ArrayList<Link> links = new ArrayList<Link>();
+		for (final String attachmentName : namesOfAttachments) {
+			StreamResource attachment = new StreamResource(new StreamResource.StreamSource() {
+				public InputStream getStream() {
+					return repository.readAttachment((String)tool.get("_id"), attachmentName);
+				}
+			}, attachmentName, application);
+			Link link = new Link(attachmentName, attachment);
+			link.setTargetName("_blank");
+			String mimeType = attachment.getMIMEType();
+			if (mimeType.equals(BPTMimeTypes.PDF.toString())) {
+				link.setIcon(new ThemeResource("images/logo-pdf-16px.png"));
+			} else if (mimeType.equals(BPTMimeTypes.DOC.toString())) {
+				link.setIcon(new ThemeResource("images/logo-doc-16px.png"));
+			} else if (mimeType.equals(BPTMimeTypes.DOCX.toString())) {
+				link.setIcon(new ThemeResource("images/logo-docx-16px.png"));
+			}
+			links.add(link);
 		}
+		return links;
 	}
 
 	public static String[] getVisibleAttributes() {

@@ -25,7 +25,7 @@ public class BPTDocumentTypes {
 					"exercise_url",
 					"contact_name", "contact_mail", "user_id",
 					"date_created", "last_update",
-					"notification_date",
+					"notification_date", "names_of_attachments",
 					"number_of_url_validation_fails", "number_of_mails_for_expiry",
 					"title_lowercase"
 			};

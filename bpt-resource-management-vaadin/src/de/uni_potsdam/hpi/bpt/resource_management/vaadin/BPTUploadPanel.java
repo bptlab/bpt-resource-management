@@ -3,46 +3,29 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import sun.awt.windows.ThemeReader;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
-import com.vaadin.ui.themes.BaseTheme;
 
-import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
@@ -59,12 +42,13 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	
 	private File tempAttachment;
 	private List<FileResource> attachments = new ArrayList<FileResource>();
+	private List<String> namesOfAttachments = new ArrayList<String>();
 	private FileOutputStream outputStream;
 	private final String[] supportedDocumentTypes;
 	private String documentId, language, set_id;
 	private BPTApplication application;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
-	private Panel documentPanel;
+	private Panel attachmentPanel;
 	private Label titleLabel, languageLabel, descriptionLabel;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
@@ -108,16 +92,22 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		exerciseURLInput.setWidth("100%");
 		layout.addComponent(exerciseURLInput);
 		
-		documentPanel = new Panel("Documents");
-		createUploadComponent(documentPanel);
-        layout.addComponent(documentPanel);
+		attachmentPanel = new Panel("Documents");
+		createUploadComponent(attachmentPanel);
+        layout.addComponent(attachmentPanel);
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	titleInput.setValue((item.getItemProperty("Title").getValue()));
-        	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
+        	titleInput.setValue(item.getItemProperty("Title").getValue());
+        	descriptionInput.setValue(item.getItemProperty("Description").getValue().toString());
+        	if (!item.getItemProperty("Exercise URL").getValue().toString().equals("")) {
+            	exerciseURLInput.setValue(item.getItemProperty("Exercise URL").getValue().toString());
+        	}
+        	ArrayList<Link> attachmentLinks = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_attachments", BPTPropertyValueType.LINK_ATTACHMENT, null, application);
+        	for (Link link : attachmentLinks) {
+        		addLinkToAttachmentPanel(link);
+        	}
         }
-
 	}
 
 	private void createUploadComponent(Panel parent) {
@@ -146,14 +136,15 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 	
 	public void uploadSucceeded(final SucceededEvent event) {
-		final FileResource documentRessource = new FileResource(tempAttachment, getApplication());
-		addDocumentToPanel(documentRessource);
-		attachments.add(documentRessource);
-		System.out.println(documentRessource);
+		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
+		namesOfAttachments.add(documentResource.getFilename());
+		addLinkToAttachmentPanel(documentResource);
+		attachments.add(documentResource);
+		System.out.println(documentResource);
         application.refreshAndClean();
 	}
 	
-	private void addDocumentToPanel(FileResource documentRessource) {
+	private void addLinkToAttachmentPanel(FileResource documentRessource) {
 		Link link = new Link(documentRessource.getFilename(), documentRessource);
 		link.setTargetName("_blank");
 		String mimeType = documentRessource.getMIMEType();
@@ -164,7 +155,11 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 		} else if (mimeType.equals(BPTMimeTypes.DOCX.toString())) {
 			link.setIcon(new ThemeResource("images/logo-docx-16px.png"));
 		}
-		documentPanel.addComponent(link);
+		addLinkToAttachmentPanel(link);
+	}
+
+	private void addLinkToAttachmentPanel(Link link) {
+		attachmentPanel.addComponent(link);
 	}
 
 	public void uploadFailed(FailedEvent event) {
@@ -212,6 +207,10 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 
 	public String getExerciseURLFromInput() {
 		return (String) exerciseURLInput.getValue();
+	}
+
+	public List<String> getNamesOfAttachments() {
+		return namesOfAttachments;
 	}
 
 	public List<FileResource> getAttachments() {
