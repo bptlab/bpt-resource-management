@@ -336,7 +336,7 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
-		databaseDocument.put("status", BPTExerciseStatus.Unpublished);
+		databaseDocument.put("status", BPTExerciseStatus.Published);
 		databaseDocument.put("deleted", false);
 		databaseDocument.put("number_of_url_validation_fails", 0);
 		databaseDocument.put("number_of_mails_for_expiry", 0);

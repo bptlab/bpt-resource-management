@@ -34,8 +34,8 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		buildLayout();
 		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 		statusList.add(BPTExerciseStatus.Published);
-		showNumberOfEntries(BPTContainerProvider.getNumberOfEntries(application.getSelectedLanguage(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		show(BPTContainerProvider.getVisibleEntries(application.getSelectedLanguage(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
+		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(application.getSelectedLanguage(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
+		show(BPTContainerProvider.getInstance().getVisibleEntries(application.getSelectedLanguage(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
 	}
 	
 	protected abstract void buildLayout();
@@ -68,7 +68,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		Map<String, Object> tool = exerciseRepository.readDocument(_id);
 		
 		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntries()).get(1);
-		Object value = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
+		Object value = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4], application);
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
@@ -77,7 +77,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			if ((Boolean)entry[7]) {
 				popupWindow.addComponent(new Label(entry[1] + ":"));
-				value = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
+				value = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
 				if (entry[2] == Component.class) {
 					popupWindow.addComponent((Component)value);
 				} else {
@@ -194,7 +194,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 					boolean fromRejected = false;
 					exerciseRepository.unpublishDocument(_id, fromRejected);
 				}
-				BPTContainerProvider.refreshFromDatabase();
+				BPTContainerProvider.getInstance().refreshFromDatabase();
 				((BPTApplication) getApplication()).refreshAndClean();
 				getWindow().removeWindow(confirmationWindow);
 				if(popupWindow != null){

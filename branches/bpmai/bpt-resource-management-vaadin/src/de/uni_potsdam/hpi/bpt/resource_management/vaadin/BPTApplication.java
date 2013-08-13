@@ -18,7 +18,6 @@ import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
@@ -40,12 +39,14 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 
 	private BPTExerciseRepository exerciseRepository;
 	private BPTUserRepository userRepository;
+	private BPTContainerProvider containerProvider;
 	private int numberOfEntries;
 	
 	@Override
 	public void init() {
 		exerciseRepository = BPTExerciseRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
+		containerProvider = new BPTContainerProvider(this);
 		
 		setProperties();
 		
@@ -143,11 +144,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 	}
 	
-	public BPTExerciseRepository getexerciseRepository() {
-		return exerciseRepository;
-	}
-	
-		public BPTExerciseRepository getExerciseRepository() {
+	public BPTExerciseRepository getExerciseRepository() {
 		return exerciseRepository;
 	}
 	
@@ -155,6 +152,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		return userRepository;
 	}
 	
+	public BPTContainerProvider getContainerProvider() {
+		return containerProvider;
+	}
+
 	public BPTShowEntryComponent getTable(){
 		return entryComponent;
 	}
@@ -271,24 +272,24 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		if (loggedIn) {
 			if (!moderated) {
 				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
-					dataSource = BPTContainerProvider.getVisibleEntriesByUser(getSelectedLanguage(), (String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-					numberOfEntries = BPTContainerProvider.getNumberOfEntriesByUser(getSelectedLanguage(), (String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+					dataSource = containerProvider.getVisibleEntriesByUser(getSelectedLanguage(), (String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					numberOfEntries = containerProvider.getNumberOfEntriesByUser(getSelectedLanguage(), (String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
 					ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 					statusList.add(BPTExerciseStatus.Published);
-					dataSource = BPTContainerProvider.getVisibleEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-					numberOfEntries = BPTContainerProvider.getNumberOfEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+					dataSource = containerProvider.getVisibleEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					numberOfEntries = containerProvider.getNumberOfEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				}
 			} else {
 				ArrayList<BPTExerciseStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
-				dataSource = BPTContainerProvider.getVisibleEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-				numberOfEntries = BPTContainerProvider.getNumberOfEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+				dataSource = containerProvider.getVisibleEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+				numberOfEntries = containerProvider.getNumberOfEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 			}
 		} else {
 			ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 			statusList.add(BPTExerciseStatus.Published);
-			dataSource = BPTContainerProvider.getVisibleEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-			numberOfEntries = BPTContainerProvider.getNumberOfEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+			dataSource = containerProvider.getVisibleEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+			numberOfEntries = containerProvider.getNumberOfEntries(getSelectedLanguage(), statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 		}
 		entryComponent.show(dataSource);
 	}

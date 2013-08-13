@@ -4,15 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
@@ -50,44 +47,47 @@ public class BPTEntry extends CustomLayout {
 
 	private void addToLayout(String id) {
 		//TODO: links zu allen Dokumenten die hochgeladen wurden
-		if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Exercise Set ID") && !id.equals("Contact mail")) {
-			Object value = item.getItemProperty(id).getValue();
-			if (value.getClass() == Link.class) {
-				Link link = (Link) value;
-				if (link.getCaption().isEmpty()) {
-					addDefaultComponent(id.toString());
-				} else {
-					this.addComponent(link, id.toString());
-				}
-			} 
-			else {
-					String labelContent = value.toString();
-					Label label = new Label(labelContent);
-					if (id.equals("Contact name")) {
-						label.setContentMode(Label.CONTENT_XHTML);
-						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
-						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
-						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
-						label.setValue(labelContent);
-					}
-					label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-					if (labelContent.isEmpty()) {
+		if (!id.equals("Names of Attachments")) {
+			// XXX
+			if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Exercise Set ID") && !id.equals("Contact mail")) {
+				Object value = item.getItemProperty(id).getValue();
+				if (value.getClass() == Link.class) {
+					Link link = (Link) value;
+					if (link.getCaption().isEmpty()) {
 						addDefaultComponent(id.toString());
 					} else {
-						this.addComponent(label, id.toString());
+						this.addComponent(link, id.toString());
 					}
+				} 
+				else {
+						String labelContent = value.toString();
+						Label label = new Label(labelContent);
+						if (id.equals("Contact name")) {
+							label.setContentMode(Label.CONTENT_XHTML);
+							String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
+							mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
+							labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
+							label.setValue(labelContent);
+						}
+						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+						if (labelContent.isEmpty()) {
+							addDefaultComponent(id.toString());
+						} else {
+							this.addComponent(label, id.toString());
+						}
+				}
 			}
-		}
-		tabsheet = new TabSheet();
-		this.addComponent(tabsheet, "Tabs");
-//		tabsheet.addStyleName("border");
-		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
-		for(Map entry : relatedEntries){
-			BPTSubEntry subEntry = new BPTSubEntry(entry);
-			tabsheet.addComponent(subEntry);
-			tabsheet.getTab(subEntry).setCaption((String) entry.get("language"));
-			if(entry.get("language").equals(application.getSelectedLanguage())){
-				tabsheet.setSelectedTab(subEntry);
+			tabsheet = new TabSheet();
+			this.addComponent(tabsheet, "Tabs");
+//			tabsheet.addStyleName("border");
+			List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
+			for(Map entry : relatedEntries){
+				BPTSubEntry subEntry = new BPTSubEntry(entry);
+				tabsheet.addComponent(subEntry);
+				tabsheet.getTab(subEntry).setCaption((String) entry.get("language"));
+				if(entry.get("language").equals(application.getSelectedLanguage())){
+					tabsheet.setSelectedTab(subEntry);
+				}
 			}
 		}
 	}

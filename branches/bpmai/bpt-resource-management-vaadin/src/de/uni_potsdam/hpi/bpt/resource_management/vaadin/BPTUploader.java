@@ -69,7 +69,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
         	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
-        	IndexedContainer entries = BPTContainerProvider.generateContainer(map);
+        	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map);
      		for (Object id : entries.getItemIds()) {
  				Item nextItem = entries.getItem(id);
  				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
@@ -210,8 +210,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		Iterator<Component> tabIterator = tabSheet.getComponentIterator();
 		
 		BPTUploadPanel uploadPanel;
-		String documentId, title, language, description, exercise_url;
+		String documentId, title, language, description, exerciseUrl;
 		List<FileResource> attachments;
+		List<String> namesOfAttachments;
 		while(tabIterator.hasNext()){
 			uploadPanel = (BPTUploadPanel) tabIterator.next();
 			if(!uploadPanel.equals(lastPanel)){
@@ -220,8 +221,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 				title = uploadPanel.getTitleFromInput();
 				language = uploadPanel.getLanguageFromInput();
 				description = uploadPanel.getDescriptionFromInput();
-				exercise_url = uploadPanel.getExerciseURLFromInput();
+				exerciseUrl = uploadPanel.getExerciseURLFromInput();
 				attachments = uploadPanel.getAttachments();
+				namesOfAttachments = uploadPanel.getNamesOfAttachments();
 				if (documentId == null) { 
 					
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
@@ -234,12 +236,13 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 						new ArrayList<String>(modelingLanguage.getTagValues()),
 						new ArrayList<String>(taskType.getTagValues()),
 						new ArrayList<String>(other.getTagValues()),
-						exercise_url,
+						exerciseUrl,
 						(String)contactNameInput.getValue(),
 						(String)contactMailInput.getValue(),
 						(String)application.getUser(),
 						new Date(),
-						new Date()
+						new Date(),
+						namesOfAttachments
 					}));
 					
 					for (FileResource attachment : attachments) {
@@ -264,10 +267,11 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) exerciseRepository.readDocument(documentId).get("status"))) {
 						newValues.put("status", BPTExerciseStatus.Unpublished);
 					}
-					newValues.put("exercise_url", exercise_url);
+					newValues.put("exercise_url", exerciseUrl);
 					newValues.put("contact_name", contactNameInput.getValue().toString());
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
+					newValues.put("names_of_attachments", namesOfAttachments);
 					exerciseRepository.updateDocument(newValues);
 					
 					Map<String, Object> document = exerciseRepository.updateDocument(newValues);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.vaadin.ui.GridLayout;
 
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagBox;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
@@ -13,9 +14,11 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	private GridLayout topicssLayout, modelTypesLayout, taskTypesLayout, otherTagsLayout;
 	private ArrayList<String> availabilitiesTags, modelTypesTags, platformsTags, supportedFunctionalitiesTags;
 	private ArrayList<BPTSearchTag> availabilityTagList, modelTypesTagList, platformsTagList, supportedFunctionalitiesTagList;
+	private BPTApplication application;
 
-	public BPTSearchTagBoxes(){
+	public BPTSearchTagBoxes(BPTApplication application) {
 		super();
+		this.application = application;
 		availabilityTagList = new ArrayList<BPTSearchTag>();
 		modelTypesTagList = new ArrayList<BPTSearchTag>();
 		platformsTagList = new ArrayList<BPTSearchTag>();
@@ -23,25 +26,25 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	}
 	@Override
 	protected void addGridsToComponent() {
-		availabilitiesTags = BPTContainerProvider.getUniqueValues("topics");
+		availabilitiesTags = BPTContainerProvider.getInstance().getUniqueValues("topics");
 		topicssLayout = new GridLayout(2,1);
 		topicssLayout.setWidth("100%");
 		topicssLayout.setHeight("100%");
 		baseLayout.addComponent(topicssLayout);
 		
-		modelTypesTags = BPTContainerProvider.getUniqueValues("modelTypes");
+		modelTypesTags = BPTContainerProvider.getInstance().getUniqueValues("modelTypes");
 		modelTypesLayout = new GridLayout(2,1);
 		modelTypesLayout.setWidth("100%");
 		modelTypesLayout.setHeight("100%");
 		baseLayout.addComponent(modelTypesLayout);
 		
-		platformsTags = BPTContainerProvider.getUniqueValues("taskTypes");
+		platformsTags = BPTContainerProvider.getInstance().getUniqueValues("taskTypes");
 		taskTypesLayout = new GridLayout(2,1);
 		taskTypesLayout.setWidth("100%");
 		taskTypesLayout.setHeight("100%");
 		baseLayout.addComponent(taskTypesLayout);
 		
-		supportedFunctionalitiesTags = BPTContainerProvider.getUniqueValues("otherTags");
+		supportedFunctionalitiesTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
 		otherTagsLayout = new GridLayout(2,1);
 		otherTagsLayout.setWidth("100%");
 		otherTagsLayout.setHeight("100%");

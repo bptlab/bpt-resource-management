@@ -6,7 +6,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagComponent;
 
 @SuppressWarnings("serial")
-public class BPTTagSearchComponent extends BPTTagComponent{
+public class BPTTagSearchComponent extends BPTTagComponent {
 	
 	public BPTTagSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		super(application, tagColumns, newTagsAllowed);
@@ -31,7 +31,7 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 	
 	@Override
 	protected void addTagBox(){
-		tagBox = new BPTSearchTagBoxes();
+		tagBox = new BPTSearchTagBoxes(application);
 		layout.addComponent(tagBox);
 	}
 	
