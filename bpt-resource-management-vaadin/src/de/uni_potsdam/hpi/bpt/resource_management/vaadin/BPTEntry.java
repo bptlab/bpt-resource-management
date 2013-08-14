@@ -48,50 +48,46 @@ public class BPTEntry extends CustomLayout {
 	}
 
 	private void addToLayout(String id) {
-		//TODO: links zu allen Dokumenten die hochgeladen wurden
-		if (!id.equals("Attachments")) {
-			// XXX
-			if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Contact mail")) {
-				Object value = item.getItemProperty(id).getValue();
-				if (value.getClass() == Link.class) {
-					Link link = (Link) value;
-					if (link.getCaption().isEmpty()) {
+		if (!id.startsWith("Attachment") && !id.equals("User ID") && !id.equals("ID") && !id.equals("Contact mail")) {
+			Object value = item.getItemProperty(id).getValue();
+			if (value.getClass() == Link.class) {
+				Link link = (Link) value;
+				if (link.getCaption().isEmpty()) {
+					addDefaultComponent(id.toString());
+				} else {
+					this.addComponent(link, id.toString());
+				}
+			} 
+			else {
+					String labelContent = value.toString();
+					Label label = new Label(labelContent);
+					if (id.equals("Contact name")) {
+						label.setContentMode(Label.CONTENT_XHTML);
+						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
+						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
+						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
+						label.setValue(labelContent);
+					}
+					label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+					if (labelContent.isEmpty()) {
 						addDefaultComponent(id.toString());
 					} else {
-						this.addComponent(link, id.toString());
+						this.addComponent(label, id.toString());
 					}
-				} 
-				else {
-						String labelContent = value.toString();
-						Label label = new Label(labelContent);
-						if (id.equals("Contact name")) {
-							label.setContentMode(Label.CONTENT_XHTML);
-							String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
-							mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
-							labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
-							label.setValue(labelContent);
-						}
-						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-						if (labelContent.isEmpty()) {
-							addDefaultComponent(id.toString());
-						} else {
-							this.addComponent(label, id.toString());
-						}
-				}
 			}
-			tabsheet = new TabSheet();
-			this.addComponent(tabsheet, "Tabs");
+		}
+		tabsheet = new TabSheet();
+		this.addComponent(tabsheet, "Tabs");
 //			tabsheet.addStyleName("border");
-			List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
-			IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries);
-			for(Object entryId : entries.getItemIds()){
-				BPTSubEntry subEntry = new BPTSubEntry(entries.getItem(id));
-				tabsheet.addComponent(subEntry);
-				String languageOfEntry = item.getItemProperty("Language").getValue().toString();
-				tabsheet.getTab(subEntry).setCaption(languageOfEntry);
-				if(languageOfEntry.equals(application.getSelectedLanguage())){
-					tabsheet.setSelectedTab(subEntry);
-				}
+		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
+		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries);
+		for(Object entryId : entries.getItemIds()){
+			BPTSubEntry subEntry = new BPTSubEntry(entries.getItem(entryId));
+			tabsheet.addComponent(subEntry);
+			String languageOfEntry = item.getItemProperty("Language").getValue().toString();
+			tabsheet.getTab(subEntry).setCaption(languageOfEntry);
+			if(languageOfEntry.equals(application.getSelectedLanguage())){
+				tabsheet.setSelectedTab(subEntry);
 			}
 		}
 	}
