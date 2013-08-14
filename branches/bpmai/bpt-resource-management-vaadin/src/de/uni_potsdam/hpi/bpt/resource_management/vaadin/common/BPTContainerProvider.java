@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
@@ -147,17 +148,25 @@ public class BPTContainerProvider {
 			Map<String, Object> tool = exercises.get(i);
 			Item item = container.addItem(i);
 //				System.out.println("print map here: " + tool);
-			setItemPropertyValues(item, tool);
+			setItemPropertyValues(container, item, tool);
 //				System.out.println("print item here: " + item);
 		}
 		return container;
 	}
 	
-	private void setItemPropertyValues(Item item, Map<String, Object> tool) {
+	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> tool) {
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
-			// TODO: Caused by: com.vaadin.data.Property$ConversionException: Conversion for value '[com.vaadin.ui.Link@8f2102]' of class java.util.ArrayList to com.vaadin.ui.Component failed
-			if (!entry[1].equals("Attachments")) {
-				item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application));
+			Object component = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
+			if (entry[1].equals("Attachments")) {
+				ArrayList<Link> links = (ArrayList<Link>) component;
+				for (int i = 1; i <= links.size(); i++) {
+					if (!container.getContainerPropertyIds().contains("Attachment" + i)) {
+						container.addContainerProperty("Attachment" + i, Link.class, null);
+					}
+					item.getItemProperty("Attachment" + i).setValue(links.get(i-1));
+				}
+			} else {
+				item.getItemProperty(entry[1]).setValue(component);
 			}
 		}
 	}
