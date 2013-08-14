@@ -7,17 +7,16 @@ import com.vaadin.ui.Label;
 
 public class BPTSubEntry extends CustomLayout{
 	
-	private String language, subtitle, description, exercise_url, topics;
+	private String title, description, exercise_url, topics;
 	
 	public BPTSubEntry(Map entry) {
 		
 		// TODO: Refactor this class - see BPTEntry.
 		// TODO: .setWidth("90%");
 		super("subEntry");
-		language = (String) entry.get("language");
-		subtitle = (String) entry.get("subtitle");
-		Label subtitleLabel = new Label(subtitle);
-		this.addComponent(subtitleLabel, "Subtitle");
+		title = (String) entry.get("title");
+		Label titleLabel = new Label(title);
+		this.addComponent(titleLabel, "Title");
 		description = (String) entry.get("description");
 		Label descriptionLabel = new Label(description);
 		descriptionLabel.setContentMode(Label.CONTENT_XHTML);
