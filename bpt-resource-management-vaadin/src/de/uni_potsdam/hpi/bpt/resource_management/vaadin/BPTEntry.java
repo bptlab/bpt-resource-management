@@ -78,6 +78,7 @@ public class BPTEntry extends CustomLayout {
 				}
 			}
 			tabsheet = new TabSheet();
+			tabsheet.setSizeUndefined();
 			this.addComponent(tabsheet, "Tabs");
 //			tabsheet.addStyleName("border");
 			List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
