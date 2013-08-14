@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
@@ -14,6 +15,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
 public class BPTEntry extends CustomLayout {
@@ -81,11 +83,13 @@ public class BPTEntry extends CustomLayout {
 			this.addComponent(tabsheet, "Tabs");
 //			tabsheet.addStyleName("border");
 			List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
-			for(Map entry : relatedEntries){
-				BPTSubEntry subEntry = new BPTSubEntry(entry);
+			IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries);
+			for(Object entryId : entries.getItemIds()){
+				BPTSubEntry subEntry = new BPTSubEntry(entries.getItem(id));
 				tabsheet.addComponent(subEntry);
-				tabsheet.getTab(subEntry).setCaption((String) entry.get("language"));
-				if(entry.get("language").equals(application.getSelectedLanguage())){
+				String languageOfEntry = item.getItemProperty("Language").getValue().toString();
+				tabsheet.getTab(subEntry).setCaption(languageOfEntry);
+				if(languageOfEntry.equals(application.getSelectedLanguage())){
 					tabsheet.setSelectedTab(subEntry);
 				}
 			}
