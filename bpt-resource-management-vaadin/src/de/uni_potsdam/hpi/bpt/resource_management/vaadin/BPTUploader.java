@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,7 +10,9 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
+import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -26,6 +29,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
@@ -49,6 +53,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private TextField contactMailInput;
 	private Button finishUploadButton;
 	private BPTUploadPanel lastPanel;
+	private ArrayList<String> namesOfOldAttachments;
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		super();
@@ -68,6 +73,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
+        	namesOfOldAttachments = (ArrayList<String>) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_attachments");
         	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
         	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map);
      		for (Object id : entries.getItemIds()) {
@@ -205,7 +211,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
 	private void finishUpload() {
 		if (set_id == null) {
-			set_id = exerciseRepository.nextAvailableSetId(BPTTopic.valueOf(topic.getTagValues().get(0)));
+			set_id = exerciseRepository.nextAvailableSetId(BPTTopic.getValueOf(topic.getTagValues().get(0), "English"));
 		}
 		Iterator<Component> tabIterator = tabSheet.getComponentIterator();
 		
@@ -272,9 +278,26 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
 					newValues.put("names_of_attachments", namesOfAttachments);
-					exerciseRepository.updateDocument(newValues);
 					
 					Map<String, Object> document = exerciseRepository.updateDocument(newValues);
+//					for (Link oldAttachmentLink : uploadPanel.getOldAttachmentLinks()) {
+//						DownloadStream stream = ((StreamResource) oldAttachmentLink.getResource()).getStream();
+//						for (FileResource attachment : attachments) {
+//							if (stream.equals(attachment.getStream())) {
+//								
+//							}
+//						}
+//					}
+					String documentRevision = (String)document.get("_rev");;
+					for (String nameOfOldAttachment : namesOfOldAttachments) {
+						documentRevision = exerciseRepository.deleteAttachment(documentId, documentRevision, nameOfOldAttachment);
+					}
+					
+					for (FileResource attachment : attachments) {
+						 documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, attachment.getFilename(), attachment.getSourceFile(), attachment.getMIMEType());
+					}
+					
+					uploadPanel.clearAttachments();
 				}
 			}
 		}
