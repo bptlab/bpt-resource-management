@@ -47,9 +47,9 @@ public class BPTEntry extends CustomLayout {
 
 	private void addToLayout(String id) {
 		//TODO: links zu allen Dokumenten die hochgeladen wurden
-		if (!id.equals("Names of Attachments")) {
+		if (!id.equals("Attachments")) {
 			// XXX
-			if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Exercise Set ID") && !id.equals("Contact mail")) {
+			if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Contact mail")) {
 				Object value = item.getItemProperty(id).getValue();
 				if (value.getClass() == Link.class) {
 					Link link = (Link) value;
@@ -78,7 +78,6 @@ public class BPTEntry extends CustomLayout {
 				}
 			}
 			tabsheet = new TabSheet();
-			tabsheet.setSizeUndefined();
 			this.addComponent(tabsheet, "Tabs");
 //			tabsheet.addStyleName("border");
 			List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());

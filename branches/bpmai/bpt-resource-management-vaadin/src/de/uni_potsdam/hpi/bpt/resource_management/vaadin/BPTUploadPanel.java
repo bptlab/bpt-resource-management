@@ -50,6 +50,7 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private Panel attachmentPanel;
 	private Label titleLabel, languageLabel, descriptionLabel;
+	private ArrayList<Link> oldAttachmentLinks;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -101,10 +102,10 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         	titleInput.setValue(item.getItemProperty("Title").getValue());
         	descriptionInput.setValue(item.getItemProperty("Description").getValue().toString());
         	if (!item.getItemProperty("Exercise URL").getValue().toString().equals("")) {
-            	exerciseURLInput.setValue(item.getItemProperty("Exercise URL").getValue().toString());
+            	exerciseURLInput.setValue(((Link)item.getItemProperty("Exercise URL").getValue()).getCaption().toString());
         	}
-        	ArrayList<Link> attachmentLinks = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_attachments", BPTPropertyValueType.LINK_ATTACHMENT, null, application);
-        	for (Link link : attachmentLinks) {
+        	oldAttachmentLinks = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_attachments", BPTPropertyValueType.LINK_ATTACHMENT, null, application);
+        	for (Link link : oldAttachmentLinks) {
         		addLinkToAttachmentPanel(link);
         	}
         }
@@ -218,7 +219,16 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
 	}
 	
 	public void clearAttachments() {
+		for (FileResource attachment : attachments) {
+			File file = attachment.getSourceFile();
+			attachment.setSourceFile(null);
+			file.delete();
+		}
 		attachments.clear();
+	}
+
+	public ArrayList<Link> getOldAttachmentLinks() {
+		return oldAttachmentLinks;
 	}
 
 }

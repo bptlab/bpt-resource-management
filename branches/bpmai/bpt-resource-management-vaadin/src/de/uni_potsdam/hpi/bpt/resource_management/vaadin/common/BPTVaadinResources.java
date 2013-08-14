@@ -52,7 +52,7 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, true, true});
 //	    	add(new Object[] {"notification_date", "Date of first notification", Date.class, BPTPropertyValueType.DATE, null, false, false, false});
-	    	add(new Object[] {"names_of_attachments", "Names of Attachments", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, false, false});
+	    	add(new Object[] {"names_of_attachments", "Attachments", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, false, false});
 	    }
 	};
 	

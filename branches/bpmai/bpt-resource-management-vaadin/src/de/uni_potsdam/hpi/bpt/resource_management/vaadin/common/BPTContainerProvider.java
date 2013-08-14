@@ -89,12 +89,8 @@ public class BPTContainerProvider {
 		
 		if (tagColumn == "all" || tagColumn == "topics") {
 			if (tagColumn == "all") uniqueValues.add("----- Topics -----");
-			ArrayList<String> topicTags = new ArrayList<String>();
-			BPTTopic[] topics = BPTTopic.values();
-			for(BPTTopic topicTag : topics){
-				topicTags.add(topicTag.toString());
-			}
-			
+			List<String> topicTags = new ArrayList<String>();
+			topicTags = BPTTopic.getValues("English");
 			
 //			for (Map<String, Object> tool : tools) {
 //				ArrayList<String> topicTagsOfTool = (ArrayList<String>)tool.get("topics");  // cast
@@ -160,7 +156,7 @@ public class BPTContainerProvider {
 	private void setItemPropertyValues(Item item, Map<String, Object> tool) {
 		for (Object[] entry : BPTVaadinResources.getEntries()) {
 			// TODO: Caused by: com.vaadin.data.Property$ConversionException: Conversion for value '[com.vaadin.ui.Link@8f2102]' of class java.util.ArrayList to com.vaadin.ui.Component failed
-			if (!entry[1].equals("Names of Attachments")) {
+			if (!entry[1].equals("Attachments")) {
 				item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application));
 			}
 		}

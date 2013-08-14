@@ -214,21 +214,29 @@ div.redButtonHover span.v-button-wrap span.v-button-caption:HOVER{
 }
 
 span.v-tabsheet-caption-close{
-	/*
-	hier könnte das Bild ersetzt werden (auch für hover)
-	*/
-	/* background-image: none !important; */
-	background-image: "images/x_black.png" !important;
-	
+	background-image:url(images/x_black.png) !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+}
+
+span.v-tabsheet-caption-close:hover{
+	background-image:url(images/x_red.png) !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+	cursor: pointer !important;
 }
 
 div.v-tabsheet-content{
 	border-style: none none;
 }
 
-div{
-	overflow: visible !important;
+/*div.v-tabsheet-tabsheetpanel{ 
+	height: auto !important; 
 }
+
+div.v-tabsheet-tabsheetpanel div{ 
+	height: auto !important; 
+}*/
 
 body{
 	overflow: auto !important;

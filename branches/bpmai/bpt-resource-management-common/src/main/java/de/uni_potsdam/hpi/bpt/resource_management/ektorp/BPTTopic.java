@@ -1,5 +1,8 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum BPTTopic {
 	FoundBPM ("Foundations of Business Process Management", "Grundlagen des Business Process Management"),
 	FoundPM ("Foundations of Process Modeling", "Grundlagen der Prozessmodellierung"),
@@ -22,10 +25,42 @@ public enum BPTTopic {
     }
 	
 	public static String getName(BPTTopic topicName, String language) {
-		if (language == "de") {
+		if (language == "Deutsch") {
 			return topicName.german;
 		} else {
 			return topicName.english;
 		}
+	}
+	
+	public static List<String> getValues(String language) {
+		ArrayList<String> values = new ArrayList<String>();
+		if (language == "Deutsch") {
+			for (BPTTopic topic : values()) {
+				values.add(topic.german);
+			}
+			return values;
+		} else {
+			for (BPTTopic topic : values()) {
+				values.add(topic.english);
+			}
+			return values;
+		}
+	}
+	
+	public static BPTTopic getValueOf(String topicName, String language) {
+		if (language == "Deutsch") {
+			for (BPTTopic topic : values()) {
+				if (topic.german.equals(topicName)) {
+					return topic;
+				}
+			}
+		} else {
+			for (BPTTopic topic : values()) {
+				if (topic.english.equals(topicName)) {
+					return topic;
+				}
+			}
+		}
+		return null;
 	}
 }
