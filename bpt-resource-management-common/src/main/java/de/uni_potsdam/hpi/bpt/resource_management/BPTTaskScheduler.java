@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
 /**
@@ -26,7 +26,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 public class BPTTaskScheduler {
 	
 	Timer timer = new Timer();
-	BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
+	BPTExerciseSetRepository exerciseRepository = BPTExerciseSetRepository.getInstance();
 	BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	public static final int DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH = 14;
 	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 180;

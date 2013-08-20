@@ -18,16 +18,32 @@ public class BPTDocumentTypes {
 	 * 
 	 */
 	public static String[] getDocumentKeys(String type) {
+//		if (type.equals("bpmai_exercises")) {
+//			return new String[] {
+//					"set_id", "title", "language", "description", 
+//					"topics", "modeling_languages", "task_types", "other_tags",
+//					"exercise_url",
+//					"contact_name", "contact_mail", "user_id",
+//					"date_created", "last_update",
+//					"notification_date", "names_of_attachments",
+//					"number_of_url_validation_fails", "number_of_mails_for_expiry",
+//					"title_lowercase"
+//			};
+//		}
 		if (type.equals("bpmai_exercises")) {
 			return new String[] {
 					"set_id", "title", "language", "description", 
-					"topics", "modeling_languages", "task_types", "other_tags",
-					"exercise_url",
-					"contact_name", "contact_mail", "user_id",
+					"contact_name", "contact_mail",
+					"exercise_url", "names_of_attachments"
+			};
+		}
+		if (type.equals("bpmai_exercise_sets")) {
+			return new String[] {
+					"set_id", "languages", 
+					"topics", "modeling_languages", "task_types", "other_tags", "user_id",
 					"date_created", "last_update",
-					"notification_date", "names_of_attachments",
-					"number_of_url_validation_fails", "number_of_mails_for_expiry",
-					"title_lowercase"
+					"notification_date",
+					"number_of_url_validation_fails", "number_of_mails_for_expiry"
 			};
 		}
 		if (type.equals("bpmai_users")) {
