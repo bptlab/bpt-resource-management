@@ -14,13 +14,13 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
 @FixMethodOrder(MethodSorters.JVM)
 public class BPTDatabaseTest {
 	
-	private BPTExerciseRepository exerciseRepository;
+	private BPTExerciseSetRepository exerciseSetRepository;
 	private BPTUserRepository userRepository;
 	private Map<String, Object> exampleExerciseFromDatabase;
 	private static int numberOfDocuments;
@@ -113,15 +113,15 @@ public class BPTDatabaseTest {
 	};
 	
 	public BPTDatabaseTest(){
-		exerciseRepository = new BPTExerciseRepository();
-		exerciseRepository.disableMailProvider();
+		exerciseSetRepository = new BPTExerciseSetRepository();
+		exerciseSetRepository.disableMailProvider();
 		userRepository = new BPTUserRepository();
-		numberOfDocuments = exerciseRepository.numberOfDocuments();
+		numberOfDocuments = exerciseSetRepository.numberOfDocuments();
 	}
 	
 	@Test(expected = DocumentNotFoundException.class)
 	public void testDocumentNotFound() {
-		exampleExerciseFromDatabase = exerciseRepository.readDocument("trololol");
+		exampleExerciseFromDatabase = exerciseSetRepository.readDocument("trololol");
 	}
 	
 	@Test
@@ -131,12 +131,12 @@ public class BPTDatabaseTest {
 	
 	@Test
 	public void testCreateDocument() {
-		exerciseIdentifiers[0] = exerciseRepository.createDocument(generateDocument(firstExercise));
-		exerciseIdentifiers[1] = exerciseRepository.createDocument(generateDocument(secondExercise));
-		assertEquals(numberOfDocuments + 2, exerciseRepository.numberOfDocuments());
-		exerciseIdentifiers[2] = exerciseRepository.createDocument(generateDocument(thirdExercise));
-		exerciseIdentifiers[3] = exerciseRepository.createDocument(generateDocument(fourthExercise));
-		exerciseIdentifiers[4] = exerciseRepository.createDocument(generateDocument(fifthExercise));
+		exerciseIdentifiers[0] = exerciseSetRepository.createDocument(generateDocument(firstExercise));
+		exerciseIdentifiers[1] = exerciseSetRepository.createDocument(generateDocument(secondExercise));
+		assertEquals(numberOfDocuments + 2, exerciseSetRepository.numberOfDocuments());
+		exerciseIdentifiers[2] = exerciseSetRepository.createDocument(generateDocument(thirdExercise));
+		exerciseIdentifiers[3] = exerciseSetRepository.createDocument(generateDocument(fourthExercise));
+		exerciseIdentifiers[4] = exerciseSetRepository.createDocument(generateDocument(fifthExercise));
 	}
 	
 	private Map<String, Object> generateDocument(Object[] exercise) {
@@ -150,18 +150,18 @@ public class BPTDatabaseTest {
 
 	@Test
 	public void testUpdateDocument() {
-		exampleExerciseFromDatabase = exerciseRepository.readDocument(exerciseIdentifiers[4]);
+		exampleExerciseFromDatabase = exerciseSetRepository.readDocument(exerciseIdentifiers[4]);
 		exampleExerciseFromDatabase.put("topics", new ArrayList<String>(Arrays.asList("Prozessmodellierungssprachen", "Prozesschoreographien")));
-		exerciseRepository.updateDocument(exampleExerciseFromDatabase);
+		exerciseSetRepository.updateDocument(exampleExerciseFromDatabase);
 	}
 	
 	@Test
 	public void testDeleteDocument() {
 		for (String _id : exerciseIdentifiers) {
-			exampleExerciseFromDatabase = exerciseRepository.readDocument(_id);
-			exerciseRepository.deleteDocument(_id);
+			exampleExerciseFromDatabase = exerciseSetRepository.readDocument(_id);
+			exerciseSetRepository.deleteDocument(_id);
 		}
-		assertEquals(numberOfDocuments - 5, exerciseRepository.numberOfDocuments());
+		assertEquals(numberOfDocuments - 5, exerciseSetRepository.numberOfDocuments());
 	}
 	
 	@Test
