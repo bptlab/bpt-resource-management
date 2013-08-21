@@ -3,6 +3,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -69,24 +70,18 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	}
 	
 	@Override
-	protected void show(IndexedContainer entries) {
+	protected void show(IndexedContainer entrySets) {
 //		((VerticalLayout) layout.getComponent("cards")).removeAllComponents();
 		
 		layout.removeComponent("cards");
 		VerticalLayout vertical = new VerticalLayout();
-		if (entries.size() == 0) {
+		if (entrySets.size() == 0) {
 			return;
 		}
-		for (Object id : entries.getItemIds()) {
-			Item item = entries.getItem(id);
+		for(Object id : entrySets.getItemIds()){
+			Item item = entrySets.getItem(id);
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
-//			entryList.add(entry);
-//			if (!isInitial) {
-//				for (int i = 0; i < entryList.size(); i++) {
-//					entryList.get(i).hideJavaScript();
-//				}
-//			}
 		}
 		layout.addComponent(vertical, "cards");
 	}

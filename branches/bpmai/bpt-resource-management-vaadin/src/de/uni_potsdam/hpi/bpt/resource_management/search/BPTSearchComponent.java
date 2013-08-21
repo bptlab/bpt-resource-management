@@ -19,13 +19,13 @@ public class BPTSearchComponent extends CustomComponent {
 	private HorizontalLayout boxLayout;
 	private BPTFullSearchComponent fullSearchComponent;
 	private BPTTagSearchComponent tagSearchComponent;
-	private BPTLanguageSelector languageSelector;
+//	private BPTLanguageSelector languageSelector;
 	private BPTApplication application;
 
 	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		fullSearchComponent = new BPTFullSearchComponent(application);
 		tagSearchComponent = new BPTTagSearchComponent(application, tagColumns, newTagsAllowed);
-		languageSelector = (new BPTLanguageSelector(application));
+//		languageSelector = (new BPTLanguageSelector(application));
 		this.application = application;
 		init();
 	}
@@ -39,7 +39,7 @@ public class BPTSearchComponent extends CustomComponent {
 		layout.addComponent(boxLayout);
 		layout.addComponent(fullSearchComponent);
 		layout.addComponent(tagSearchComponent);
-		layout.addComponent(languageSelector);
+//		layout.addComponent(languageSelector);
 	}
 
 	public BPTFullSearchComponent getFullSearchComponent() {
@@ -76,8 +76,8 @@ public class BPTSearchComponent extends CustomComponent {
 		return box.isOwnEntriesOptionSelected();
 	}
 
-	public BPTLanguageSelector getLanguageSelector() {
-		return languageSelector;
-	}
+//	public BPTLanguageSelector getLanguageSelector() {
+//		return languageSelector;
+//	}
 
 }

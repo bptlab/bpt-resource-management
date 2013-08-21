@@ -31,24 +31,28 @@ public class BPTTagSearchComponent extends BPTTagComponent {
 	
 	@Override
 	protected void addTagBox(){
-		tagBox = new BPTSearchTagBoxes(application);
+		tagBox = new BPTSearchTagBoxes();
 		layout.addComponent(tagBox);
 	}
 	
-	public ArrayList<String> getAvailabiltyTags() {
-		return ((BPTSearchTagBoxes)tagBox).getAvailabilityTagValues();
+	public ArrayList<String> getTopicTags() {
+		return ((BPTSearchTagBoxes)tagBox).getTopicsTagValues();
 	}
 	
-	public ArrayList<String> getModelTypeTags() {
-		return ((BPTSearchTagBoxes)tagBox).getModelTypesTagValues();
+	public ArrayList<String> getModelingLanguagesTags() {
+		return ((BPTSearchTagBoxes)tagBox).getModelingLanguagesTagValues();
 	}
 	
-	public ArrayList<String> getPlatformsTags() {
-		return ((BPTSearchTagBoxes)tagBox).getPlatformsTypesTagValues();
+	public ArrayList<String> getTaskTypesTags() {
+		return ((BPTSearchTagBoxes)tagBox).getTaskTypesTagValues();
 	}
 	
-	public ArrayList<String> getSupportedFunctionalityTags() {
-		return ((BPTSearchTagBoxes)tagBox).getsupportedFunctionalitiesTypesTagValues();
+	public ArrayList<String> getOtherTags() {
+		return ((BPTSearchTagBoxes)tagBox).getOtherTagValues();
+	}
+	
+	public ArrayList<String> getLanguageTags() {
+		return ((BPTSearchTagBoxes)tagBox).getLanguageTagValues();
 	}
 
 }

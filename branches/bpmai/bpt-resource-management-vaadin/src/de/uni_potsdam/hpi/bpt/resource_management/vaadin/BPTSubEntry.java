@@ -24,9 +24,9 @@ public class BPTSubEntry extends CustomLayout{
 		this.addComponent(descriptionLabel, "Description");
 		Link exerciseURLLink = (Link) entry.getItemProperty("Exercise URL").getValue();
 		this.addComponent(exerciseURLLink, "Exercise URL");
-		String topics = (String) entry.getItemProperty("Topics").getValue();
-		Label topicsLabel = new Label(topics);
-		this.addComponent(topicsLabel, "Topics");
+//		String topics = (String) entry.getItemProperty("Topics").getValue();
+//		Label topicsLabel = new Label(topics);
+//		this.addComponent(topicsLabel, "Topics");
 		
 		VerticalLayout attachmentLayout = new VerticalLayout();
 		this.addComponent(attachmentLayout, "Attachments");
