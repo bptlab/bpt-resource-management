@@ -6,11 +6,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
 @SuppressWarnings("serial")
-public class BPTNavigationBar extends CustomComponent{
+public class BPTNavigationBar extends CustomComponent {
 	
 	private HorizontalLayout layout;
 	
-	public BPTNavigationBar(){
+	public BPTNavigationBar() {
 		
 		layout = new HorizontalLayout();
 		setCompositionRoot(layout);
@@ -21,13 +21,13 @@ public class BPTNavigationBar extends CustomComponent{
 		
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).finder();
+				((BPTApplication)getApplication()).renderEntries();
 			}
 		});
 		
 		uploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).uploader();
+				((BPTApplication)getApplication()).renderUploader();
 			}
 		});
 	}

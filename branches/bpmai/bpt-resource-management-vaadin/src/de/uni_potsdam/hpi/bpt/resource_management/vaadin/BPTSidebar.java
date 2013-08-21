@@ -26,6 +26,14 @@ public class BPTSidebar extends CustomComponent{
 		init(layout);		
 	}
 
+	public BPTLoginComponent getLoginComponent() {
+		return loginComponent;
+	}
+
+	public void setLoginComponent(BPTLoginComponent loginComponent) {
+		this.loginComponent = loginComponent;
+	}
+
 	public BPTSearchComponent getSearchComponent() {
 		return searchComponent;
 	}
@@ -41,9 +49,9 @@ public class BPTSidebar extends CustomComponent{
 		layout.setExpandRatio(loginComponent, 25);
 	}
 
-	public void login(String name) {
+	public void login(String name, boolean moderated) {
 		searchComponent.login();
-		loginComponent.login(name);
+		loginComponent.login(name, moderated);
 	}
 
 	public void logout(){
@@ -51,7 +59,7 @@ public class BPTSidebar extends CustomComponent{
 		application.close();
 	}
 	
-	public void upload(){
+	public void renderUploader() {
 		layout.removeAllComponents();
 //		layout = new HorizontalLayout();
 		Label label = new Label("required fields marked with *<br/>", Label.CONTENT_XHTML);
@@ -61,7 +69,17 @@ public class BPTSidebar extends CustomComponent{
 		layout.setExpandRatio(loginComponent, 25);
 	}
 	
-	public void finder() {
+	public void renderAdministrator() {
+		layout.removeAllComponents();
+//		layout = new HorizontalLayout();
+		Label label = new Label("Administration page <br/>", Label.CONTENT_XHTML);
+		layout.addComponent(label);
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(label, 75);
+		layout.setExpandRatio(loginComponent, 25);
+	}
+	
+	public void renderEntries() {
 		layout.removeAllComponents();
 //		layout = new HorizontalLayout();
 		searchComponent = new BPTSearchComponent(application, "all", false);

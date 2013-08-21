@@ -31,6 +31,8 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private String openIdReturnTo;
 	private String openIdRealm;
 	private String openIdProvider = openIdProviders[0];
+	private NativeSelect openIdProviderNativeSelect;
+	private Button administrationButton;
 	
 	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar){
 		
@@ -45,13 +47,12 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 			layout.addComponent(navigationBar);
 			addLogoutButton();
 		}
-		else {
-			addLoginButton();
-		}
-		
+//		else {
+//			addLoginButton();
+//		}
 	}
 
-	private void addLoginButton() {
+	public void addLoginButton() {
 		loginButton = new Button("Login");
         loginButton.setStyleName(BaseTheme.BUTTON_LINK);
         loginButton.addStyleName("redButton");
@@ -67,7 +68,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 			}
 		});
         
-        NativeSelect openIdProviderNativeSelect = new NativeSelect("OpenID provider");
+        openIdProviderNativeSelect = new NativeSelect("OpenID provider");
         for (String openIdProvider : openIdProviders) {
         	openIdProviderNativeSelect.addItem(openIdProvider);
         }
@@ -77,7 +78,25 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
         openIdProviderNativeSelect.addListener(this);
         
         layout.addComponent(openIdProviderNativeSelect);
+	}
+	
+	public void removeLoginButton() {
+        layout.removeComponent(loginButton);
+        layout.removeComponent(openIdProviderNativeSelect);
+	}
 
+
+	private void addAdministrationButton() {
+		administrationButton = new Button("Administration");
+        administrationButton.setStyleName(BaseTheme.BUTTON_LINK);
+        administrationButton.addStyleName("redButton");
+        layout.addComponent(administrationButton);
+        
+        administrationButton.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				((BPTApplication)getApplication()).renderAdministrator();
+			}
+		});
 	}
 
 	private void addLogoutButton() {
@@ -94,21 +113,22 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				application.setLoggedIn(false);
 				application.setModerated(false);
 				application.setOpenIdProvider(openIdProviders[0]);
-				application.finder();
+				application.renderEntries();
 				layout.removeAllComponents();
 				addLoginButton();
 				sidebar.logout();
-	
 			}});
-		
 	}
 	
-	public void login(String name){
+	public void login(String name, boolean moderated) {
 		layout.removeAllComponents();
 //		System.out.println(name);
 		layout.addComponent(navigationBar);
 		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
 		layout.addComponent(welcomeLabel);
+		if (moderated) {
+			addAdministrationButton();
+		}
 		addLogoutButton();
 	}
 	
