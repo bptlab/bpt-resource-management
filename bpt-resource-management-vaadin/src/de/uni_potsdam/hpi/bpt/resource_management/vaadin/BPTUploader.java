@@ -301,7 +301,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 				}
 			}
 		}
-		((BPTApplication)getApplication()).finder();
+		((BPTApplication)getApplication()).renderEntries();
 	}
 	
 	private Map<String, Object> generateDocument(Object[] values) {

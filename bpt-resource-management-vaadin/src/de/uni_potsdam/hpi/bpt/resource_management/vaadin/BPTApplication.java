@@ -11,10 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
@@ -41,6 +49,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private BPTUserRepository userRepository;
 	private BPTContainerProvider containerProvider;
 	private int numberOfEntries;
+
+	private Button administrationButton;
+
+	private BPTAdministrator administrator;
 	
 	@Override
 	public void init() {
@@ -50,11 +62,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		setProperties();
 		
-		Window mainWindow = new Window("BPM Academic Initiative");
+		final Window mainWindow = new Window("BPM Academic Initiative");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme(themeName);
-		CustomLayout custom = new CustomLayout(themeName + "_mainlayout");
+		final CustomLayout custom = new CustomLayout(themeName + "_mainlayout");
 		custom.setHeight("100%");
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
@@ -69,6 +81,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		custom.addComponent(layout, "application");
 		custom.addStyleName("scroll");
 		mainWindow.setContent(custom);
+		
+		addAdministrationButton(custom);
 	}
 
 	public boolean isLoggedIn() {
@@ -120,7 +134,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.openIdProvider = openIdProvider;
 	}
 	
-
 	private void setProperties() { 		
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 		applicationURL = resourceBundle.getString("OPENID_RETURN_TO");
@@ -131,17 +144,71 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		setModerated(false);
 	}
 
-	public void uploader() {
+	public void renderUploader() {
 		uploader = new BPTUploader(null, this);
 		mainFrame.add(uploader);
-		sidebar.upload();
+		sidebar.renderUploader();
 	}
 	
-	public void finder() {
-		sidebar.finder();
+	public void renderAdministrator() {
+		administrator = new BPTAdministrator(this);
+		mainFrame.add(administrator);
+		sidebar.renderAdministrator();
+	}
+	
+	public void renderEntries() {
+		sidebar.renderEntries();
 		refreshAndClean();
 		mainFrame.add(entryComponent);
-		
+	}
+
+	private void addAdministrationButton(final CustomLayout custom) {
+		administrationButton = new Button("Administration");
+		administrationButton.setStyleName(BaseTheme.BUTTON_LINK);
+		administrationButton.addStyleName("redButton");
+//        administrationButton.addStyleName("greyButton");
+        custom.addComponent(administrationButton, "loginLink");
+        
+        administrationButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				final Window administrationWindow = new Window("Administration");
+				administrationWindow.setClosable(true);
+				administrationWindow.setDraggable(false);
+				administrationWindow.setImmediate(true);
+				administrationWindow.setModal(true);
+				administrationWindow.setResizable(false);
+				
+				final CustomLayout administrationLayout = new CustomLayout("popup_administration");
+				administrationLayout.setWidth("350px");
+//				administrationLayout.setMargin(true);
+				administrationWindow.setContent(administrationLayout);
+
+				final Label failureLabel = new Label("<font color=\"#FF0000\">Invalid password.</font>", Label.CONTENT_XHTML);
+				failureLabel.setVisible(false);
+				administrationLayout.addComponent(failureLabel, "failureLabel");
+				final PasswordField passwordInput = new PasswordField();
+				passwordInput.setInputPrompt("Password");
+				passwordInput.setWidth("230px");
+				administrationLayout.addComponent(passwordInput, "passwordInput");
+				Button loginButton = new Button("Login");
+				loginButton.setClickShortcut(KeyCode.ENTER);
+				loginButton.setWidth("70px");
+				loginButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							if (((String) passwordInput.getValue()).equals("petrinet")) {
+								failureLabel.setVisible(false);
+								sidebar.getLoginComponent().addLoginButton();
+								getMainWindow().removeWindow(administrationWindow);
+								custom.removeComponent(administrationButton);
+							} else {
+								failureLabel.setVisible(true);
+							}
+						}
+					});
+				administrationLayout.addComponent(loginButton, "loginButton");
+				getMainWindow().addWindow(administrationWindow);
+			}
+		});
 	}
 	
 	public BPTExerciseRepository getExerciseRepository() {
@@ -178,8 +245,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			}
 			moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
 			loggedIn = true;
-			sidebar.login(name);
-			finder();
+			sidebar.login(name, moderated);
+			renderEntries();
 			try {
 				response.sendRedirect(getLogoutURL());
 			} catch (IOException e) {
@@ -250,7 +317,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
-		sidebar.upload();
+		sidebar.renderUploader();
 	}
 	
 	public void refreshAndClean() {

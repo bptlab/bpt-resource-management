@@ -21,14 +21,12 @@ ul#resource-list {
 	padding: 1em;
 	margin: 1em;
 	clear: left;
-	background-color: #FFFFFF;
-	border-width: 1px;
-	border-color: #000000;
-	border-style: solid;
+	background-color: #EEEEEE;
+	border: none;
 }
 
 #resource-list li.entry:nth-child(2n+1) {
-	background-color: #FFFFFF;
+	background-color: #EEEEEE;
 }
 
 #resource-list .entry .extension{
@@ -57,6 +55,7 @@ ul#resource-list {
 #resource-list .entry .button.edit {
 	margin: 0px;
 	margin-top: 10px;
+  margin-left: 2px;
 	float:left;
 	clear: none;
 	display: none;
