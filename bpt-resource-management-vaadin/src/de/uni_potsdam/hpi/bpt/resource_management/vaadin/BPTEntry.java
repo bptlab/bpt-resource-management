@@ -14,18 +14,20 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
 public class BPTEntry extends CustomLayout {
 	
-	private String entryId;
+	private String setId;
 	private BPTEntry entry;
 	private String userId;
 	private Item item;
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
+	private BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private TabSheet tabsheet;
 	
@@ -35,20 +37,17 @@ public class BPTEntry extends CustomLayout {
 		this.item = item;
 		this.entryCards = entryCards;
 		this.application = application;
-		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
-		this.setDebugId(entryId);
+		this.setDebugId(this.setId);
 		
 		addButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
-			System.out.println(attributeName);
-			System.out.println(item.getItemProperty(attributeName).getValue());
 			addToLayout(attributeName.toString());
 		}
 	}
 
 	private void addToLayout(String id) {
-		if (!id.startsWith("Attachment") && !id.equals("User ID") && !id.equals("ID") && !id.equals("Contact mail")) {
+		if (!id.equals("Exercise Set ID") && !id.equals("User ID") && !id.equals("ID") && !id.equals("Contact mail")) {
 			Object value = item.getItemProperty(id).getValue();
 			if (value.getClass() == Link.class) {
 				Link link = (Link) value;
@@ -79,8 +78,8 @@ public class BPTEntry extends CustomLayout {
 		tabsheet = new TabSheet();
 		this.addComponent(tabsheet, "Tabs");
 //			tabsheet.addStyleName("border");
-		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(item.getItemProperty("Exercise Set ID").getValue().toString());
-		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries);
+		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(setId);
+		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries, false);
 		for(Object entryId : entries.getItemIds()){
 			BPTSubEntry subEntry = new BPTSubEntry(entries.getItem(entryId));
 			tabsheet.addComponent(subEntry);
@@ -109,7 +108,7 @@ public class BPTEntry extends CustomLayout {
 
 			private String getJavaScriptStringShow() {
 				String js = 
-		        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+		        "var nodes = document.getElementById('" + setId +"').childNodes[0].childNodes;" +
 				"for(i=0; i<nodes.length; i+=1){" +
 					"if(nodes[i].className == 'extension'){" +
 						"nodes[i].style.display = 'block';}" +
@@ -159,7 +158,7 @@ public class BPTEntry extends CustomLayout {
 			Button delete = new Button("delete");
 			delete.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "delete");
+					entryCards.addConfirmationWindowTo(setId, "delete");
 				}
 			});
 			
@@ -168,16 +167,16 @@ public class BPTEntry extends CustomLayout {
 			delete.addStyleName("redButtonHover");
 			this.addComponent(delete, "button delete");
 			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
-			System.out.println("renderDeleteButton" + entryId);
+			System.out.println("renderDeleteButton" + setId);
 		}
 		
-		BPTExerciseStatus actualState = exerciseRepository.getDocumentStatus(entryId);
+		BPTExerciseStatus actualState = exerciseSetRepository.getDocumentStatus(setId);
 		
 		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Unpublished){
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "publish");
+					entryCards.addConfirmationWindowTo(setId, "publish");
 				}
 			});
 		
@@ -190,7 +189,7 @@ public class BPTEntry extends CustomLayout {
 			Button reject = new Button("reject");
 			reject.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "reject");
+					entryCards.addConfirmationWindowTo(setId, "reject");
 				}
 			});
 			
@@ -205,7 +204,7 @@ public class BPTEntry extends CustomLayout {
 			Button unpublish = new Button("unpublish");
 			unpublish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "unpublish");
+					entryCards.addConfirmationWindowTo(setId, "unpublish");
 				}
 			});
 			
@@ -221,7 +220,7 @@ public class BPTEntry extends CustomLayout {
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "propose");
+					entryCards.addConfirmationWindowTo(setId, "propose");
 				}
 			});
 			
@@ -236,7 +235,7 @@ public class BPTEntry extends CustomLayout {
 
 	private String getJavaScriptStringShow(String button) {
 		String js = 
-        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+        "var nodes = document.getElementById('" + setId +"').childNodes[0].childNodes;" +
 		"for(i=0; i<nodes.length; i+=1){" +
 			"if(nodes[i].className == 'extension'){" +
 				"var subNodes = nodes[i].childNodes;" +
@@ -253,7 +252,7 @@ public class BPTEntry extends CustomLayout {
 
 	private String getJavaScriptStringHide() {
 		String js = 
-        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
+        "var nodes = document.getElementById('" + setId +"').childNodes[0].childNodes;" +
 		"for(i=0; i<nodes.length; i+=1){" +
 			"if(nodes[i].className == 'extension'){" +
 				"nodes[i].style.display = 'none';}" +

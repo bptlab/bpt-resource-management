@@ -33,25 +33,41 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
 @SuppressWarnings({ "serial", "unchecked" })
 public class BPTVaadinResources {
 	
-	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
+	private static List<Object[]> propertiesOfVisibleSetItems = new ArrayList<Object[]>() {
 	    { 
 	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
 	    	add(new Object[] {"set_id", "Exercise Set ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 //	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
-	    	add(new Object[] {"title", "Title", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
-	    	add(new Object[] {"language", "Language", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
-	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
+//	    	add(new Object[] {"title", "Title", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+//	    	add(new Object[] {"language", "Language", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+//	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
 	    	add(new Object[] {"topics", "Topics", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"modeling_languages", "Modeling Languages", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"task_types", "Task Types", String.class, BPTPropertyValueType.LIST, null, true, true, true});
 	    	add(new Object[] {"other_tags", "Other tags", String.class, BPTPropertyValueType.LIST, null, true, true, true});
-	    	add(new Object[] {"exercise_url", "Exercise URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
-	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
-	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
+	    	add(new Object[] {"languages", "Languages", String.class, BPTPropertyValueType.LIST, null, true, true, true});
+//	    	add(new Object[] {"exercise_url", "Exercise URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
+//	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
+//	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
 	    	add(new Object[] {"user_id", "User ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 	    	add(new Object[] {"date_created", "Date created", Date.class, BPTPropertyValueType.DATE, null, true, false, false});
 	    	add(new Object[] {"last_update", "Last update", Date.class, BPTPropertyValueType.DATE, null, true, true, true});
 //	    	add(new Object[] {"notification_date", "Date of first notification", Date.class, BPTPropertyValueType.DATE, null, false, false, false});
+//	    	add(new Object[] {"names_of_attachments", "Attachments", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
+	    }
+	};
+	
+	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
+	    { 
+	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
+	    	add(new Object[] {"set_id", "Exercise Set ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
+	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
+	    	add(new Object[] {"title", "Title", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+	    	add(new Object[] {"language", "Language", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
+	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
+	    	add(new Object[] {"exercise_url", "Exercise URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
+	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
+	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
 	    	add(new Object[] {"names_of_attachments", "Attachments", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
 	    }
 	};
@@ -72,7 +88,11 @@ public class BPTVaadinResources {
 	 * array element #7: true if attribute shall be visible in window where selected entry is shown (_attachments are handled separately)
 	 * 
 	 */
-	public static List<Object[]> getEntries() {
+	public static List<Object[]> getEntrySets() {
+		return propertiesOfVisibleSetItems;
+	}
+	
+	public static List<Object[]> getEntries(){
 		return propertiesOfVisibleItems;
 	}
 	
@@ -83,7 +103,7 @@ public class BPTVaadinResources {
 	 */
 	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly) {
 		ArrayList<String> values = new ArrayList<String>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		for (Object[] entry : propertiesOfVisibleSetItems) {
 			if (!modifiableOnly || (Boolean)entry[5]) {
 				values.add((String)entry[0]);
 			}
@@ -98,7 +118,7 @@ public class BPTVaadinResources {
 	 */
 	public static ArrayList<String> getColumnNames() {
 		ArrayList<String> values = new ArrayList<String>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		for (Object[] entry : propertiesOfVisibleSetItems) {
 			values.add((String)entry[1]);
 		}
 		return values;
@@ -111,7 +131,7 @@ public class BPTVaadinResources {
 	 */
 	public static ArrayList<Class<?>> getPropertyDataTypes() {
 		ArrayList<Class<?>> values = new ArrayList<Class<?>>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		for (Object[] entry : propertiesOfVisibleSetItems) {
 			values.add((Class<?>)entry[2]);
 		}
 		return values;
@@ -124,7 +144,7 @@ public class BPTVaadinResources {
 	 */
 	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes() {
 		ArrayList<BPTPropertyValueType> values = new ArrayList<BPTPropertyValueType>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		for (Object[] entry : propertiesOfVisibleSetItems) {
 			values.add((BPTPropertyValueType)entry[3]);
 		}
 		return values;
@@ -234,7 +254,7 @@ public class BPTVaadinResources {
 
 	public static String[] getVisibleAttributes() {
 		List<String> visibleAttributes = new ArrayList<String>();		
-		for (Object[] entry : propertiesOfVisibleItems) {
+		for (Object[] entry : propertiesOfVisibleSetItems) {
 			if ((Boolean)entry[6]) {
 				visibleAttributes.add((String)entry[1]);
 			}

@@ -11,64 +11,79 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 @SuppressWarnings("serial")
 public class BPTSearchTagBoxes extends BPTTagBox{
 
-	private GridLayout topicssLayout, modelTypesLayout, taskTypesLayout, otherTagsLayout;
-	private ArrayList<String> availabilitiesTags, modelTypesTags, platformsTags, supportedFunctionalitiesTags;
-	private ArrayList<BPTSearchTag> availabilityTagList, modelTypesTagList, platformsTagList, supportedFunctionalitiesTagList;
-	private BPTApplication application;
+	private GridLayout topicssLayout, modelingLanguagesLayout, taskTypesLayout, otherTagsLayout, languageTagLayout;
+	private ArrayList<String> topicsTags, modelingLanguagesTags, taskTypesTags, otherTags, languageTags;
+	private ArrayList<BPTSearchTag> topicsTagList, modelingLanguagesTagList, taskTypesTagList, otherTagList, languageTagList;
 
-	public BPTSearchTagBoxes(BPTApplication application) {
+	public BPTSearchTagBoxes() {
 		super();
-		this.application = application;
-		availabilityTagList = new ArrayList<BPTSearchTag>();
-		modelTypesTagList = new ArrayList<BPTSearchTag>();
-		platformsTagList = new ArrayList<BPTSearchTag>();
-		supportedFunctionalitiesTagList = new ArrayList<BPTSearchTag>();
+		topicsTagList = new ArrayList<BPTSearchTag>();
+		modelingLanguagesTagList = new ArrayList<BPTSearchTag>();
+		taskTypesTagList = new ArrayList<BPTSearchTag>();
+		otherTagList = new ArrayList<BPTSearchTag>();
+		languageTagList = new ArrayList<BPTSearchTag>();
 	}
 	@Override
 	protected void addGridsToComponent() {
-		availabilitiesTags = BPTContainerProvider.getInstance().getUniqueValues("topics");
+		topicsTags = BPTContainerProvider.getInstance().getUniqueValues("topics");
 		topicssLayout = new GridLayout(2,1);
 		topicssLayout.setWidth("100%");
 		topicssLayout.setHeight("100%");
 		baseLayout.addComponent(topicssLayout);
 		
-		modelTypesTags = BPTContainerProvider.getInstance().getUniqueValues("modelTypes");
-		modelTypesLayout = new GridLayout(2,1);
-		modelTypesLayout.setWidth("100%");
-		modelTypesLayout.setHeight("100%");
-		baseLayout.addComponent(modelTypesLayout);
+		modelingLanguagesTags = BPTContainerProvider.getInstance().getUniqueValues("modelTypes");
+		modelingLanguagesLayout = new GridLayout(2,1);
+		modelingLanguagesLayout.setWidth("100%");
+		modelingLanguagesLayout.setHeight("100%");
+		baseLayout.addComponent(modelingLanguagesLayout);
 		
-		platformsTags = BPTContainerProvider.getInstance().getUniqueValues("taskTypes");
+		taskTypesTags = BPTContainerProvider.getInstance().getUniqueValues("taskTypes");
 		taskTypesLayout = new GridLayout(2,1);
 		taskTypesLayout.setWidth("100%");
 		taskTypesLayout.setHeight("100%");
 		baseLayout.addComponent(taskTypesLayout);
 		
-		supportedFunctionalitiesTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
+		otherTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
 		otherTagsLayout = new GridLayout(2,1);
 		otherTagsLayout.setWidth("100%");
 		otherTagsLayout.setHeight("100%");
 		baseLayout.addComponent(otherTagsLayout);
+		
+		otherTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
+		otherTagsLayout = new GridLayout(2,1);
+		otherTagsLayout.setWidth("100%");
+		otherTagsLayout.setHeight("100%");
+		baseLayout.addComponent(otherTagsLayout);
+		
+		languageTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
+		languageTagLayout = new GridLayout(2,1);
+		languageTagLayout.setWidth("100%");
+		languageTagLayout.setHeight("100%");
+		baseLayout.addComponent(languageTagLayout);
 	}
 	
 	@Override
 	public void removeTag(BPTSearchTag searchTag) {
 		String value = searchTag.getValue();
-		if(availabilitiesTags.contains(value)){
-			availabilityTagList.remove(searchTag);
+		if(topicsTags.contains(value)){
+			topicsTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, topicssLayout);
 		}
-		else if (modelTypesTags.contains(value)){
-			modelTypesTagList.remove(searchTag);
-			removeTagFromLayout(searchTag, modelTypesLayout);
+		else if (modelingLanguagesTags.contains(value)){
+			modelingLanguagesTagList.remove(searchTag);
+			removeTagFromLayout(searchTag, modelingLanguagesLayout);
 		}
-		else if (platformsTags.contains(value)){
-			platformsTagList.remove(searchTag);
+		else if (taskTypesTags.contains(value)){
+			taskTypesTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, taskTypesLayout);
 		}
-		else if (supportedFunctionalitiesTags.contains(value)){
-			supportedFunctionalitiesTagList.remove(searchTag);
+		else if (otherTags.contains(value)){
+			otherTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, otherTagsLayout);
+		}
+		else{
+			languageTagList.remove(searchTag);
+			removeTagFromLayout(searchTag, languageTagLayout);
 		}
 		
 	}
@@ -76,24 +91,24 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	@Override
 	public void addTag(String value){
 		BPTSearchTag searchTag;
-		if(availabilitiesTags.contains(value)){
+		if(topicsTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Availability", value);
-			availabilityTagList.add(searchTag);
+			topicsTagList.add(searchTag);
 			addTagToLayout(searchTag, topicssLayout);
 		}
-		else if (modelTypesTags.contains(value)){
+		else if (modelingLanguagesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Model type", value);
-			modelTypesTagList.add(searchTag);
-			addTagToLayout(searchTag, modelTypesLayout);
+			modelingLanguagesTagList.add(searchTag);
+			addTagToLayout(searchTag, modelingLanguagesLayout);
 		}
-		else if (platformsTags.contains(value)){
+		else if (taskTypesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Platform", value);
-			platformsTagList.add(searchTag);
+			taskTypesTagList.add(searchTag);
 			addTagToLayout(searchTag, taskTypesLayout);
 		}
 		else {//if (supportedFunctionalitiesTags.contains(value)){
 			searchTag = new BPTSearchTag(this, "Supported functionality", value);
-			supportedFunctionalitiesTagList.add(searchTag);
+			otherTagList.add(searchTag);
 			addTagToLayout(searchTag, otherTagsLayout);
 		}
 	}
@@ -102,45 +117,53 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	public void removeAllTags() {
 		if (!searchTagList.isEmpty()) {
 			searchTagList.clear();
-			availabilityTagList.clear();
-			modelTypesTagList.clear();
-			platformsTagList.clear();
-			supportedFunctionalitiesTagList.clear();
+			topicsTagList.clear();
+			modelingLanguagesTagList.clear();
+			taskTypesTagList.clear();
+			otherTagList.clear();
 			topicssLayout.removeAllComponents();
-			modelTypesLayout.removeAllComponents();
+			modelingLanguagesLayout.removeAllComponents();
 			taskTypesLayout.removeAllComponents();
 			otherTagsLayout.removeAllComponents();
 			refresh();
 		}
 	}
 	
-	public ArrayList<String> getAvailabilityTagValues() {
+	public ArrayList<String> getTopicsTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : availabilityTagList){
+		for (BPTSearchTag searchTag : topicsTagList){
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
 	}
 	
-	public ArrayList<String> getModelTypesTagValues() {
+	public ArrayList<String> getModelingLanguagesTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : modelTypesTagList){
+		for (BPTSearchTag searchTag : modelingLanguagesTagList){
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
 	}
 	
-	public ArrayList<String> getPlatformsTypesTagValues() {
+	public ArrayList<String> getTaskTypesTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : platformsTagList){
+		for (BPTSearchTag searchTag : taskTypesTagList){
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
 	}
 	
-	public ArrayList<String> getsupportedFunctionalitiesTypesTagValues() {
+	public ArrayList<String> getOtherTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : supportedFunctionalitiesTagList){
+		for (BPTSearchTag searchTag : otherTagList){
+			tagValues.add(searchTag.getValue());
+		}
+		return tagValues;
+	}
+	
+	public ArrayList<String> getLanguageTagValues(){
+		ArrayList<String> tagValues = new ArrayList<String>();
+		for (BPTSearchTag searchTag : languageTagList){
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;

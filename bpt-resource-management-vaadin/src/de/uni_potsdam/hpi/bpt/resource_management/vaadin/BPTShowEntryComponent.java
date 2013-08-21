@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -15,7 +16,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
@@ -26,7 +27,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
 	protected String _id;
 	protected BPTApplication application;
-	protected BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
+	protected BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 	private TextArea reasonForRejectionTextArea;
 	
 	public BPTShowEntryComponent(final BPTApplication application) {
@@ -34,8 +35,8 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		buildLayout();
 		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 		statusList.add(BPTExerciseStatus.Published);
-		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(application.getSelectedLanguage(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		show(BPTContainerProvider.getInstance().getVisibleEntries(application.getSelectedLanguage(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
+		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(new ArrayList<String>(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
+		show(BPTContainerProvider.getInstance().getVisibleEntrieSets(application.getSidebar().getSearchComponent().getTagSearchComponent().getLanguageTags(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
 	}
 	
 	protected abstract void buildLayout();
@@ -51,9 +52,9 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	/**
 	 * @abstract to be overwritten by subclass
 	 * 
-	 * @param tableEntries
+	 * @param entryIDs
 	 */
-	protected abstract void show(IndexedContainer tableEntries); 
+	protected abstract void show(IndexedContainer sets); 
 	
 	/**
 	 * default solution (entries will be shown in popup), to be overwritten in subclass
@@ -65,19 +66,19 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		popupWindow.setWidth("600px");
 		
 		_id = item.getItemProperty("ID").getValue().toString();
-		Map<String, Object> tool = exerciseRepository.readDocument(_id);
+		Map<String, Object> tool = exerciseSetRepository.readDocument(_id);
 		
-		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntries()).get(1);
-		Object value = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4], application);
+		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntrySets()).get(1);
+		Object value = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4], application);
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
 		popupWindow.addComponent(image);
 		
-		for (Object[] entry : BPTVaadinResources.getEntries()) {
+		for (Object[] entry : BPTVaadinResources.getEntrySets()) {
 			if ((Boolean)entry[7]) {
 				popupWindow.addComponent(new Label(entry[1] + ":"));
-				value = BPTVaadinResources.generateComponent(exerciseRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
+				value = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
 				if (entry[2] == Component.class) {
 					popupWindow.addComponent((Component)value);
 				} else {
@@ -110,7 +111,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(editButton);
 			}
-			BPTExerciseStatus actualState = exerciseRepository.getDocumentStatus(_id);
+			BPTExerciseStatus actualState = exerciseSetRepository.getDocumentStatus(_id);
 			
 			if (actualState == BPTExerciseStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
 				
@@ -182,19 +183,18 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
-					exerciseRepository.deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
+					exerciseSetRepository.deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
 				} else if (status.equals("publish")) {
-					exerciseRepository.publishDocument(_id);
+					exerciseSetRepository.publishDocument(_id);
 				} else if (status.equals("reject")) {
-					exerciseRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
+					exerciseSetRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
-					exerciseRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
+					exerciseSetRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
 				} else { // if status.equals("propose"))
 					boolean fromRejected = false;
-					exerciseRepository.unpublishDocument(_id, fromRejected);
+					exerciseSetRepository.unpublishDocument(_id, fromRejected);
 				}
-				BPTContainerProvider.getInstance().refreshFromDatabase();
 				((BPTApplication) getApplication()).refreshAndClean();
 				getWindow().removeWindow(confirmationWindow);
 				if(popupWindow != null){

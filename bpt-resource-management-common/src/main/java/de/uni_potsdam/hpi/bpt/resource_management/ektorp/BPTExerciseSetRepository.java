@@ -516,30 +516,22 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 		tableEntries = getDocuments("all");
 	}
 	
-//	/**
-//	 * Returns the total number of entries based on the search using Apache Lucene via couchdb-lucene.
-//	 * 
-//	 * @param language language of the entries
-//	 * @param statusList list of document status
-//	 * @param userId OpenID of resource provider
-//	 * @param fullTextSearchString string from full text search
-//	 * @param topicTags topic tags as list
-//	 * @param modelingLanguageTags modeling language tags as list
-//	 * @param taskTypeTags task type tags as list
-//	 * @param otherTags other tags as list
-//	 * @return number of entries matching the given values
-//	 */
-//	public int getNumberOfEntries(String language, List<BPTExerciseStatus> statusList, String userId, String fullTextSearchString, List<String> topicTags, List<String> modelingLanguageTags, List<String> taskTypeTags, List<String> otherTags) {
-//		String queryString = buildQueryString(language, statusList, userId, fullTextSearchString, topicTags, modelingLanguageTags, taskTypeTags, otherTags);
-//		if (queryString.isEmpty()) {
-//			return 0;
-//		}
-//		LuceneQuery query = new LuceneQuery("Map", "search");
-//		query.setStaleOk(false);
-//		query.setIncludeDocs(true);
-//		query.setQuery(queryString);
-//		return search(query).size();
-//	}
+	/**
+	 * Returns the total number of entries based on the search using Apache Lucene via couchdb-lucene.
+	 * 
+	 * @param language language of the entries
+	 * @param statusList list of document status
+	 * @param userId OpenID of resource provider
+	 * @param fullTextSearchString string from full text search
+	 * @param topicTags topic tags as list
+	 * @param modelingLanguageTags modeling language tags as list
+	 * @param taskTypeTags task type tags as list
+	 * @param otherTags other tags as list
+	 * @return number of entries matching the given values
+	 */
+	public int getNumberOfEntries(List<String> languages, List<BPTExerciseStatus> statusList, String userId, String fullTextSearchString, List<String> topicTags, List<String> modelingLanguageTags, List<String> taskTypeTags, List<String> otherTags) {
+		return search(languages, statusList, userId, fullTextSearchString, topicTags, modelingLanguageTags, taskTypeTags, otherTags, -1, -1, null, false).size();
+	}
 	
 	/**
 	 * Search in all entries that are stored in CouchDB.
@@ -560,7 +552,7 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 	 * @param ascending true if ascending sort of attribute
 	 * @return entries matching the given values
 	 */
-	public List<String> search(List<String> languages, List<BPTExerciseStatus> statusList, 
+	public List<Map> search(List<String> languages, List<BPTExerciseStatus> statusList, 
 			String userId, String fullTextSearchString, 
 			List<String> topicTags, List<String> modelingLanguageTags, 
 			List<String> taskTypeTags, List<String> otherTags, 
@@ -568,7 +560,7 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 			String sortAttribute, boolean ascending) {
 		String queryString = buildQueryString(languages, statusList, userId, topicTags, modelingLanguageTags, taskTypeTags, otherTags);
 		if (queryString.isEmpty()) {
-			return new ArrayList<String>();
+			return new ArrayList<Map>();
 		}
 		LuceneQuery query = new LuceneQuery("Map", "search");
 		query.setStaleOk(false);
@@ -591,11 +583,11 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 		}
 		
 		ArrayList<Map> exerciseSets = search(query);
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<Map> result = new ArrayList<Map>();
 		for (Map exerciseSet : exerciseSets) {
 			String setId = (String) exerciseSet.get("set_id");
 			if (fullTextSearchString != null && !fullTextSearchString.isEmpty() && !exerciseRepository.search(setId, null, fullTextSearchString).isEmpty()) {
-				result.add(setId);
+				result.add(exerciseSet);
 			}
 		}
 		return result;
