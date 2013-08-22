@@ -40,7 +40,7 @@ ul#resource-list {
 	padding: 0.2em 0.3em 0.4em;
 	margin: 0.4em 0 0.4em 90%;
 	text-align: center;
-	background-color: #00639C;
+	background-color: #e89a4b;
 	color: #fff;
 	border-width: 1px;
 	border-color: #000000;
@@ -71,7 +71,7 @@ ul#resource-list {
 
 #resource-list .entry .button:hover {
 	text-decoration: none;
-	background-color: #004870;
+	background-color: #AA0000;
 }
 
 #resource-list div[class="Exercise URL"]:before,
@@ -145,7 +145,7 @@ div.scroll{
 }
 
 div{
-	background-color:#FFFFFF !important;
+	/*	background-color:#FFFFFF !important; */
 	overflow: visible !important;
 }
 
@@ -156,6 +156,9 @@ body{
 	 overflow: auto !important;
 }
 
+div.v-app-BPTApplication{
+	background-color:#FFFFFF !important;
+}
 td.v-tabsheet-tabitemcell { 
 	background-image:none !important;
 	background-color: #FFFFFF;
@@ -212,6 +215,11 @@ div.redButtonHover span.v-button-wrap span.v-button-caption:HOVER{
 	color: #AA0000 !important;
 }
 
+div.whiteButtonHover span.v-button-wrap span.v-button-caption:HOVER{
+	text-decoration: none !important;
+	color: #FFFFFF !important;
+}
+
 span.v-tabsheet-caption-close{
 	background-image:url(images/x_black.png) !important;
 	background-repeat: no-repeat !important;
@@ -239,4 +247,8 @@ div.v-tabsheet-tabsheetpanel div{
 
 body{
 	overflow: auto !important;
+}
+
+h2.Title{
+	margin-top: 0px !important;
 }

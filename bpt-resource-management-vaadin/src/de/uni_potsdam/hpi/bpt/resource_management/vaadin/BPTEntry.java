@@ -13,21 +13,18 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
 public class BPTEntry extends CustomLayout {
 	
-	private String setId;
+	private String id, setId, userId;
 	private BPTEntry entry;
-	private String userId;
 	private Item item;
 	private BPTEntryCards entryCards;
 	private BPTApplication application;
@@ -35,7 +32,6 @@ public class BPTEntry extends CustomLayout {
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private HorizontalLayout tabLayout, subEntryLayout;
 	private Map<String, BPTSubEntry> subentries;
-	private TabSheet tabsheet;
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
 		super("entry");
@@ -43,9 +39,10 @@ public class BPTEntry extends CustomLayout {
 		this.item = item;
 		this.entryCards = entryCards;
 		this.application = application;
+		id = item.getItemProperty("ID").getValue().toString();
+		setId = item.getItemProperty("Exercise Set ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(this.setId);
-		
 		addButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
 			addToLayout(attributeName.toString());
@@ -113,7 +110,9 @@ public class BPTEntry extends CustomLayout {
 					subEntryLayout.addComponent(subentries.get(languageOfEntry));
 				}
 			});
+			tabLayout.addComponent(tabButton);
 		}
+		this.addComponent(tabLayout, "TabButtons");
 		subEntryLayout.addComponent(subentries.values().iterator().next());
 	}
 
@@ -147,7 +146,7 @@ public class BPTEntry extends CustomLayout {
 		
 		more.setStyleName(BaseTheme.BUTTON_LINK);
 		more.addStyleName("bpt");
-		more.addStyleName("redButtonHover");
+		more.addStyleName("whiteButtonHover");
 		this.addComponent(more, "button more");
 		Button less = new Button("less");
 		less.addListener(new Button.ClickListener(){
@@ -196,7 +195,7 @@ public class BPTEntry extends CustomLayout {
 			System.out.println("renderDeleteButton" + setId);
 		}
 		
-		BPTExerciseStatus actualState = exerciseSetRepository.getDocumentStatus(setId);
+		BPTExerciseStatus actualState = exerciseSetRepository.getDocumentStatus(id);
 		
 		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Unpublished){
 			Button publish = new Button("publish");

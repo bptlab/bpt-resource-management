@@ -55,8 +55,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private Button administrationButton;
 	private BPTAdministrator administrator;	@Override
 	public void init() {
-		exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 		exerciseRepository = BPTExerciseRepository.getInstance();
+		exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		containerProvider = new BPTContainerProvider(this);
 		

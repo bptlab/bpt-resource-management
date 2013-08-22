@@ -247,13 +247,13 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 						title,
 						language,
 						description,
+						exerciseUrl,
 //						new ArrayList<String>(topic.getTagValues()),
 //						new ArrayList<String>(modelingLanguage.getTagValues()),
 //						new ArrayList<String>(taskType.getTagValues()),
 //						new ArrayList<String>(other.getTagValues()),
 						(String)contactNameInput.getValue(),
 						(String)contactMailInput.getValue(),
-						exerciseUrl,
 						namesOfAttachments
 					}, false));
 					

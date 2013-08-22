@@ -12,6 +12,8 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Link;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
@@ -33,11 +35,13 @@ public class BPTContainerProvider {
 	
 	private static BPTContainerProvider instance;
 	private BPTExerciseSetRepository exerciseSetRepository;
+	private BPTExerciseRepository exerciseRepository;
 	private BPTApplication application;
 	
 	public BPTContainerProvider(BPTApplication application) {
 		this.application = application;
 		this.exerciseSetRepository = application.getExerciseSetRepository();
+		this.exerciseRepository = application.getExerciseRepository();
 		BPTContainerProvider.instance = this;
 	}
 	
@@ -166,15 +170,25 @@ public class BPTContainerProvider {
 			Map<String, Object> tool = exercises.get(i);
 			Item item = container.addItem(i);
 //				System.out.println("print map here: " + tool);
-			setItemPropertyValues(container, item, tool);
+			setItemPropertyValues(container, item, tool, isSetContainer);
 //				System.out.println("print item here: " + item);
 		}
 		return container;
 	}
 	
-	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> tool) {
-		for (Object[] entry : BPTVaadinResources.getEntrySets()) {
-			Object component = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
+	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> tool, boolean isSetEntry) {
+		List<Object[]> entrySets;
+		BPTDocumentRepository repository;
+		if(isSetEntry){
+			entrySets = BPTVaadinResources.getEntrySets();
+			repository = exerciseSetRepository;
+		}
+		else{
+			entrySets = BPTVaadinResources.getEntries();
+			repository = exerciseRepository;
+		}
+		for (Object[] entry : entrySets) {
+			Object component = BPTVaadinResources.generateComponent(repository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
 			if (entry[1].equals("Attachments")) {
 				ArrayList<Link> links = (ArrayList<Link>) component;
 				for (int i = 1; i <= links.size(); i++) {

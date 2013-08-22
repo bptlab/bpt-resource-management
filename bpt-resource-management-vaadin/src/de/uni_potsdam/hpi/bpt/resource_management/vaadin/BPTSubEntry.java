@@ -20,7 +20,11 @@ public class BPTSubEntry extends CustomLayout{
 		String title = (String) entry.getItemProperty("Title").getValue();
 		Label titleLabel = new Label(title);
 		this.addComponent(titleLabel, "Title");
+		String setID = (String) entry.getItemProperty("Exercise Set ID").getValue();
+		Label setIDLabel = new Label(setID);
+		this.addComponent(setIDLabel, "Exercise Set ID");
 		Label descriptionLabel = (Label) entry.getItemProperty("Description").getValue();
+		descriptionLabel.setWidth("90%");
 		this.addComponent(descriptionLabel, "Description");
 		Link exerciseURLLink = (Link) entry.getItemProperty("Exercise URL").getValue();
 		this.addComponent(exerciseURLLink, "Exercise URL");

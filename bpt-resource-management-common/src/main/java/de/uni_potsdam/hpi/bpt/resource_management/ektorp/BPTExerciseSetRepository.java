@@ -300,8 +300,8 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		databaseDocument.put("status", BPTExerciseStatus.Published);
 		databaseDocument.put("deleted", false);
-		databaseDocument.put("number_of_url_validation_fails", 0);
-		databaseDocument.put("number_of_mails_for_expiry", 0);
+//		databaseDocument.put("number_of_url_validation_fails", 0);
+//		databaseDocument.put("number_of_mails_for_expiry", 0);
 		return databaseDocument;
 	}
 	
@@ -586,7 +586,7 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 		ArrayList<Map> result = new ArrayList<Map>();
 		for (Map exerciseSet : exerciseSets) {
 			String setId = (String) exerciseSet.get("set_id");
-			if (fullTextSearchString != null && !fullTextSearchString.isEmpty() && !exerciseRepository.search(setId, null, fullTextSearchString).isEmpty()) {
+			if (fullTextSearchString == null || fullTextSearchString.isEmpty() || !exerciseRepository.search(setId, null, fullTextSearchString).isEmpty()) {
 				result.add(exerciseSet);
 			}
 		}
@@ -618,6 +618,7 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 		sbStatus.append(")");
 		
 		List<String> queryContent = new ArrayList<String>();
+		queryContent.add(sbStatus.toString());
 		// only entries that are not deleted
 		queryContent.add("deleted:\"false\"");
 		if (userId != null && !userId.isEmpty()) {
@@ -652,7 +653,9 @@ public class BPTExerciseSetRepository extends BPTDocumentRepository {
 		StringBuffer sbQuery = new StringBuffer();
 		while (queryContentIterator.hasNext()) {
 			sbQuery.append(queryContentIterator.next());
-			sbQuery.append(" AND ");
+			if (queryContentIterator.hasNext()) {
+				sbQuery.append(" AND ");
+			}
 		}
 		return sbQuery.toString();
 	}
