@@ -35,7 +35,7 @@ public class BPTVaadinResources {
 	
 	private static List<Object[]> propertiesOfVisibleSetItems = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
+	    	add(new Object[] {"_id", "ID", String.class, BPTPropertyValueType.IGNORE, null, false, true, false});
 	    	add(new Object[] {"set_id", "Exercise Set ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 //	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
 //	    	add(new Object[] {"title", "Title", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
@@ -59,7 +59,7 @@ public class BPTVaadinResources {
 	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
+	    	add(new Object[] {"_id", "ID", String.class, BPTPropertyValueType.IGNORE, null, false, true, false});
 	    	add(new Object[] {"set_id", "Exercise Set ID", String.class, BPTPropertyValueType.IGNORE, null, true, false, false});
 	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
 	    	add(new Object[] {"title", "Title", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
@@ -101,7 +101,7 @@ public class BPTVaadinResources {
 	 * @return attribute names under which the values are stored in the database
 	 * 
 	 */
-	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly , boolean isEntrySet) {
+	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly, boolean isEntrySet) {
 		ArrayList<String> values = new ArrayList<String>();
 		List<Object[]> propertyArray;
 		if(isEntrySet){

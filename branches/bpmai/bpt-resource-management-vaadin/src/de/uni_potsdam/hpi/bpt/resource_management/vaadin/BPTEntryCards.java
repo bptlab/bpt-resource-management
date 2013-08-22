@@ -44,7 +44,6 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		HorizontalLayout selectLayout = new HorizontalLayout();
 		sortSelect = new NativeSelect();
 		sortSelect.addItem("ID");
-		sortSelect.addItem("Title");
 		sortSelect.addItem("Last update");
 		sortSelect.setValue("ID");
 		sortSelect.setNullSelectionAllowed(false);

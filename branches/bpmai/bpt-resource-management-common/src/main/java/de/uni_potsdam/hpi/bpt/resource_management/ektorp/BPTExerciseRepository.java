@@ -264,8 +264,8 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		databaseDocument.put("deleted", false);
-		databaseDocument.put("number_of_url_validation_fails", 0);
-		databaseDocument.put("number_of_mails_for_expiry", 0);
+//		databaseDocument.put("number_of_url_validation_fails", 0);
+//		databaseDocument.put("number_of_mails_for_expiry", 0);
 		return databaseDocument;
 	}
 	
@@ -573,17 +573,19 @@ public class BPTExerciseRepository extends BPTDocumentRepository {
 		if (fullTextSearchString != null && !fullTextSearchString.isEmpty()) {
 			queryContent.add(fullTextSearchString);
 		}
+		if (language != null && !language.isEmpty()) {
+			queryContent.add("language:\"" + language + "\"");
+		}
+		if (setId != null && !setId.isEmpty()) {
+			queryContent.add("set_id:\"" + language + "\"");
+		}
 		Iterator<String> queryContentIterator = queryContent.iterator();
 		StringBuffer sbQuery = new StringBuffer();
 		while (queryContentIterator.hasNext()) {
 			sbQuery.append(queryContentIterator.next());
-			sbQuery.append(" AND ");
-		}
-		if (language != null && !language.isEmpty()) {
-			sbQuery.append(" AND language:\"" + language + "\"");
-		}
-		if (setId != null && !setId.isEmpty()) {
-			sbQuery.append(" AND set_id:\"" + language + "\"");
+			if (queryContentIterator.hasNext()) {
+				sbQuery.append(" AND ");
+			}
 		}
 		return sbQuery.toString();
 	}
