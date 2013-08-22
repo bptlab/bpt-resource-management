@@ -41,9 +41,9 @@ public class BPTDocumentTypes {
 			return new String[] {
 					"set_id", "languages", 
 					"topics", "modeling_languages", "task_types", "other_tags", "user_id",
-					"date_created", "last_update",
-					"notification_date",
-					"number_of_url_validation_fails", "number_of_mails_for_expiry"
+					"date_created", "last_update"
+//					"notification_date",
+//					"number_of_url_validation_fails", "number_of_mails_for_expiry"
 			};
 		}
 		if (type.equals("bpmai_users")) {

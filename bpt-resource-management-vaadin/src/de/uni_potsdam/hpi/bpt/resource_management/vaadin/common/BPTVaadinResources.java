@@ -101,9 +101,16 @@ public class BPTVaadinResources {
 	 * @return attribute names under which the values are stored in the database
 	 * 
 	 */
-	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly) {
+	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly , boolean isEntrySet) {
 		ArrayList<String> values = new ArrayList<String>();
-		for (Object[] entry : propertiesOfVisibleSetItems) {
+		List<Object[]> propertyArray;
+		if(isEntrySet){
+			propertyArray = propertiesOfVisibleSetItems;
+		}
+		else{
+			propertyArray = propertiesOfVisibleItems;
+		}
+		for (Object[] entry : propertyArray) {
 			if (!modifiableOnly || (Boolean)entry[5]) {
 				values.add((String)entry[0]);
 			}

@@ -251,14 +251,11 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //						new ArrayList<String>(modelingLanguage.getTagValues()),
 //						new ArrayList<String>(taskType.getTagValues()),
 //						new ArrayList<String>(other.getTagValues()),
-						exerciseUrl,
 						(String)contactNameInput.getValue(),
 						(String)contactMailInput.getValue(),
-						(String)application.getUser(),
-//						new Date(),
-//						new Date(),
+						exerciseUrl,
 						namesOfAttachments
-					}));
+					}, false));
 					
 					for (FileResource attachment : attachments) {
 						 Map<String, Object> document = exerciseRepository.readDocument(documentId);
@@ -321,7 +318,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					(String)application.getUser(),
 					new Date(),
 					new Date(),
-				}));
+				}, true));
 		}
 		else{
 			Map<String, Object> newValues = new HashMap<String, Object>();
@@ -341,9 +338,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		((BPTApplication)getApplication()).renderEntries();
 	}
 	
-	private Map<String, Object> generateDocument(Object[] values) {
+	private Map<String, Object> generateDocument(Object[] values, boolean isEntrySet) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true);
+		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true, isEntrySet);
 		String[] keys = keysList.toArray(new String[keysList.size()]);
 		for(int i = 0; i < keys.length; i++) {
 				document.put(keys[i], values[i]);
