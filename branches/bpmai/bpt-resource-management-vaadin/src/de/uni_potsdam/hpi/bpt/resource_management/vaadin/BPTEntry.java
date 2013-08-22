@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,14 +9,17 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
@@ -29,6 +33,8 @@ public class BPTEntry extends CustomLayout {
 	private BPTApplication application;
 	private BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
+	private HorizontalLayout tabLayout, subEntryLayout;
+	private Map<String, BPTSubEntry> subentries;
 	private TabSheet tabsheet;
 	
 	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
@@ -75,20 +81,40 @@ public class BPTEntry extends CustomLayout {
 					}
 			}
 		}
-		tabsheet = new TabSheet();
-		this.addComponent(tabsheet, "Tabs");
-//			tabsheet.addStyleName("border");
+//		tabsheet = new TabSheet();
+//		this.addComponent(tabsheet, "Tabs");
+////			tabsheet.addStyleName("border");
+//		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(setId);
+//		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries, false);
+//		for(Object entryId : entries.getItemIds()){
+//			BPTSubEntry subEntry = new BPTSubEntry(entries.getItem(entryId));
+//			tabsheet.addComponent(subEntry);
+//			String languageOfEntry = item.getItemProperty("Language").getValue().toString();
+//			tabsheet.getTab(subEntry).setCaption(languageOfEntry);
+//			if(languageOfEntry.equals(application.getSelectedLanguage())){
+//				tabsheet.setSelectedTab(subEntry);
+//			}
+//		}
+		subentries = new HashMap<String, BPTSubEntry>();
+		subEntryLayout = new HorizontalLayout();
+		tabLayout = new HorizontalLayout();
+		this.addComponent(subEntryLayout, "Tabs");
 		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(setId);
 		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries, false);
 		for(Object entryId : entries.getItemIds()){
-			BPTSubEntry subEntry = new BPTSubEntry(entries.getItem(entryId));
-			tabsheet.addComponent(subEntry);
-			String languageOfEntry = item.getItemProperty("Language").getValue().toString();
-			tabsheet.getTab(subEntry).setCaption(languageOfEntry);
-			if(languageOfEntry.equals(application.getSelectedLanguage())){
-				tabsheet.setSelectedTab(subEntry);
-			}
+			Item subItem = entries.getItem(entryId);
+			final String languageOfEntry = subItem.getItemProperty("Language").getValue().toString();
+			BPTSubEntry subEntry = new BPTSubEntry(subItem);
+			subentries.put(languageOfEntry, subEntry);
+			Button tabButton = new Button(languageOfEntry);
+			tabButton.addListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					subEntryLayout.removeAllComponents();
+					subEntryLayout.addComponent(subentries.get(languageOfEntry));
+				}
+			});
 		}
+		subEntryLayout.addComponent(subentries.values().iterator().next());
 	}
 
 	private void addDefaultComponent(String location) {
