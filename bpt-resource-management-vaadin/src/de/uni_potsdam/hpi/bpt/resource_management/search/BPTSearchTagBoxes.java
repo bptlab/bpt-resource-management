@@ -25,6 +25,13 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	}
 	@Override
 	protected void addGridsToComponent() {
+		
+		languageTags = BPTContainerProvider.getInstance().getUniqueValues("languages");
+		languageTagLayout = new GridLayout(2,1);
+		languageTagLayout.setWidth("100%");
+		languageTagLayout.setHeight("100%");
+		baseLayout.addComponent(languageTagLayout);
+		
 		topicsTags = BPTContainerProvider.getInstance().getUniqueValues("topics");
 		topicssLayout = new GridLayout(2,1);
 		topicssLayout.setWidth("100%");
@@ -49,17 +56,6 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		otherTagsLayout.setHeight("100%");
 		baseLayout.addComponent(otherTagsLayout);
 		
-		otherTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
-		otherTagsLayout = new GridLayout(2,1);
-		otherTagsLayout.setWidth("100%");
-		otherTagsLayout.setHeight("100%");
-		baseLayout.addComponent(otherTagsLayout);
-		
-		languageTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
-		languageTagLayout = new GridLayout(2,1);
-		languageTagLayout.setWidth("100%");
-		languageTagLayout.setHeight("100%");
-		baseLayout.addComponent(languageTagLayout);
 	}
 	
 	@Override
@@ -91,23 +87,28 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	@Override
 	public void addTag(String value){
 		BPTSearchTag searchTag;
-		if(topicsTags.contains(value)){
-			searchTag = new BPTSearchTag(this, "Availability", value);
+		if(languageTags.contains(value)){
+			searchTag = new BPTSearchTag(this, value);
+			languageTagList.add(searchTag);
+			addTagToLayout(searchTag, languageTagLayout);
+		}
+		else if(topicsTags.contains(value)){
+			searchTag = new BPTSearchTag(this, value);
 			topicsTagList.add(searchTag);
 			addTagToLayout(searchTag, topicssLayout);
 		}
 		else if (modelingLanguagesTags.contains(value)){
-			searchTag = new BPTSearchTag(this, "Model type", value);
+			searchTag = new BPTSearchTag(this, value);
 			modelingLanguagesTagList.add(searchTag);
 			addTagToLayout(searchTag, modelingLanguagesLayout);
 		}
 		else if (taskTypesTags.contains(value)){
-			searchTag = new BPTSearchTag(this, "Platform", value);
+			searchTag = new BPTSearchTag(this, value);
 			taskTypesTagList.add(searchTag);
 			addTagToLayout(searchTag, taskTypesLayout);
 		}
 		else {//if (supportedFunctionalitiesTags.contains(value)){
-			searchTag = new BPTSearchTag(this, "Supported functionality", value);
+			searchTag = new BPTSearchTag(this, value);
 			otherTagList.add(searchTag);
 			addTagToLayout(searchTag, otherTagsLayout);
 		}
@@ -117,10 +118,12 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	public void removeAllTags() {
 		if (!searchTagList.isEmpty()) {
 			searchTagList.clear();
+			languageTagList.clear();
 			topicsTagList.clear();
 			modelingLanguagesTagList.clear();
 			taskTypesTagList.clear();
 			otherTagList.clear();
+			languageTagLayout.removeAllComponents();
 			topicssLayout.removeAllComponents();
 			modelingLanguagesLayout.removeAllComponents();
 			taskTypesLayout.removeAllComponents();

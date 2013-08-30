@@ -35,6 +35,10 @@ public class BPTTagSearchComponent extends BPTTagComponent {
 		layout.addComponent(tagBox);
 	}
 	
+	public ArrayList<String> getLanguageTags() {
+		return ((BPTSearchTagBoxes)tagBox).getLanguageTagValues();
+	}
+	
 	public ArrayList<String> getTopicTags() {
 		return ((BPTSearchTagBoxes)tagBox).getTopicsTagValues();
 	}
@@ -51,8 +55,4 @@ public class BPTTagSearchComponent extends BPTTagComponent {
 		return ((BPTSearchTagBoxes)tagBox).getOtherTagValues();
 	}
 	
-	public ArrayList<String> getLanguageTags() {
-		return ((BPTSearchTagBoxes)tagBox).getLanguageTagValues();
-	}
-
 }
