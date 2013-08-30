@@ -12,7 +12,6 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
@@ -110,6 +109,7 @@ public class BPTEntry extends CustomLayout {
 					subEntryLayout.addComponent(subentries.get(languageOfEntry));
 				}
 			});
+			tabButton.setStyleName(BaseTheme.BUTTON_LINK);
 			tabLayout.addComponent(tabButton);
 		}
 		this.addComponent(tabLayout, "TabButtons");

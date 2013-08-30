@@ -42,7 +42,7 @@ ul#resource-list {
 	text-align: center;
 	background-color: #e89a4b;
 	color: #fff;
-	border-width: 1px;
+	border-width: 1px; 
 	border-color: #000000;
 	border-style: solid;
 	
@@ -62,7 +62,7 @@ ul#resource-list {
 }
 
 #resource-list .entry .bpt .v-button-caption {
-	color: #000000;
+	color: #FFFFFF;
 }
 #resource-list .entry .v-link.v-link-bpt2 {
 	display: inline;
@@ -251,4 +251,11 @@ body{
 
 h2.Title{
 	margin-top: 0px !important;
+	color: #AA0000;
+}
+
+div.TabButtons div{
+	border-width: 1px !important;
+	border-color: #FFFFFF !important;
+	background-color: #DDDDDD !important;
 }
