@@ -92,16 +92,20 @@ public class BPTContainerProvider {
 		Collator comparator = Collator.getInstance();
 		comparator.setStrength(Collator.PRIMARY);
 		
+		if(tagColumn == "all" || tagColumn == "languages"){
+			uniqueValues.add("----- Languages -----");
+			ArrayList<String> languageTags = new ArrayList<String>();
+			for (Map<String, Object> tool : tools) {
+				ArrayList<String> languageTagsOfTool = (ArrayList<String>)tool.get("languages");  // cast
+				languageTags.addAll(languageTagsOfTool);
+			}
+			Collections.sort(languageTags, comparator);
+			uniqueValues.addAll(languageTags);
+		}
 		if (tagColumn == "all" || tagColumn == "topics") {
 			if (tagColumn == "all") uniqueValues.add("----- Topics -----");
 			List<String> topicTags = new ArrayList<String>();
 			topicTags = BPTTopic.getValues("English");
-			
-//			for (Map<String, Object> tool : tools) {
-//				ArrayList<String> topicTagsOfTool = (ArrayList<String>)tool.get("topics");  // cast
-//				topicTags.addAll(topicTagsOfTool);
-//			}
-//			Collections.sort(topicTags, comparator);
 			uniqueValues.addAll(topicTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
@@ -134,18 +138,6 @@ public class BPTContainerProvider {
 			Collections.sort(otherTags, comparator);
 			uniqueValues.addAll(otherTags);
 		}
-		if(tagColumn == "all"){
-			uniqueValues.add("----- Languages -----");
-			ArrayList<String> languageTags = new ArrayList<String>();
-			for (Map<String, Object> tool : tools) {
-				ArrayList<String> languageTagsOfTool = (ArrayList<String>)tool.get("languages");  // cast
-				languageTags.addAll(languageTagsOfTool);
-			}
-			Collections.sort(languageTags, comparator);
-			uniqueValues.addAll(languageTags);
-		}
-		
-		
 		return new ArrayList<String>(uniqueValues);
 	}
 	

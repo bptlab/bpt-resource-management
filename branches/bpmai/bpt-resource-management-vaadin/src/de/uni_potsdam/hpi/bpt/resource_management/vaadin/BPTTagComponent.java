@@ -23,7 +23,7 @@ public class BPTTagComponent extends CustomComponent {
 	protected BPTTagBox tagBox;
 	protected VerticalLayout layout;
 	protected BPTApplication application;
-	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Topics -----", "----- Modeling languages -----", "----- Task types -----", "----- Other tags -----", "----- Languages -----")); 
+	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Languages -----", "----- Topics -----", "----- Modeling languages -----", "----- Task types -----", "----- Other tags -----")); 
 		
 	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		this.application = application;
