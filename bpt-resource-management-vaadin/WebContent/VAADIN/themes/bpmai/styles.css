@@ -42,9 +42,7 @@ ul#resource-list {
 	text-align: center;
 	background-color: #e89a4b;
 	color: #fff;
-	border-width: 1px; 
-	border-color: #000000;
-	border-style: solid;
+	border: none;
 	
 	-webkit-transition: all 0.25s;
 	-moz-transition: all 0.25s;
@@ -254,8 +252,20 @@ h2.Title{
 	color: #AA0000;
 }
 
-div.TabButtons div{
+div.TabButtons{
+	margin-left: 1em;
+}
+
+div.tab{
 	border-width: 1px !important;
 	border-color: #FFFFFF !important;
-	background-color: #DDDDDD !important;
+	border-style: solid !important;
+	background-color: #CCCCCC !important;
+	text-decoration: none !important;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+div.tav span.v-button-caption{
+	color: #FFFFFF !important;
 }

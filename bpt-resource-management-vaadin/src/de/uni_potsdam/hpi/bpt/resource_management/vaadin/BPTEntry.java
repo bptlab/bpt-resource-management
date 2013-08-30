@@ -110,6 +110,7 @@ public class BPTEntry extends CustomLayout {
 				}
 			});
 			tabButton.setStyleName(BaseTheme.BUTTON_LINK);
+			tabButton.addStyleName("tab");
 			tabLayout.addComponent(tabButton);
 		}
 		this.addComponent(tabLayout, "TabButtons");
