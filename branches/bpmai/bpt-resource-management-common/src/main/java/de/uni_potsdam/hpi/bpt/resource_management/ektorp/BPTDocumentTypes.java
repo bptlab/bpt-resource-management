@@ -32,15 +32,15 @@ public class BPTDocumentTypes {
 //		}
 		if (type.equals("bpmai_exercises")) {
 			return new String[] {
-					"set_id", "title", "language", "description", 
-					"contact_name", "contact_mail",
+					"set_id", "title", "language", "description",
 					"exercise_url", "names_of_attachments"
 			};
 		}
 		if (type.equals("bpmai_exercise_sets")) {
 			return new String[] {
 					"set_id", "languages", 
-					"topics", "modeling_languages", "task_types", "other_tags", "user_id",
+					"topics", "modeling_languages", "task_types", "other_tags",
+					"contact_name", "contact_mail", "user_id",
 					"date_created", "last_update"
 //					"notification_date",
 //					"number_of_url_validation_fails", "number_of_mails_for_expiry"
