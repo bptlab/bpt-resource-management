@@ -87,8 +87,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
  				nextPanel.putLanguageInput(nextItem.getItemProperty("Language").getValue().toString());
      		}
      		setTagValues(item);
-     		//Contact Dates are saved in each single entry
-        	setContactDates(entries.getItem(entries.getItemIds().iterator().next()));
+        	setContactDates(item);
         } else {
         	//XXX
         	set_id = null;
@@ -252,8 +251,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //						new ArrayList<String>(modelingLanguage.getTagValues()),
 //						new ArrayList<String>(taskType.getTagValues()),
 //						new ArrayList<String>(other.getTagValues()),
-						(String)contactNameInput.getValue(),
-						(String)contactMailInput.getValue(),
 						namesOfAttachments
 					}, false));
 					
@@ -279,8 +276,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //						newValues.put("status", BPTExerciseStatus.Unpublished);
 //					}
 					newValues.put("exercise_url", exerciseUrl);
-					newValues.put("contact_name", contactNameInput.getValue().toString());
-					newValues.put("contact_mail", contactMailInput.getValue().toString());
 //					newValues.put("last_update", new Date());
 					newValues.put("names_of_attachments", namesOfAttachments);
 					
@@ -293,7 +288,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //							}
 //						}
 //					}
-					String documentRevision = (String)document.get("_rev");;
+					String documentRevision = (String)document.get("_rev");
 					for (String nameOfOldAttachment : namesOfOldAttachments) {
 						documentRevision = exerciseRepository.deleteAttachment(documentId, documentRevision, nameOfOldAttachment);
 					}
@@ -315,6 +310,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					new ArrayList<String>(taskType.getTagValues()),
 					new ArrayList<String>(other.getTagValues()),
 					languages,
+					(String)contactNameInput.getValue(),
+					(String)contactMailInput.getValue(),
 					(String)application.getUser(),
 					new Date(),
 					new Date(),
@@ -329,6 +326,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 			newValues.put("task_types", new ArrayList<String>(taskType.getTagValues()));
 			newValues.put("other_tags", new ArrayList<String>(other.getTagValues()));
 			newValues.put("languages", languages);
+			newValues.put("contact_name", contactNameInput.getValue().toString());
+			newValues.put("contact_mail", contactMailInput.getValue().toString());
 			if (BPTExerciseStatus.Rejected == BPTExerciseStatus.valueOf((String) exerciseSetRepository.readDocument((String) item.getItemProperty("ID").getValue()).get("status"))) {
 				newValues.put("status", BPTExerciseStatus.Unpublished);
 			}

@@ -3,6 +3,8 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +14,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.terminal.FileResource;
+import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
@@ -106,6 +109,39 @@ public class BPTUploadPanel extends VerticalLayout implements Upload.SucceededLi
         	}
         	oldAttachmentLinks = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_attachments", BPTPropertyValueType.LINK_ATTACHMENT, null, application);
         	for (Link link : oldAttachmentLinks) {
+        		InputStream inputStream = null;
+        		OutputStream outputStream = null;;
+        		File attachmentFile = new File(link.getCaption());
+        		try {
+	        		inputStream = ((StreamResource) link.getResource()).getStream().getStream();
+	        		outputStream = new FileOutputStream(attachmentFile);
+	        		int read = 0;
+	        		byte[] bytes = new byte[1024];
+	        		
+	        		while ((read = inputStream.read(bytes)) != -1) {
+	        			outputStream.write(bytes, 0, read);
+	        		}
+        		} catch (IOException e) {
+        			e.printStackTrace();
+        		} finally {
+        			if (inputStream != null) {
+        				try {
+        					inputStream.close();
+        				} catch (IOException e) {
+        					e.printStackTrace();
+        				}
+        			}
+        			if (outputStream != null) {
+        				try {
+        					outputStream.close();
+        				} catch (IOException e) {
+        					e.printStackTrace();
+        				}
+        	 
+        			}
+        		}
+        		attachments.add(new FileResource(attachmentFile, application));
+        		namesOfAttachments.add(link.getCaption());
         		addLinkToAttachmentPanel(link);
         	}
         }
