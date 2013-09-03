@@ -27,7 +27,13 @@ public class BPTSubEntry extends CustomLayout{
 		descriptionLabel.setWidth("90%");
 		this.addComponent(descriptionLabel, "Description");
 		Link exerciseURLLink = (Link) entry.getItemProperty("Exercise URL").getValue();
-		this.addComponent(exerciseURLLink, "Exercise URL");
+		if (exerciseURLLink.getCaption().isEmpty()) {
+			Label label = new Label("(none)");
+			label.setWidth("90%");
+			this.addComponent(label, "Exercise URL");
+		} else {
+			this.addComponent(exerciseURLLink, "Exercise URL");
+		}
 //		String topics = (String) entry.getItemProperty("Topics").getValue();
 //		Label topicsLabel = new Label(topics);
 //		this.addComponent(topicsLabel, "Topics");
