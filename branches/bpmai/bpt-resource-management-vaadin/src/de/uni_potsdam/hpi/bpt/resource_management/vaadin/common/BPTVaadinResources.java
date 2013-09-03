@@ -68,7 +68,7 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"exercise_url", "Exercise URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
 //	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
 //	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
-	    	add(new Object[] {"names_of_attachments", "Attachments", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
+	    	add(new Object[] {"names_of_supplementary_files", "Supplementary files", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
 	    }
 	};
 	
@@ -245,18 +245,24 @@ public class BPTVaadinResources {
 				}
 			}, attachmentName, application);
 			Link link = new Link(attachmentName, attachment);
-			link.setTargetName("_blank");
-			String mimeType = attachment.getMIMEType();
-			if (mimeType.equals(BPTMimeTypes.PDF.toString())) {
-				link.setIcon(new ThemeResource("images/logo-pdf-16px.png"));
-			} else if (mimeType.equals(BPTMimeTypes.DOC.toString())) {
-				link.setIcon(new ThemeResource("images/logo-doc-16px.png"));
-			} else if (mimeType.equals(BPTMimeTypes.DOCX.toString())) {
-				link.setIcon(new ThemeResource("images/logo-docx-16px.png"));
-			}
+			setTargetAndIcon(link);
 			links.add(link);
 		}
 		return links;
+	}
+
+	public static void setTargetAndIcon(Link link) {
+		link.setTargetName("_blank");
+		String mimeType = link.getResource().getMIMEType();
+		if (mimeType.equals(BPTMimeTypes.PDF.toString())) {
+			link.setIcon(new ThemeResource("images/logo-pdf-16px.png"));
+		} else if (mimeType.equals(BPTMimeTypes.DOC.toString())) {
+			link.setIcon(new ThemeResource("images/logo-doc-16px.png"));
+		} else if (mimeType.equals(BPTMimeTypes.DOCX.toString()) 
+				/* MIME type of docx files is often application/octet-stream which is not used in BPTMimeTypes */
+				|| mimeType.toLowerCase().endsWith(".docx")) {
+			link.setIcon(new ThemeResource("images/logo-docx-16px.png"));
+		}
 	}
 
 	public static String[] getVisibleAttributes() {
