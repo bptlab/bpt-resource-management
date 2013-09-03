@@ -56,7 +56,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private TextField contactMailInput;
 	private Button finishUploadButton;
 	private BPTUploadPanel lastPanel;
-	private ArrayList<String> namesOfOldAttachments;
+	private ArrayList<String> namesOfExistingSupplementaryFiles;
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		super();
@@ -76,7 +76,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
-        	namesOfOldAttachments = (ArrayList<String>) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_attachments");
+        	namesOfExistingSupplementaryFiles = (ArrayList<String>) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_supplementary_files");
         	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
         	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map, false);
      		for (Object id : entries.getItemIds()) {
@@ -224,7 +224,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		BPTUploadPanel uploadPanel;
 		String documentId, title, language, description, exerciseUrl;
 		List<FileResource> attachments;
-		List<String> namesOfAttachments;
+		List<String> namesOfSupplementaryFiles;
 		List<String> languages = new ArrayList<String>();
 		while(tabIterator.hasNext()){
 			uploadPanel = (BPTUploadPanel) tabIterator.next();
@@ -236,8 +236,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 				languages.add(language);
 				description = uploadPanel.getDescriptionFromInput();
 				exerciseUrl = uploadPanel.getExerciseURLFromInput();
-				attachments = uploadPanel.getAttachments();
-				namesOfAttachments = uploadPanel.getNamesOfAttachments();
+				attachments = uploadPanel.getSupplementaryFiles();
+				namesOfSupplementaryFiles = uploadPanel.getNamesOfSupplementaryFiles();
 				if (documentId == null) { 
 					
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
@@ -251,7 +251,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //						new ArrayList<String>(modelingLanguage.getTagValues()),
 //						new ArrayList<String>(taskType.getTagValues()),
 //						new ArrayList<String>(other.getTagValues()),
-						namesOfAttachments
+						namesOfSupplementaryFiles
 					}, false));
 					
 					for (FileResource attachment : attachments) {
@@ -277,7 +277,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //					}
 					newValues.put("exercise_url", exerciseUrl);
 //					newValues.put("last_update", new Date());
-					newValues.put("names_of_attachments", namesOfAttachments);
+					newValues.put("names_of_supplementary_files", namesOfSupplementaryFiles);
 					
 					Map<String, Object> document = exerciseRepository.updateDocument(newValues);
 //					for (Link oldAttachmentLink : uploadPanel.getOldAttachmentLinks()) {
@@ -289,7 +289,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //						}
 //					}
 					String documentRevision = (String)document.get("_rev");
-					for (String nameOfOldAttachment : namesOfOldAttachments) {
+					for (String nameOfOldAttachment : namesOfExistingSupplementaryFiles) {
 						documentRevision = exerciseRepository.deleteAttachment(documentId, documentRevision, nameOfOldAttachment);
 					}
 					

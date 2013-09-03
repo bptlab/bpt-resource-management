@@ -21,16 +21,17 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTAttachmentUploader extends Panel implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
-	private static final long serialVersionUID = 5970533396623869051L;
-	private Upload uploadComponent;
-	private File tempAttachment;
-	private String[] supportedDocumentTypes;
-	private List<String> namesOfAttachments = new ArrayList<String>();
-	private List<FileResource> attachments = new ArrayList<FileResource>();
-	private BPTApplication application;
+	protected static final long serialVersionUID = 5970533396623869051L;
+	protected Upload uploadComponent;
+	protected File tempAttachment;
+	protected String[] supportedDocumentTypes;
+	protected List<String> namesOfAttachments = new ArrayList<String>();
+	protected List<FileResource> attachments = new ArrayList<FileResource>();
+	protected BPTApplication application;
 
 	public BPTAttachmentUploader(BPTApplication application, String captionOfPanel, String captionOfUploadComponent, String[] supportedDocumentTypes) {
 		this.application = application;
@@ -52,7 +53,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 		tempAttachment = new File(filename);
 		//		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
         try {
-        	if (supportedDocumentTypes != null && Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+        	if (supportedDocumentTypes == null || Arrays.asList(supportedDocumentTypes).contains(documentType)) {
         		outputStream = new FileOutputStream(tempAttachment);
         	}
         } catch (FileNotFoundException e) {
@@ -80,18 +81,11 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
         application.refreshAndClean();
 	}
 	
-	private void addLinkToAttachmentPanel(FileResource documentRessource) {
-		Link link = new Link(documentRessource.getFilename(), documentRessource);
-		link.setTargetName("_blank");
-		String mimeType = documentRessource.getMIMEType();
-		if (mimeType.equals(BPTMimeTypes.PDF.toString())) {
-			link.setIcon(new ThemeResource("images/logo-pdf-16px.png"));
-		} else if (mimeType.equals(BPTMimeTypes.DOC.toString())) {
-			link.setIcon(new ThemeResource("images/logo-doc-16px.png"));
-		} else if (mimeType.equals(BPTMimeTypes.DOCX.toString())) {
-			link.setIcon(new ThemeResource("images/logo-docx-16px.png"));
-		}
+	protected Link addLinkToAttachmentPanel(FileResource documentResource) {
+		Link link = new Link(documentResource.getFilename(), documentResource);
+		BPTVaadinResources.setTargetAndIcon(link);
 		this.addComponent(link);
+		return link;
 	}
 	
 	public List<String> getNamesOfAttachments() {
@@ -102,7 +96,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 		return attachments;
 	}
 	
-	public void clearAttachments() {
+	public void clearFile() {
 		for (FileResource attachment : attachments) {
 			File file = attachment.getSourceFile();
 			attachment.setSourceFile(null);
@@ -113,40 +107,45 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 
 	public void addLinksToExistingAttachments(ArrayList<Link> linksToExistingAttachments) {
 		for (Link link : linksToExistingAttachments) {
-    		InputStream inputStream = null;
-    		OutputStream outputStream = null;;
-    		File attachmentFile = new File(link.getCaption());
-    		try {
-        		inputStream = ((StreamResource) link.getResource()).getStream().getStream();
-        		outputStream = new FileOutputStream(attachmentFile);
-        		int read = 0;
-        		byte[] bytes = new byte[1024];
-        		
-        		while ((read = inputStream.read(bytes)) != -1) {
-        			outputStream.write(bytes, 0, read);
-        		}
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		} finally {
-    			if (inputStream != null) {
-    				try {
-    					inputStream.close();
-    				} catch (IOException e) {
-    					e.printStackTrace();
-    				}
-    			}
-    			if (outputStream != null) {
-    				try {
-    					outputStream.close();
-    				} catch (IOException e) {
-    					e.printStackTrace();
-    				}
-    	 
-    			}
-    		}
+    		File attachmentFile = convertToFile(link);
     		attachments.add(new FileResource(attachmentFile, application));
     		namesOfAttachments.add(link.getCaption());
     		addComponent(link);
     	}
+	}
+
+	protected File convertToFile(Link link) {
+		InputStream inputStream = null;
+		OutputStream outputStream = null;;
+		File attachmentFile = new File(link.getCaption());
+		try {
+    		inputStream = ((StreamResource) link.getResource()).getStream().getStream();
+    		outputStream = new FileOutputStream(attachmentFile);
+    		int read = 0;
+    		byte[] bytes = new byte[1024];
+    		
+    		while ((read = inputStream.read(bytes)) != -1) {
+    			outputStream.write(bytes, 0, read);
+    		}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (outputStream != null) {
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	 
+			}
+		}
+		return attachmentFile;
 	}
 }

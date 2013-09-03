@@ -181,13 +181,13 @@ public class BPTContainerProvider {
 		}
 		for (Object[] entry : entrySets) {
 			Object component = BPTVaadinResources.generateComponent(repository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
-			if (entry[1].equals("Attachments")) {
+			if (entry[1].equals("Supplementary files")) {
 				ArrayList<Link> links = (ArrayList<Link>) component;
 				for (int i = 1; i <= links.size(); i++) {
-					if (!container.getContainerPropertyIds().contains("Attachment" + i)) {
-						container.addContainerProperty("Attachment" + i, Link.class, null);
+					if (!container.getContainerPropertyIds().contains("Supplementary file" + i)) {
+						container.addContainerProperty("Supplementary file" + i, Link.class, null);
 					}
-					item.getItemProperty("Attachment" + i).setValue(links.get(i-1));
+					item.getItemProperty("Supplementary file" + i).setValue(links.get(i-1));
 				}
 			} else {
 				item.getItemProperty(entry[1]).setValue(component);

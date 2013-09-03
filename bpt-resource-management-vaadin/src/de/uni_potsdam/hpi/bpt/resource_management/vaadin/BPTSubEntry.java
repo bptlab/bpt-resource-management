@@ -39,9 +39,9 @@ public class BPTSubEntry extends CustomLayout{
 //		this.addComponent(topicsLabel, "Topics");
 		
 		VerticalLayout attachmentLayout = new VerticalLayout();
-		this.addComponent(attachmentLayout, "Attachments");
-		for (int i = 1; entry.getItemProperty("Attachment" + i).getValue() != null; i++) {
-			attachmentLayout.addComponent((Link) entry.getItemProperty("Attachment" + i).getValue());
+		this.addComponent(attachmentLayout, "Supplementary files");
+		for (int i = 1; entry.getItemProperty("Supplementary file" + i).getValue() != null; i++) {
+			attachmentLayout.addComponent((Link) entry.getItemProperty("Supplementary file" + i).getValue());
 		}
 	}
 

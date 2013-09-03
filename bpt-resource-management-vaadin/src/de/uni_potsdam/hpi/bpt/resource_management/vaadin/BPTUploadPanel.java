@@ -30,9 +30,10 @@ public class BPTUploadPanel extends VerticalLayout {
 	
 	private String documentId;
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
-	private BPTAttachmentUploader attachmentPanel;
+	private BPTPdfDocUploader taskSheetPanel;
+	private BPTAttachmentUploader supplementaryFilesPanel;
 	private Label titleLabel, languageLabel, descriptionLabel;
-	private ArrayList<Link> linksToExistingAttachments;
+	private ArrayList<Link> linksToExistingSupplementaryFiles;
 	
 	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
 		super();
@@ -72,8 +73,11 @@ public class BPTUploadPanel extends VerticalLayout {
 		exerciseURLInput.setWidth("100%");
 		layout.addComponent(exerciseURLInput);
 		
-		attachmentPanel = new BPTAttachmentUploader(application, "Documents", "Upload at least one document (*.pdf, *.doc, *.docx)", BPTMimeTypes.getMimeTypes());
-        layout.addComponent(attachmentPanel);
+		taskSheetPanel = new BPTPdfDocUploader(application, "Task sheet *", "Upload a PDF or DOC/DOCX document", BPTMimeTypes.getMimeTypes());
+		layout.addComponent(taskSheetPanel);
+		
+		supplementaryFilesPanel = new BPTAttachmentUploader(application, "Supplementary files", "Upload a file", null);
+        layout.addComponent(supplementaryFilesPanel);
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
@@ -82,8 +86,8 @@ public class BPTUploadPanel extends VerticalLayout {
         	if (!item.getItemProperty("Exercise URL").getValue().toString().equals("")) {
             	exerciseURLInput.setValue(((Link)item.getItemProperty("Exercise URL").getValue()).getCaption().toString());
         	}
-        	linksToExistingAttachments = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_attachments", BPTPropertyValueType.LINK_ATTACHMENT, null, application);
-        	attachmentPanel.addLinksToExistingAttachments(linksToExistingAttachments);      	
+        	linksToExistingSupplementaryFiles = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_supplementary_files", BPTPropertyValueType.LINK_ATTACHMENT, null, application);
+        	supplementaryFilesPanel.addLinksToExistingAttachments(linksToExistingSupplementaryFiles);      	
         }
 	}
 	
@@ -125,21 +129,38 @@ public class BPTUploadPanel extends VerticalLayout {
 	public String getExerciseURLFromInput() {
 		return (String) exerciseURLInput.getValue();
 	}
-
-	public List<String> getNamesOfAttachments() {
-		return attachmentPanel.getNamesOfAttachments();
+	
+	public String getNameOfPdfFile() {
+		return taskSheetPanel.getNameOfPdfFile();
 	}
 
-	public List<FileResource> getAttachments() {
-		return attachmentPanel.getAttachments();
+	public FileResource getPdfFile() {
+		return taskSheetPanel.getPdfFile();
+	}
+
+	public String getNameOfDocFile() {
+		return taskSheetPanel.getNameOfDocFile();
+	}
+
+	public FileResource getDocFile() {
+		return taskSheetPanel.getDocFiles();
+	}
+
+	public List<String> getNamesOfSupplementaryFiles() {
+		return supplementaryFilesPanel.getNamesOfAttachments();
+	}
+
+	public List<FileResource> getSupplementaryFiles() {
+		return supplementaryFilesPanel.getAttachments();
 	}
 	
 	public void clearAttachments() {
-		attachmentPanel.clearAttachments();
+		taskSheetPanel.clearFile();
+		supplementaryFilesPanel.clearFile();
 	}
 
-	public ArrayList<Link> getLinksToExistingAttachments() {
-		return linksToExistingAttachments;
+	public ArrayList<Link> getLinksToExistingSupplementaryFiles() {
+		return linksToExistingSupplementaryFiles;
 	}
 
 }
