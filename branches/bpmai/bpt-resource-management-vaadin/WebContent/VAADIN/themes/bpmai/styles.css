@@ -73,6 +73,9 @@ ul#resource-list {
 }
 
 #resource-list div[class="Exercise URL"]:before,
+#resource-list div[class="PDF file"]:before,
+#resource-list div[class="DOC file"]:before,
+#resource-list div[class="Supplementary files"]:before,
 #resource-list div[class="Topics"]:before,
 #resource-list div[class="Modeling Languages"]:before,
 #resource-list div[class="Task types"]:before,
@@ -85,15 +88,11 @@ ul#resource-list {
 	margin-left: -2em;
 }
 
-#resource-list div[class="Excercise URL"]:before {
-	content: "Excercise URL";
-}
-#resource-list div[class="Last update"]:before{
-	content: "Last update";
-}
-
 #resource-list div[class="Description"],
 #resource-list div[class="Exercise URL"],
+#resource-list div[class="PDF file"],
+#resource-list div[class="DOC file"],
+#resource-list div[class="Supplementary files"],
 #resource-list div[class="Topics"],
 #resource-list div[class="Modeling Languages"],
 #resource-list div[class="Task types"],

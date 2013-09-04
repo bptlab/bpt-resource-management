@@ -68,7 +68,9 @@ public class BPTVaadinResources {
 	    	add(new Object[] {"exercise_url", "Exercise URL", Component.class, BPTPropertyValueType.LINK, null, true, true, true});
 //	    	add(new Object[] {"contact_name", "Contact name", String.class, BPTPropertyValueType.IGNORE, null, true, false, true});
 //	    	add(new Object[] {"contact_mail", "Contact mail", Component.class, BPTPropertyValueType.EMAIL, null, true, false, true}); 
-	    	add(new Object[] {"names_of_supplementary_files", "Supplementary files", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
+	    	add(new Object[] {"name_of_pdf_file", "PDF file", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
+	    	add(new Object[] {"name_of_doc_file", "DOC file", Component.class, BPTPropertyValueType.LINK_ATTACHMENT, null, true, true, false});
+	    	add(new Object[] {"names_of_supplementary_files", "Supplementary files", Component.class, BPTPropertyValueType.LINK_ATTACHMENT_LIST, null, true, true, false});
 	    }
 	};
 	
@@ -92,7 +94,7 @@ public class BPTVaadinResources {
 		return propertiesOfVisibleSetItems;
 	}
 	
-	public static List<Object[]> getEntries(){
+	public static List<Object[]> getEntries() {
 		return propertiesOfVisibleItems;
 	}
 	
@@ -173,7 +175,7 @@ public class BPTVaadinResources {
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName, Application application) {
+	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, Application application) {
 		Object value = tool.get(documentColumnName);
 		switch (valueType) {
 			case LINK : return asLink((String)value);
@@ -182,7 +184,8 @@ public class BPTVaadinResources {
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
 //			case IMAGE : return asImage(repository, tool, attachmentName);
-			case LINK_ATTACHMENT : return asListOfAttachmentLinks(repository, tool, ((ArrayList<String>)value), application);
+			case LINK_ATTACHMENT : return asAttachmentLink(repository, tool, (String)value, application);
+			case LINK_ATTACHMENT_LIST : return asListOfAttachmentLinks(repository, tool, (ArrayList<String>)value, application);
 			default : return value;
 		}
 	}
@@ -239,16 +242,21 @@ public class BPTVaadinResources {
 	private static ArrayList<Link> asListOfAttachmentLinks(final BPTDocumentRepository repository, final Map<String, Object> tool, ArrayList<String> namesOfAttachments, Application application) {
 		ArrayList<Link> links = new ArrayList<Link>();
 		for (final String attachmentName : namesOfAttachments) {
-			StreamResource attachment = new StreamResource(new StreamResource.StreamSource() {
-				public InputStream getStream() {
-					return repository.readAttachment((String)tool.get("_id"), attachmentName);
-				}
-			}, attachmentName, application);
-			Link link = new Link(attachmentName, attachment);
-			setTargetAndIcon(link);
+			Link link = asAttachmentLink(repository, tool, attachmentName, application);
 			links.add(link);
 		}
 		return links;
+	}
+	
+	private static Link asAttachmentLink(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName, Application application) {
+		StreamResource attachment = new StreamResource(new StreamResource.StreamSource() {
+			public InputStream getStream() {
+				return repository.readAttachment((String)tool.get("_id"), attachmentName);
+			}
+		}, attachmentName, application);
+		Link link = new Link(attachmentName, attachment);
+		setTargetAndIcon(link);
+		return link;
 	}
 
 	public static void setTargetAndIcon(Link link) {

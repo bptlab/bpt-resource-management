@@ -180,7 +180,7 @@ public class BPTContainerProvider {
 			repository = exerciseRepository;
 		}
 		for (Object[] entry : entrySets) {
-			Object component = BPTVaadinResources.generateComponent(repository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4], application);
+			Object component = BPTVaadinResources.generateComponent(repository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], application);
 			if (entry[1].equals("Supplementary files")) {
 				ArrayList<Link> links = (ArrayList<Link>) component;
 				for (int i = 1; i <= links.size(); i++) {
