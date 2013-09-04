@@ -1,6 +1,5 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,9 +9,7 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -30,7 +27,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepositor
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
@@ -57,7 +53,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private Button finishUploadButton;
 	private BPTUploadPanel lastPanel;
 	private ArrayList<String> namesOfExistingSupplementaryFiles;
+	private String nameOfExistingPdfFile, nameOfExistingDocFile;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public BPTUploader(Item item, final BPTApplication application) {
 		super();
 		this.application = application;
@@ -76,6 +74,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
+        	nameOfExistingPdfFile = (String) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("name_of_pdf_file");
+        	nameOfExistingDocFile = (String) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_doc_file");
         	namesOfExistingSupplementaryFiles = (ArrayList<String>) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_supplementary_files");
         	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
         	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map, false);
@@ -222,8 +222,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		Iterator<Component> tabIterator = tabSheet.getComponentIterator();
 		
 		BPTUploadPanel uploadPanel;
-		String documentId, title, language, description, exerciseUrl;
-		List<FileResource> attachments;
+		String documentId, title, language, description, exerciseUrl, documentRevision, nameOfPdfFile, nameOfDocFile;
+		List<FileResource> supplementaryFiles;
+		FileResource pdfFile, docFile;
 		List<String> namesOfSupplementaryFiles;
 		List<String> languages = new ArrayList<String>();
 		while(tabIterator.hasNext()){
@@ -236,10 +237,14 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 				languages.add(language);
 				description = uploadPanel.getDescriptionFromInput();
 				exerciseUrl = uploadPanel.getExerciseURLFromInput();
-				attachments = uploadPanel.getSupplementaryFiles();
+				pdfFile = uploadPanel.getPdfFile();
+				nameOfPdfFile = uploadPanel.getNameOfPdfFile();
+				docFile = uploadPanel.getDocFile();
+				nameOfDocFile = uploadPanel.getNameOfDocFile();
+				supplementaryFiles = uploadPanel.getSupplementaryFiles();
 				namesOfSupplementaryFiles = uploadPanel.getNamesOfSupplementaryFiles();
+				
 				if (documentId == null) { 
-					
 					documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
 						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
 						set_id,
@@ -251,17 +256,14 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //						new ArrayList<String>(modelingLanguage.getTagValues()),
 //						new ArrayList<String>(taskType.getTagValues()),
 //						new ArrayList<String>(other.getTagValues()),
+						nameOfPdfFile,
+						nameOfDocFile,
 						namesOfSupplementaryFiles
 					}, false));
-					
-					for (FileResource attachment : attachments) {
-						 Map<String, Object> document = exerciseRepository.readDocument(documentId);
-						 String documentRevision = (String)document.get("_rev");
-						 exerciseRepository.createAttachment(documentId, documentRevision, attachment.getFilename(), attachment.getSourceFile(), attachment.getMIMEType());
-					}
-					uploadPanel.clearAttachments();
-				}
-				else {
+
+					Map<String, Object> document = exerciseRepository.readDocument(documentId);
+					documentRevision = (String)document.get("_rev");
+				} else {
 					Map<String, Object> newValues = new HashMap<String, Object>();
 					newValues.put("_id", documentId);
 					newValues.put("set_id", set_id);
@@ -277,6 +279,8 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //					}
 					newValues.put("exercise_url", exerciseUrl);
 //					newValues.put("last_update", new Date());
+					newValues.put("name_of_pdf_file", nameOfPdfFile);
+					newValues.put("name_of_doc_file", nameOfDocFile);
 					newValues.put("names_of_supplementary_files", namesOfSupplementaryFiles);
 					
 					Map<String, Object> document = exerciseRepository.updateDocument(newValues);
@@ -288,17 +292,29 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 //							}
 //						}
 //					}
-					String documentRevision = (String)document.get("_rev");
+					documentRevision = (String)document.get("_rev");
+					if (nameOfExistingPdfFile != null && !nameOfExistingPdfFile.isEmpty()) {
+						documentRevision = exerciseRepository.deleteAttachment(documentId, documentRevision, nameOfExistingPdfFile);
+					}
+					if (nameOfExistingDocFile != null && !nameOfExistingDocFile.isEmpty()) {
+						documentRevision = exerciseRepository.deleteAttachment(documentId, documentRevision, nameOfExistingDocFile);
+					}
 					for (String nameOfOldAttachment : namesOfExistingSupplementaryFiles) {
 						documentRevision = exerciseRepository.deleteAttachment(documentId, documentRevision, nameOfOldAttachment);
 					}
-					
-					for (FileResource attachment : attachments) {
-						 documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, attachment.getFilename(), attachment.getSourceFile(), attachment.getMIMEType());
-					}
-					
-					uploadPanel.clearAttachments();
 				}
+				
+				if (pdfFile != null) {
+					documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, pdfFile.getFilename(), pdfFile.getSourceFile(), pdfFile.getMIMEType());
+				}
+				if (docFile != null) {
+					documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, docFile.getFilename(), docFile.getSourceFile(), docFile.getMIMEType());
+				}
+				for (FileResource attachment : supplementaryFiles) {
+					documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, attachment.getFilename(), attachment.getSourceFile(), attachment.getMIMEType());
+				}
+				
+				uploadPanel.clearAttachments();
 			}
 		}
 		if(isNewEntry){

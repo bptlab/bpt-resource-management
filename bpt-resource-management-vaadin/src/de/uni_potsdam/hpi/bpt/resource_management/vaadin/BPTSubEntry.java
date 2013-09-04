@@ -38,10 +38,33 @@ public class BPTSubEntry extends CustomLayout{
 //		Label topicsLabel = new Label(topics);
 //		this.addComponent(topicsLabel, "Topics");
 		
+		Link linkToPdfFile = (Link) entry.getItemProperty("PDF file").getValue();
+		if (linkToPdfFile.getCaption().isEmpty()) {
+			Label label = new Label("(none)");
+			label.setWidth("90%");
+			this.addComponent(label, "PDF file");
+		} else {
+			this.addComponent(linkToPdfFile, "PDF file");
+		}
+		Link linkToDocFile = (Link) entry.getItemProperty("DOC file").getValue();
+		if (linkToDocFile.getCaption().isEmpty()) {
+			Label label = new Label("(none)");
+			label.setWidth("90%");
+			this.addComponent(label, "DOC file");
+		} else {
+			this.addComponent(linkToDocFile, "DOC file");
+		}
+		
 		VerticalLayout attachmentLayout = new VerticalLayout();
 		this.addComponent(attachmentLayout, "Supplementary files");
-		for (int i = 1; entry.getItemProperty("Supplementary file" + i).getValue() != null; i++) {
-			attachmentLayout.addComponent((Link) entry.getItemProperty("Supplementary file" + i).getValue());
+		if (entry.getItemProperty("Supplementary file1").getValue() == null) {
+			Label label = new Label("(none)");
+			label.setWidth("90%");
+			attachmentLayout.addComponent(label);
+		} else {
+			for (int i = 1; entry.getItemProperty("Supplementary file" + i).getValue() != null; i++) {
+				attachmentLayout.addComponent((Link) entry.getItemProperty("Supplementary file" + i).getValue());
+			}
 		}
 	}
 

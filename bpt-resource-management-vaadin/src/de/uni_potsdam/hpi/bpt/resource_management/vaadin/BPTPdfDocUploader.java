@@ -1,10 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.ektorp.impl.DocIdResponseHandler;
 
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Link;
@@ -26,6 +22,22 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 		super(application, captionOfPanel, captionOfUploadComponent, supportedDocumentTypes);
 	}
 	
+	// TODO: separation of PDF and DOC files in panel
+	
+	public void addPdfLinkToPanel(Link link) {
+		File attachmentFile = convertToFile(link);
+		pdfFile = new FileResource(attachmentFile, application);
+		nameOfPdfFile = link.getCaption();
+		addComponent(link);
+	}
+	
+	public void addDocLinkToPanel(Link link) {
+		File attachmentFile = convertToFile(link);
+		docFile = new FileResource(attachmentFile, application);
+		nameOfDocFile = link.getCaption();
+		addComponent(link);
+	}
+
 	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
@@ -54,6 +66,9 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	}
 
 	public String getNameOfPdfFile() {
+		if (nameOfPdfFile == null) {
+			return new String();
+		}
 		return nameOfPdfFile;
 	}
 
@@ -62,6 +77,9 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	}
 
 	public String getNameOfDocFile() {
+		if (nameOfDocFile == null) {
+			return new String();
+		}
 		return nameOfDocFile;
 	}
 
@@ -70,16 +88,18 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	}
 	
 	@Override
-	public void clearFile() {
+	public void clearFiles() {
 		File file;
-		file = pdfFile.getSourceFile();
-		pdfFile.setSourceFile(null);
-		file.delete();
-		pdfFile = null;
-		file = docFile.getSourceFile();
-		docFile.setSourceFile(null);
-		file.delete();
-		docFile = null;
+		if (pdfFile != null) {
+			file = pdfFile.getSourceFile();
+			pdfFile.setSourceFile(null);
+			file.delete();
+		}
+		if (docFile != null) {
+			file = docFile.getSourceFile();
+			docFile.setSourceFile(null);
+			file.delete();
+		}
 	}
 
 }

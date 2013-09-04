@@ -96,7 +96,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 		return attachments;
 	}
 	
-	public void clearFile() {
+	public void clearFiles() {
 		for (FileResource attachment : attachments) {
 			File file = attachment.getSourceFile();
 			attachment.setSourceFile(null);

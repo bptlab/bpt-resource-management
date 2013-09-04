@@ -33,7 +33,8 @@ public class BPTDocumentTypes {
 		if (type.equals("bpmai_exercises")) {
 			return new String[] {
 					"set_id", "title", "language", "description",
-					"exercise_url", "names_of_supplementary_files"
+					"exercise_url", "names_of_supplementary_files",
+					"name_of_pdf_file", "name_of_doc_file"
 			};
 		}
 		if (type.equals("bpmai_exercise_sets")) {
