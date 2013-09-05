@@ -12,35 +12,35 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
-public class BPTEntry extends CustomLayout {
+public class BPTShareableEntry extends CustomLayout {
 	
 	private String entryId;
-	private BPTEntry entry;
 	private String userId;
 	private Item item;
-	private BPTEntryCards entryCards;
 	private BPTApplication application;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private BPTUserRepository userRepository = BPTUserRepository.getInstance();
 	
-	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
-		super("entry");
-		entry = this;
+	public BPTShareableEntry(Item item, BPTApplication application) {
+		super("shareable_entry");
 		this.item = item;
-		this.entryCards = entryCards;
 		this.application = application;
 		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(entryId);
 		
-		addButtons();
+//		addButtons();
+		addOtherButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
 			addToLayout(attributeName.toString());
 		}
@@ -82,7 +82,7 @@ public class BPTEntry extends CustomLayout {
 					}
 				} else {
 					String labelContent = value.toString();
-					if (id == "Description") {
+					if (id.equals("Description")) {
 						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();
 						if (!descriptionURL.isEmpty()) {
 							if (labelContent.isEmpty()) {
@@ -92,30 +92,6 @@ public class BPTEntry extends CustomLayout {
 						} else if (labelContent.isEmpty()) {
 							labelContent = "This tool has no description.";
 						}
-						String shortDescription;
-						Label shortDescriptionLabel;
-						int lastIndex = 0;
-						String[] words = labelContent.split("\\s+");
-						if (words.length > 75) {
-							for (int i = 0; i < 50; i++) {
-								lastIndex = lastIndex + words[i].length() + 1;
-							}
-							// TODO: when to cut? only after the next dot?
-							while (!(labelContent.charAt(lastIndex) == '.') && lastIndex + 1 < labelContent.length()) {
-								lastIndex++;
-							}
-							// dots should be shown as well
-//							lastIndex++;
-							shortDescription = labelContent.substring(0, lastIndex) + " ...";
-						}
-						else{
-							shortDescription = labelContent;
-						}
-						shortDescriptionLabel = new Label("<span style=\"display: block\">" + shortDescription + "</span><br/>");
-						shortDescriptionLabel.setContentMode(Label.CONTENT_XHTML);
-						shortDescriptionLabel.setWidth("90%");
-						this.addComponent(shortDescriptionLabel, "ShortDescription");
-
 					} else if (id.equals("Contact name")) {
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
@@ -158,47 +134,19 @@ public class BPTEntry extends CustomLayout {
 		} 
 	}
 
-//	private void addDefaultComponent(String location) {
-//		Label label = new Label("(none)");
-//		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-//		this.addComponent(label, location);
+//	public void addButtons() {
+//		Button share = new Button("share");
+//		share.addListener(new Button.ClickListener(){
+//			public void buttonClick(ClickEvent event) {
+//				addOtherButtons();
+//				application.getMainWindow().executeJavaScript(getJavaScriptStringShow());
+//				entry.setHeight("");
+//			}
+//		});
+//		share.setStyleName(BaseTheme.BUTTON_LINK);
+//		share.addStyleName("bpt");
+//		this.addComponent(share, "button share");
 //	}
-
-	public void addButtons() {
-		Button share = new Button("share");
-		share.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				application.showSpecificEntry(entryId);
-			}
-		});
-		share.setStyleName(BaseTheme.BUTTON_LINK);
-		share.addStyleName("bpt");
-		this.addComponent(share, "button share");
-		
-		Button more = new Button("more");
-		more.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				addOtherButtons();
-				getWindow().executeJavaScript(getJavaScriptStringShow());
-				entry.setHeight("");
-			}
-		});
-		more.setStyleName(BaseTheme.BUTTON_LINK);
-		more.addStyleName("bpt");
-		this.addComponent(more, "button more");
-		
-		Button less = new Button("less");
-		less.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				hideJavaScript();
-				entry.setHeight("");
-			}
-		});
-		less.setStyleName(BaseTheme.BUTTON_LINK);
-		less.addStyleName("bpt");
-		this.addComponent(less, "button less");
-		
-	}
 	
 	protected void addOtherButtons() {
 		
@@ -213,21 +161,21 @@ public class BPTEntry extends CustomLayout {
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
 			this.addComponent(edit, "button edit");
-			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
 		
 		if(application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated())){
 			Button delete = new Button("delete");
 			delete.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "delete");
+					addConfirmationWindow("delete");
 				}
 			});
 			
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
-			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
+			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("delete"));
 //			System.out.println("renderDeleteButton" + entryId);
 		}
 		
@@ -237,7 +185,7 @@ public class BPTEntry extends CustomLayout {
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "publish");
+					addConfirmationWindow("publish");
 				}
 			});
 		
@@ -249,7 +197,7 @@ public class BPTEntry extends CustomLayout {
 			Button reject = new Button("reject");
 			reject.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "reject");
+					addConfirmationWindow("reject");
 				}
 			});
 			
@@ -263,7 +211,7 @@ public class BPTEntry extends CustomLayout {
 			Button unpublish = new Button("unpublish");
 			unpublish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "unpublish");
+					addConfirmationWindow("unpublish");
 				}
 			});
 			
@@ -278,7 +226,7 @@ public class BPTEntry extends CustomLayout {
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "propose");
+					addConfirmationWindow("propose");
 				}
 			});
 			
@@ -291,60 +239,52 @@ public class BPTEntry extends CustomLayout {
 	}
 
 	private String getJavaScriptStringShow(String button) {
-		String js = 
-        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-		"for(i=0; i<nodes.length; i+=1){" +
-			"if(nodes[i].className == 'extension'){" +
-				"var subNodes = nodes[i].childNodes;" +
-				"for(j=0; j<subNodes.length; j+=1){" +
-					"if(subNodes[j].className == 'button edit " + button + "'){" +
-						"subNodes[j].style.display = 'block';" +
-						"break;}" +
-				"}" +
-			"}" +
-		"}";
-		return js;
+		return "document.getElementById('button edit " + button + "').style.display = 'block';";
 	}
 	
-	private String getJavaScriptStringShow() {
-		String js = 
-        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-		"for(i=0; i<nodes.length; i+=1){" +
-			"if(nodes[i].className == 'extension'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'Description extension'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'button more'){" +
-				"nodes[i].style.display = 'none';}" +
-			"if(nodes[i].className == 'button share'){" +
-				"nodes[i].style.display = 'none';}" +
-			"if(nodes[i].className == 'ShortDescription'){" +
-				"nodes[i].style.display = 'none';}" +
-			"}";
-		return js;
-	}
-
-	private String getJavaScriptStringHide() {
-		String js = 
-        "var nodes = document.getElementById('" + entryId +"').childNodes[0].childNodes;" +
-		"for(i=0; i<nodes.length; i+=1){" +
-			"if(nodes[i].className == 'extension'){" +
-				"nodes[i].style.display = 'none';}" +
-			"if(nodes[i].className == 'Description extension'){" +
-				"nodes[i].style.display = 'none';}" +
-			"if(nodes[i].className == 'button more'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'button share'){" +
-				"nodes[i].style.display = 'block';}" +
-			"if(nodes[i].className == 'ShortDescription'){" +
-				"nodes[i].style.display = 'block';}" +
-			"}";
-		return js;
-		
-	}
-	
-	public void hideJavaScript(){
-		application.getMainWindow().executeJavaScript(getJavaScriptStringHide());
+	protected void addConfirmationWindow(final String status) {
+		final TextArea reasonForRejectionTextArea = new TextArea();
+		final Window confirmationWindow = new Window("Notification");
+		confirmationWindow.setWidth("400px");
+		confirmationWindow.setModal(true);
+		if (status.equals("delete")) {
+			confirmationWindow.addComponent(new Label("Deleting this entry - are you sure?"));
+		} else if (status.equals("publish")) {
+			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
+		} else if (status.equals("reject")) {
+			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
+			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
+			reasonForRejectionTextArea.setRows(5);
+			reasonForRejectionTextArea.setWidth("95%");
+			reasonForRejectionTextArea.setWordwrap(true);
+			confirmationWindow.addComponent(reasonForRejectionTextArea);
+		} else if (status.equals("unpublish")) { 
+			confirmationWindow.addComponent(new Label("Unpublishing this entry - are you sure?"));
+		} else { // if status.equals("propose")
+			confirmationWindow.addComponent(new Label("Proposing this entry - are you sure?"));
+		}
+		Button confirmButton = new Button("Confirm");
+		confirmationWindow.addComponent(confirmButton);
+		confirmButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				if (status.equals("delete")) {
+					toolRepository.deleteDocument(entryId, ((BPTApplication)getApplication()).isModerated());
+				} else if (status.equals("publish")) {
+					toolRepository.publishDocument(entryId);
+				} else if (status.equals("reject")) {
+					toolRepository.rejectDocument(entryId, (String) reasonForRejectionTextArea.getValue());
+				} else if (status.equals("unpublish")) { 
+					boolean fromPublished = true;
+					toolRepository.unpublishDocument(entryId, fromPublished, ((BPTApplication)getApplication()).isModerated());
+				} else { // if status.equals("propose"))
+					boolean fromRejected = false;
+					toolRepository.unpublishDocument(entryId, fromRejected);
+				}
+				BPTContainerProvider.refreshFromDatabase();
+				application.getMainWindow().removeWindow(confirmationWindow);
+			}
+		});
+		application.getMainWindow().addWindow(confirmationWindow);
 	}
 	
 }
