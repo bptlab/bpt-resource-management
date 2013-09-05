@@ -13,6 +13,7 @@ import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
@@ -22,8 +23,6 @@ import com.vaadin.ui.themes.BaseTheme;
 public class BPTLoginComponent extends CustomComponent implements Property.ValueChangeListener {
 		
 	private VerticalLayout layout;
-	private Button loginButton;
-	private Button logoutButton;
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
 	private BPTSidebar sidebar;
@@ -32,7 +31,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private String openIdRealm;
 	private String openIdProvider = openIdProviders[0];
 	
-	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar){
+	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar) {
 		
 		setProperties();
 		
@@ -40,21 +39,31 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
 		navigationBar = new BPTNavigationBar();
-		
 		if (isLoggedIn) {
 			layout.addComponent(navigationBar);
-			addLogoutButton();
-		}
-		else {
-			addLoginButton();
+			addComponentsForLogout();
+		} else {
+			addComponentsForLogin();
 		}
 		
 	}
 
-	private void addLoginButton() {
-		loginButton = new Button("Login");
+	private void addComponentsForLogin() {
+        HorizontalLayout openIdLayout = new HorizontalLayout();
+        Label loginLabel = new Label("OpenID provider:&nbsp;", Label.CONTENT_XHTML);
+        NativeSelect openIdProviderNativeSelect = new NativeSelect();
+        for (String openIdProvider : openIdProviders) {
+        	openIdProviderNativeSelect.addItem(openIdProvider);
+        }
+        openIdProviderNativeSelect.setNullSelectionAllowed(false);
+        openIdProviderNativeSelect.setValue(openIdProviders[0]);
+        openIdProviderNativeSelect.setImmediate(true);
+        openIdProviderNativeSelect.addListener(this);
+        openIdLayout.addComponent(loginLabel);
+        openIdLayout.addComponent(openIdProviderNativeSelect);
+        
+		Button loginButton = new Button("Login");
         loginButton.setStyleName(BaseTheme.BUTTON_LINK);
-        layout.addComponent(loginButton);
         
         loginButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
@@ -66,25 +75,21 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 			}
 		});
         
-        NativeSelect openIdProviderNativeSelect = new NativeSelect("OpenID provider");
-        for (String openIdProvider : openIdProviders) {
-        	openIdProviderNativeSelect.addItem(openIdProvider);
-        }
-        openIdProviderNativeSelect.setNullSelectionAllowed(false);
-        openIdProviderNativeSelect.setValue(openIdProviders[0]);
-        openIdProviderNativeSelect.setImmediate(true);
-        openIdProviderNativeSelect.addListener(this);
-        
-        layout.addComponent(openIdProviderNativeSelect);
-
+        layout.addComponent(loginButton);
+        layout.addComponent(openIdLayout);
+		layout.setExpandRatio(openIdLayout, 50);
+		layout.setExpandRatio(loginButton, 50);
 	}
 
-	private void addLogoutButton() {
-		logoutButton = new Button("Logout");
+	private void addComponentsForLogout() {
+		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
+		layout.addComponent(welcomeLabel);
+		
+		Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         layout.addComponent(logoutButton);
         
-        logoutButton.addListener(new Button.ClickListener(){
+        logoutButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				BPTApplication application = (BPTApplication) getApplication();
 				application.setName("");
@@ -94,20 +99,17 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				application.setOpenIdProvider(openIdProviders[0]);
 				application.finder();
 				layout.removeAllComponents();
-				addLoginButton();
+				addComponentsForLogin();
 				sidebar.logout();
-	
 			}});
-		
 	}
 	
-	public void login(String name){
+	public void login(String name) {
 		layout.removeAllComponents();
 //		System.out.println(name);
+//		navigationBar = new BPTNavigationBar(true);
 		layout.addComponent(navigationBar);
-		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
-		layout.addComponent(welcomeLabel);
-		addLogoutButton();
+		addComponentsForLogout();
 	}
 	
 	private void redirectToOpenIDProvider() throws IOException {

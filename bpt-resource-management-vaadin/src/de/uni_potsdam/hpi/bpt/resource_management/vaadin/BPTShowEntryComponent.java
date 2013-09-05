@@ -27,7 +27,6 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	protected String _id;
 	protected BPTApplication application;
 	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
-	private TextArea reasonForRejectionTextArea;
 	
 	public BPTShowEntryComponent(final BPTApplication application) {
 		this.application = application;
@@ -152,11 +151,10 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			
 		}
 		getWindow().addWindow(popupWindow);
-		
-		
 	}
 	
 	protected void addConfirmationWindow(final Window popupWindow, final String status) {
+		final TextArea reasonForRejectionTextArea = new TextArea();
 		final Window confirmationWindow = new Window("Notification");
 		confirmationWindow.setWidth("400px");
 		confirmationWindow.setModal(true);
@@ -166,7 +164,6 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
 		} else if (status.equals("reject")) {
 			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
-			reasonForRejectionTextArea = new TextArea();
 			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
 			reasonForRejectionTextArea.setRows(5);
 			reasonForRejectionTextArea.setWidth("95%");
@@ -204,6 +201,5 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			}
 		});
 		getWindow().addWindow(confirmationWindow);
-		
 	}
 }

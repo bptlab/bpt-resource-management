@@ -1,13 +1,21 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 
 @SuppressWarnings("serial")
-public class BPTSidebar extends CustomComponent{
+public class BPTSidebar extends CustomComponent {
 	
 	private HorizontalLayout layout;
 	private BPTApplication application;
@@ -51,7 +59,7 @@ public class BPTSidebar extends CustomComponent{
 		application.close();
 	}
 	
-	public void upload(){
+	public void upload() {
 		layout.removeAllComponents();
 //		layout = new HorizontalLayout();
 		Label label = new Label("required fields marked with *<br/>", Label.CONTENT_XHTML);
@@ -69,6 +77,35 @@ public class BPTSidebar extends CustomComponent{
 		if (application.isLoggedIn()) {
 			searchComponent.login();
 		}
+	}
+	
+	public void showSpecificEntry(final String urlToEntry) {
+		layout.removeAllComponents();
+		VerticalLayout shareLayout = new VerticalLayout();
+		
+		Label label = new Label("URL to this page:&nbsp;", Label.CONTENT_XHTML);
+		final TextField textField = new TextField();
+		shareLayout.addComponent(label);
+		
+		textField.addStyleName("boldtextfield");
+		textField.setWidth("90%");
+		textField.setValue(urlToEntry);
+		textField.setReadOnly(true);
+		shareLayout.addComponent(textField);
+
+		Button findButton = new Button("See all entries of Tools for BPM");
+		findButton.setStyleName(BaseTheme.BUTTON_LINK);
+		findButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
+				((BPTApplication)getApplication()).finder();
+			}
+		});
+		shareLayout.addComponent(findButton);
+		layout.addComponent(shareLayout);
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(shareLayout, 75);
+		layout.setExpandRatio(loginComponent, 25);
 	}
 
 }

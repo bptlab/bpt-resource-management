@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -13,6 +14,10 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
+import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -22,7 +27,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	
 	//Change themeName for different side
@@ -39,6 +44,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private BPTToolRepository toolRepository;
 	private BPTUserRepository userRepository;
 	private int numberOfEntries;
+	private final UriFragmentUtility uriFu = new UriFragmentUtility();
+
+	private BPTShareableEntry entry;
 	
 	@Override
 	public void init() {
@@ -47,7 +55,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		
 		setProperties();
 		
-		Window mainWindow = new Window("Tools for BPM");
+		final Window mainWindow = new Window("Tools for BPM");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme(themeName);
@@ -66,6 +74,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		custom.addComponent(layout, "application");
 		custom.addStyleName("scroll");
 		mainWindow.setContent(custom);
+//		mainWindow.addComponent(uriFu);
+		custom.addComponent(uriFu, "uriFragmentUtility");
+		addListenerToUriFragmentUtility();
 	}
 
 	public boolean isLoggedIn() {
@@ -99,7 +110,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	
 	public String getMailAddress() {
 		return mailAddress;
@@ -117,7 +127,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		this.openIdProvider = openIdProvider;
 	}
 	
-
 	private void setProperties() { 		
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 		applicationURL = resourceBundle.getString("OPENID_RETURN_TO");
@@ -138,7 +147,45 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		sidebar.finder();
 		refreshAndClean();
 		mainFrame.add(entryComponent);
-		
+	}
+	
+	public void showSpecificEntry(String entryId) {
+		Map<String, Object> tool = toolRepository.get(entryId);
+		StringBuffer sbUriFragment = new StringBuffer();
+		sbUriFragment.append(entryId + "-");
+		String nameOfTool = (String) tool.get("name");
+		String formattedNameOfTool = nameOfTool.replaceAll("[^\\w]", "-").toLowerCase();
+		String fragmentForEntry = "!entry-" + entryId + "-" + formattedNameOfTool;
+		String applicationString = applicationURL;
+		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
+			applicationString = applicationString.substring(0, applicationURL.length() - 1);
+		}
+		IndexedContainer container = BPTContainerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)));
+		Item item = container.getItem(container.getItemIds().iterator().next());
+		entry = new BPTShareableEntry(item, this);
+		mainFrame.add(entry);
+		sidebar.showSpecificEntry(applicationURL + "#" + fragmentForEntry);
+		uriFu.setFragment(fragmentForEntry, false);
+	}
+	
+	private void addListenerToUriFragmentUtility() {
+		uriFu.addListener(new FragmentChangedListener() {
+            public void fragmentChanged(FragmentChangedEvent source) {
+                String fragment = source.getUriFragmentUtility().getFragment();
+                if (fragment != null) {
+                    if (fragment.startsWith("!entry-")) {
+                        fragment = fragment.substring(7);
+                        int separatorIndex = fragment.indexOf("-");
+                        String entryId = fragment.substring(0, separatorIndex);
+                        String formattedNameOfTool = fragment.substring(separatorIndex + 1, fragment.length());
+                        String nameOfTool = (String) toolRepository.get(entryId).get("name");
+                		if (formattedNameOfTool.equals(nameOfTool.replaceAll("[^\\w]", "-").toLowerCase())) {
+                			showSpecificEntry(entryId);
+                		}
+                    }
+                }
+            }
+        });
 	}
 	
 	public BPTToolRepository getToolRepository() {
@@ -149,6 +196,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		return userRepository;
 	}
 	
+	public UriFragmentUtility getUriFragmentUtility() {
+		return uriFu;
+	}
+
 	public BPTShowEntryComponent getTable(){
 		return entryComponent;
 	}

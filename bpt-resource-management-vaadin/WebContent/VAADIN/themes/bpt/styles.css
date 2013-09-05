@@ -65,9 +65,17 @@ ul#resource-list {
 #resource-list .entry .button.edit {
 	margin: 0px;
 	margin-top: 10px;
-	float:left;
+	float: left;
 	clear: none;
 	display: none;
+}
+
+#resource-list .entry .button.share,
+#resource-list .entry .button.more,
+#resource-list .entry .button.less {
+	/*margin: 0px;
+	float: right;
+	clear: none;*/
 }
 
 #resource-list .entry .bpt .v-button-caption {
@@ -187,4 +195,8 @@ div{
 
 body{
 	overflow: auto !important;
+}
+
+.boldtextfield {
+	font-weight: bold !important;
 }
