@@ -24,7 +24,7 @@ public class BPTSubEntry extends CustomLayout{
 		Label setIDLabel = new Label(setID);
 		this.addComponent(setIDLabel, "Exercise Set ID");
 		Label descriptionLabel = (Label) entry.getItemProperty("Description").getValue();
-		descriptionLabel.setWidth("90%");
+		descriptionLabel.setWidth("650px");
 		this.addComponent(descriptionLabel, "Description");
 		Link exerciseURLLink = (Link) entry.getItemProperty("Exercise URL").getValue();
 		if (exerciseURLLink.getCaption().isEmpty()) {

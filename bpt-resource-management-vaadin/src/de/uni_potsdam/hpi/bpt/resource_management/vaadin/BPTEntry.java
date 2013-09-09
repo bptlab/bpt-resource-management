@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -101,21 +103,43 @@ public class BPTEntry extends CustomLayout {
 			Item subItem = entries.getItem(entryId);
 			final String languageOfEntry = subItem.getItemProperty("Language").getValue().toString();
 			BPTSubEntry subEntry = new BPTSubEntry(subItem);
+			subEntry.setWidth("90%");
 			subentries.put(languageOfEntry, subEntry);
-			Button tabButton = new Button(languageOfEntry);
+			final Button tabButton = new Button(languageOfEntry);
 			tabButton.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					subEntryLayout.removeAllComponents();
 					subEntryLayout.addComponent(subentries.get(languageOfEntry));
+					Iterator<Component> iterator = tabLayout.getComponentIterator();
+					while(iterator.hasNext()){
+						Component component = iterator.next();
+						component.removeStyleName("chosenTab");
+						component.requestRepaint();
+				}
+					tabButton.addStyleName("chosenTab");
+					tabButton.requestRepaint();
 				}
 			});
 			tabButton.setStyleName(BaseTheme.BUTTON_LINK);
 			tabButton.addStyleName("tab");
+			tabButton.setDebugId(setId + "_" + languageOfEntry);
 			tabLayout.addComponent(tabButton);
 		}
 		this.addComponent(tabLayout, "TabButtons");
-		subEntryLayout.addComponent(subentries.values().iterator().next());
+		String language = subentries.keySet().iterator().next();
+		subEntryLayout.addComponent(subentries.get(language));
+		
+		Iterator<Component> iterator = tabLayout.getComponentIterator();
+		while(iterator.hasNext()){
+			Component component = iterator.next();
+			if(component.getCaption().equals(language)){
+				component.addStyleName("chosenTab");
+				component.requestRepaint();
+				break;
+			}
 	}
+	}
+
 
 	private void addDefaultComponent(String location) {
 		Label label = new Label("(none)");
@@ -158,7 +182,7 @@ public class BPTEntry extends CustomLayout {
 		});
 		less.setStyleName(BaseTheme.BUTTON_LINK);
 		less.addStyleName("bpt");
-		less.addStyleName("redButtonHover");
+		less.addStyleName("whiteButtonHover");
 		this.addComponent(less, "button less");
 		
 	}
@@ -175,7 +199,7 @@ public class BPTEntry extends CustomLayout {
 			
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
-			edit.addStyleName("redButtonHover");
+			edit.addStyleName("whiteButtonHover");
 			this.addComponent(edit, "button edit");
 			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
@@ -190,7 +214,7 @@ public class BPTEntry extends CustomLayout {
 			
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
-			delete.addStyleName("redButtonHover");
+			delete.addStyleName("whiteButtonHover");
 			this.addComponent(delete, "button delete");
 			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
 			System.out.println("renderDeleteButton" + setId);
@@ -208,7 +232,7 @@ public class BPTEntry extends CustomLayout {
 		
 			publish.setStyleName(BaseTheme.BUTTON_LINK);
 			publish.addStyleName("bpt");
-			publish.addStyleName("redButtonHover");
+			publish.addStyleName("whiteButtonHover");
 			this.addComponent(publish, "button publish");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
 			
@@ -221,7 +245,7 @@ public class BPTEntry extends CustomLayout {
 			
 			reject.setStyleName(BaseTheme.BUTTON_LINK);
 			reject.addStyleName("bpt");
-			reject.addStyleName("redButtonHover");
+			reject.addStyleName("whiteButtonHover");
 			this.addComponent(reject, "button reject");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
 		}
@@ -236,7 +260,7 @@ public class BPTEntry extends CustomLayout {
 			
 			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 			unpublish.addStyleName("bpt");
-			unpublish.addStyleName("redButtonHover");
+			unpublish.addStyleName("whiteButtonHover");
 			this.addComponent(unpublish, "button unpublish");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
 		
@@ -252,7 +276,7 @@ public class BPTEntry extends CustomLayout {
 			
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
-			propose.addStyleName("redButtonHover");
+			propose.addStyleName("whiteButtonHover");
 			this.addComponent(propose, "button propose");
 			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
 		}
