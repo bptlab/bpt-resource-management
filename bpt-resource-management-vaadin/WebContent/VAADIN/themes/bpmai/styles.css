@@ -37,7 +37,7 @@ ul#resource-list {
 	clear: left;
 	display: block;
 	position: relative;
-	padding: 0.2em 0.3em 0.4em;
+	padding: 0;
 	margin: 0.4em 0 0.4em 90%;
 	text-align: center;
 	background-color: #e89a4b;
@@ -60,8 +60,13 @@ ul#resource-list {
 	text-decoration: none;
 }
 
+#resource-list .entry .bpt .v-button-wrap {
+	padding: 0.2em 0.3em 0.4em;
+}
+
 #resource-list .entry .bpt .v-button-caption {
 	color: #FFFFFF;
+	padding: 0.3em 1.4em 0.6em;
 }
 #resource-list .entry .v-link.v-link-bpt2 {
 	display: inline;
