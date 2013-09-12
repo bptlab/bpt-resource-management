@@ -23,6 +23,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
+import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -35,7 +36,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValue
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
-public class BPTUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
+public class BPTUploader extends CustomComponent implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	private VerticalLayout layout;
 	private Upload upload;
@@ -51,6 +52,7 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	private boolean logoDeleted = true;
 	private BPTApplication application;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private String errorMessage;
 	
 	public BPTUploader(Item item, final BPTApplication application) {
 		this.application = application;
@@ -374,21 +376,30 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 		upload.setImmediate(false);
 		upload.setWidth("-1px");
 		upload.setHeight("-1px");
+		upload.addListener((Upload.StartedListener)this);
 		upload.addListener((Upload.SucceededListener)this);
         upload.addListener((Upload.FailedListener)this);
 		parent.addComponent(upload);
 	}
 	
+	@Override
+	public void uploadStarted(StartedEvent event) {
+		imageType = event.getMIMEType();
+		if (!Arrays.asList(supportedImageTypes).contains(imageType)) {
+			errorMessage = "The type of the file you have submitted is not supported.";
+			upload.interruptUpload();
+		}
+	}
+	
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		imageType = mimeType;
+//		imageType = mimeType;
 		logo = new File(filename);
 		
         try {
-        	if (Arrays.asList(supportedImageTypes).contains(imageType)) {
-        		outputStream = new FileOutputStream(logo);
-        	}
+    		outputStream = new FileOutputStream(logo);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+			errorMessage = "The file was not found.";
+			upload.interruptUpload();
         }
         
         return outputStream;
@@ -428,7 +439,8 @@ public class BPTUploader extends CustomComponent implements Upload.SucceededList
 	public void uploadFailed(FailedEvent event) {
 		getWindow().showNotification(
                 "Upload failed",
-                "The type of the file you have submitted is not supported or the file was not found.",
+                errorMessage,
                 Notification.TYPE_ERROR_MESSAGE);
 	}
+
 }
