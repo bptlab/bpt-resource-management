@@ -154,7 +154,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		sbUriFragment.append(entryId + "-");
 		String nameOfTool = (String) tool.get("name");
 		String formattedNameOfTool = nameOfTool.replaceAll("[^\\w]", "-").toLowerCase();
-		String fragmentForEntry = "!entry-" + entryId + "-" + formattedNameOfTool;
+		String fragmentForEntry = "!" + entryId + "-" + formattedNameOfTool;
 		String applicationString = applicationURL;
 		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
 			applicationString = applicationString.substring(0, applicationURL.length() - 1);
@@ -172,15 +172,23 @@ public class BPTApplication extends Application implements HttpServletRequestLis
             public void fragmentChanged(FragmentChangedEvent source) {
                 String fragment = source.getUriFragmentUtility().getFragment();
                 if (fragment != null) {
-                    if (fragment.startsWith("!entry-")) {
-                        fragment = fragment.substring(7);
-                        int separatorIndex = fragment.indexOf("-");
-                        String entryId = fragment.substring(0, separatorIndex);
-                        String formattedNameOfTool = fragment.substring(separatorIndex + 1, fragment.length());
-                        String nameOfTool = (String) toolRepository.get(entryId).get("name");
-                		if (formattedNameOfTool.equals(nameOfTool.replaceAll("[^\\w]", "-").toLowerCase())) {
-                			showSpecificEntry(entryId);
-                		}
+                    if (fragment.startsWith("!")) {
+                    	try {
+                    		fragment = fragment.substring(1);
+	                        int separatorIndex = fragment.indexOf("-");
+	                        String entryId = fragment.substring(0, separatorIndex);
+	                        String formattedNameOfTool = fragment.substring(separatorIndex + 1, fragment.length());
+	                        String nameOfTool = (String) toolRepository.get(entryId).get("name");
+	                		if (formattedNameOfTool.equals(nameOfTool.replaceAll("[^\\w]", "-").toLowerCase())) {
+	                			showSpecificEntry(entryId);
+	                		}
+                    	} catch (IndexOutOfBoundsException e) {
+//                    		e.printStackTrace();
+                    	} catch (NullPointerException e) {
+//                    		e.printStackTrace();
+                    	}
+                        
+
                     }
                 }
             }
