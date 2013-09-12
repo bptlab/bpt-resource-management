@@ -4,8 +4,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
 public class BPTNavigationBar extends CustomComponent{
