@@ -75,7 +75,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
         if (item != null) {
         	set_id = item.getItemProperty("Exercise Set ID").getValue().toString();
         	nameOfExistingPdfFile = (String) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("name_of_pdf_file");
-        	nameOfExistingDocFile = (String) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_doc_file");
+        	nameOfExistingDocFile = (String) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("name_of_doc_file");
         	namesOfExistingSupplementaryFiles = (ArrayList<String>) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_supplementary_files");
         	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
         	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map, false);
