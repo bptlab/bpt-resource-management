@@ -46,7 +46,6 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 		this.addComponent(uploadComponent);
 	}
 	
-	@Override
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		String documentType = mimeType;
 		FileOutputStream outputStream = null;
@@ -63,7 +62,6 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
         return outputStream;
 	}
 	
-	@Override
 	public void uploadFailed(FailedEvent event) {
 		getWindow().showNotification(
                 "Upload failed",
@@ -71,20 +69,18 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
                 Notification.TYPE_ERROR_MESSAGE);
 	}
 	
-	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
 		namesOfAttachments.add(documentResource.getFilename());
-		addLinkToAttachmentPanel(documentResource);
+		this.addComponent(getLinkToAttachment(documentResource));
 		attachments.add(documentResource);
 		System.out.println(documentResource);
         application.refreshAndClean();
 	}
 	
-	protected Link addLinkToAttachmentPanel(FileResource documentResource) {
+	protected Link getLinkToAttachment(FileResource documentResource) {
 		Link link = new Link(documentResource.getFilename(), documentResource);
 		BPTVaadinResources.setTargetAndIcon(link);
-		this.addComponent(link);
 		return link;
 	}
 	
