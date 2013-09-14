@@ -17,13 +17,14 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
+import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-public class BPTAttachmentUploader extends Panel implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
+public class BPTAttachmentUploader extends Panel implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	protected static final long serialVersionUID = 5970533396623869051L;
 	protected Upload uploadComponent;
@@ -32,6 +33,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 	protected List<String> namesOfAttachments = new ArrayList<String>();
 	protected List<FileResource> attachments = new ArrayList<FileResource>();
 	protected BPTApplication application;
+	private String errorMessage = new String();
 
 	public BPTAttachmentUploader(BPTApplication application, String captionOfPanel, String captionOfUploadComponent, String[] supportedDocumentTypes) {
 		this.application = application;
@@ -41,31 +43,38 @@ public class BPTAttachmentUploader extends Panel implements Upload.SucceededList
 		uploadComponent.setImmediate(false);
 		uploadComponent.setWidth("-1px");
 		uploadComponent.setHeight("-1px");
+		uploadComponent.addListener((Upload.StartedListener)this);
 		uploadComponent.addListener((Upload.SucceededListener)this);
 		uploadComponent.addListener((Upload.FailedListener)this);
 		this.addComponent(uploadComponent);
 	}
+
+	@Override
+	public void uploadStarted(StartedEvent event) {
+		String documentType = event.getMIMEType();
+    	if (supportedDocumentTypes != null || !Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+    		errorMessage = "The type of the file you have submitted is not supported.";
+            uploadComponent.interruptUpload();
+    	}
+	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		String documentType = mimeType;
 		FileOutputStream outputStream = null;
 		tempAttachment = new File(filename);
 		//		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
         try {
-        	if (supportedDocumentTypes == null || Arrays.asList(supportedDocumentTypes).contains(documentType)) {
-        		outputStream = new FileOutputStream(tempAttachment);
-        	}
+        	outputStream = new FileOutputStream(tempAttachment);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            errorMessage = "The file was not found.";
+            uploadComponent.interruptUpload();
         }
-        
         return outputStream;
 	}
 	
 	public void uploadFailed(FailedEvent event) {
 		getWindow().showNotification(
                 "Upload failed",
-                "The type of the file you have submitted is not supported or the file was not found.",
+                errorMessage,
                 Notification.TYPE_ERROR_MESSAGE);
 	}
 	
