@@ -1,10 +1,9 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.util.List;
-
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Table;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
@@ -30,7 +29,7 @@ public class BPTTable extends BPTShowEntryComponent {
 	@Override
 	protected void show(IndexedContainer sets) {
 		table.setContainerDataSource(sets);
-		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes());
+		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPMAI_EXERCISE_SETS));
 	}
 
 	@Override

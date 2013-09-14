@@ -105,7 +105,7 @@ public class BPTUserRepository extends BPTDocumentRepository {
 
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys("bpmai_users");
+		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.valueOf(tableName));
 		for(int i = 0; i < keys.length; i++) {
 			document.put(keys[i], values[i]);
 		}

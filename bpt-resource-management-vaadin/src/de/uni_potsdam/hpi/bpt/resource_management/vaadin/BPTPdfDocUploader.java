@@ -12,7 +12,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
 
 public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	
@@ -108,7 +108,7 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
-		if (documentResource.getMIMEType().equals(BPTMimeTypes.PDF.toString())) {
+		if (documentResource.getMIMEType().equals(BPTMimeType.PDF.toString())) {
 			nameOfPdfFile = documentResource.getFilename();
 //			if (pdfLink != null) {
 //				removeComponent(pdfLink);
@@ -117,8 +117,8 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 			addPdfLink(pdfLink);
 			pdfFile = documentResource;
 	        application.refreshAndClean();
-		} else if (documentResource.getMIMEType().equals(BPTMimeTypes.DOC.toString()) 
-				|| documentResource.getMIMEType().equals(BPTMimeTypes.DOCX.toString())
+		} else if (documentResource.getMIMEType().equals(BPTMimeType.DOC.toString()) 
+				|| documentResource.getMIMEType().equals(BPTMimeType.DOCX.toString())
 				/* MIME type of docx files is often application/octet-stream which is not used in BPTMimeTypes */
 				|| documentResource.getFilename().toLowerCase().endsWith(".docx")) {
 			nameOfDocFile = documentResource.getFilename();
