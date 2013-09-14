@@ -196,7 +196,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 						public void buttonClick(ClickEvent event) {
 							if (((String) passwordInput.getValue()).equals("petrinet")) {
 								failureLabel.setVisible(false);
-								sidebar.getLoginComponent().addLoginButton();
+								sidebar.getLoginComponent().addComponentsForLogin();
 								getMainWindow().removeWindow(administrationWindow);
 								custom.removeComponent(administrationButton);
 							} else {
@@ -345,18 +345,18 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 				} else {
 					ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 					statusList.add(BPTExerciseStatus.Published);
-					sets = containerProvider.getVisibleEntrieSets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					sets = containerProvider.getVisibleEntrySets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = containerProvider.getNumberOfEntries(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 				}
 			} else {
 				ArrayList<BPTExerciseStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
-				sets = containerProvider.getVisibleEntrieSets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+				sets = containerProvider.getVisibleEntrySets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				numberOfEntries = containerProvider.getNumberOfEntries(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 			}
 		} else {
 			ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 			statusList.add(BPTExerciseStatus.Published);
-			sets = containerProvider.getVisibleEntrieSets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+			sets = containerProvider.getVisibleEntrySets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 			numberOfEntries = containerProvider.getNumberOfEntries(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 		}
 		entryComponent.show(sets);

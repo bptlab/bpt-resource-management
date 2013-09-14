@@ -22,6 +22,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
@@ -78,7 +79,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
         	nameOfExistingDocFile = (String) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("name_of_doc_file");
         	namesOfExistingSupplementaryFiles = (ArrayList<String>) exerciseRepository.readDocument(item.getItemProperty("ID").getValue().toString()).get("names_of_supplementary_files");
         	List<Map> map = exerciseRepository.getDocumentsBySetId(set_id);
-        	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map, false);
+        	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map, BPTDocumentType.BPMAI_EXERCISES);
      		for (Object id : entries.getItemIds()) {
  				Item nextItem = entries.getItem(id);
  				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
@@ -131,7 +132,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	}
 
 	private void setTagValues(Item item) {
-		Object x = item.getItemProperty("Topics").getValue();
 		if(!(item.getItemProperty("Topics").getValue().toString().equals(""))){
 			String[] model_type = ((String) item.getItemProperty("Topics").getValue()).split(",");
 			for(int i = 0; i < model_type.length; i++) topic.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
@@ -259,7 +259,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 						nameOfPdfFile,
 						nameOfDocFile,
 						namesOfSupplementaryFiles
-					}, false));
+					}, BPTDocumentType.BPMAI_EXERCISES));
 
 					Map<String, Object> document = exerciseRepository.readDocument(documentId);
 					documentRevision = (String)document.get("_rev");
@@ -331,7 +331,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					(String)application.getUser(),
 					new Date(),
 					new Date(),
-				}, true));
+				}, BPTDocumentType.BPMAI_EXERCISE_SETS));
 		}
 		else{
 			Map<String, Object> newValues = new HashMap<String, Object>();
@@ -353,9 +353,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		((BPTApplication)getApplication()).renderEntries();
 	}
 	
-	private Map<String, Object> generateDocument(Object[] values, boolean isEntrySet) {
+	private Map<String, Object> generateDocument(Object[] values, BPTDocumentType type) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true, isEntrySet);
+		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true, type);
 		String[] keys = keysList.toArray(new String[keysList.size()]);
 		for(int i = 0; i < keys.length; i++) {
 				document.put(keys[i], values[i]);

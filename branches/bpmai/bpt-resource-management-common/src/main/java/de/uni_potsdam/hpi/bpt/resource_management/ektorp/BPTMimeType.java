@@ -6,14 +6,14 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
  * @author tw
  *
  */
-public enum BPTMimeTypes {
+public enum BPTMimeType {
 	PDF ("application/pdf"),
 	DOC ("application/msword"),
 	DOCX ("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 	
 	private final String mimeType;
 	
-	BPTMimeTypes(String mimeType) {
+	BPTMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 	

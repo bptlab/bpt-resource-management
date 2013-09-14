@@ -16,7 +16,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
@@ -75,7 +75,7 @@ public class BPTUploadPanel extends VerticalLayout {
 		exerciseURLInput.setWidth("100%");
 		layout.addComponent(exerciseURLInput);
 		
-		taskSheetPanel = new BPTPdfDocUploader(application, "Task sheet *", "Upload a PDF or DOC/DOCX document", BPTMimeTypes.getMimeTypes());
+		taskSheetPanel = new BPTPdfDocUploader(application, "Task sheet *", "Upload a PDF or DOC/DOCX document", BPTMimeType.getMimeTypes());
 		layout.addComponent(taskSheetPanel);
 		
 		supplementaryFilesPanel = new BPTAttachmentUploader(application, "Supplementary files", "Upload a file", null);

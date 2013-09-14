@@ -16,6 +16,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
@@ -98,7 +99,7 @@ public class BPTEntry extends CustomLayout {
 		tabLayout = new HorizontalLayout();
 		this.addComponent(subEntryLayout, "Tabs");
 		List<Map> relatedEntries = exerciseRepository.getDocumentsBySetId(setId);
-		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries, false);
+		IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(relatedEntries, BPTDocumentType.BPMAI_EXERCISES);
 		for(Object entryId : entries.getItemIds()){
 			Item subItem = entries.getItem(entryId);
 			final String languageOfEntry = subItem.getItemProperty("Language").getValue().toString();

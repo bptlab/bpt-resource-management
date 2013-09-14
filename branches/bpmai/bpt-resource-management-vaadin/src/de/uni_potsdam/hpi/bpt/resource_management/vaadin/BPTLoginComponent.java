@@ -13,6 +13,7 @@ import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
@@ -42,23 +43,32 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
 		navigationBar = new BPTNavigationBar();
-		
 		if (isLoggedIn) {
 			layout.addComponent(navigationBar);
-			addLogoutButton();
-		}
-//		else {
-//			addLoginButton();
+			addComponentsForLogout();
+		} // else {
+//			addComponentsForLogin();
 //		}
 	}
 
-	public void addLoginButton() {
+	public void addComponentsForLogin() {
+		HorizontalLayout openIdLayout = new HorizontalLayout();
+		Label loginLabel = new Label("OpenID provider:&nbsp;", Label.CONTENT_XHTML);
+		openIdProviderNativeSelect = new NativeSelect();
+		for (String openIdProvider : openIdProviders) {
+			openIdProviderNativeSelect.addItem(openIdProvider);
+		}
+		openIdProviderNativeSelect.setNullSelectionAllowed(false);
+		openIdProviderNativeSelect.setValue(openIdProviders[0]);
+		openIdProviderNativeSelect.setImmediate(true);
+		openIdProviderNativeSelect.addListener(this);
+		openIdLayout.addComponent(loginLabel);
+		openIdLayout.addComponent(openIdProviderNativeSelect);
+		
 		loginButton = new Button("Login");
-        loginButton.setStyleName(BaseTheme.BUTTON_LINK);
-        loginButton.addStyleName("redButton");
-        layout.addComponent(loginButton);
-        
-        loginButton.addListener(new Button.ClickListener(){
+		loginButton.setStyleName(BaseTheme.BUTTON_LINK);
+		loginButton.addStyleName("redButton");
+		loginButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 			        try {
 						redirectToOpenIDProvider();
@@ -68,16 +78,11 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 			}
 		});
         
-        openIdProviderNativeSelect = new NativeSelect("OpenID provider");
-        for (String openIdProvider : openIdProviders) {
-        	openIdProviderNativeSelect.addItem(openIdProvider);
-        }
-        openIdProviderNativeSelect.setNullSelectionAllowed(false);
-        openIdProviderNativeSelect.setValue(openIdProviders[0]);
-        openIdProviderNativeSelect.setImmediate(true);
-        openIdProviderNativeSelect.addListener(this);
-        
-        layout.addComponent(openIdProviderNativeSelect);
+
+        layout.addComponent(loginButton);
+        layout.addComponent(openIdLayout);
+		layout.setExpandRatio(loginButton, 50);
+		layout.setExpandRatio(openIdLayout, 50);
 	}
 	
 	public void removeLoginButton() {
@@ -99,7 +104,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		});
 	}
 
-	private void addLogoutButton() {
+	private void addComponentsForLogout() {
 		logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         logoutButton.addStyleName("redButton");
@@ -115,7 +120,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				application.setOpenIdProvider(openIdProviders[0]);
 				application.renderEntries();
 				layout.removeAllComponents();
-				addLoginButton();
+				addComponentsForLogin();
 				sidebar.logout();
 			}});
 	}
@@ -129,7 +134,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		if (moderated) {
 			addAdministrationButton();
 		}
-		addLogoutButton();
+		addComponentsForLogout();
 	}
 	
 	private void redirectToOpenIDProvider() throws IOException {

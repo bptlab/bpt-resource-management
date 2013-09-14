@@ -13,6 +13,7 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
@@ -36,12 +37,14 @@ public class BPTContainerProvider {
 	private static BPTContainerProvider instance;
 	private BPTExerciseSetRepository exerciseSetRepository;
 	private BPTExerciseRepository exerciseRepository;
+	private BPTUserRepository userRepository;
 	private BPTApplication application;
 	
 	public BPTContainerProvider(BPTApplication application) {
 		this.application = application;
 		this.exerciseSetRepository = application.getExerciseSetRepository();
 		this.exerciseRepository = application.getExerciseRepository();
+		this.userRepository = application.getUserRepository();
 		BPTContainerProvider.instance = this;
 	}
 	
@@ -141,44 +144,32 @@ public class BPTContainerProvider {
 		return new ArrayList<String>(uniqueValues);
 	}
 	
-	private IndexedContainer initializeContainerWithProperties(Boolean isSetContainer) {
+	private IndexedContainer initializeContainerWithProperties(BPTDocumentType type) {
 		IndexedContainer container = new IndexedContainer();
-		List<Object[]> items;
-		if(isSetContainer){
-			items = BPTVaadinResources.getEntrySets();
-		}
-		else{
-			items = BPTVaadinResources.getEntries();
-		}
+		List<Object[]> items = BPTVaadinResources.getPropertyArray(type);
 		for (Object[] entry : items) {
 			container.addContainerProperty(entry[1], (Class<?>)entry[2], null);
 		}
 		return container;
 	}
 	
-	public IndexedContainer generateContainer(List<Map> exercises, Boolean isSetContainer) {
-		IndexedContainer container = initializeContainerWithProperties(isSetContainer);
-		for (int i = 0; i < exercises.size(); i++) {
-			Map<String, Object> tool = exercises.get(i);
+	public IndexedContainer generateContainer(List<Map> documents, BPTDocumentType type) {
+		IndexedContainer container = initializeContainerWithProperties(type);
+		for (int i = 0; i < documents.size(); i++) {
+			Map<String, Object> document = documents.get(i);
 			Item item = container.addItem(i);
 //				System.out.println("print map here: " + tool);
-			setItemPropertyValues(container, item, tool, isSetContainer);
+			setItemPropertyValues(container, item, document, type);
 //				System.out.println("print item here: " + item);
 		}
 		return container;
 	}
 	
-	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> tool, boolean isSetEntry) {
+	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> tool, BPTDocumentType type) {
 		List<Object[]> entrySets;
-		BPTDocumentRepository repository;
-		if(isSetEntry){
-			entrySets = BPTVaadinResources.getEntrySets();
-			repository = exerciseSetRepository;
-		}
-		else{
-			entrySets = BPTVaadinResources.getEntries();
-			repository = exerciseRepository;
-		}
+		BPTDocumentRepository repository = getRepository(type);
+		entrySets = BPTVaadinResources.getPropertyArray(type);
+		
 		for (Object[] entry : entrySets) {
 			Object component = BPTVaadinResources.generateComponent(repository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], application);
 			if (entry[1].equals("Supplementary files")) {
@@ -202,7 +193,16 @@ public class BPTContainerProvider {
 //		return container;
 //	}
 	
-	public IndexedContainer getVisibleEntrieSets(ArrayList<String> languages, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+	private BPTDocumentRepository getRepository(BPTDocumentType type) {
+		switch (type) {
+			case BPMAI_EXERCISE_SETS : return exerciseSetRepository;
+			case BPMAI_EXERCISES : return exerciseRepository;
+			case BPMAI_USERS : return userRepository;
+			default : return null;
+		}
+	}
+
+	public IndexedContainer getVisibleEntrySets(ArrayList<String> languages, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("ID")){
@@ -218,7 +218,7 @@ public class BPTContainerProvider {
 			ascending = false;
 		}
 		List<Map> exerciseSets = exerciseSetRepository.search(languages, statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
-		return generateContainer(exerciseSets, true);
+		return generateContainer(exerciseSets, BPTDocumentType.BPMAI_EXERCISE_SETS);
 	}
 	
 	public IndexedContainer getVisibleEntriesSetsByUser(ArrayList<String> languages, String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
@@ -237,7 +237,12 @@ public class BPTContainerProvider {
 			ascending = false;
 		}
 		List<Map> exerciseSets = exerciseSetRepository.search(languages, Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
-		return generateContainer(exerciseSets, true);
+		return generateContainer(exerciseSets, BPTDocumentType.BPMAI_EXERCISE_SETS);
+	}
+	
+	public IndexedContainer getUsers() {
+		List<Map> users = userRepository.getAll();
+		return generateContainer(users, BPTDocumentType.BPMAI_USERS);
 	}
 	
 	public int getNumberOfEntries(ArrayList<String> languages, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
@@ -248,14 +253,14 @@ public class BPTContainerProvider {
 		return exerciseSetRepository.getNumberOfEntries(languages, Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
-	public ArrayList<String> getUniqueLanguages(){
+	public ArrayList<String> getUniqueLanguages() {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		List<Map> tools = exerciseSetRepository.getDocuments("all");
 		for (Map<String, Object> tool : tools) {
 			String attributeString = (String) tool.get("language");
 			uniqueValues.add(attributeString);
 		}
-		ArrayList<String> uniqueList = new ArrayList<String>(uniqueValues);
+//		ArrayList<String> uniqueList = new ArrayList<String>(uniqueValues);
 //		Collections.sort(uniqueList, Comparator<T>)
 		return new ArrayList<String>(uniqueValues);
 	}

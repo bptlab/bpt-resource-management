@@ -13,7 +13,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
@@ -141,7 +141,7 @@ public class BPTDatabaseTest {
 	
 	private Map<String, Object> generateDocument(Object[] exercise) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys("bpmai_exercises");
+		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.BPMAI_EXERCISES);
 		for (int i = 0; i < keys.length; i++) {
 			document.put(keys[i], exercise[i]);
 		}

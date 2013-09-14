@@ -12,7 +12,6 @@ import java.util.List;
 
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Upload;
@@ -21,7 +20,6 @@ import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Window.Notification;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeTypes;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTAttachmentUploader extends Panel implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {

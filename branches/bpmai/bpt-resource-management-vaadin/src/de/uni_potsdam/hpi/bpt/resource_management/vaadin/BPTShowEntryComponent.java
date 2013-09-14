@@ -1,7 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
@@ -16,6 +15,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
@@ -36,7 +36,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 		statusList.add(BPTExerciseStatus.Published);
 		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(new ArrayList<String>(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		show(BPTContainerProvider.getInstance().getVisibleEntrieSets(application.getSidebar().getSearchComponent().getTagSearchComponent().getLanguageTags(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
+		show(BPTContainerProvider.getInstance().getVisibleEntrySets(application.getSidebar().getSearchComponent().getTagSearchComponent().getLanguageTags(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
 	}
 	
 	protected abstract void buildLayout();
@@ -68,14 +68,14 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		_id = item.getItemProperty("ID").getValue().toString();
 		Map<String, Object> tool = exerciseSetRepository.readDocument(_id);
 		
-		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntrySets()).get(1);
+		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getPropertyArray(BPTDocumentType.BPMAI_EXERCISE_SETS)).get(1);
 		Object value = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], application);
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
 		popupWindow.addComponent(image);
 		
-		for (Object[] entry : BPTVaadinResources.getEntrySets()) {
+		for (Object[] entry : BPTVaadinResources.getPropertyArray(BPTDocumentType.BPMAI_EXERCISE_SETS)) {
 			if ((Boolean)entry[7]) {
 				popupWindow.addComponent(new Label(entry[1] + ":"));
 				value = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], application);
