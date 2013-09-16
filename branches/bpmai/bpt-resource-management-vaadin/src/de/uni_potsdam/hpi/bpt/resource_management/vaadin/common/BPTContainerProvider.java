@@ -52,6 +52,15 @@ public class BPTContainerProvider {
 		return instance;
 	}
 	
+	private BPTDocumentRepository getRepository(BPTDocumentType type) {
+		switch (type) {
+			case BPMAI_EXERCISE_SETS : return exerciseSetRepository;
+			case BPMAI_EXERCISES : return exerciseRepository;
+			case BPMAI_USERS : return userRepository;
+			default : return null;
+		}
+	}
+	
 //	/**
 //	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 //	 *
@@ -165,13 +174,13 @@ public class BPTContainerProvider {
 		return container;
 	}
 	
-	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> tool, BPTDocumentType type) {
+	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> document, BPTDocumentType type) {
 		List<Object[]> entrySets;
 		BPTDocumentRepository repository = getRepository(type);
 		entrySets = BPTVaadinResources.getPropertyArray(type);
 		
 		for (Object[] entry : entrySets) {
-			Object component = BPTVaadinResources.generateComponent(repository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], application);
+			Object component = BPTVaadinResources.generateComponent(repository, document, (String)entry[0], (BPTPropertyValueType)entry[3], application);
 			if (entry[1].equals("Supplementary files")) {
 				ArrayList<Link> links = (ArrayList<Link>) component;
 				for (int i = 1; i <= links.size(); i++) {
@@ -192,15 +201,6 @@ public class BPTContainerProvider {
 //		IndexedContainer container = generateContainer(tools);
 //		return container;
 //	}
-	
-	private BPTDocumentRepository getRepository(BPTDocumentType type) {
-		switch (type) {
-			case BPMAI_EXERCISE_SETS : return exerciseSetRepository;
-			case BPMAI_EXERCISES : return exerciseRepository;
-			case BPMAI_USERS : return userRepository;
-			default : return null;
-		}
-	}
 
 	public IndexedContainer getVisibleEntrySets(ArrayList<String> languages, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;

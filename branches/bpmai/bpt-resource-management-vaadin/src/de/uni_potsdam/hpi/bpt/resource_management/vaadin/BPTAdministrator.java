@@ -7,6 +7,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
+@SuppressWarnings("serial")
 public class BPTAdministrator extends VerticalLayout {
 	
 	private Table table;

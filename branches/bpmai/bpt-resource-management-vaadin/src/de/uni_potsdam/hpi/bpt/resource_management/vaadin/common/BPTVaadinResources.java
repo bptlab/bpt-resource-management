@@ -17,7 +17,6 @@ import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
@@ -132,7 +131,7 @@ public class BPTVaadinResources {
 	 * @return attribute names displayed in Vaadin
 	 * 
 	 */
-	public static ArrayList<String> getColumnNames(BPTDocumentType type) { // default is exercise set
+	public static ArrayList<String> getColumnNames(BPTDocumentType type) {
 		ArrayList<String> values = new ArrayList<String>();
 		List<Object[]> propertyArray = getPropertyArray(type);
 		for (Object[] entry : propertyArray) { 
@@ -146,7 +145,7 @@ public class BPTVaadinResources {
 	 * @return property data type for Vaadin table
 	 * 
 	 */
-	public static ArrayList<Class<?>> getPropertyDataTypes(BPTDocumentType type) { // default is exercise set
+	public static ArrayList<Class<?>> getPropertyDataTypes(BPTDocumentType type) {
 		ArrayList<Class<?>> values = new ArrayList<Class<?>>();
 		List<Object[]> propertyArray = getPropertyArray(type);
 		for (Object[] entry : propertyArray) { 
@@ -160,7 +159,7 @@ public class BPTVaadinResources {
 	 * @return BPTPropertyValueType enum type to identify how to generate the specific Vaadin components that are shown
 	 * 
 	 */
-	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes(BPTDocumentType type) { // default is exercise set
+	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes(BPTDocumentType type) {
 		ArrayList<BPTPropertyValueType> values = new ArrayList<BPTPropertyValueType>();
 		List<Object[]> propertyArray = getPropertyArray(type);
 		for (Object[] entry : propertyArray) { 
@@ -298,7 +297,7 @@ public class BPTVaadinResources {
 		}
 	}
 
-	public static String[] getVisibleAttributes(BPTDocumentType type) { // default is exercise set
+	public static String[] getVisibleAttributes(BPTDocumentType type) {
 		List<String> visibleAttributes = new ArrayList<String>();	
 		List<Object[]> propertyArray = getPropertyArray(type);
 		for (Object[] entry : propertyArray) { 
