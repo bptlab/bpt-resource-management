@@ -15,6 +15,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
@@ -33,8 +34,8 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		buildLayout();
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
-		showNumberOfEntries(BPTContainerProvider.getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		show(BPTContainerProvider.getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
+		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
+		show(BPTContainerProvider.getInstance().getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
 	}
 	
 	protected abstract void buildLayout();
@@ -66,14 +67,14 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		_id = item.getItemProperty("ID").getValue().toString();
 		Map<String, Object> tool = toolRepository.readDocument(_id);
 		
-		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getEntries()).get(1);
+		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getPropertyArray(BPTDocumentType.BPT_RESOURCES_TOOLS)).get(1);
 		Object value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
 		popupWindow.addComponent(image);
 		
-		for (Object[] entry : BPTVaadinResources.getEntries()) {
+		for (Object[] entry : BPTVaadinResources.getPropertyArray(BPTDocumentType.BPT_RESOURCES_TOOLS)) {
 			if ((Boolean)entry[7]) {
 				popupWindow.addComponent(new Label(entry[1] + ":"));
 				value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
@@ -191,7 +192,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 					boolean fromRejected = false;
 					toolRepository.unpublishDocument(_id, fromRejected);
 				}
-				BPTContainerProvider.refreshFromDatabase();
+				BPTContainerProvider.getInstance().refreshFromDatabase();
 				((BPTApplication) getApplication()).refreshAndClean();
 				getWindow().removeWindow(confirmationWindow);
 				if(popupWindow != null){

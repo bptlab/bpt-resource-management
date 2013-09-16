@@ -6,18 +6,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.vaadin.imagefilter.Image;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 
 /**
  * Contains resources required by Vaadin to display various components.
@@ -57,6 +62,16 @@ public class BPTVaadinResources {
 	    }
 	};
 	
+	private static List<Object[]> propertiesOfVisibleUserItems = new ArrayList<Object[]>() {
+		{
+			add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, false, true, true});
+			add(new Object[] {"mail_address", "Mail", Component.class, BPTPropertyValueType.EMAIL, null, false, true, true});
+			add(new Object[] {"is_moderator", "Moderator", Component.class, BPTPropertyValueType.CHECKBOX, null, true, true, true});
+			add(new Object[] {"_id", "ID", String.class, BPTPropertyValueType.IGNORE, null, false, true, true});
+        }
+    };
+
+	
 	/**
 	 * Returns resources required by Vaadin to display various components.
 	 * 
@@ -73,8 +88,12 @@ public class BPTVaadinResources {
 	 * array element #7: true if attribute shall be visible in window where selected entry is shown (_attachments are handled separately)
 	 * 
 	 */
-	public static List<Object[]> getEntries() {
-		return propertiesOfVisibleItems;
+	public static List<Object[]> getPropertyArray(BPTDocumentType type) {
+		switch (type) {
+			case BPT_RESOURCES_TOOLS : return propertiesOfVisibleItems;
+			case BPT_RESOURCES_USERS : return propertiesOfVisibleUserItems;
+			default : return null;
+		}
 	}
 	
 	/**
@@ -82,9 +101,10 @@ public class BPTVaadinResources {
 	 * @return attribute names under which the values are stored in the database
 	 * 
 	 */
-	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly) {
+	public static ArrayList<String> getDocumentKeys(boolean modifiableOnly, BPTDocumentType type) {
 		ArrayList<String> values = new ArrayList<String>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		List<Object[]> propertyArray = getPropertyArray(type);
+		for (Object[] entry : propertyArray) {
 			if (!modifiableOnly || (Boolean)entry[5]) {
 				values.add((String)entry[0]);
 			}
@@ -97,9 +117,10 @@ public class BPTVaadinResources {
 	 * @return attribute names displayed in Vaadin
 	 * 
 	 */
-	public static ArrayList<String> getColumnNames() {
+	public static ArrayList<String> getColumnNames(BPTDocumentType type) {
 		ArrayList<String> values = new ArrayList<String>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		List<Object[]> propertyArray = getPropertyArray(type);
+		for (Object[] entry : propertyArray) {
 			values.add((String)entry[1]);
 		}
 		return values;
@@ -110,9 +131,10 @@ public class BPTVaadinResources {
 	 * @return property data type for Vaadin table
 	 * 
 	 */
-	public static ArrayList<Class<?>> getPropertyDataTypes() {
+	public static ArrayList<Class<?>> getPropertyDataTypes(BPTDocumentType type) {
 		ArrayList<Class<?>> values = new ArrayList<Class<?>>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		List<Object[]> propertyArray = getPropertyArray(type);
+		for (Object[] entry : propertyArray) { 
 			values.add((Class<?>)entry[2]);
 		}
 		return values;
@@ -123,9 +145,10 @@ public class BPTVaadinResources {
 	 * @return BPTPropertyValueType enum type to identify how to generate the specific Vaadin components that are shown
 	 * 
 	 */
-	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes() {
+	public static ArrayList<BPTPropertyValueType> getPropertyValueTypes(BPTDocumentType type) {
 		ArrayList<BPTPropertyValueType> values = new ArrayList<BPTPropertyValueType>();
-		for (Object[] entry : propertiesOfVisibleItems) {
+		List<Object[]> propertyArray = getPropertyArray(type);
+		for (Object[] entry : propertyArray) {
 			values.add((BPTPropertyValueType)entry[3]);
 		}
 		return values;
@@ -141,21 +164,22 @@ public class BPTVaadinResources {
 	}
 	
 	/**
-	 * @param tool the database document as java.util.Map
+	 * @param document the database document as java.util.Map
 	 * @param documentColumnName the name of the attribute
 	 * @param valueType required to what type of Vaadin component will be generated - see return methods below
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> tool, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
-		Object value = tool.get(documentColumnName);
+	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> document, String documentColumnName, BPTPropertyValueType valueType, String attachmentName) {
+		Object value = document.get(documentColumnName);
 		switch (valueType) {
 			case LINK : return asLink((String)value);
 			case EMAIL : return asEmailLink((String)value);
 			case LIST : return asFormattedString((ArrayList<String>)value);
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
-			case IMAGE : return asImage(repository, tool, attachmentName);
+			case IMAGE : return asImage(repository, document, attachmentName);
+			case CHECKBOX : return asCheckBox(repository, document, documentColumnName, (Boolean)value);
 			default : return value;
 		}
 	}
@@ -208,10 +232,26 @@ public class BPTVaadinResources {
 			return new Embedded();
 		}
 	}
+	
+	private static CheckBox asCheckBox(final BPTDocumentRepository repository, final Map<String, Object> document, final String key, Boolean value) {
+		final CheckBox checkbox = new CheckBox();
+		checkbox.setValue(value);
+		checkbox.setImmediate(true);
+		checkbox.addListener(new Property.ValueChangeListener() {
+			public void valueChange(ValueChangeEvent event) {
+				Map<String, Object> newValues = new HashMap<String, Object>();
+				newValues.put("_id", (String) document.get("_id"));
+				newValues.put(key, (Boolean)checkbox.getValue());
+				repository.updateDocument(newValues);
+			}
+		});
+		return checkbox;
+	}
 
-	public static String[] getVisibleAttributes() {
-		List<String> visibleAttributes = new ArrayList<String>();		
-		for (Object[] entry : propertiesOfVisibleItems) {
+	public static String[] getVisibleAttributes(BPTDocumentType type) {
+		List<String> visibleAttributes = new ArrayList<String>();
+		List<Object[]> propertyArray = getPropertyArray(type);
+		for (Object[] entry : propertyArray) {
 			if ((Boolean)entry[6]) {
 				visibleAttributes.add((String)entry[1]);
 			}

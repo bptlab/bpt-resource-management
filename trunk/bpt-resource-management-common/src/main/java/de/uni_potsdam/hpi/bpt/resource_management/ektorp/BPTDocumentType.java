@@ -1,14 +1,16 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 /**
- * Class to define document type specific attributes.
+ * Enum to define document type specific attributes.
  * 
  * public static String[] getDocumentKeys(String type)
  *
  * @author tw
  *
  */
-public class BPTDocumentTypes {
+public enum BPTDocumentType {
+	
+	BPT_RESOURCES_TOOLS, BPT_RESOURCES_USERS;
 	
 	/**
 	 * Returns document type specific attributes.
@@ -17,9 +19,9 @@ public class BPTDocumentTypes {
 	 * @return attributes of the document type as a String array
 	 * 
 	 */
-	public static String[] getDocumentKeys(String type) {
-		if (type.equals("bpt_resources_tools")) {
-			return new String[] {
+	public static String[] getDocumentKeys(BPTDocumentType type) {
+		switch (type) {
+			case BPT_RESOURCES_TOOLS : return new String[] {
 				"name", "description", "description_url", "provider", "provider_url", 
 				"download_url", "documentation_url", "screencast_url", "tutorial_url", 
 				"availabilities", "model_types", "platforms", "supported_functionalities", 
@@ -27,13 +29,11 @@ public class BPTDocumentTypes {
 				"notification_date", "number_of_url_validation_fails", "number_of_mails_for_expiry",
 				"name_lowercase", "provider_lowercase"
 			};
-		}
-		if (type.equals("bpt_resources_users")) {
-			return new String[] {
-				"_id", "name", "mail_address"
+			case BPT_RESOURCES_USERS : return new String[] {
+				"_id", "is_moderator", "name", "mail_address"
 			};
-		}		
-		return null;
+			default : return null;
+		}	
 	}
 	/**
 	 * Returns document type specific attributes.
@@ -42,13 +42,13 @@ public class BPTDocumentTypes {
 	 * @return attributes used for storing URLs as a String array
 	 * 
 	 */
-	public static String[] getDocumentKeysStoringURLs(String type) {
-		if (type.equals("bpt_resources_tools")) {
-			return new String[] {
+	public static String[] getDocumentKeysStoringURLs(BPTDocumentType type) {
+		switch (type) {
+			case BPT_RESOURCES_TOOLS : return new String[] {
 				"description_url", "provider_url", "download_url", 
 				"documentation_url", "screencast_url", "tutorial_url"
 			};
+			default : return null;
 		}
-		return null;
 	}
 }

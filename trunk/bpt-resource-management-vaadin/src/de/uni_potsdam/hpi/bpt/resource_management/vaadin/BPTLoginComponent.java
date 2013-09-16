@@ -30,6 +30,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private String openIdReturnTo;
 	private String openIdRealm;
 	private String openIdProvider = openIdProviders[0];
+	private Button administrationButton;
 	
 	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar) {
 		
@@ -80,11 +81,21 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		layout.setExpandRatio(openIdLayout, 50);
 		layout.setExpandRatio(loginButton, 50);
 	}
+	
+	private void addAdministrationButton() {
+		administrationButton = new Button("Administration");
+		administrationButton.setStyleName(BaseTheme.BUTTON_LINK);
+		layout.addComponent(administrationButton);
+		
+		administrationButton.addListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				((BPTApplication)getApplication()).renderAdministrator();
+			}
+		});
+}
+
 
 	private void addComponentsForLogout() {
-		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
-		layout.addComponent(welcomeLabel);
-		
 		Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         layout.addComponent(logoutButton);
@@ -97,18 +108,23 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				application.setLoggedIn(false);
 				application.setModerated(false);
 				application.setOpenIdProvider(openIdProviders[0]);
-				application.finder();
+				application.renderEntries();
 				layout.removeAllComponents();
 				addComponentsForLogin();
 				sidebar.logout();
 			}});
 	}
 	
-	public void login(String name) {
+	public void login(String name, boolean moderated) {
 		layout.removeAllComponents();
 //		System.out.println(name);
 //		navigationBar = new BPTNavigationBar(true);
 		layout.addComponent(navigationBar);
+		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
+		layout.addComponent(welcomeLabel);
+		if (moderated) {
+			addAdministrationButton();
+		}
 		addComponentsForLogout();
 	}
 	

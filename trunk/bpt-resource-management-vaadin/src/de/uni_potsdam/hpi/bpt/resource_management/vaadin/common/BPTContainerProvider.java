@@ -11,8 +11,12 @@ import java.util.Map;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
  * Provides data for the table and the search component.
@@ -27,13 +31,35 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BPTContainerProvider {
 	
-	private static BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	private static BPTContainerProvider instance;
+    private BPTToolRepository toolRepository;
+    private BPTUserRepository userRepository;
+//    private BPTApplication application;
+   
+    public BPTContainerProvider(BPTApplication application) {
+//    	this.application = application;
+    	this.toolRepository = application.getToolRepository();
+    	this.userRepository = application.getUserRepository();
+    	BPTContainerProvider.instance = this;
+	}
+    
+	public static BPTContainerProvider getInstance() {      
+		return instance;
+	}
 	
+    private BPTDocumentRepository getRepository(BPTDocumentType type) {
+    	switch (type) {
+    		case BPT_RESOURCES_TOOLS : return toolRepository;
+			case BPT_RESOURCES_USERS : return userRepository;
+			default : return null;
+    	}
+    }
+    
 //	/**
 //	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 //	 *
 //	 */
-//	public static IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray){
+//	public IndexedContainer createContainerWithDatabaseData(BPTDocumentStatus[] statusArray){
 //		
 //		IndexedContainer container = createContainerWithProperties();
 //		
@@ -62,7 +88,7 @@ public class BPTContainerProvider {
 	 * @return the unique values (= tags)
 	 *
 	 */
-	public static ArrayList<String> getUniqueValues(String tagColumn) {
+	public ArrayList<String> getUniqueValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
@@ -116,40 +142,41 @@ public class BPTContainerProvider {
 		return new ArrayList<String>(uniqueValues);
 	}
 	
-	private static IndexedContainer initializeContainerWithProperties() {
+	private IndexedContainer initializeContainerWithProperties(BPTDocumentType type) {
 		IndexedContainer container = new IndexedContainer();
-		for (Object[] entry : BPTVaadinResources.getEntries()) {
+		for (Object[] entry : BPTVaadinResources.getPropertyArray(type)) {
 			container.addContainerProperty(entry[1], (Class<?>)entry[2], null);
 		}
 		return container;
 	}
 	
-	public static IndexedContainer generateContainer(List<Map> tools) {
-		IndexedContainer container = initializeContainerWithProperties();
+	public IndexedContainer generateContainer(List<Map> tools, BPTDocumentType type) {
+		IndexedContainer container = initializeContainerWithProperties(type);
 		for (int i = 0; i < tools.size(); i++) {
 			Map<String, Object> tool = tools.get(i);
 			Item item = container.addItem(i);
 //			System.out.println("print map here: " + tool);
-			setItemPropertyValues(item, tool);
+			setItemPropertyValues(item, tool, type);
 //			System.out.println("print item here: " + item);
 		}
 		return container;
 	}
 	
-	private static void setItemPropertyValues(Item item, Map<String, Object> tool) {
-		for (Object[] entry : BPTVaadinResources.getEntries()) {
-			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
+	private void setItemPropertyValues(Item item, Map<String, Object> document, BPTDocumentType type) {
+		BPTDocumentRepository repository = getRepository(type);
+		for (Object[] entry : BPTVaadinResources.getPropertyArray(type)) {
+			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(repository, document, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
 		}
 	}
 	
-//	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
+//	public IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
 //		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
 ////		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
 //		IndexedContainer container = generateContainer(tools);
 //		return container;
 //	}
 	
-	public static IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+	public IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("Name")){
@@ -169,11 +196,10 @@ public class BPTContainerProvider {
 			ascending = false;
 		}
 		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
-		IndexedContainer container = generateContainer(tools);
-		return container;
+		return generateContainer(tools, BPTDocumentType.BPT_RESOURCES_TOOLS);
 	}
 	
-	public static IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+	public IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
 		if(sortAttribute.equals("Name")){
@@ -193,19 +219,23 @@ public class BPTContainerProvider {
 			ascending = false;
 		}
 		List<Map> tools = toolRepository.search(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
-		IndexedContainer container = generateContainer(tools);
-		return container;
+		return generateContainer(tools, BPTDocumentType.BPT_RESOURCES_TOOLS);
 	}
 	
-	public static void refreshFromDatabase() {
+	public void refreshFromDatabase() {
 		toolRepository.refreshData();
 	}
 	
-	public static int getNumberOfEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
+	public IndexedContainer getUsers() {
+        List<Map> users = userRepository.getAll();
+        return generateContainer(users, BPTDocumentType.BPT_RESOURCES_USERS);
+	}
+	
+	public int getNumberOfEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
 		return toolRepository.getNumberOfEntries(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
-	public static int getNumberOfEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
+	public int getNumberOfEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
 		return toolRepository.getNumberOfEntries(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 }
