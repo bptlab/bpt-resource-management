@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
@@ -65,7 +65,7 @@ public class BPTTaskScheduler {
 			System.out.println(new Date() + " - URL check started ...");
 			Map<String, Set<String>> documentsWithUnavailableURLs = new HashMap<String, Set<String>>();
 			List<Map> documents = toolRepository.getDocuments("published");
-			String[] keys = BPTDocumentTypes.getDocumentKeysStoringURLs("bpt_resources_tools");
+			String[] keys = BPTDocumentType.getDocumentKeysStoringURLs(BPTDocumentType.BPT_RESOURCES_TOOLS);
 			for (Map<String, Object> document : documents) {
 				Set<String> unavailableURLs = new HashSet<String>();
 				for (String key : keys) {

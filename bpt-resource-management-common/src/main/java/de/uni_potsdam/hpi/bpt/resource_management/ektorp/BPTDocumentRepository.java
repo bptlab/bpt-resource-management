@@ -60,7 +60,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		
 		Map<String, Object> databaseDocument = new HashMap<String, Object>();
 		String _id;
-		String[] keys = BPTDocumentTypes.getDocumentKeys(tableName);
+		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.valueOf(tableName.toUpperCase()));
 		
 		databaseDocument = setDefaultValues(databaseDocument);
 		
@@ -99,7 +99,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
      */
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
 		Map<String, Object> databaseDocument = db.get(Map.class, (String)document.get("_id"));
-		String[] keys = BPTDocumentTypes.getDocumentKeys(tableName);
+		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.valueOf(tableName.toUpperCase()));
 		
 		for (String key : keys) {
 			if(!(document.get(key) == null)) databaseDocument.put(key, document.get(key));
@@ -180,6 +180,15 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		String revision = new String();
 		revision = db.deleteAttachment(_id, _rev, attachmentId);
 		return revision;
+	}
+	
+	public Map<String, Object> generateDocument(Object[] values) {
+		Map<String, Object> document = new HashMap<String, Object>();
+		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.valueOf(tableName.toUpperCase()));
+		for(int i = 0; i < keys.length; i++) {
+			document.put(keys[i], values[i]);
+		}
+		return document;
 	}
 	
 	private Integer nextAvailableId() {

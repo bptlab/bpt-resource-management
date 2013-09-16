@@ -280,7 +280,7 @@ public class BPTShareableEntry extends CustomLayout {
 					boolean fromRejected = false;
 					toolRepository.unpublishDocument(entryId, fromRejected);
 				}
-				BPTContainerProvider.refreshFromDatabase();
+				BPTContainerProvider.getInstance().refreshFromDatabase();
 				application.getMainWindow().removeWindow(confirmationWindow);
 			}
 		});

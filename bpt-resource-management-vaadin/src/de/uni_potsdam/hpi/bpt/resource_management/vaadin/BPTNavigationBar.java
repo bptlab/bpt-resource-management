@@ -19,7 +19,7 @@ public class BPTNavigationBar extends CustomComponent{
 //        findButton.setStyleName(BaseTheme.BUTTON_LINK);
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).finder();
+				((BPTApplication)getApplication()).renderEntries();
 			}
 		});
 		layout.addComponent(findButton);
@@ -33,7 +33,7 @@ public class BPTNavigationBar extends CustomComponent{
 		
 		uploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).uploader();
+				((BPTApplication)getApplication()).renderUploader();
 			}
 		});
 	}

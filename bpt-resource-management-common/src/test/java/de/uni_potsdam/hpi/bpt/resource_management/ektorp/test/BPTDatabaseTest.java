@@ -13,7 +13,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentTypes;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
@@ -166,23 +166,14 @@ public class BPTDatabaseTest {
 	
 	@Test
 	public void testCreateDocument() {
-		toolIdentifiers[0] = toolRepository.createDocument(generateDocument(firstTool));
-		toolIdentifiers[1] = toolRepository.createDocument(generateDocument(secondTool));
+		toolIdentifiers[0] = toolRepository.createDocument(toolRepository.generateDocument(firstTool));
+		toolIdentifiers[1] = toolRepository.createDocument(toolRepository.generateDocument(secondTool));
 		assertEquals(numberOfDocuments + 2, toolRepository.numberOfDocuments());
-		toolIdentifiers[2] = toolRepository.createDocument(generateDocument(thirdTool));
-		toolIdentifiers[3] = toolRepository.createDocument(generateDocument(fourthTool));
-		toolIdentifiers[4] = toolRepository.createDocument(generateDocument(fifthTool));
+		toolIdentifiers[2] = toolRepository.createDocument(toolRepository.generateDocument(thirdTool));
+		toolIdentifiers[3] = toolRepository.createDocument(toolRepository.generateDocument(fourthTool));
+		toolIdentifiers[4] = toolRepository.createDocument(toolRepository.generateDocument(fifthTool));
 	}
 	
-	private Map<String, Object> generateDocument(Object[] tool) {
-		Map<String, Object> document = new HashMap<String, Object>();
-		String[] keys = BPTDocumentTypes.getDocumentKeys("bpt_resources_tools");
-		for (int i = 0; i < keys.length; i++) {
-			document.put(keys[i], tool[i]);
-		}
-		return document;
-	}
-
 	@Test
 	public void testUpdateDocument() {
 		exampleToolFromDatabase = toolRepository.readDocument(toolIdentifiers[0]);

@@ -30,6 +30,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
@@ -332,7 +333,7 @@ public class BPTUploader extends CustomComponent implements Upload.StartedListen
 		        });
 		        subwindow.addComponent(close);
 				getWindow().addWindow(subwindow);
-				((BPTApplication)getApplication()).finder();
+				((BPTApplication)getApplication()).renderEntries();
 			}
 
 			private void addWarningWindow(final Window window) {
@@ -363,7 +364,7 @@ public class BPTUploader extends CustomComponent implements Upload.StartedListen
 
 	private Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
-		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true);
+		ArrayList<String> keysList = BPTVaadinResources.getDocumentKeys(true, BPTDocumentType.BPT_RESOURCES_TOOLS);
 		String[] keys = keysList.toArray(new String[keysList.size()]);
 		for(int i = 0; i < keys.length; i++) {
 			document.put(keys[i], values[i]);
