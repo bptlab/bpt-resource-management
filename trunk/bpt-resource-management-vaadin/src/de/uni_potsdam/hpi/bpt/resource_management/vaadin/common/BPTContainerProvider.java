@@ -32,7 +32,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 public class BPTContainerProvider {
 	
 	private static BPTContainerProvider instance;
-    private BPTToolRepository toolRepository;
+    private static BPTToolRepository toolRepository;
     private BPTUserRepository userRepository;
 //    private BPTApplication application;
    
@@ -237,5 +237,13 @@ public class BPTContainerProvider {
 	
 	public int getNumberOfEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
 		return toolRepository.getNumberOfEntries(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+	}
+	
+	public static IndexedContainer getRandomEntries(ArrayList<BPTToolStatus> statusList, int numberOfEntries){
+		return BPTContainerProvider.getInstance().getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, numberOfEntries);
+	}
+
+	public static Map<String, Integer> getTagStatisticFor(String string) {
+		return toolRepository.getTagStatisticFor(string);
 	}
 }

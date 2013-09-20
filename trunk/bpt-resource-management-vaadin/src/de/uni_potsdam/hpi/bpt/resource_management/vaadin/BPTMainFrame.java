@@ -5,20 +5,20 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-public class BPTMainFrame extends CustomComponent{
+public class BPTMainFrame extends VerticalLayout{
 
-	private VerticalLayout layout;
+//	private VerticalLayout layout;
 	
 	public BPTMainFrame(Component component){
 		
-		layout = new VerticalLayout();
-		setCompositionRoot(layout);
+//		layout = new VerticalLayout();
+//		setCompositionRoot(layout);
 		setWidth("100%");
-		layout.addComponent(component);
+		addComponent(component);
 	}
 	
 	public void add(Component component){
-		layout.removeAllComponents();
-		layout.addComponent(component);
+		removeAllComponents();
+		addComponent(component);
 	}
 }
