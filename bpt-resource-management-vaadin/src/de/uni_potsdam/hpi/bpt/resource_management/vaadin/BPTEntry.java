@@ -54,7 +54,8 @@ public class BPTEntry extends CustomLayout {
 			image.setHeight("");
 			this.addComponent(image, id.toString());
 			image.addStyleName("bptlogo");
-		} else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
+		} 
+		else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
 			Object value = item.getItemProperty(id).getValue();
 			if(value == null){
 				return;
@@ -80,7 +81,8 @@ public class BPTEntry extends CustomLayout {
 						label.setContentMode(Label.CONTENT_XHTML);
 						this.addComponent(label, id.toString());
 					}
-				} else {
+				}
+				else {
 					String labelContent = value.toString();
 					if (id == "Description") {
 						String descriptionURL = ((Link)item.getItemProperty("Description URL").getValue()).getCaption();

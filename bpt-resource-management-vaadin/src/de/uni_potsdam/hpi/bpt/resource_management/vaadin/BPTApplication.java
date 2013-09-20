@@ -66,8 +66,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		custom.setHeight("100%");
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
-		
-		entryComponent = new BPTEntryCards(this);
+	
+		entryComponent = new BPTSmallRandomEntries(this);
+//		entryComponent = new BPTEntryCards(this);
 //		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
@@ -155,6 +156,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void renderEntries() {
 		sidebar.renderEntries();
 		refreshAndClean();
+		mainFrame.add(entryComponent);
+	}
+	
+	public void showAll(){
+		entryComponent = new BPTEntryCards(this);
 		mainFrame.add(entryComponent);
 	}
 	

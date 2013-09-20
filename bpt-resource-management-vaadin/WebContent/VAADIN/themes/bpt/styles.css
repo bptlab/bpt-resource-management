@@ -200,3 +200,17 @@ body{
 .boldtextfield {
 	font-weight: bold !important;
 }
+
+#resource-list .shortEntry>*{
+	margin-left: 1px !important;
+}
+
+#resource-list .shortEntry .Logo {
+	float: none !important;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#resource-list .shortEntry{
+	height: 300px;
+}

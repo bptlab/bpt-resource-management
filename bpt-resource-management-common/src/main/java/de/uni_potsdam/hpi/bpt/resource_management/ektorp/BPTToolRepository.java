@@ -2,6 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -575,6 +576,40 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		}
 	}
 	
+	public Map<String, Integer> getTagStatisticFor(String tagCategory){
+		List<Map> entries = getDocuments(BPTToolStatus.Published.toString().toLowerCase());
+		Map<String, Integer> tagStatistics = new HashMap<String, Integer>();
+		for(Map entry : entries){
+			for(Object key : entry.keySet()){
+				if(tagCategory.equals((String) key)){
+					List<String> availability = (List) entry.get(key);
+	        		for(String tag : availability){
+        			tagStatistics = increaseCount(tag, tagStatistics);
+        			}
+//					tagStatistics = increaseCount((String) key, tagStatistics);
+//					tagStatistics.put((String) key, 1)
+					
+				}
+			}
+				
+//        		List<String> availability = (List) entry.get(tagCategory);
+//        		for(String tag : availability){
+//        			tagStatistics = increaseCount(tag, tagStatistics);
+//        		}
+
+		}
+		return tagStatistics;
+	}
 	
+	private Map<String, Integer> increaseCount(String tag, Map<String, Integer> tagStatistics){
+		String trimmedTag = (tag.trim().replaceAll(" +", " "));
+		if(tagStatistics.keySet().contains(trimmedTag)){
+			tagStatistics.put(trimmedTag, tagStatistics.get(trimmedTag) + 1);
+		}
+		else{
+			tagStatistics.put(trimmedTag, 1);
+		}
+		return tagStatistics;
+	}
 
 }
