@@ -41,12 +41,12 @@ public class BPTShortEntry extends CustomLayout {
 		if (providerURL.isEmpty()) {
 			Label label = new Label("<i><span style=\"margin-left: -1em\">" + "Provider" + "</span></i><br/><span style=\"margin-left: 1em; display: block\">" + provider + "</span>");
 			label.setContentMode(Label.CONTENT_XHTML);
-			label.setWidth("180px");
+			label.setWidth("175px");
 			this.addComponent(label, "Provider");
 		} else {
 			Label label = new Label("<i><span style=\"margin-left: -1em\">" + "Provider" + "</span></i><br/>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + providerURL + "' target='_blank'>" + provider + "</a></span>");
 			label.setContentMode(Label.CONTENT_XHTML);
-			label.setWidth("180px");
+			label.setWidth("175px");
 			this.addComponent(label, "Provider");
 		}
 	}

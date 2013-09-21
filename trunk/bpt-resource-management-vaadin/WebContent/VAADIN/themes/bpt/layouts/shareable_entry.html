@@ -13,23 +13,34 @@ The collection comprises tools such as <br/>
 and many more.<br/>
 <br/>
 <hr/>
-<br/>
-<div location="statisticsRow"></div>
-<div id="piechart" location="piechart"></div>
-<div id="barchart"></div>
-<div id="tagcloud"></div> 
-
-<table style="width:100%">
-	<tr>
-		<td>
-			<div align="left" location="pageSelection"></div>
-		</td>
-		<td>
-			<div align="right" location="sortSelect"></div>
-		</td>
-	</tr>
-</table>
-<ul id="resource-list" location="cards"></ul>
+<ul class="resource-list" id="resource-list">
+	<li class="entry">
+		<div class="Logo" location="Logo"></div>
+		<h3 class="Name" location="Name"></h3>
+		<div class="Description" location="Description"></div>
+		<div class="Provider" location="Provider"></div>
+		<div class="Download URL" location="Download URL"></div>
+		<div class="Documentation URL" location="Documentation URL"></div>
+	  	<div class="Screencast URL" location="Screencast URL"></div>
+	  	<div class="Tutorial URL" location="Tutorial URL"></div>
+	  	<div class="Availability" location="Availability"></div>
+	  	<div class="Model type" location="Model type"></div>
+	  	<div class="Platform" location="Platform"></div>
+	  	<div class="Supported functionality" location="Supported functionality"></div>
+	  	<div class="Contact name" location="Contact name"></div>
+	  	<!-- <div class="Contact mail" location="Contact mail"></div> -->
+	  	<div class="Date created" location="Date created"></div>
+	  	<div class="Last update" location="Last update"></div>
+	  	<div class="OpenID of resource provider" location="OpenID of resource provider"></div>
+	  	<div class="Contact of resource provider" location="Contact of resource provider"></div>
+	  	<div id="button edit edit" class="button edit edit" location="button edit"></div>
+	  	<div id="button edit delete" class="button edit delete" location="button delete"></div>
+	  	<div id="button edit publish" class="button edit publish" location="button publish"></div>
+	  	<div id="button edit reject" class="button edit reject" location="button reject"></div>
+	  	<div id="button edit propose" class="button edit propose" location="button propose"></div>
+	  	<div id="button edit unpublish" class="button edit unpublish" location="button unpublish"></div>
+	</li>
+</ul>
 
 <script>
   var _gaq = _gaq || [];
@@ -76,30 +87,4 @@ if (n && f && s && npos.y) {
 	    }
 	});	
 }
-</script>
-<script>
-
-function showEntry(id){                                         
-        var divId = id + "_extension"
-        document.getElementById(divId).style.display = "block";
-        var button_id = id + "_button_more";
-        document.getElementById(button_id).style.display = "none";
-        var button_id = id + "_button_less";
-        document.getElementById(button_id).style.display = "block";
-        
-}
-</script>
-
-<script>
-
-function hideEntry(id){
-    var divId = id + "_extension"
-    document.getElementById(divId).style.display = "none";
-    var button_id = id + "_button_more";
-    document.getElementById(button_id).style.display = "block";
-    var button_id = id + "_button_less";
-    document.getElementById(button_id).style.display = "none";
-
-}
-
 </script>
