@@ -49,13 +49,13 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 
 	private BPTShareableEntry entry;
 	private BPTAdministrator administrator;
-	
+
 	@Override
 	public void init() {
+		
 		toolRepository = BPTToolRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		containerProvider = new BPTContainerProvider(this);
-		
 		setProperties();
 		
 		final Window mainWindow = new Window("Tools for BPM");
@@ -82,7 +82,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		custom.addComponent(uriFu, "uriFragmentUtility");
 		addListenerToUriFragmentUtility();
 	}
-
+	
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}

@@ -214,3 +214,8 @@ body{
 #resource-list .shortEntry{
 	height: 300px;
 }
+
+#resource-list .shortEntry>.button{
+	margin-top:auto;
+	margin-bottom: 15px;
+}
