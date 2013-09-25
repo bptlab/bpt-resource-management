@@ -201,7 +201,13 @@ body{
 	font-weight: bold !important;
 }
 
-#resource-list .shortEntry>*{
+#resource-list .shortEntry{
+	height: 300px;
+}
+
+#resource-list .shortEntry> table{
+	width: 100%;
+	height: 100%;
 	margin-left: 1px !important;
 }
 
@@ -211,11 +217,9 @@ body{
 	margin-right: auto;
 }
 
-#resource-list .shortEntry{
-	height: 300px;
+#resource-list .shortEntry *{
+	margin-left: 0px !important;
 }
 
-#resource-list .shortEntry>.button{
-	margin-top:auto;
-	margin-bottom: 15px;
-}
+
+
