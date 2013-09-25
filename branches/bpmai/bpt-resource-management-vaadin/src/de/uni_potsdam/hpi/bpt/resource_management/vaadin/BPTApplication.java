@@ -157,7 +157,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void renderEntries() {
-		getSidebar().renderEntries();		refreshAndClean();
+		getSidebar().renderEntries();
+		refreshAndClean();
 		mainFrame.add(entryComponent);
 	}
 
