@@ -75,10 +75,10 @@ public class BPTUploadPanel extends VerticalLayout {
 		exerciseURLInput.setWidth("100%");
 		layout.addComponent(exerciseURLInput);
 		
-		taskSheetPanel = new BPTPdfDocUploader(application, "Task sheet *", "Upload a PDF or DOC/DOCX document", BPTMimeType.getMimeTypes());
+		taskSheetPanel = new BPTPdfDocUploader(application, "Task sheet *", "Upload a PDF or DOC/DOCX document", this);
 		layout.addComponent(taskSheetPanel);
 		
-		supplementaryFilesPanel = new BPTAttachmentUploader(application, "Supplementary files", "Upload a file", null);
+		supplementaryFilesPanel = new BPTAttachmentUploader(application, "Supplementary files", "Upload a file", this);
         layout.addComponent(supplementaryFilesPanel);
         
         if (item != null) {
@@ -171,6 +171,27 @@ public class BPTUploadPanel extends VerticalLayout {
 
 	public ArrayList<Link> getLinksToExistingSupplementaryFiles() {
 		return linksToExistingSupplementaryFiles;
+	}
+	
+	public boolean isNameAvailableForDoc(String name){
+		if(!(getNamesOfSupplementaryFiles().contains(name))){
+			return !(name.equals(getNameOfPdfFile()));
+		}
+		return false;
+	}
+	
+	public boolean isNameAvailableForPdf(String name){
+		if(!(getNamesOfSupplementaryFiles().contains(name))){
+			return !(name.equals(getNameOfDocFile()));
+		}
+		return false;
+	}
+	
+	public boolean isNameAvailableForAttachement(String name){
+		if(!(getNamesOfSupplementaryFiles().contains(name))){
+			return (!(name.equals(getNameOfDocFile())) && !(name.equals(getNameOfPdfFile())));
+		}
+		return false;
 	}
 
 }

@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.File;
+import java.util.Arrays;
 
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button;
@@ -9,6 +10,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
@@ -23,10 +25,12 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	protected String nameOfDocFile;
 	protected FileResource docFile;
 	protected Link docLink;
+	private String[] supportedDocumentTypes;
 	protected HorizontalLayout pdfLayout, docLayout, pdfInnerLayout, docInnerLayout;
 
-	public BPTPdfDocUploader(BPTApplication application, String captionOfPanel,	String captionOfUploadComponent, String[] supportedDocumentTypes) {
-		super(application, captionOfPanel, captionOfUploadComponent, supportedDocumentTypes);
+	public BPTPdfDocUploader(BPTApplication application, String captionOfPanel,	String captionOfUploadComponent, BPTUploadPanel uploadPanel) {
+		super(application, captionOfPanel, captionOfUploadComponent, uploadPanel);
+		this.supportedDocumentTypes = BPTMimeType.getMimeTypes();
 		pdfLayout = new HorizontalLayout();
 		pdfLayout.addComponent(new Label("PDF file:&nbsp;", Label.CONTENT_XHTML));
 		pdfInnerLayout = new HorizontalLayout();
@@ -40,8 +44,6 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 		docLayout.addComponent(docInnerLayout);
 		addComponent(docLayout);
 	}
-	
-	// TODO: separation of PDF and DOC files in panel
 	
 	public void addPdfLinkToPanel(Link link) {
 		File attachmentFile = convertToFile(link);
@@ -170,5 +172,26 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 			file.delete();
 		}
 	}
+	
+	@Override
+	public void uploadStarted(StartedEvent event) {
+		String documentType = event.getMIMEType();
+    	if (!Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+    		errorMessage = "The type of the file you have submitted is not supported.";
+            uploadComponent.interruptUpload();
+    	}
+    	if(event.getFilename().endsWith("pdf")){
+    		if(!(uploadPanel.isNameAvailableForDoc(event.getFilename()))){
+        		errorMessage = "You can not upload two files with the same name in one excercise.";
+                uploadComponent.interruptUpload();
+    		}
+    	}
+    	else{
+    		if(!(uploadPanel.isNameAvailableForPdf(event.getFilename()))){
+        		errorMessage = "You can not upload two files with the same name in one excercise.";
+                uploadComponent.interruptUpload();
+    		}
+    	}
 
+	}
 }

@@ -12,14 +12,21 @@ import java.util.List;
 
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Upload;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.themes.BaseTheme;
 
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 public class BPTAttachmentUploader extends Panel implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
@@ -27,16 +34,20 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	protected static final long serialVersionUID = 5970533396623869051L;
 	protected Upload uploadComponent;
 	protected File tempAttachment;
-	protected String[] supportedDocumentTypes;
 	protected List<String> namesOfAttachments = new ArrayList<String>();
 	protected List<FileResource> attachments = new ArrayList<FileResource>();
 	protected BPTApplication application;
-	private String errorMessage = new String();
+	protected String errorMessage = new String();
+	private VerticalLayout mainLayout;
+	protected BPTUploadPanel uploadPanel;
 
-	public BPTAttachmentUploader(BPTApplication application, String captionOfPanel, String captionOfUploadComponent, String[] supportedDocumentTypes) {
+	public BPTAttachmentUploader(BPTApplication application, String captionOfPanel, String captionOfUploadComponent, BPTUploadPanel uploadPanel) {
 		this.application = application;
 		setCaption(captionOfPanel);
-		this.supportedDocumentTypes = supportedDocumentTypes;
+		this.mainLayout = new VerticalLayout();
+		mainLayout.setImmediate(true);
+		this.addComponent(mainLayout);
+		this.uploadPanel = uploadPanel;
 		uploadComponent = new Upload(captionOfUploadComponent, this);
 		uploadComponent.setImmediate(false);
 		uploadComponent.setWidth("-1px");
@@ -44,16 +55,14 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 		uploadComponent.addListener((Upload.StartedListener)this);
 		uploadComponent.addListener((Upload.SucceededListener)this);
 		uploadComponent.addListener((Upload.FailedListener)this);
-		this.addComponent(uploadComponent);
+		mainLayout.addComponent(uploadComponent);
 	}
 
-	@Override
 	public void uploadStarted(StartedEvent event) {
-		String documentType = event.getMIMEType();
-    	if (supportedDocumentTypes != null || !Arrays.asList(supportedDocumentTypes).contains(documentType)) {
-    		errorMessage = "The type of the file you have submitted is not supported.";
+		if(!(uploadPanel.isNameAvailableForAttachement(event.getFilename()))){
+    		errorMessage = "You can not upload two files with the same name in one excercise.";
             uploadComponent.interruptUpload();
-    	}
+		}
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
@@ -79,10 +88,23 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
 		namesOfAttachments.add(documentResource.getFilename());
-		this.addComponent(getLinkToAttachment(documentResource));
+		final HorizontalLayout layout = new HorizontalLayout();
+		layout.addComponent(getLinkToAttachment(documentResource));
+		layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		Button deleteButton = new Button("x");
+		deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
+		deleteButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				mainLayout.removeComponent(layout);
+				namesOfAttachments.remove(documentResource.getFilename());
+				attachments.remove(documentResource);
+			}
+		});
+		layout.addComponent(deleteButton);
+		mainLayout.addComponent(layout);
 		attachments.add(documentResource);
-		System.out.println(documentResource);
-        application.refreshAndClean();
+//		System.out.println(documentResource);
+//        application.refreshAndClean();
 	}
 	
 	protected Link getLinkToAttachment(FileResource documentResource) {
