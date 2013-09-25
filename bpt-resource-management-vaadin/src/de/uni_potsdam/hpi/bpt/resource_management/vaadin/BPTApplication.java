@@ -232,32 +232,53 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, String[]> map = request.getParameterMap();
-		
-		if (loggingIn && map.containsKey("openid.identity")) {
-			loggingIn = false;
-			// TODO: check nonce for security reasons
-//			checkNonce(request.getParameter("openid.response_nonce"));
-			setUser(map.get("openid.identity")[0]);
-			System.out.println("The OpenID identifier: " + (String)getUser());
-			if (openIdProvider.equals("Google")) {
-				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0]; 
-				mailAddress = map.get("openid.ext1.value.email")[0];
-			} else { // openIdProvider.equals("Yahoo")
-				name = map.get("openid.ax.value.fullname")[0]; 
-				mailAddress = map.get("openid.ax.value.email")[0];
+		if (loggingIn) {
+			System.out.println("----- LOGIN STARTED -----");
+			Map<String, String[]> map = request.getParameterMap();
+			System.out.println("The parameter map: " + map);
+			for (String key: map.keySet()) {
+				StringBuffer sb = new StringBuffer();
+				sb.append("\t" + key + ": ");
+				String[] array = map.get(key);
+				for (int i = 0; i < array.length; i++) {
+					sb.append(array[i]);
+					if (i < array.length - 1) {
+						sb.append(", ");
+					} else {
+						sb.append(";");
+					}
+				}
+				System.out.println(sb.toString());
 			}
-			moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
-			loggedIn = true;
-			sidebar.login(name, moderated);
-			renderEntries();
-			try {
-				response.sendRedirect(getLogoutURL());
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (map.containsKey("openid.identity")) {
+				loggingIn = false;
+				// TODO: check nonce for security reasons
+//				checkNonce(request.getParameter("openid.response_nonce"));
+				setUser(map.get("openid.identity")[0]);
+				System.out.println("The OpenID identifier: " + (String)getUser());
+				if (openIdProvider.equals("Google")) {
+					name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0]; 
+					mailAddress = map.get("openid.ext1.value.email")[0];
+				} else { // openIdProvider.equals("Yahoo")
+					name = map.get("openid.ax.value.fullname")[0]; 
+					mailAddress = map.get("openid.ax.value.email")[0];
+				}
+				System.out.println("The name: " + name);
+				System.out.println("The mail address: " + mailAddress);
+				moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
+				loggedIn = true;
+				System.out.println("----- LOGIN FINISHED -----");
+				sidebar.login(name, moderated);
+				renderEntries();
+				try {
+					response.sendRedirect(getLogoutURL());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println("----- LOGIN FINISHED -----");
+				return;
 			}
-		} else {
-			return;
 		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
