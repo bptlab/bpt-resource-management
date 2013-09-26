@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.codehaus.jackson.type.TypeReference;
 import org.ektorp.DbAccessException;
@@ -610,6 +611,21 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			tagStatistics.put(trimmedTag, 1);
 		}
 		return tagStatistics;
+	}
+	
+	public List<Map> getRandomEntries(int numberOfEntries){
+		Random random = new Random();
+		List<Map> allPublishedEntries = getDocuments("published");
+		int totalDocuments = allPublishedEntries.size();
+		
+		List<Map> randomEntries = new ArrayList<Map>();
+		for(int i = 0; i < numberOfEntries; i++){
+			Map randomEntry = allPublishedEntries.get(random.nextInt(totalDocuments));
+			if(!randomEntries.contains(randomEntry) || randomEntries.size() >= totalDocuments){
+				randomEntries.add(randomEntry);
+			}
+		}
+		return randomEntries;
 	}
 
 }

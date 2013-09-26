@@ -239,8 +239,8 @@ public class BPTContainerProvider {
 		return toolRepository.getNumberOfEntries(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
-	public static IndexedContainer getRandomEntries(ArrayList<BPTToolStatus> statusList, int numberOfEntries){
-		return BPTContainerProvider.getInstance().getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, numberOfEntries);
+	public IndexedContainer getRandomEntries(int numberOfEntries){
+		return generateContainer(toolRepository.getRandomEntries(numberOfEntries), BPTDocumentType.BPT_RESOURCES_TOOLS);
 	}
 
 	public static Map<String, Integer> getTagStatisticFor(String string) {
