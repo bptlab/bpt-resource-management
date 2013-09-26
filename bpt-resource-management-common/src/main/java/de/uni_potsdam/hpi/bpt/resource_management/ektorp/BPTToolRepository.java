@@ -68,10 +68,13 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	@Override
 	public Map<String, Object> updateDocument(Map<String, Object> document) {
-		Map<String, Object> databaseDocument = super.updateDocument(document);
-		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished) {
-			mailProvider.sendEmailForUpdatedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("_id"), (String)databaseDocument.get("user_id"));
+		if (BPTToolStatus.Rejected == BPTToolStatus.valueOf((String)readDocument((String)document.get("_id")).get("status"))) {
+			document.put("status", BPTToolStatus.Unpublished);
 		}
+		Map<String, Object> databaseDocument = super.updateDocument(document);
+//		if (BPTToolStatus.valueOf((String) databaseDocument.get("status")) != BPTToolStatus.Unpublished) {
+			mailProvider.sendEmailForUpdatedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("_id"), (String)databaseDocument.get("user_id"));
+//		}
 		return databaseDocument;
 	}
 	
@@ -224,7 +227,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Published);
 		db.update(databaseDocument);
-		mailProvider.sendEmailForPublishedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+		mailProvider.sendEmailForPublishedEntry((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 		return databaseDocument;
 	}
 	
@@ -247,7 +250,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			databaseDocument = unpublishDocument(_id, fromPublished, true);
 		} else { 
 			databaseDocument = unpublishDocument(_id);
-			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 		}
 		return databaseDocument;
 	}
@@ -263,12 +266,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		Map<String, Object> databaseDocument = unpublishDocument(_id);
 		if (fromPublished) { 
 			if (byModerator) {
-				mailProvider.sendEmailForUnpublishedEntryFromPublishedToResourceProvider((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+				mailProvider.sendEmailForUnpublishedEntryFromPublishedToResourceProvider((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 			} else {
 				mailProvider.sendEmailForUnpublishedEntryFromPublishedToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 			}
 		} else { // propose (by moderator if he has previously unpublished an entry by mistake, notify resource provider)
-			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"));
+			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 		}
 		return databaseDocument;
 	}
@@ -277,11 +280,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Rejected);
 		db.update(databaseDocument);
-		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), (String)databaseDocument.get("user_id"), reason);
+		mailProvider.sendEmailForRejectedEntry((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"), reason);
 		return databaseDocument;
 	}
 	
-	public BPTToolStatus getDocumentStatus(String _id){
+	public BPTToolStatus getDocumentStatus(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		return BPTToolStatus.valueOf((String) databaseDocument.get("status"));
 	}
@@ -292,7 +295,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 * @param name name of the entry
 	 * @return true if a document with the name exists in the database
 	 */
-	public Boolean containsName(String name){
+	public Boolean containsName(String name) {
 		List<Map> documents = getDocuments("all");
 		for (int i = 0; i < documents.size(); i++) {
 			if(name.equals(documents.get(i).get("name"))) return true;

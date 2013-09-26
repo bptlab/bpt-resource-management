@@ -285,9 +285,6 @@ public class BPTUploader extends CustomComponent implements Upload.StartedListen
 					newValues.put("model_types", new ArrayList<String>(modelTagComponent.getTagValues()));
 					newValues.put("platforms", new ArrayList<String>(platformTagComponent.getTagValues()));
 					newValues.put("supported_functionalities", new ArrayList<String>(functionalityTagComponent.getTagValues()));
-					if (BPTToolStatus.Rejected == BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"))) {
-						newValues.put("status", BPTToolStatus.Unpublished);
-					}
 					newValues.put("contact_name", contactNameInput.getValue().toString());
 					newValues.put("contact_mail", contactMailInput.getValue().toString());
 					newValues.put("last_update", new Date());
