@@ -203,6 +203,7 @@ body{
 
 #resource-list .shortEntry{
 	height: 300px;
+	margin: 0px !important;
 }
 
 #resource-list .shortEntry> table{
