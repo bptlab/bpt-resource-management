@@ -240,6 +240,17 @@ public class BPTShareableEntry extends CustomLayout {
 
 	private String getJavaScriptStringShow(String button) {
 		return "document.getElementById('button edit " + button + "').style.display = 'block';";
+//		return "var nodes = document.getElementById('" + entryId +"').childNodes;" +
+//		"for(i=0; i<nodes.length; i+=1){" +
+//			"if(nodes[i].className == 'resource-list'){" +
+//				"var subNodes = nodes[i].childNodes[0].childNodes;" +
+//				"for(j=0; j<subNodes.length; j+=1){" +
+//					"if(subNodes[j].className == 'button edit " + button + "'){" +
+//						"subNodes[j].style.display = 'block';" +
+//						"break;}" +
+//				"}" +
+//			"}" +
+//		"}";
 	}
 	
 	protected void addConfirmationWindow(final String status) {
