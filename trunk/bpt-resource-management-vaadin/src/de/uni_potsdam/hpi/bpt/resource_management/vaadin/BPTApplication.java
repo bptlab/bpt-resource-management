@@ -67,8 +67,8 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
 	
-		entryComponent = new BPTSmallRandomEntries(this);
-//		entryComponent = new BPTEntryCards(this);
+//		entryComponent = new BPTSmallRandomEntries(this);
+		entryComponent = new BPTEntryCards(this);
 //		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
 		sidebar = new BPTSidebar(this);
@@ -177,10 +177,10 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		}
 		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
 		Item item = container.getItem(container.getItemIds().iterator().next());
+		uriFu.setFragment(fragmentForEntry, false);
 		entry = new BPTShareableEntry(item, this);
 		mainFrame.add(entry);
 		sidebar.showSpecificEntry(applicationURL + "#" + fragmentForEntry);
-		uriFu.setFragment(fragmentForEntry, false);
 	}
 	
 	private void addListenerToUriFragmentUtility() {
@@ -235,7 +235,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		if (loggingIn) {
 			System.out.println("----- LOGIN STARTED -----");
 			Map<String, String[]> map = request.getParameterMap();
-			System.out.println("The parameter map: " + map);
+			System.out.println("The parameter map: ");
 			for (String key: map.keySet()) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("\t" + key + ": ");
@@ -257,11 +257,19 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 				setUser(map.get("openid.identity")[0]);
 				System.out.println("The OpenID identifier: " + (String)getUser());
 				if (openIdProvider.equals("Google")) {
-					name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0]; 
 					mailAddress = map.get("openid.ext1.value.email")[0];
+					if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
+						name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+					} else {
+						name = mailAddress;
+					}
 				} else { // openIdProvider.equals("Yahoo")
-					name = map.get("openid.ax.value.fullname")[0]; 
 					mailAddress = map.get("openid.ax.value.email")[0];
+					if (map.containsKey("openid.ax.value.fullname")) {
+						name = map.get("openid.ax.value.fullname")[0]; 
+					} else {
+						name = mailAddress;
+					}
 				}
 				System.out.println("The name: " + name);
 				System.out.println("The mail address: " + mailAddress);
