@@ -121,8 +121,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	}
 	
 	@Override
-	protected void showEntries(ArrayList<BPTToolStatus> statusList) {
-		show(BPTContainerProvider.getInstance().getRandomEntries(3));
+	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
+		return BPTContainerProvider.getInstance().getRandomEntries(3);
 	}
 
 }

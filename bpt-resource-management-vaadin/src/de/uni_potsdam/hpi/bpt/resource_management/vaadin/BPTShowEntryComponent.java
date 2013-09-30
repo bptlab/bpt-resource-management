@@ -25,21 +25,30 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
-	protected String _id;
+	protected String _id, entryId;
 	protected BPTApplication application;
 	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	
-	public BPTShowEntryComponent(final BPTApplication application) {
+	public BPTShowEntryComponent(BPTApplication application, String entryId){
+		this.entryId = entryId;
+		init(application);
+	}
+	
+	public BPTShowEntryComponent(BPTApplication application) {
+		init(application);
+	}
+	
+	protected void init(BPTApplication application){
 		this.application = application;
 		buildLayout();
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
 		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		showEntries(statusList);
+		show(getEntries(statusList));
 	}
 	
-	protected void showEntries(ArrayList<BPTToolStatus> statusList) {
-		show(BPTContainerProvider.getInstance().getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
+	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
+		return BPTContainerProvider.getInstance().getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10);
 	}
 	
 	protected abstract void buildLayout();

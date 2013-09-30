@@ -12,23 +12,21 @@ import com.vaadin.ui.themes.BaseTheme;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 
 @SuppressWarnings("serial")
-public class BPTSidebar extends CustomComponent {
+public class BPTSidebar extends HorizontalLayout {
 	
-	private HorizontalLayout layout;
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
+	private int numberOfEntries;
 	
 	public BPTSidebar(BPTApplication application) {
+		super();
 		this.application = application;
-		
-		layout = new HorizontalLayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
-		setCompositionRoot(layout);
+		setWidth("100%");
+		setHeight("100%");
 		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
 		searchComponent = new BPTSearchComponent(application, "all", false);
-		init(layout);		
+		init();		
 	}
 
 	public BPTSearchComponent getSearchComponent() {
@@ -39,11 +37,11 @@ public class BPTSidebar extends CustomComponent {
 		this.searchComponent = searchComponent;
 	}
 
-	private void init(HorizontalLayout layout) {
-		layout.addComponent(searchComponent);
-		layout.addComponent(loginComponent);
-		layout.setExpandRatio(searchComponent, 75);
-		layout.setExpandRatio(loginComponent, 25);
+	private void init() {
+		addComponent(searchComponent);
+		addComponent(loginComponent);
+		setExpandRatio(searchComponent, 75);
+		setExpandRatio(loginComponent, 25);
 	}
 
 	public void login(String name, boolean moderated) {
@@ -57,37 +55,34 @@ public class BPTSidebar extends CustomComponent {
 	}
 	
 	public void renderUploader() {
-		layout.removeAllComponents();
-//		layout = new HorizontalLayout();
+		removeAllComponents();
 		Label label = new Label("required fields marked with *<br/>", Label.CONTENT_XHTML);
-		layout.addComponent(label);
-		layout.addComponent(loginComponent);
-		layout.setExpandRatio(label, 75);
-		layout.setExpandRatio(loginComponent, 25);
+		addComponent(label);
+		addComponent(loginComponent);
+		setExpandRatio(label, 75);
+		setExpandRatio(loginComponent, 25);
 	}
 	
 	public void renderAdministrator() {
-		layout.removeAllComponents();
-//		layout = new HorizontalLayout();
+		removeAllComponents();
 		Label label = new Label("Administration page <br/>", Label.CONTENT_XHTML);
-		layout.addComponent(label);
-		layout.addComponent(loginComponent);
-		layout.setExpandRatio(label, 75);
-		layout.setExpandRatio(loginComponent, 25);
+		addComponent(label);
+		addComponent(loginComponent);
+		setExpandRatio(label, 75);
+		setExpandRatio(loginComponent, 25);
 }
 	
-	public void renderEntries() {
-		layout.removeAllComponents();
-//		layout = new HorizontalLayout();
+	public void showAll() {
+		removeAllComponents();
 		searchComponent = new BPTSearchComponent(application, "all", false);
-		init(layout);
+		init();
 		if (application.isLoggedIn()) {
 			searchComponent.login();
 		}
 	}
 	
 	public void showSpecificEntry(final String urlToEntry) {
-		layout.removeAllComponents();
+		removeAllComponents();
 		VerticalLayout shareLayout = new VerticalLayout();
 		
 		Label label = new Label("URL to this page:&nbsp;", Label.CONTENT_XHTML);
@@ -100,19 +95,39 @@ public class BPTSidebar extends CustomComponent {
 		textField.setReadOnly(true);
 		shareLayout.addComponent(textField);
 
-		Button findButton = new Button("See all entries of Tools for BPM");
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		
+		Button startButton = new Button("Go back to startpage");
+		startButton.setStyleName(BaseTheme.BUTTON_LINK);
+		startButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
+				((BPTApplication)getApplication()).showStartpage();
+			}
+		});
+		buttonLayout.addComponent(startButton);
+		
+		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or &nbsp;&nbsp;", Label.CONTENT_XHTML));
+		
+		Button findButton = new Button("See all " + this.numberOfEntries + " entries of Tools for BPM");
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).renderEntries();
+				((BPTApplication)getApplication()).showAll();
 			}
 		});
-		shareLayout.addComponent(findButton);
-		layout.addComponent(shareLayout);
-		layout.addComponent(loginComponent);
-		layout.setExpandRatio(shareLayout, 75);
-		layout.setExpandRatio(loginComponent, 25);
+		buttonLayout.addComponent(findButton);
+		
+		shareLayout.addComponent(buttonLayout);
+		addComponent(shareLayout);
+		addComponent(loginComponent);
+		setExpandRatio(shareLayout, 75);
+		setExpandRatio(loginComponent, 25);
+	}
+
+	public void setNumberOfEntries(int numberOfEntries) {
+		this.numberOfEntries = numberOfEntries;
 	}
 
 }

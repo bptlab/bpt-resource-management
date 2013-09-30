@@ -14,25 +14,19 @@ import com.vaadin.ui.VerticalLayout;
 public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	private CustomLayout layout;
-//	private VerticalLayout vertical;
-//	private ArrayList<BPTEntry> entryList;
-//	private Boolean isInitial;
 	private NativeSelect sortSelect;
 	private BPTPageSelector pageSelector;
+	private VerticalLayout vertical;
 	
 	public BPTEntryCards(final BPTApplication application) {
 		
 		super(application);
-		//TODO: brauchen wir das?
-//		isInitial = false;
 	}
 
 	@Override
 	protected void buildLayout() {
 		layout = new CustomLayout("cards");
-		VerticalLayout vertical = new VerticalLayout();
-//		entryList = new ArrayList<BPTEntry>();
-//		isInitial = true;
+		vertical = new VerticalLayout();
 		setBPTPageSelector(new BPTPageSelector(application));
 		
 		HorizontalLayout selectLayout = new HorizontalLayout();
@@ -66,10 +60,8 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	@Override
 	protected void show(IndexedContainer entries) {
-//		((VerticalLayout) layout.getComponent("cards")).removeAllComponents();
+		vertical.removeAllComponents();
 		
-		layout.removeComponent("cards");
-		VerticalLayout vertical = new VerticalLayout();
 		if (entries.size() == 0) {
 			return;
 		}
@@ -77,14 +69,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 			Item item = entries.getItem(id);
 			BPTEntry entry = new BPTEntry(item, application, this);
 			vertical.addComponent(entry);
-//			entryList.add(entry);
-//			if (!isInitial) {
-//				for (int i = 0; i < entryList.size(); i++) {
-//					entryList.get(i).hideJavaScript();
-//				}
-//			}
 		}
-		layout.addComponent(vertical, "cards");
 	}
 
 	public void addConfirmationWindowTo(String entryId, String status) {

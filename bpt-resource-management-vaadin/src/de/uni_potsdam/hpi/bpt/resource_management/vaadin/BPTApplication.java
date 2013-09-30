@@ -67,14 +67,12 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
 	
-//		entryComponent = new BPTSmallRandomEntries(this);
-		entryComponent = new BPTEntryCards(this);
-//		entryComponent = new BPTTable();
+		entryComponent = new BPTSmallRandomEntries(this);
+//		entryComponent = new BPTEntryCards(this);
 		mainFrame = new BPTMainFrame(entryComponent);
-		sidebar = new BPTSidebar(this);
-		layout.addComponent(sidebar);
+		setSidebar(new BPTSidebar(this));
+		layout.addComponent(getSidebar());
 		layout.addComponent(mainFrame);
-		mainFrame.add(entryComponent);
 		custom.addComponent(layout, "application");
 		custom.addStyleName("scroll");
 		mainWindow.setContent(custom);
@@ -144,23 +142,27 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void renderUploader() {
 		uploader = new BPTUploader(null, this);
 		mainFrame.add(uploader);
-		sidebar.renderUploader();
+		getSidebar().renderUploader();
 	}
 	
 	public void renderAdministrator() {
         administrator = new BPTAdministrator(this);
         mainFrame.add(administrator);
-        sidebar.renderAdministrator();
+        getSidebar().renderAdministrator();
 	}
 	
 	public void renderEntries() {
-		sidebar.renderEntries();
 		refreshAndClean();
-		mainFrame.add(entryComponent);
 	}
 	
 	public void showAll(){
+		getSidebar().showAll();
 		entryComponent = new BPTEntryCards(this);
+		mainFrame.add(entryComponent);
+	}
+	
+	public void showStartpage(){
+		entryComponent = new BPTSmallRandomEntries(this);
 		mainFrame.add(entryComponent);
 	}
 	
@@ -178,9 +180,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
 		Item item = container.getItem(container.getItemIds().iterator().next());
 		uriFu.setFragment(fragmentForEntry, false);
-		entry = new BPTShareableEntry(item, this);
-		mainFrame.add(entry);
-		sidebar.showSpecificEntry(applicationURL + "#" + fragmentForEntry);
+//		entry = new BPTShareableEntry(item, this);
+//		mainFrame.add(entry);
+		entryComponent = new BPTShareableEntryContainer(this, entryId);
+		mainFrame.add(entryComponent);
+		getSidebar().showSpecificEntry(applicationURL + "#" + fragmentForEntry);
 	}
 	
 	private void addListenerToUriFragmentUtility() {
@@ -276,7 +280,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 				moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
 				loggedIn = true;
 				System.out.println("----- LOGIN FINISHED -----");
-				sidebar.login(name, moderated);
+				getSidebar().login(name, moderated);
 				renderEntries();
 				try {
 					response.sendRedirect(getLogoutURL());
@@ -350,7 +354,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
-		sidebar.renderUploader();
+		getSidebar().renderUploader();
 	}
 	
 	public void refreshAndClean() {
@@ -367,11 +371,11 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private void refresh(int skip) {
 		IndexedContainer dataSource;
 		int limit = skip + 10;
-		BPTTagSearchComponent tagSearchComponent = sidebar.getSearchComponent().getTagSearchComponent();
-		String query = sidebar.getSearchComponent().getFullSearchComponent().getQuery();
+		BPTTagSearchComponent tagSearchComponent = getSidebar().getSearchComponent().getTagSearchComponent();
+		String query = getSidebar().getSearchComponent().getFullSearchComponent().getQuery();
 		if (loggedIn) {
 			if (!moderated) {
-				if (sidebar.getSearchComponent().isOwnEntriesOptionSelected()) {
+				if (getSidebar().getSearchComponent().isOwnEntriesOptionSelected()) {
 					dataSource = containerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = containerProvider.getNumberOfEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
@@ -381,7 +385,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 					numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				}
 			} else {
-				ArrayList<BPTToolStatus> statusList = sidebar.getSearchComponent().getSelectedStates();
+				ArrayList<BPTToolStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
 				dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 			}
@@ -392,5 +396,13 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 			numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 		}
 		entryComponent.show(dataSource);
+	}
+
+	public BPTSidebar getSidebar() {
+		return sidebar;
+	}
+
+	private void setSidebar(BPTSidebar sidebar) {
+		this.sidebar = sidebar;
 	}
 }

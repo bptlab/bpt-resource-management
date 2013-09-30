@@ -160,12 +160,6 @@ public class BPTEntry extends CustomLayout {
 		} 
 	}
 
-//	private void addDefaultComponent(String location) {
-//		Label label = new Label("(none)");
-//		label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-//		this.addComponent(label, location);
-//	}
-
 	public void addButtons() {
 		Button share = new Button("share");
 		share.addListener(new Button.ClickListener(){
