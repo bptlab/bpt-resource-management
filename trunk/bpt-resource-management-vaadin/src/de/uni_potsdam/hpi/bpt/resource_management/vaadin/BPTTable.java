@@ -40,7 +40,7 @@ public class BPTTable extends BPTShowEntryComponent {
 		table.setColumnReorderingAllowed(true);
         table.setColumnCollapsingAllowed(true);
         table.setWidth("100%");
-        addComponent(table);
+//        addComponent(table, "cards");
         addListenerToTable();
 	}
 

@@ -624,8 +624,14 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		List<Map> randomEntries = new ArrayList<Map>();
 		for(int i = 0; i < numberOfEntries; i++){
 			Map randomEntry = allPublishedEntries.get(random.nextInt(totalDocuments));
-			if(!randomEntries.contains(randomEntry) || randomEntries.size() >= totalDocuments){
+			if(randomEntries.size() >= totalDocuments){
+				return randomEntries;
+			}
+			if(!randomEntries.contains(randomEntry)){
 				randomEntries.add(randomEntry);
+			}
+			else{
+				i--;
 			}
 		}
 		return randomEntries;

@@ -37,9 +37,8 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValue
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
-public class BPTUploader extends CustomComponent implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
+public class BPTUploader extends VerticalLayout implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
-	private VerticalLayout layout;
 	private Upload upload;
 	private TextField toolNameInput, descriptionURLInput, providerInput, providerURLInput, downloadURLInput, documentationURLInput, screencastURLInput, tutorialURLInput, contactNameInput, contactMailInput;
 	private TextArea descriptionInput;
@@ -56,101 +55,99 @@ public class BPTUploader extends CustomComponent implements Upload.StartedListen
 	private String errorMessage;
 	
 	public BPTUploader(Item item, final BPTApplication application) {
+		super();
 		this.application = application;
-		layout = new VerticalLayout();
-		setCompositionRoot(layout);
-		
 		documentId = null;
 		
         Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
-        layout.addComponent(label);
+        addComponent(label);
 		
-		layout.addComponent(new Label("Tool name *"));
+		addComponent(new Label("Tool name *"));
 		toolNameInput = new TextField();
 		toolNameInput.setWidth("100%");
-		layout.addComponent(toolNameInput);
+		addComponent(toolNameInput);
 		
-		layout.addComponent(new Label("Description text (*) <font color=\"#BBBBBB\">and/or description URL</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Description text (*) <font color=\"#BBBBBB\">and/or description URL</font>", Label.CONTENT_XHTML));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
-		layout.addComponent(descriptionInput);
+		addComponent(descriptionInput);
 		
-		layout.addComponent(new Label("Description URL (*) <font color=\"#BBBBBB\">and/or description text</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Description URL (*) <font color=\"#BBBBBB\">and/or description text</font>", Label.CONTENT_XHTML));
 		descriptionURLInput = new TextField();
 		descriptionURLInput.setInputPrompt("http://");
 		descriptionURLInput.setWidth("100%");
-		layout.addComponent(descriptionURLInput);
+		addComponent(descriptionURLInput);
 		
-		layout.addComponent(new Label("Provider *"));
+		addComponent(new Label("Provider *"));
 		providerInput = new TextField();
 		providerInput.setWidth("100%");
-		layout.addComponent(providerInput);
+		addComponent(providerInput);
 		
-		layout.addComponent(new Label("Provider URL"));
+		addComponent(new Label("Provider URL"));
 		providerURLInput = new TextField();
 		providerURLInput.setInputPrompt("http://");
 		providerURLInput.setWidth("100%");
-		layout.addComponent(providerURLInput);
+		addComponent(providerURLInput);
 		
-		layout.addComponent(new Label("Download URL"));
+		addComponent(new Label("Download URL"));
 		downloadURLInput = new TextField();
 		downloadURLInput.setInputPrompt("http://");
 		downloadURLInput.setWidth("100%");
-		layout.addComponent(downloadURLInput);
+		addComponent(downloadURLInput);
 		
-		layout.addComponent(new Label("Documentation URL"));
+		addComponent(new Label("Documentation URL"));
 		documentationURLInput = new TextField();
 		documentationURLInput.setInputPrompt("http://");
 		documentationURLInput.setWidth("100%");
-		layout.addComponent(documentationURLInput);
+		addComponent(documentationURLInput);
 		
-		layout.addComponent(new Label("Screencast URL"));
+		addComponent(new Label("Screencast URL"));
 		screencastURLInput = new TextField();
 		screencastURLInput.setInputPrompt("http://");
 		screencastURLInput.setWidth("100%");
-		layout.addComponent(screencastURLInput);
+		addComponent(screencastURLInput);
 		
-		layout.addComponent(new Label("Tutorial URL"));
+		addComponent(new Label("Tutorial URL"));
 		tutorialURLInput = new TextField();
 		tutorialURLInput.setInputPrompt("http://");
 		tutorialURLInput.setWidth("100%");
-		layout.addComponent(tutorialURLInput);
+		addComponent(tutorialURLInput);
 		
-		layout.addComponent(new Label("Availability"));
+		addComponent(new Label("Availability"));
 		availabilitiesTagComponent = new BPTTagComponent(application, "availabilities", true);
 		availabilitiesTagComponent.setWidth("100%");
-		layout.addComponent(availabilitiesTagComponent);
+		addComponent(availabilitiesTagComponent);
 		
-		layout.addComponent(new Label("Model type"));
+		addComponent(new Label("Model type"));
 		modelTagComponent = new BPTTagComponent(application, "modelTypes", true);
 		modelTagComponent.setWidth("100%");
-		layout.addComponent(modelTagComponent);
+		addComponent(modelTagComponent);
 		
-		layout.addComponent(new Label("Platform"));
+		addComponent(new Label("Platform"));
 		platformTagComponent = new BPTTagComponent(application, "platforms", true);
 		platformTagComponent.setWidth("100%");
-		layout.addComponent(platformTagComponent);
+		addComponent(platformTagComponent);
 		
-		layout.addComponent(new Label("Supported functionality"));
+		addComponent(new Label("Supported functionality"));
 		functionalityTagComponent = new BPTTagComponent(application, "supportedFunctionalities", true);
 		functionalityTagComponent.setWidth("100%");
-		layout.addComponent(functionalityTagComponent);
+		addComponent(functionalityTagComponent);
 		
-		layout.addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML));
 		contactNameInput = new TextField();
 		contactNameInput.setValue(application.getName());
 		contactNameInput.setWidth("100%");
-		layout.addComponent(contactNameInput);
+		addComponent(contactNameInput);
 		
-		layout.addComponent(new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML));
 		contactMailInput = new TextField();
 		contactMailInput.setValue(application.getMailAddress());
 		contactMailInput.setWidth("100%");
-		layout.addComponent(contactMailInput);
+		addComponent(contactMailInput);
 		
 		imagePanel = new Panel("Logo");
 		createUploadComponent(imagePanel);
-        layout.addComponent(imagePanel);
+        addComponent(imagePanel);
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
@@ -190,7 +187,7 @@ public class BPTUploader extends CustomComponent implements Upload.StartedListen
         }
 
 		finishUploadButton = new Button("Submit");
-		layout.addComponent(finishUploadButton);
+		addComponent(finishUploadButton);
 		finishUploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
