@@ -185,6 +185,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		entryComponent = new BPTShareableEntryContainer(this, entryId);
 		mainFrame.add(entryComponent);
 		getSidebar().showSpecificEntry(applicationURL + "#" + fragmentForEntry);
+		getMainWindow().executeJavaScript("('html,body').scrollTop(0);");
 	}
 	
 	private void addListenerToUriFragmentUtility() {
