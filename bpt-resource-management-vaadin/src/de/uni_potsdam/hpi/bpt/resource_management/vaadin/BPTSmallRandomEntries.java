@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,8 +50,22 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 		layout.addComponent(cardLayout, "cards");
 		addShowAllButton();
 		addCharts();
+		addReloadButton();
 	}
 
+	
+	private void addReloadButton() {
+		Button reloadButton = new Button("reload");
+		reloadButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+				statusList.add(BPTToolStatus.Published);
+				show(getEntries(statusList));
+			}
+		});
+		layout.addComponent(reloadButton, "sortSelect");
+	}
+	
 	private void addCharts() {
 		Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
 		List<Slice> slices = new ArrayList<Slice>();
