@@ -40,7 +40,9 @@ public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 	@Override
 	protected void show(IndexedContainer tableEntries) {
 		item = tableEntries.getItem(tableEntries.getItemIds().iterator().next());
-		layout.addComponent(new BPTShareableEntry(item, application), "entry");
+		BPTShareableEntry entry = new BPTShareableEntry(item, application);
+		layout.addComponent(entry, "entry");
+		layout.setImmediate(true);
 	}
 	
 	@Override
