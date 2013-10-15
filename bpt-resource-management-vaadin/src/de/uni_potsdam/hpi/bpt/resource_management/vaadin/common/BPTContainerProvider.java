@@ -246,4 +246,13 @@ public class BPTContainerProvider {
 	public static Map<String, Integer> getTagStatisticFor(String string) {
 		return toolRepository.getTagStatisticFor(string);
 	}
+	
+	public static String getTagStatisticsForJavaScriptFor(String string){
+		StringBuilder sb = new StringBuilder();
+		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
+		for(String key : tagStatisticMap.keySet()){
+			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
+		}
+		return sb.toString();
+	}
 }

@@ -42,7 +42,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         									"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawChart);" + 
         									"function drawChart() {var data = new google.visualization.DataTable();" +  
         									"data.addColumn('string', 'Availability'); data.addColumn('number', 'Tools');" + 
-        									"data.addRows([['Mushrooms', 3], ['Onions', 1], ['Olives', 1], ['Zucchini', 10], ['Pepperoni', 2]]);" +
+        									"data.addRows([" + 
+        									BPTContainerProvider.getTagStatisticsForJavaScriptFor("availabilities") +
+        									"]);" +
         									"var options = {'title':'Availability of Tools', 'width':400, 'height':300};" + 
         									"var chart = new google.visualization.PieChart(document.getElementById('chart_div'));chart.draw(data, options);}" +
         									"</script></head><body><div id=\"chart_div\" style=\"width: 900px; height: 500px;\"></div></body></html>").getBytes();
