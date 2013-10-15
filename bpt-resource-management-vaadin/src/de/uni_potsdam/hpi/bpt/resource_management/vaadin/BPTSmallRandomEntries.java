@@ -1,5 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
@@ -28,6 +32,25 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	private HorizontalLayout cardLayout, statistiksLayout;
 	private CustomLayout layout;
 	private Label numberOfEntriesLabel;
+	
+    private static class ChartStreamSource implements StreamSource {
+        
+    	Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
+    	
+        private static final byte[] HTML = ("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
+        									"</script><script type=\"text/javascript\">" + 
+        									"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawChart);" + 
+        									"function drawChart() {var data = new google.visualization.DataTable();" +  
+        									"data.addColumn('string', 'Availability'); data.addColumn('number', 'Tools');" + 
+        									"data.addRows([['Mushrooms', 3], ['Onions', 1], ['Olives', 1], ['Zucchini', 10], ['Pepperoni', 2]]);" +
+        									"var options = {'title':'Availability of Tools', 'width':400, 'height':300};" + 
+        									"var chart = new google.visualization.PieChart(document.getElementById('chart_div'));chart.draw(data, options);}" +
+        									"</script></head><body><div id=\"chart_div\" style=\"width: 900px; height: 500px;\"></div></body></html>").getBytes();
+
+        public InputStream getStream() {
+            return new ByteArrayInputStream(HTML);
+        }
+    }
 	
 	public BPTSmallRandomEntries(BPTApplication application) {
 		super(application);
@@ -67,23 +90,31 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	}
 	
 	private void addCharts() {
-		Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
-		List<Slice> slices = new ArrayList<Slice>();
-		Slice slice;
-		for(String key : tagStatistics.keySet()){
-			slice = Slice.newSlice(tagStatistics.get(key), key);
-			slices.add(slice);
-		}
-		
-		PieChart chart = GCharts.newPieChart(slices);
-		chart.setSize(500, 200);
-		String url = chart.toURLString();
-		layout.addComponent(new Label("piechartURL: " + url), "piechart");
+//		Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
+//		List<Slice> slices = new ArrayList<Slice>();
+//		Slice slice;
+//		for(String key : tagStatistics.keySet()){
+//			slice = Slice.newSlice(tagStatistics.get(key), key);
+//			slices.add(slice);
+//		}
+//		
+//		PieChart chart = GCharts.newPieChart(slices);
+//		chart.setSize(500, 200);
+//		String url = chart.toURLString();
+//		layout.addComponent(new Label("piechartURL: " + url), "piechart");
 //		application.getMainWindow().executeJavaScript(loadGoogleChartsString());
 //		application.getMainWindow().executeJavaScript(buildPieChartString(tagStatistics));
 		//get statistics from couch
 		//send them to google api
 		
+		 Embedded chart = new Embedded();
+		 chart.setWidth("1000px");
+		 chart.setHeight("600px");
+		 chart.setType(Embedded.TYPE_BROWSER);
+		 StreamResource res = new StreamResource(new ChartStreamSource(), "", this.application);
+		 res.setMIMEType("text/html; charset=utf-8");
+		 chart.setSource(res);
+		 layout.addComponent(chart, "piechart");
 	}
 
 //	private String buildPieChartString(Map<String, Integer> tagStatistics) {
@@ -139,5 +170,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
 		return BPTContainerProvider.getInstance().getRandomEntries(3);
 	}
+	
+	
 
 }
