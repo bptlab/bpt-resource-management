@@ -239,4 +239,6 @@ div.chart{
 	float: left;
 }
 
-
+iframe{
+	overflow: hidden;
+}

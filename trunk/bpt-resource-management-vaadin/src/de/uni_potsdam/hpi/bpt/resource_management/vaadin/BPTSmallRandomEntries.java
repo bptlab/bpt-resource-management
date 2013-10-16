@@ -40,16 +40,16 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         		"model_data.addRows([" + 
         		BPTContainerProvider.getTagStatisticsForJavaScriptFor("model_types") +
         		"]);" +
-        		"var options = {'title':'Model types', 'width':300, 'height':300};" + 
+        		"var options = {'legend':'bottom', 'title':'Model types', 'chartArea.width':240};" + 
         		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
-        		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 300px; height: 300px;\"></div></body></html>").getBytes();
+        		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
             return new ByteArrayInputStream(HTML);
         }
     }
     
-    private static class ChartStreamSource2 implements StreamSource {
+    private static class BarChartStreamSource implements StreamSource {
         
         private static final byte[] HTML = 
         		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
@@ -60,9 +60,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 				"model_data.addRows([" + 
 				BPTContainerProvider.getTagStatisticsForJavaScriptFor("availabilities") +
 				"]);" +
-				"var options = {'title':'Availabilities of tools', 'width':300, 'height':300};" + 
+				"var options = {'title':'Availabilities of tools', 'width':240, 'height':300, 'legend':'none'};" + 
 				"var chart = new google.visualization.BarChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
-				"</script></head><body><div id=\"pie_chart_div\" style=\"width: 300px; height: 300px;\"></div></body></html>").getBytes();
+				"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
         		return new ByteArrayInputStream(HTML);
@@ -82,8 +82,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         		BPTContainerProvider.getTagStatisticsForJavaScriptFor("supported_functionalities") + 
         		"]);" + 
         		"var vis = new gviz_word_cumulus.WordCumulus(document.getElementById('mydiv'));" + 
-        		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:300, height:300});}" + 
-        		"</script></head><body><div id=\"mydiv\"></div></body></html>").getBytes();
+        		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:240, height:300});}" + 
+        		"</script></head><body><div id=\"mydiv\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
         		return new ByteArrayInputStream(HTML);
@@ -142,7 +142,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 		 barChart.setWidth("240px");
 		 barChart.setHeight("300px");
 		 barChart.setType(Embedded.TYPE_BROWSER);
-		 StreamResource barChartRessource = new StreamResource(new ChartStreamSource2(), "", this.application);
+		 StreamResource barChartRessource = new StreamResource(new BarChartStreamSource(), "", this.application);
 		 barChartRessource.setMIMEType("text/html; charset=utf-8");
 		 barChart.setSource(barChartRessource);
 		 layout.addComponent(barChart, "barchart");
