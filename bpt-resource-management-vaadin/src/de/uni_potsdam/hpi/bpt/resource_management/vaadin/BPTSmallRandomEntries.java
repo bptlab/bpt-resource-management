@@ -23,10 +23,6 @@ import com.vaadin.ui.themes.BaseTheme;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-import com.googlecode.charts4j.GCharts;
-import com.googlecode.charts4j.PieChart;
-import com.googlecode.charts4j.Slice;
-
 public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 
 	private HorizontalLayout cardLayout, statistiksLayout;
@@ -35,22 +31,62 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	
     private static class ChartStreamSource implements StreamSource {
         
-    	Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
-    	
-        private static final byte[] HTML = ("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
-        									"</script><script type=\"text/javascript\">" + 
-        									"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawChart);" + 
-        									"function drawChart() {var data = new google.visualization.DataTable();" +  
-        									"data.addColumn('string', 'Availability'); data.addColumn('number', 'Tools');" + 
-        									"data.addRows([" + 
-        									BPTContainerProvider.getTagStatisticsForJavaScriptFor("availabilities") +
-        									"]);" +
-        									"var options = {'title':'Availability of Tools', 'width':400, 'height':300};" + 
-        									"var chart = new google.visualization.PieChart(document.getElementById('chart_div'));chart.draw(data, options);}" +
-        									"</script></head><body><div id=\"chart_div\" style=\"width: 900px; height: 500px;\"></div></body></html>").getBytes();
+        private static final byte[] HTML = 
+        		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
+        		"</script><script type=\"text/javascript\">" + 
+        		"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
+        		"function drawPieChart() {var model_data = new google.visualization.DataTable();" +  
+        		"model_data.addColumn('string', 'Model types'); model_data.addColumn('number', 'Tools');" + 
+        		"model_data.addRows([" + 
+        		BPTContainerProvider.getTagStatisticsForJavaScriptFor("model_types") +
+        		"]);" +
+        		"var options = {'title':'Model types', 'width':300, 'height':300};" + 
+        		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
+        		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 300px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
             return new ByteArrayInputStream(HTML);
+        }
+    }
+    
+    private static class ChartStreamSource2 implements StreamSource {
+        
+        private static final byte[] HTML = 
+        		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
+				"</script><script type=\"text/javascript\">" + 
+				"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
+				"function drawPieChart() {var model_data = new google.visualization.DataTable();" +  
+				"model_data.addColumn('string', 'Model types'); model_data.addColumn('number', 'Tools');" + 
+				"model_data.addRows([" + 
+				BPTContainerProvider.getTagStatisticsForJavaScriptFor("availabilities") +
+				"]);" +
+				"var options = {'title':'Availabilities of tools', 'width':300, 'height':300};" + 
+				"var chart = new google.visualization.BarChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
+				"</script></head><body><div id=\"pie_chart_div\" style=\"width: 300px; height: 300px;\"></div></body></html>").getBytes();
+
+        public InputStream getStream() {
+        		return new ByteArrayInputStream(HTML);
+        }
+    }
+    
+    private static class ChartStreamSource3 implements StreamSource {
+        
+        private static final byte[] HTML = 
+        		("<html><head><script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>" + 
+        		"<script type=\"text/javascript\" src=\"http://word-cumulus-goog-vis.googlecode.com/svn/trunk/wordcumulus.js\"></script>" + 
+        		"<script type=\"text/javascript\" src=\"http://word-cumulus-goog-vis.googlecode.com/svn/trunk/swfobject.js\"></script>" + 
+        		"<script type=\"text/javascript\">google.load(\"visualization\", \"1\");" + 
+        		"google.setOnLoadCallback(drawVisualization);" + 
+        		"function drawVisualization()" +
+        		" {var data = google.visualization.arrayToDataTable([" + 
+        		BPTContainerProvider.getTagStatisticsForJavaScriptFor("supported_functionalities") + 
+        		"]);" + 
+        		"var vis = new gviz_word_cumulus.WordCumulus(document.getElementById('mydiv'));" + 
+        		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:300, height:300});}" + 
+        		"</script></head><body><div id=\"mydiv\"></div></body></html>").getBytes();
+
+        public InputStream getStream() {
+        		return new ByteArrayInputStream(HTML);
         }
     }
 	
@@ -92,54 +128,34 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	}
 	
 	private void addCharts() {
-//		Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
-//		List<Slice> slices = new ArrayList<Slice>();
-//		Slice slice;
-//		for(String key : tagStatistics.keySet()){
-//			slice = Slice.newSlice(tagStatistics.get(key), key);
-//			slices.add(slice);
-//		}
-//		
-//		PieChart chart = GCharts.newPieChart(slices);
-//		chart.setSize(500, 200);
-//		String url = chart.toURLString();
-//		layout.addComponent(new Label("piechartURL: " + url), "piechart");
-//		application.getMainWindow().executeJavaScript(loadGoogleChartsString());
-//		application.getMainWindow().executeJavaScript(buildPieChartString(tagStatistics));
-		//get statistics from couch
-		//send them to google api
 		
 		 Embedded chart = new Embedded();
-		 chart.setWidth("1000px");
-		 chart.setHeight("600px");
+		 chart.setWidth("240px");
+		 chart.setHeight("300px");
 		 chart.setType(Embedded.TYPE_BROWSER);
 		 StreamResource res = new StreamResource(new ChartStreamSource(), "", this.application);
 		 res.setMIMEType("text/html; charset=utf-8");
 		 chart.setSource(res);
 		 layout.addComponent(chart, "piechart");
+		 
+		 Embedded barChart = new Embedded();
+		 barChart.setWidth("240px");
+		 barChart.setHeight("300px");
+		 barChart.setType(Embedded.TYPE_BROWSER);
+		 StreamResource barChartRessource = new StreamResource(new ChartStreamSource2(), "", this.application);
+		 barChartRessource.setMIMEType("text/html; charset=utf-8");
+		 barChart.setSource(barChartRessource);
+		 layout.addComponent(barChart, "barchart");
+		 
+		 Embedded chart3 = new Embedded();
+		 chart3.setWidth("240px");
+		 chart3.setHeight("300px");
+		 chart3.setType(Embedded.TYPE_BROWSER);
+		 StreamResource res3 = new StreamResource(new ChartStreamSource3(), "", this.application);
+		 res3.setMIMEType("text/html; charset=utf-8");
+		 chart3.setSource(res3);
+		 layout.addComponent(chart3, "tagcloud");
 	}
-
-//	private String buildPieChartString(Map<String, Integer> tagStatistics) {
-//		StringBuilder js = new StringBuilder("var data = new google.visualization.DataTable();" + 
-//				"data.addColumn('string', 'Tag');" + 
-//				"data.addColumn('number', 'Occurences');" + 
-//				"data.addRows([");
-//		for(String key : tagStatistics.keySet()){
-//			js.append("['" + key + "', " + tagStatistics.get(key).toString() + "],");
-//		}
-//		js.append("]);");
-//		js.append("var options = {'title':'Distribution of tags for availability'," + 
-//                       "'width':400," + 
-//                       "'height':300};");
-//		js.append("var chart = new google.visualization.PieChart(document.getElementById('piechart'));"+ 
-//                       "chart.draw(data, options);");
-//		return js.toString();
-//	}
-
-//	private String loadGoogleChartsString() {
-//		return "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>" + 
-//				"google.load('visualization', '1.0', {'packages':['corechart']});";
-//	}
 
 	private void addShowAllButton() {
 		Button showAllButton = new Button("Show all entries");
@@ -172,7 +188,4 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
 		return BPTContainerProvider.getInstance().getRandomEntries(3);
 	}
-	
-	
-
 }

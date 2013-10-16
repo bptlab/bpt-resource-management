@@ -235,5 +235,8 @@ body{
 	vertical-align: top;
 }
 
+div.chart{
+	float: left;
+}
 
 
