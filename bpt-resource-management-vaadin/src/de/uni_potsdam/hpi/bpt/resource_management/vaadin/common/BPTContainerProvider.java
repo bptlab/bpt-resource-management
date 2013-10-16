@@ -249,9 +249,29 @@ public class BPTContainerProvider {
 	
 	public static String getTagStatisticsForJavaScriptFor(String string){
 		StringBuilder sb = new StringBuilder();
+		int minimumNumer = 1;
 		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
+		if(tagStatisticMap.size() > 7){
+			for(int i = 0; i < 10; i++){
+				int z = 0;
+				for(Integer value : tagStatisticMap.values()){
+					if(value > i){
+						z++;
+					}
+					if(z > 7){
+						break;
+					}
+				}
+				if(z <= 7){
+					minimumNumer = i;
+					break;
+				}
+			}
+		}
 		for(String key : tagStatisticMap.keySet()){
-			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
+			if(tagStatisticMap.get(key) > minimumNumer){
+				sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
+			}
 		}
 		return sb.toString();
 	}
