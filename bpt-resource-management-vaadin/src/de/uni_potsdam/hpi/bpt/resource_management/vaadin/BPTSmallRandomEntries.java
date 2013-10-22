@@ -25,7 +25,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 
 public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 
-	private HorizontalLayout cardLayout, statistiksLayout;
+	private HorizontalLayout cardLayout, statisticsLayout;
 	private CustomLayout layout;
 	private Label numberOfEntriesLabel;
 	
@@ -135,11 +135,11 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	protected void buildLayout() {
 		layout = new CustomLayout("cards");
 		addComponent(layout);
-		statistiksLayout = new HorizontalLayout();
-		layout.addComponent(statistiksLayout, "statisticsRow");
+		statisticsLayout = new HorizontalLayout();
+		layout.addComponent(statisticsLayout, "statisticsRow");
 		numberOfEntriesLabel = new Label();
 		numberOfEntriesLabel.setImmediate(true);
-		statistiksLayout.addComponent(numberOfEntriesLabel);
+		statisticsLayout.addComponent(numberOfEntriesLabel);
 //		Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
 //		for(String string : tagStatistics.keySet()){
 //			statistiksLayout.addComponent(new Label(string + ": " + tagStatistics.get(string)));
@@ -198,7 +198,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 		Button showAllButton = new Button("Show all entries");
 		showAllButton.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					application.showAll();
+					application.showAllAndRefreshSidebar();
 				}
 		});
 		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -208,7 +208,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
-		numberOfEntriesLabel.setCaption(numberOfEntries + " Entries");
+		numberOfEntriesLabel.setCaption(numberOfEntries + " entries in our database");
 	}
 
 	@Override

@@ -152,17 +152,24 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void renderEntries() {
-//		XXX: hier aufpassen sonst gibts den cast fehler
-		refreshAndClean();
+		if (entryComponent instanceof BPTEntryCards) {
+			refreshAndClean();
+		}
 	}
 	
-	public void showAll(){
+	public void showAllAndRefreshSidebar() {
 		getSidebar().showAll();
-		entryComponent = new BPTEntryCards(this);
-		mainFrame.add(entryComponent);
+		showAll();
 	}
 	
-	public void showStartpage(){
+	public void showAll() {
+		if (entryComponent instanceof BPTSmallRandomEntries) {
+			entryComponent = new BPTEntryCards(this);
+			mainFrame.add(entryComponent);
+		}
+	}
+	
+	public void showStartPage() {
 		entryComponent = new BPTSmallRandomEntries(this);
 		mainFrame.add(entryComponent);
 	}
@@ -375,9 +382,13 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		int limit = skip + 10;
 		BPTTagSearchComponent tagSearchComponent = getSidebar().getSearchComponent().getTagSearchComponent();
 		String query = getSidebar().getSearchComponent().getFullSearchComponent().getQuery();
+		if (!tagSearchComponent.isNoTagSelected() || (query != null && !query.isEmpty())) {
+			showAll();
+		}
 		if (loggedIn) {
 			if (!moderated) {
 				if (getSidebar().getSearchComponent().isOwnEntriesOptionSelected()) {
+					showAll();
 					dataSource = containerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = containerProvider.getNumberOfEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
@@ -388,6 +399,9 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 				}
 			} else {
 				ArrayList<BPTToolStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
+				if (statusList.size() != 1 || !statusList.contains(BPTToolStatus.Published)) {
+					showAll();
+				}
 				dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 			}
