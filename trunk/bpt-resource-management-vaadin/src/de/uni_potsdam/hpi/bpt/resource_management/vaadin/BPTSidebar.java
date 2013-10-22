@@ -102,7 +102,7 @@ public class BPTSidebar extends HorizontalLayout {
 		startButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).showStartpage();
+				((BPTApplication)getApplication()).showStartPage();
 			}
 		});
 		buttonLayout.addComponent(startButton);
@@ -114,7 +114,7 @@ public class BPTSidebar extends HorizontalLayout {
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).showAll();
+				((BPTApplication)getApplication()).showAllAndRefreshSidebar();
 			}
 		});
 		buttonLayout.addComponent(findButton);

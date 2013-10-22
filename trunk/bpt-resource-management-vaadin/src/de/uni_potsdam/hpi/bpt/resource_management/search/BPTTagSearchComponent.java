@@ -35,6 +35,10 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 		layout.addComponent(tagBox);
 	}
 	
+	public boolean isNoTagSelected() {
+		return getAvailabiltyTags().isEmpty() && getModelTypeTags().isEmpty() && getPlatformsTags().isEmpty() && getSupportedFunctionalityTags().isEmpty();
+	}
+	
 	public ArrayList<String> getAvailabiltyTags() {
 		return ((BPTSearchTagBoxes)tagBox).getAvailabilityTagValues();
 	}
