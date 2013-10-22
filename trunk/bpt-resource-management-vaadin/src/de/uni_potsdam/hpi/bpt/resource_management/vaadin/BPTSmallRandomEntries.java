@@ -29,7 +29,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 	private CustomLayout layout;
 	private Label numberOfEntriesLabel;
 	
-    private static class ChartStreamSource implements StreamSource {
+    private static class PieChartStreamSource implements StreamSource {
         
         private static final byte[] HTML = 
         		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
@@ -40,7 +40,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         		"model_data.addRows([" + 
         		BPTContainerProvider.getTagStatisticsForJavaScriptFor("model_types") +
         		"]);" +
-        		"var options = {'legend':'bottom', 'title':'Model types', 'chartArea.width':240};" + 
+        		"var options = {'legend':'none', 'title':'Model types', 'chartArea.width':240, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#222222'], 'reverseCategories': true};" +
+//        		, 'sliceVisibilityThreshold': 1/20, 'pieResidueSliceColor':'#ccc' -- colors:['#00639C','#CC0000', '#FFCC00', '#330099', '', '', '#222222'] , 'slices': {6: {color: '#cccccc'}
         		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
         		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
@@ -69,7 +70,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         }
     }
     
-    private static class ChartStreamSource3 implements StreamSource {
+    private static class FlashCloudStreamSource implements StreamSource {
         
         private static final byte[] HTML = 
         		("<html><head><script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>" + 
@@ -84,6 +85,42 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         		"var vis = new gviz_word_cumulus.WordCumulus(document.getElementById('mydiv'));" + 
         		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:240, height:300});}" + 
         		"</script></head><body><div id=\"mydiv\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
+
+        public InputStream getStream() {
+        		return new ByteArrayInputStream(HTML);
+        }
+    }
+    
+    private static class StaticCloudStreamSource implements StreamSource {
+        
+        private static final byte[] HTML = 
+        		("<html>" +
+        				"<head>" +
+        					"<link rel=\"stylesheet\" type=\"text/css\" href=\"http://visapi-gadgets.googlecode.com/svn/trunk/termcloud/tc.css\"/>"+
+        					"<script type=\"text/javascript\" src=\"http://visapi-gadgets.googlecode.com/svn/trunk/termcloud/tc.js\"></script>" + 
+			        		"<script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>" +
+			        		"<script type=\"text/javascript\">" +
+			        			"google.load(\"visualization\", \"1\");" +
+				        		"google.setOnLoadCallback(draw);" + 
+				        		"function draw() {" +
+					        		"data = new google.visualization.DataTable();" +
+					        		"data.addColumn('string', 'Label');" +
+					        		"data.addColumn('number', 'Value');" + 
+					        		"data.addColumn('string', 'Link');" +
+					        		"data.addRows([" +
+					        		BPTContainerProvider.getTagStatisticsWithLinksForJavaScriptFor("supported_functionalities") + 
+					        		"]);" +
+					        		"var outputDiv = document.getElementById('tcdiv');" +
+					        		"var tc = new TermCloud(outputDiv);" + 
+					        		"tc.draw(data, null);" +
+					        	"}" +
+//        		{text_color: '#1B699F', width:240, height:300}
+        					"</script>" + 
+        			"</head>" + 
+        			"<body>" + 
+        			"<div id=\"tcdiv\" style=\"width: 240px; height: 300px;\"></div>" + 
+        			"</body>" + 
+        		"</html>").getBytes();
 
         public InputStream getStream() {
         		return new ByteArrayInputStream(HTML);
@@ -133,7 +170,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 		 chart.setWidth("240px");
 		 chart.setHeight("300px");
 		 chart.setType(Embedded.TYPE_BROWSER);
-		 StreamResource res = new StreamResource(new ChartStreamSource(), "", this.application);
+		 StreamResource res = new StreamResource(new PieChartStreamSource(), "", this.application);
 		 res.setMIMEType("text/html; charset=utf-8");
 		 chart.setSource(res);
 		 layout.addComponent(chart, "piechart");
@@ -151,7 +188,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
 		 chart3.setWidth("240px");
 		 chart3.setHeight("300px");
 		 chart3.setType(Embedded.TYPE_BROWSER);
-		 StreamResource res3 = new StreamResource(new ChartStreamSource3(), "", this.application);
+		 StreamResource res3 = new StreamResource(new StaticCloudStreamSource(), "", this.application);
 		 res3.setMIMEType("text/html; charset=utf-8");
 		 chart3.setSource(res3);
 		 layout.addComponent(chart3, "tagcloud");
