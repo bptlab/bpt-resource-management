@@ -4,6 +4,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -249,29 +250,78 @@ public class BPTContainerProvider {
 	
 	public static String getTagStatisticsForJavaScriptFor(String string){
 		StringBuilder sb = new StringBuilder();
-		int minimumNumer = 1;
 		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
 		if(tagStatisticMap.size() > 7){
-			for(int i = 0; i < 10; i++){
-				int z = 0;
-				for(Integer value : tagStatisticMap.values()){
-					if(value > i){
-						z++;
-					}
-					if(z > 7){
-						break;
-					}
+			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
+			List<String> otherKeys = new ArrayList<String>();
+			int others = 0;
+			for(String key : tagStatisticMap.keySet()){
+				if(statisticMap.size() < 6){
+					statisticMap.put(key, tagStatisticMap.get(key));
 				}
-				if(z <= 7){
-					minimumNumer = i;
-					break;
+				else{
+					String smallestKey = key;
+					int smallestNumber = tagStatisticMap.get(key);
+					for(String savedKey : statisticMap.keySet()){
+						if(statisticMap.get(savedKey) < smallestNumber){
+							smallestKey = savedKey;
+							smallestNumber = statisticMap.get(savedKey);
+						}
+					}
+					if(statisticMap.keySet().contains(smallestKey)){
+						statisticMap.remove(smallestKey);
+						statisticMap.put(key, tagStatisticMap.get(key));
+					}
+					others = others + smallestNumber;
+					otherKeys.add(smallestKey);
 				}
 			}
+			tagStatisticMap = statisticMap;
+			sb.append("['Others'," + others + "],");
+//			tagStatisticMap.put("Others", others);
 		}
+		
 		for(String key : tagStatisticMap.keySet()){
-			if(tagStatisticMap.get(key) > minimumNumer){
-				sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
+			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
+		}
+		return sb.toString();
+	}
+	
+	public static String getTagStatisticsWithLinksForJavaScriptFor(String string){
+		StringBuilder sb = new StringBuilder();
+		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
+		if(tagStatisticMap.size() > 7){
+			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
+			List<String> otherKeys = new ArrayList<String>();
+			int others = 0;
+			for(String key : tagStatisticMap.keySet()){
+				if(statisticMap.size() < 6){
+					statisticMap.put(key, tagStatisticMap.get(key));
+				}
+				else{
+					String smallestKey = key;
+					int smallestNumber = tagStatisticMap.get(key);
+					for(String savedKey : statisticMap.keySet()){
+						if(statisticMap.get(savedKey) < smallestNumber){
+							smallestKey = savedKey;
+							smallestNumber = statisticMap.get(savedKey);
+						}
+					}
+					if(statisticMap.keySet().contains(smallestKey)){
+						statisticMap.remove(smallestKey);
+						statisticMap.put(key, tagStatisticMap.get(key));
+					}
+					others = others + smallestNumber;
+					otherKeys.add(smallestKey);
+				}
 			}
+			tagStatisticMap = statisticMap;
+			sb.append("['Others', " + others + ", \"javascript:alert('Others')\"],");
+//			tagStatisticMap.put("Others", others);
+		}
+		
+		for(String key : tagStatisticMap.keySet()){
+			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:alert('" + key + "')\"], ");
 		}
 		return sb.toString();
 	}

@@ -152,6 +152,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void renderEntries() {
+//		XXX: hier aufpassen sonst gibts den cast fehler
 		refreshAndClean();
 	}
 	
