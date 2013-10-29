@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
 	<display-name>bpt-resource-management-vaadin</display-name>
 	<context-param>
 		<description>
 		Vaadin production mode</description>
 		<param-name>productionMode</param-name>
-		<param-value>false</param-value>
+		<param-value>true</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>heartbeatInterval</param-name>
+		<param-value>600</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>Bpt_resource_management_vaadin Application</servlet-name>
-<!--		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class> -->
-			<servlet-class>de.uni_potsdam.hpi.bpt.resource_management.vaadin.GoogleChartsApplicationServlet</servlet-class>		
+		<servlet-class>de.uni_potsdam.hpi.bpt.resource_management.vaadin.GoogleChartsApplicationServlet</servlet-class>
 		<init-param>
 			<description>
 			Vaadin application class to start</description>
-			<param-name>application</param-name>
-			<param-value>de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication</param-value>
+			<param-name>UI</param-name>
+			<param-value>de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI</param-value>
+		</init-param>
+		<init-param>
+			<param-name>closeIdleSessions</param-name>
+			<param-value>true</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

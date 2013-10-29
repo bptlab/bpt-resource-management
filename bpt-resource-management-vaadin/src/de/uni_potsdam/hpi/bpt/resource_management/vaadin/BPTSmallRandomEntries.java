@@ -40,8 +40,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         		"model_data.addRows([" + 
         		BPTContainerProvider.getTagStatisticsForJavaScriptFor("model_types") +
         		"]);" +
-        		"var options = {'legend':'none', 'title':'Model types', 'chartArea.width':240, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#AAAAAA'], 'reverseCategories': true};" +
-//        		, 'sliceVisibilityThreshold': 1/20, 'pieResidueSliceColor':'#ccc' -- colors:['#00639C','#CC0000', '#FFCC00', '#330099', '', '', '#cccccc'] , 'slices': {6: {color: '#cccccc'}
+        		"var options = {'legend':'none', 'title':'Model types', 'chartArea.width':240, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#222222'], 'reverseCategories': true};" +
+//        		, 'sliceVisibilityThreshold': 1/20, 'pieResidueSliceColor':'#ccc' -- colors:['#00639C','#CC0000', '#FFCC00', '#330099', '', '', '#222222'] , 'slices': {6: {color: '#cccccc'}
         		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
         		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 

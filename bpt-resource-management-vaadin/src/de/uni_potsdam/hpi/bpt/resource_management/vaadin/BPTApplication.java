@@ -163,7 +163,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void showAll() {
-		if (!(entryComponent instanceof BPTEntryCards)) {
+		if (entryComponent instanceof BPTSmallRandomEntries) {
 			entryComponent = new BPTEntryCards(this);
 			mainFrame.add(entryComponent);
 		}
