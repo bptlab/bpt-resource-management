@@ -22,11 +22,11 @@ public class BPTTagComponent extends CustomComponent {
 	private ArrayList<String> unselectedValues;
 	protected BPTTagBox tagBox;
 	protected VerticalLayout layout;
-	protected BPTApplication application;
+	protected BPTApplicationUI applicationUI;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
 		
-	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		this.application = application;
+	public BPTTagComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
+		this.applicationUI = applicationUI;
 		init(tagColumns, newTagsAllowed);
 	}
 	
@@ -119,7 +119,7 @@ public class BPTTagComponent extends CustomComponent {
 				searchInput.addItem(new Label(uniqueValue));
 			}
 		}
-		application.refreshAndClean();
+		applicationUI.refreshAndClean();
 	}
 	
 	public void addChosenTag(String value) {

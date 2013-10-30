@@ -7,7 +7,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTBoxContainer;
 
 @SuppressWarnings("serial")
@@ -18,12 +18,12 @@ public class BPTSearchComponent extends CustomComponent {
 	private HorizontalLayout boxLayout;
 	private BPTFullSearchComponent fullSearchComponent;
 	private BPTTagSearchComponent tagSearchComponent;
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 
-	public BPTSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		fullSearchComponent = new BPTFullSearchComponent(application);
-		tagSearchComponent = new BPTTagSearchComponent(application, tagColumns, newTagsAllowed);
-		this.application = application;
+	public BPTSearchComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
+		fullSearchComponent = new BPTFullSearchComponent(applicationUI);
+		tagSearchComponent = new BPTTagSearchComponent(applicationUI, tagColumns, newTagsAllowed);
+		this.applicationUI = applicationUI;
 		init();
 	}
 
@@ -56,7 +56,7 @@ public class BPTSearchComponent extends CustomComponent {
 	
 	public void login() {
 		boxLayout.removeAllComponents();
-		box = new BPTBoxContainer(application);
+		box = new BPTBoxContainer(applicationUI);
 		boxLayout.addComponent(box);
 	}
 	

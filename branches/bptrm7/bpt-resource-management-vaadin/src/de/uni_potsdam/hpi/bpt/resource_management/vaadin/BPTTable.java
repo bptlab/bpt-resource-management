@@ -9,8 +9,8 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public class BPTTable extends BPTShowEntryComponent {
 
-	public BPTTable(BPTApplication application) {
-		super(application);
+	public BPTTable(BPTApplicationUI applicationUI) {
+		super(applicationUI);
 	}
 
 	private Table table;

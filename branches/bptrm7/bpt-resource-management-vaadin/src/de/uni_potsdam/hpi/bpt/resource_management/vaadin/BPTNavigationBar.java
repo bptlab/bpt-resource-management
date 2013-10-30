@@ -6,15 +6,15 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
 @SuppressWarnings("serial")
-public class BPTNavigationBar extends HorizontalLayout{
+public class BPTNavigationBar extends HorizontalLayout {
 	
-	public BPTNavigationBar() {
+	public BPTNavigationBar(final BPTApplicationUI applicationUI) {
 		super();
 		
 		Button findButton = new Button("Find");
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).renderEntries();
+				applicationUI.renderEntries();
 			}
 		});
 		addComponent(findButton);
@@ -22,7 +22,7 @@ public class BPTNavigationBar extends HorizontalLayout{
 		Button uploadButton = new Button("Upload");
 		uploadButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).renderUploader();
+				applicationUI.renderUploader();
 			}
 		});
 		addComponent(uploadButton);

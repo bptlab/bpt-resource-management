@@ -23,7 +23,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-public class BPTSmallRandomEntries extends BPTShowEntryComponent{
+public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	private HorizontalLayout cardLayout, statisticsLayout;
 	private CustomLayout layout;
@@ -127,8 +127,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent{
         }
     }
 	
-	public BPTSmallRandomEntries(BPTApplication application) {
-		super(application);
+	public BPTSmallRandomEntries(BPTApplicationUI bptApplicationUI) {
+		super(bptApplicationUI);
 	}
 
 	@Override

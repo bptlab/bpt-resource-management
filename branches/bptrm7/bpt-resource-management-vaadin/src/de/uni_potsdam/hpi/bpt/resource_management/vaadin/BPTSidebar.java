@@ -14,18 +14,18 @@ import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 @SuppressWarnings("serial")
 public class BPTSidebar extends HorizontalLayout {
 	
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
 	private int numberOfEntries;
 	
-	public BPTSidebar(BPTApplication application) {
+	public BPTSidebar(BPTApplicationUI applicationUI) {
 		super();
-		this.application = application;
+		this.applicationUI = applicationUI;
 		setWidth("100%");
 		setHeight("100%");
-		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
-		searchComponent = new BPTSearchComponent(application, "all", false);
+		loginComponent = new BPTLoginComponent(applicationUI, this);
+		searchComponent = new BPTSearchComponent(applicationUI, "all", false);
 		init();		
 	}
 
@@ -51,7 +51,7 @@ public class BPTSidebar extends HorizontalLayout {
 
 	public void logout(){
 		searchComponent.logout();
-		application.close();
+		applicationUI.close();
 	}
 	
 	public void renderUploader() {
@@ -74,9 +74,9 @@ public class BPTSidebar extends HorizontalLayout {
 	
 	public void showAll() {
 		removeAllComponents();
-		searchComponent = new BPTSearchComponent(application, "all", false);
+		searchComponent = new BPTSearchComponent(applicationUI, "all", false);
 		init();
-		if (application.isLoggedIn()) {
+		if (applicationUI.isLoggedIn()) {
 			searchComponent.login();
 		}
 	}
@@ -101,8 +101,8 @@ public class BPTSidebar extends HorizontalLayout {
 		startButton.setStyleName(BaseTheme.BUTTON_LINK);
 		startButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).showStartPage();
+				applicationUI.getUriFragmentUtility().setFragment("");
+				applicationUI.showStartPage();
 			}
 		});
 		buttonLayout.addComponent(startButton);
@@ -113,8 +113,8 @@ public class BPTSidebar extends HorizontalLayout {
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).showAllAndRefreshSidebar();
+				applicationUI.getUriFragmentUtility().setFragment("");
+				applicationUI.showAllAndRefreshSidebar();
 			}
 		});
 		buttonLayout.addComponent(findButton);

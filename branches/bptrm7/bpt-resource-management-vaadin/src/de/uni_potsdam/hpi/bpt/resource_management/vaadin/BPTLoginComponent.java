@@ -25,6 +25,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private VerticalLayout layout;
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
+	private BPTApplicationUI applicationUI;
 	private BPTSidebar sidebar;
 	private static final String[] openIdProviders = new String[] { "Google", "Yahoo" };
 	private String openIdReturnTo;
@@ -32,15 +33,16 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private String openIdProvider = openIdProviders[0];
 	private Button administrationButton;
 	
-	public BPTLoginComponent(boolean isLoggedIn, BPTSidebar sidebar) {
+	public BPTLoginComponent(BPTApplicationUI applicationUI, BPTSidebar sidebar) {
 		
 		setProperties();
 		
+		this.applicationUI = applicationUI;
 		this.sidebar = sidebar;
 		layout = new VerticalLayout();
 		setCompositionRoot(layout);
-		navigationBar = new BPTNavigationBar();
-		if (isLoggedIn) {
+		navigationBar = new BPTNavigationBar(applicationUI);
+		if (applicationUI.isLoggedIn()) {
 			layout.addComponent(navigationBar);
 			addComponentsForLogout();
 		} else {
@@ -89,7 +91,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		
 		administrationButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).renderAdministrator();
+				applicationUI.renderAdministrator();
 			}
 		});
 }
@@ -102,13 +104,12 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
         
         logoutButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				BPTApplication application = (BPTApplication) getApplication();
-				application.setName("");
-				application.setMailAddress("");
-				application.setLoggedIn(false);
-				application.setModerated(false);
-				application.setOpenIdProvider(openIdProviders[0]);
-				application.renderEntries();
+				applicationUI.setName("");
+				applicationUI.setMailAddress("");
+				applicationUI.setLoggedIn(false);
+				applicationUI.setModerated(false);
+				applicationUI.setOpenIdProvider(openIdProviders[0]);
+				applicationUI.renderEntries();
 				layout.removeAllComponents();
 				addComponentsForLogin();
 				sidebar.logout();
@@ -120,7 +121,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 //		System.out.println(name);
 //		navigationBar = new BPTNavigationBar(true);
 		layout.addComponent(navigationBar);
-		welcomeLabel = new Label("Hello " + ((BPTApplication) getApplication()).getName() + "!");
+		welcomeLabel = new Label("Hello " + applicationUI.getName() + "!");
 		layout.addComponent(welcomeLabel);
 		if (moderated) {
 			addAdministrationButton();
@@ -146,7 +147,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
          *  the user can paste the OpenID return URL with parameters
          *  and may login as another user
          */
-        ((BPTApplication) getApplication()).setLoggingIn(true);
+        applicationUI.setLoggingIn(true);
 //        System.out.println("After successfully sign on in browser, enter the URL of address bar in browser:");
 //        String ret = readLine();
 //        HttpServletRequest request = createRequest(ret);
@@ -163,6 +164,6 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 
 	public void valueChange(ValueChangeEvent event) {
 		openIdProvider = event.getProperty().toString();
-		((BPTApplication) getApplication()).setOpenIdProvider(openIdProvider);
+		applicationUI.setOpenIdProvider(openIdProvider);
 	}	
 }

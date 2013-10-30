@@ -27,7 +27,7 @@ import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
@@ -50,13 +50,13 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
 	private String documentId, imageType;
 	private boolean logoDeleted = true;
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private String errorMessage;
 	
-	public BPTUploader(Item item, final BPTApplication application) {
+	public BPTUploader(Item item, final BPTApplicationUI applicationUI) {
 		super();
-		this.application = application;
+		this.applicationUI = applicationUI;
 		documentId = null;
 		
         Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
@@ -114,34 +114,34 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		addComponent(tutorialURLInput);
 		
 		addComponent(new Label("Availability"));
-		availabilitiesTagComponent = new BPTTagComponent(application, "availabilities", true);
+		availabilitiesTagComponent = new BPTTagComponent(applicationUI, "availabilities", true);
 		availabilitiesTagComponent.setWidth("100%");
 		addComponent(availabilitiesTagComponent);
 		
 		addComponent(new Label("Model type"));
-		modelTagComponent = new BPTTagComponent(application, "modelTypes", true);
+		modelTagComponent = new BPTTagComponent(applicationUI, "modelTypes", true);
 		modelTagComponent.setWidth("100%");
 		addComponent(modelTagComponent);
 		
 		addComponent(new Label("Platform"));
-		platformTagComponent = new BPTTagComponent(application, "platforms", true);
+		platformTagComponent = new BPTTagComponent(applicationUI, "platforms", true);
 		platformTagComponent.setWidth("100%");
 		addComponent(platformTagComponent);
 		
 		addComponent(new Label("Supported functionality"));
-		functionalityTagComponent = new BPTTagComponent(application, "supportedFunctionalities", true);
+		functionalityTagComponent = new BPTTagComponent(applicationUI, "supportedFunctionalities", true);
 		functionalityTagComponent.setWidth("100%");
 		addComponent(functionalityTagComponent);
 		
 		addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML));
 		contactNameInput = new TextField();
-		contactNameInput.setValue(application.getName());
+		contactNameInput.setValue(applicationUI.getName());
 		contactNameInput.setWidth("100%");
 		addComponent(contactNameInput);
 		
 		addComponent(new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML));
 		contactMailInput = new TextField();
-		contactMailInput.setValue(application.getMailAddress());
+		contactMailInput.setValue(applicationUI.getMailAddress());
 		contactMailInput.setWidth("100%");
 		addComponent(contactMailInput);
 		
@@ -151,7 +151,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	toolNameInput.setValue((item.getItemProperty("Name").getValue()));
+        	toolNameInput.setValue((item.getItemProperty("Name").getValue().toString()));
         	descriptionInput.setValue((item.getItemProperty("Description").getValue().toString()));
         	descriptionURLInput.setValue(((Link)(item.getItemProperty("Description URL").getValue())).getCaption());
         	providerInput.setValue(item.getItemProperty("Provider").getValue().toString());
@@ -192,27 +192,27 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 			public void buttonClick(ClickEvent event) {
 				
 				if (((String)toolNameInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Tool name' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Tool name' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
 					addWarningWindow(getWindow());
 				} else if (((String)descriptionInput.getValue()).isEmpty() && (((String)descriptionURLInput.getValue()).isEmpty())) {
-					getWindow().showNotification("One of the fields 'Description' and 'Description URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("One of the fields 'Description' and 'Description URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)descriptionURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)descriptionURLInput.getValue())) {
-					getWindow().showNotification("Invalid URL", "in field 'Description URL': " + (String)descriptionURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Description URL': " + (String)descriptionURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (((String)providerInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Provider' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Provider' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)providerURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)providerURLInput.getValue())) {
-					getWindow().showNotification("Invalid URL", "in field 'Provider URL': " + (String)providerURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Provider URL': " + (String)providerURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)documentationURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)documentationURLInput.getValue())) {
-					getWindow().showNotification("Invalid URL", "in field 'Documentation URL': " + (String)documentationURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Documentation URL': " + (String)documentationURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)screencastURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)screencastURLInput.getValue())) {
-					getWindow().showNotification("Invalid URL", "in field 'Screencast URL': " + (String)screencastURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Screencast URL': " + (String)screencastURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)tutorialURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)tutorialURLInput.getValue())) {
-					getWindow().showNotification("Invalid URL", "in field 'Tutorial URL': " + (String)tutorialURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Tutorial URL': " + (String)tutorialURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else if (((String)contactNameInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
-					getWindow().showNotification("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
 				} else {
 					finishUpload();
 				}
@@ -239,7 +239,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 						new ArrayList<String>(functionalityTagComponent.getTagValues()),
 						(String)contactNameInput.getValue(),
 						(String)contactMailInput.getValue(),
-						(String)application.getUser(), 
+						(String)applicationUI.getUser(), 
 						new Date(),
 						new Date(),
 						((String)toolNameInput.getValue()).toLowerCase(),
@@ -263,7 +263,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 							+ "\"own entries\"  at the entry overview."
 							+ "If you have any question, please contact"
 							+ "<a href=\"mailto:bptresourcemanagement@gmail.com?subject=[Tools+for+BPM]+Feedback\"> bptresourcemanagement@gmail.com </a>.");
-//					getWindow().showNotification("New entry submitted: " + (String)toolNameInput.getValue());
+//					Notification.show("New entry submitted: " + (String)toolNameInput.getValue());
 
 				} else {
 					BPTToolStatus oldToolStatus = BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"));
@@ -405,7 +405,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		Embedded image = new Embedded(event.getFilename(), imageResource);
         addImageToPanel(image);
         logoDeleted = false;
-        application.refreshAndClean();
+        applicationUI.refreshAndClean();
 	}
 
 	private void addImageToPanel(Embedded image) {
@@ -432,7 +432,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	}
 	
 	public void uploadFailed(FailedEvent event) {
-		getWindow().showNotification(
+		Notification.show(
                 "Upload failed",
                 errorMessage,
                 Notification.TYPE_ERROR_MESSAGE);

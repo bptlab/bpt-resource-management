@@ -18,16 +18,16 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private BPTPageSelector pageSelector;
 	private VerticalLayout vertical;
 	
-	public BPTEntryCards(final BPTApplication application) {
+	public BPTEntryCards(final BPTApplicationUI applicationUI) {
 		
-		super(application);
+		super(applicationUI);
 	}
 
 	@Override
 	protected void buildLayout() {
 		layout = new CustomLayout("cards");
 		vertical = new VerticalLayout();
-		setBPTPageSelector(new BPTPageSelector(application));
+		setBPTPageSelector(new BPTPageSelector(applicationUI));
 		
 		HorizontalLayout selectLayout = new HorizontalLayout();
 		sortSelect = new NativeSelect();
@@ -39,7 +39,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		sortSelect.setNullSelectionAllowed(false);
 		sortSelect.addListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
-				application.refreshAndClean();
+				applicationUI.refreshAndClean();
 			}
 		});
 		sortSelect.setImmediate(true);
@@ -67,7 +67,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		}
 		for (Object id : entries.getItemIds()) {
 			Item item = entries.getItem(id);
-			BPTEntry entry = new BPTEntry(item, application, this);
+			BPTEntry entry = new BPTEntry(item, applicationUI, this);
 			vertical.addComponent(entry);
 		}
 	}
