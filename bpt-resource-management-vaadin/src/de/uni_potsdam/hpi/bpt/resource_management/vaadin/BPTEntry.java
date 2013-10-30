@@ -10,6 +10,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
@@ -26,16 +27,16 @@ public class BPTEntry extends CustomLayout {
 	private String userId;
 	private Item item;
 	private BPTEntryCards entryCards;
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private BPTUserRepository userRepository = BPTUserRepository.getInstance();
 	
-	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
+	public BPTEntry(Item item, BPTApplicationUI applicationUI, BPTEntryCards entryCards) {
 		super("entry");
 		entry = this;
 		this.item = item;
 		this.entryCards = entryCards;
-		this.application = application;
+		this.applicationUI = applicationUI;
 		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
 		this.setDebugId(entryId);
@@ -143,7 +144,7 @@ public class BPTEntry extends CustomLayout {
 					}
 				}
 			}
-		} else if (id.equals("User ID") && application.isModerated()) {
+		} else if (id.equals("User ID") && applicationUI.isModerated()) {
 			String userId = item.getItemProperty(id).getValue().toString();
 			Label label = new Label("<i><span style=\"margin-left: -1em\">OpenID of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + userId + "</span>");
 			label.setContentMode(Label.CONTENT_XHTML);
@@ -164,7 +165,7 @@ public class BPTEntry extends CustomLayout {
 		Button share = new Button("share");
 		share.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				application.showSpecificEntry(entryId);
+				applicationUI.showSpecificEntry(entryId);
 			}
 		});
 		share.setStyleName(BaseTheme.BUTTON_LINK);
@@ -175,7 +176,9 @@ public class BPTEntry extends CustomLayout {
 		more.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				addOtherButtons();
-				getWindow().executeJavaScript(getJavaScriptStringShow());
+				// TODO: check if JavaScript is correct
+				JavaScript.getCurrent().execute(getJavaScriptStringShow());
+//				getWindow().executeJavaScript(getJavaScriptStringShow());
 				entry.setHeight("");
 			}
 		});
@@ -198,21 +201,23 @@ public class BPTEntry extends CustomLayout {
 	
 	protected void addOtherButtons() {
 		
-		if(application.isLoggedIn() && application.getUser().equals(userId)){
+		if(applicationUI.isLoggedIn() && applicationUI.getUser().equals(userId)){
 			Button edit = new Button("edit");
 			edit.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					application.edit(item);
+					applicationUI.edit(item);
 				}
 			});
 			
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
 			this.addComponent(edit, "button edit");
-			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
+			// TODO: check if JavaScript is correct
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
+//			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
 		
-		if(application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated())){
+		if(applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated())){
 			Button delete = new Button("delete");
 			delete.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -223,13 +228,15 @@ public class BPTEntry extends CustomLayout {
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
-			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
+			// TODO: check if JavaScript is correct
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
+//			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
 //			System.out.println("renderDeleteButton" + entryId);
 		}
 		
 		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Unpublished){
+		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Unpublished){
 			Button publish = new Button("publish");
 			publish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -240,7 +247,7 @@ public class BPTEntry extends CustomLayout {
 			publish.setStyleName(BaseTheme.BUTTON_LINK);
 			publish.addStyleName("bpt");
 			this.addComponent(publish, "button publish");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
+			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
 			
 			Button reject = new Button("reject");
 			reject.addListener(new Button.ClickListener(){
@@ -252,10 +259,10 @@ public class BPTEntry extends CustomLayout {
 			reject.setStyleName(BaseTheme.BUTTON_LINK);
 			reject.addStyleName("bpt");
 			this.addComponent(reject, "button reject");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
+			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
 		}
 		
-		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTToolStatus.Published){
+		if (applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated()) && actualState == BPTToolStatus.Published){
 			Button unpublish = new Button("unpublish");
 			unpublish.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -266,11 +273,11 @@ public class BPTEntry extends CustomLayout {
 			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 			unpublish.addStyleName("bpt");
 			this.addComponent(unpublish, "button unpublish");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
+			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
 		
 		}
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTToolStatus.Rejected){
+		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Rejected){
 			Button propose = new Button("propose");
 			propose.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -281,7 +288,7 @@ public class BPTEntry extends CustomLayout {
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
+			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
 		}
 		
 	}
@@ -340,7 +347,7 @@ public class BPTEntry extends CustomLayout {
 	}
 	
 	public void hideJavaScript(){
-		application.getMainWindow().executeJavaScript(getJavaScriptStringHide());
+		applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringHide());
 	}
 	
 }

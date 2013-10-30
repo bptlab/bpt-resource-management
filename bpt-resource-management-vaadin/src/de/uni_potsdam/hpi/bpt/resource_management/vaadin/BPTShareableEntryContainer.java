@@ -22,8 +22,8 @@ public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 	private Item item;
 	private CustomLayout layout;
 	
-	public BPTShareableEntryContainer(BPTApplication application, String entryId) {
-		super(application, entryId);
+	public BPTShareableEntryContainer(BPTApplicationUI applicationUI, String entryId) {
+		super(applicationUI, entryId);
 	}
 
 	@Override
@@ -34,13 +34,13 @@ public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
-		application.getSidebar().setNumberOfEntries(numberOfEntries);
+		applicationUI.getSidebar().setNumberOfEntries(numberOfEntries);
 	}
 
 	@Override
 	protected void show(IndexedContainer tableEntries) {
 		item = tableEntries.getItem(tableEntries.getItemIds().iterator().next());
-		BPTShareableEntry entry = new BPTShareableEntry(item, application);
+		BPTShareableEntry entry = new BPTShareableEntry(item, applicationUI);
 		layout.addComponent(entry, "entry");
 		layout.setImmediate(true);
 	}
@@ -48,7 +48,7 @@ public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 	@Override
 	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
 		Map<String, Object> tool = toolRepository.get(entryId);
-		return application.getContainerProvider().generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
+		return applicationUI.getContainerProvider().generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
 	}
 	
 }

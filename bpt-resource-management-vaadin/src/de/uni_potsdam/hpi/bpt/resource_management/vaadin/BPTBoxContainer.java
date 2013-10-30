@@ -14,17 +14,19 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 @SuppressWarnings("serial")
 public class BPTBoxContainer extends CustomComponent {
 	
+	private BPTApplicationUI applicationUI;
 	private HorizontalLayout layout;
 	private CheckBox unpublishedCheckBox, publishedCheckBox, rejectedCheckBox;
 	private boolean loggedIn, moderated;
 	private OptionGroup resourceProviderOptionGroup;
 	
-	public BPTBoxContainer(BPTApplication application) {
+	public BPTBoxContainer(BPTApplicationUI applicationUI) {
 		
 		// TODO: this component is currently initialized at start of application and not at login
 		
-		this.loggedIn = application.isLoggedIn();
-		this.moderated = application.isModerated();
+		this.applicationUI = applicationUI;
+		this.loggedIn = applicationUI.isLoggedIn();
+		this.moderated = applicationUI.isModerated();
 		
 		layout = new HorizontalLayout();
 		setCompositionRoot(layout);
@@ -85,7 +87,7 @@ public class BPTBoxContainer extends CustomComponent {
 	}
 	
 	private void refresh() {
-		((BPTApplication) getApplication()).refreshAndClean();
+		applicationUI.refreshAndClean();
 	}
 
 	public ArrayList<BPTToolStatus> getSelectedStates() {

@@ -12,14 +12,14 @@ import com.vaadin.ui.themes.BaseTheme;
 public class BPTPageSelector extends HorizontalLayout {
 	
 	private static final long serialVersionUID = 4698447540118612350L;
-	private BPTApplication application;
+	private BPTApplicationUI application;
 	private Label entryFromTo;
 	private int numberOfEntries;
 	private List<Button> pageButtonList;
 	
-	public BPTPageSelector(BPTApplication application) {
+	public BPTPageSelector(BPTApplicationUI applicationUI) {
 		super();
-		this.application = application;
+		this.application = applicationUI;
 		pageButtonList = new ArrayList<Button>();
 	}
 	
