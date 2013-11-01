@@ -247,7 +247,7 @@ public class BPTEntry extends CustomLayout {
 			publish.setStyleName(BaseTheme.BUTTON_LINK);
 			publish.addStyleName("bpt");
 			this.addComponent(publish, "button publish");
-			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
 			
 			Button reject = new Button("reject");
 			reject.addListener(new Button.ClickListener(){
@@ -259,7 +259,7 @@ public class BPTEntry extends CustomLayout {
 			reject.setStyleName(BaseTheme.BUTTON_LINK);
 			reject.addStyleName("bpt");
 			this.addComponent(reject, "button reject");
-			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("reject"));
 		}
 		
 		if (applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated()) && actualState == BPTToolStatus.Published){
@@ -273,7 +273,7 @@ public class BPTEntry extends CustomLayout {
 			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
 			unpublish.addStyleName("bpt");
 			this.addComponent(unpublish, "button unpublish");
-			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("unpublish"));
 		
 		}
 		
@@ -288,7 +288,7 @@ public class BPTEntry extends CustomLayout {
 			propose.setStyleName(BaseTheme.BUTTON_LINK);
 			propose.addStyleName("bpt");
 			this.addComponent(propose, "button propose");
-			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
 		}
 		
 	}
@@ -347,7 +347,7 @@ public class BPTEntry extends CustomLayout {
 	}
 	
 	public void hideJavaScript(){
-		applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringHide());
+		JavaScript.getCurrent().execute(getJavaScriptStringHide());
 	}
 	
 }

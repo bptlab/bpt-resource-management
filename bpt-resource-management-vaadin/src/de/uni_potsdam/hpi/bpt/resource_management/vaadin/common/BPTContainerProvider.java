@@ -18,6 +18,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 
 /**
  * Provides data for the table and the search component.
@@ -37,10 +38,10 @@ public class BPTContainerProvider {
     private BPTUserRepository userRepository;
 //    private BPTApplication application;
    
-    public BPTContainerProvider(BPTApplication application) {
+    public BPTContainerProvider(BPTApplicationUI bptApplicationUI) {
 //    	this.application = application;
-    	this.toolRepository = application.getToolRepository();
-    	this.userRepository = application.getUserRepository();
+    	this.toolRepository = bptApplicationUI.getToolRepository();
+    	this.userRepository = bptApplicationUI.getUserRepository();
     	BPTContainerProvider.instance = this;
 	}
     
