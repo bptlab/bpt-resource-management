@@ -10,8 +10,8 @@ import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.StreamResource.StreamSource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
@@ -170,7 +170,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		 chart.setWidth("240px");
 		 chart.setHeight("300px");
 		 chart.setType(Embedded.TYPE_BROWSER);
-		 StreamResource res = new StreamResource(new PieChartStreamSource(), "", this.application);
+		 StreamResource res = new StreamResource(new PieChartStreamSource(), "");
 		 res.setMIMEType("text/html; charset=utf-8");
 		 chart.setSource(res);
 		 layout.addComponent(chart, "piechart");
@@ -179,7 +179,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		 barChart.setWidth("240px");
 		 barChart.setHeight("300px");
 		 barChart.setType(Embedded.TYPE_BROWSER);
-		 StreamResource barChartRessource = new StreamResource(new BarChartStreamSource(), "", this.application);
+		 StreamResource barChartRessource = new StreamResource(new BarChartStreamSource(), "");
 		 barChartRessource.setMIMEType("text/html; charset=utf-8");
 		 barChart.setSource(barChartRessource);
 		 layout.addComponent(barChart, "barchart");
@@ -188,7 +188,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		 chart3.setWidth("240px");
 		 chart3.setHeight("300px");
 		 chart3.setType(Embedded.TYPE_BROWSER);
-		 StreamResource res3 = new StreamResource(new StaticCloudStreamSource(), "", this.application);
+		 StreamResource res3 = new StreamResource(new StaticCloudStreamSource(), "");
 		 res3.setMIMEType("text/html; charset=utf-8");
 		 chart3.setSource(res3);
 		 layout.addComponent(chart3, "tagcloud");
@@ -198,7 +198,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		Button showAllButton = new Button("Show all entries");
 		showAllButton.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					application.showAllAndRefreshSidebar();
+					applicationUI.showAllAndRefreshSidebar();
 				}
 		});
 		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -216,7 +216,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		this.cardLayout.removeAllComponents();
 		for (Object id : entries.getItemIds()) {
 			Item item = entries.getItem(id);
-			BPTShortEntry entry = new BPTShortEntry(item, application, this);
+			BPTShortEntry entry = new BPTShortEntry(item, applicationUI, this);
 			cardLayout.addComponent(entry);
 		}
 	}
