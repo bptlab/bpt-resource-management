@@ -14,14 +14,14 @@ import com.vaadin.ui.themes.BaseTheme;
 
 public class BPTShortEntry extends CustomLayout {
 
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 	private String entryId;
 
-	public BPTShortEntry(Item item, BPTApplication application, BPTSmallRandomEntries bptSmallRandomEntries) {
+	public BPTShortEntry(Item item, BPTApplicationUI applicationUI, BPTSmallRandomEntries bptSmallRandomEntries) {
 		super("shortEntry");
 		addEntryInformation(item);
 		addButton();
-		this.application = application;
+		this.applicationUI = applicationUI;
 		entryId = item.getItemProperty("ID").getValue().toString();
 	}
 
@@ -56,7 +56,7 @@ public class BPTShortEntry extends CustomLayout {
 		Button showSingleEntryButton = new Button("Show single entry");
 		showSingleEntryButton.addListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					application.showSpecificEntry(entryId);
+					applicationUI.showSpecificEntry(entryId);
 				}
 		});
 		

@@ -61,24 +61,20 @@ public class BPTApplicationUI extends UI {
 		
 		toolRepository = BPTToolRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
-//		containerProvider = new BPTContainerProvider(this);
+		containerProvider = new BPTContainerProvider(this);
 //		setProperties();
 		
-//		final Layout mainLayout = new VerticalLayout();
-//		mainLayout.setScrollable(true);
-//		setContent(mainLayout);
 		CustomLayout custom = new CustomLayout("bpt_mainlayout");
 		custom.setHeight("100%");
 		VerticalLayout layout = new VerticalLayout();
-		layout.addComponent(new Label("Hello Vaadin!")); // XXX TODO only for testing
 		layout.setWidth("732px");
 	
-//		entryComponent = new BPTSmallRandomEntries(this);
+		entryComponent = new BPTSmallRandomEntries(this);
 //		entryComponent = new BPTEntryCards(this);
-//		mainFrame = new BPTMainFrame(entryComponent);
-//		setSidebar(new BPTSidebar(this));
-//		layout.addComponent(getSidebar());
-//		layout.addComponent(mainFrame);
+		mainFrame = new BPTMainFrame(entryComponent);
+		setSidebar(new BPTSidebar(this));
+		layout.addComponent(getSidebar());
+		layout.addComponent(mainFrame);
 		custom.addComponent(layout, "application");
 		custom.addStyleName("scroll");
 		setContent(custom);

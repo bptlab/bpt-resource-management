@@ -272,43 +272,43 @@ public class BPTShareableEntry extends CustomLayout {
 		confirmationWindow.setWidth("400px");
 		confirmationWindow.setModal(true);
 		if (status.equals("delete")) {
-			confirmationWindow.addComponent(new Label("Deleting this entry - are you sure?"));
+			confirmationWindow.setContent(new Label("Deleting this entry - are you sure?"));
 		} else if (status.equals("publish")) {
-			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
+			confirmationWindow.setContent(new Label("Publishing this entry - are you sure?"));
 		} else if (status.equals("reject")) {
-			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
+			confirmationWindow.setContent(new Label("Rejecting this entry - are you sure?"));
 			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
 			reasonForRejectionTextArea.setRows(5);
 			reasonForRejectionTextArea.setWidth("95%");
 			reasonForRejectionTextArea.setWordwrap(true);
-			confirmationWindow.addComponent(reasonForRejectionTextArea);
+			confirmationWindow.setContent(reasonForRejectionTextArea);
 		} else if (status.equals("unpublish")) { 
-			confirmationWindow.addComponent(new Label("Unpublishing this entry - are you sure?"));
+			confirmationWindow.setContent(new Label("Unpublishing this entry - are you sure?"));
 		} else { // if status.equals("propose")
-			confirmationWindow.addComponent(new Label("Proposing this entry - are you sure?"));
+			confirmationWindow.setContent(new Label("Proposing this entry - are you sure?"));
 		}
 		Button confirmButton = new Button("Confirm");
-		confirmationWindow.addComponent(confirmButton);
+		confirmationWindow.setContent(confirmButton);
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
-					toolRepository.deleteDocument(entryId, ((BPTApplication)getApplication()).isModerated());
+					toolRepository.deleteDocument(entryId, ((BPTApplicationUI)getUI()).isModerated());
 				} else if (status.equals("publish")) {
 					toolRepository.publishDocument(entryId);
 				} else if (status.equals("reject")) {
 					toolRepository.rejectDocument(entryId, (String) reasonForRejectionTextArea.getValue());
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
-					toolRepository.unpublishDocument(entryId, fromPublished, ((BPTApplication)getApplication()).isModerated());
+					toolRepository.unpublishDocument(entryId, fromPublished, ((BPTApplicationUI)getUI()).isModerated());
 				} else { // if status.equals("propose"))
 					boolean fromRejected = false;
 					toolRepository.unpublishDocument(entryId, fromRejected);
 				}
 				BPTContainerProvider.getInstance().refreshFromDatabase();
-				applicationUI.getMainWindow().removeWindow(confirmationWindow);
+				applicationUI.removeWindow(confirmationWindow);
 			}
 		});
-		applicationUI.getMainWindow().addWindow(confirmationWindow);
+		applicationUI.addWindow(confirmationWindow);
 	}
 	
 }
