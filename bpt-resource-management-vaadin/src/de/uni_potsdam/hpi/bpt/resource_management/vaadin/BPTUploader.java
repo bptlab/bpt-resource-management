@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.FileResource;
+import com.vaadin.server.FileResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -21,6 +21,7 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
@@ -53,6 +54,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	private BPTApplicationUI applicationUI;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private String errorMessage;
+	private VerticalLayout imagePanelLayout;
 	
 	public BPTUploader(Item item, final BPTApplicationUI applicationUI) {
 		super();
@@ -146,7 +148,9 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		addComponent(contactMailInput);
 		
 		imagePanel = new Panel("Logo");
-		createUploadComponent(imagePanel);
+		imagePanelLayout = new VerticalLayout();
+		createUploadComponent();
+		imagePanel.setContent(imagePanelLayout);
         addComponent(imagePanel);
         
         if (item != null) {
@@ -194,7 +198,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 				if (((String)toolNameInput.getValue()).isEmpty()) {
 					Notification.show("'Tool name' field is empty", Notification.TYPE_ERROR_MESSAGE);
 				} else if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
-					addWarningWindow(getWindow());
+					addWarningWindow(getUI());
 				} else if (((String)descriptionInput.getValue()).isEmpty() && (((String)descriptionURLInput.getValue()).isEmpty())) {
 					Notification.show("One of the fields 'Description' and 'Description URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
 				} else if (!((String)descriptionURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)descriptionURLInput.getValue())) {
@@ -316,41 +320,45 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 				subWindowLabel.setContentMode(Label.CONTENT_XHTML);
 				final Window subwindow = new Window((String)toolNameInput.getValue());
 				subwindow.setWidth("500px");
-				subwindow.addComponent(subWindowLabel);
+				VerticalLayout subWindowLayout = new VerticalLayout();
+				subWindowLayout.addComponent(subWindowLabel);
 				subwindow.setModal(true);
-		        Button close = new Button("Close", new Button.ClickListener() {
+		        Button closeButton = new Button("Close", new Button.ClickListener() {
 		            // inline click-listener
 		            public void buttonClick(ClickEvent event) {
 		                // close the window by removing it from the parent window
-		                (subwindow.getParent()).removeWindow(subwindow);
+		            	getUI().removeWindow(subwindow);
 		            }
 		        });
-		        subwindow.addComponent(close);
-				getWindow().addWindow(subwindow);
-				((BPTApplication)getApplication()).renderEntries();
+		        subWindowLayout.addComponent(closeButton);
+		        subwindow.setContent(subWindowLayout);
+				getUI().addWindow(subwindow);
+				((BPTApplicationUI)getUI()).renderEntries();
 			}
 
-			private void addWarningWindow(final Window window) {
+			private void addWarningWindow(final UI ui) {
 				final Window warningWindow = new Window("Warning");
 				warningWindow.setWidth("400px");
 				warningWindow.setModal(true);
-				warningWindow.addComponent(new Label("The name you have chosen is already taken - continue?"));
+				VerticalLayout warningWindowLayout = new VerticalLayout();
+				warningWindowLayout.addComponent(new Label("The name you have chosen is already taken - continue?"));
 				Button yesButton = new Button("Yes");
 				Button noButton = new Button("No");
-				warningWindow.addComponent(yesButton);
-				warningWindow.addComponent(noButton);
+				warningWindowLayout.addComponent(yesButton);
+				warningWindowLayout.addComponent(noButton);
+				warningWindow.setContent(warningWindowLayout);
 				noButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
-						window.removeWindow(warningWindow);
+						ui.removeWindow(warningWindow);
 					}
 				});
 				yesButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
-						window.removeWindow(warningWindow);
+						ui.removeWindow(warningWindow);
 						finishUpload();
 					}
 				});
-				window.addWindow(warningWindow);
+				ui.addWindow(warningWindow);
 				
 			}
 		});
@@ -366,7 +374,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		return document;
 	}
 	
-	private void createUploadComponent(Panel parent) {
+	private void createUploadComponent() {
 		upload = new Upload("Upload a logo (*.jpg, *.gif, *.png)", this);
 		upload.setImmediate(false);
 		upload.setWidth("-1px");
@@ -374,7 +382,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		upload.addListener((Upload.StartedListener)this);
 		upload.addListener((Upload.SucceededListener)this);
         upload.addListener((Upload.FailedListener)this);
-		parent.addComponent(upload);
+		imagePanelLayout.addComponent(upload);
 	}
 	
 	@Override
@@ -401,7 +409,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	}
 	
 	public void uploadSucceeded(final SucceededEvent event) {
-		final FileResource imageResource = new FileResource(logo, getApplication());
+		final FileResource imageResource = new FileResource(logo);
 		Embedded image = new Embedded(event.getFilename(), imageResource);
         addImageToPanel(image);
         logoDeleted = false;
@@ -409,16 +417,16 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	}
 
 	private void addImageToPanel(Embedded image) {
-		imagePanel.removeAllComponents();
-        imagePanel.addComponent(image);
+		imagePanelLayout.removeAllComponents();
+        imagePanelLayout.addComponent(image);
         removeImageButton = new Button("Remove image");
-		imagePanel.addComponent(removeImageButton);
+		imagePanelLayout.addComponent(removeImageButton);
 		removeImageButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent clickEvent) {
 				outputStream = null;
-				imagePanel.removeAllComponents();
-				createUploadComponent(imagePanel);
-				imagePanel.addComponent(new Label("No image uploaded yet"));
+				imagePanelLayout.removeAllComponents();
+				createUploadComponent();
+				imagePanelLayout.addComponent(new Label("No image uploaded yet"));
 				if (logo != null) {
 					boolean deletionSuccessful = logo.delete();
 					if (!deletionSuccessful) {

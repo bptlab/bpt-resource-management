@@ -76,6 +76,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	protected void showSelectedEntry(final Item item) {
 		final Window popupWindow = new Window(item.getItemProperty("Name").getValue().toString());
 		popupWindow.setWidth("600px");
+		VerticalLayout popupWindowLayout = new VerticalLayout();
 		
 		_id = item.getItemProperty("ID").getValue().toString();
 		Map<String, Object> tool = toolRepository.readDocument(_id);
@@ -85,16 +86,16 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
-		popupWindow.addComponent(image);
+		popupWindowLayout.addComponent(image);
 		
 		for (Object[] entry : BPTVaadinResources.getPropertyArray(BPTDocumentType.BPT_RESOURCES_TOOLS)) {
 			if ((Boolean)entry[7]) {
-				popupWindow.addComponent(new Label(entry[1] + ":"));
+				popupWindowLayout.addComponent(new Label(entry[1] + ":"));
 				value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
 				if (entry[2] == Component.class) {
-					popupWindow.addComponent((Component)value);
+					popupWindowLayout.addComponent((Component)value);
 				} else {
-					popupWindow.addComponent(new Label(value.toString()));
+					popupWindowLayout.addComponent(new Label(value.toString()));
 				}
 			}
 			
@@ -103,7 +104,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		if ((applicationUI.isLoggedIn() && applicationUI.getUser().equals(tool.get("user_id"))) || applicationUI.isModerated()){
 			
 			HorizontalLayout layout = new HorizontalLayout();
-			popupWindow.addComponent(layout);
+			popupWindowLayout.addComponent(layout);
 			
 			Button deleteButton = new Button("delete");
 			deleteButton.addListener(new Button.ClickListener(){
@@ -117,8 +118,8 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				Button editButton = new Button("edit");
 				editButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
-						getWindow().removeWindow(popupWindow);
-						((BPTApplication)getApplication()).edit(item);
+						getUI().removeWindow(popupWindow);
+						((BPTApplicationUI)getUI()).edit(item);
 					}
 				});
 				layout.addComponent(editButton);
@@ -153,7 +154,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(unpublishButton);	
 			}
-			else if (actualState == BPTToolStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
+			else if (actualState == BPTToolStatus.Rejected && ((BPTApplicationUI)getUI()).isModerated()){
 				Button proposeButton = new Button("propose");
 				proposeButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -164,56 +165,59 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			}
 			
 		}
-		getWindow().addWindow(popupWindow);
+		popupWindow.setContent(popupWindowLayout);
+		getUI().addWindow(popupWindow);
 	}
 	
 	protected void addConfirmationWindow(final Window popupWindow, final String status) {
 		final TextArea reasonForRejectionTextArea = new TextArea();
 		final Window confirmationWindow = new Window("Notification");
+		VerticalLayout confirmationWindowLayout = new VerticalLayout();
 		confirmationWindow.setWidth("400px");
 		confirmationWindow.setModal(true);
 		if (status.equals("delete")) {
-			confirmationWindow.addComponent(new Label("Deleting this entry - are you sure?"));
+			confirmationWindowLayout.addComponent(new Label("Deleting this entry - are you sure?"));
 		} else if (status.equals("publish")) {
-			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
+			confirmationWindowLayout.addComponent(new Label("Publishing this entry - are you sure?"));
 		} else if (status.equals("reject")) {
-			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
+			confirmationWindowLayout.addComponent(new Label("Rejecting this entry - are you sure?"));
 			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
 			reasonForRejectionTextArea.setRows(5);
 			reasonForRejectionTextArea.setWidth("95%");
 			reasonForRejectionTextArea.setWordwrap(true);
-			confirmationWindow.addComponent(reasonForRejectionTextArea);
+			confirmationWindowLayout.addComponent(reasonForRejectionTextArea);
 		} else if (status.equals("unpublish")) { 
-			confirmationWindow.addComponent(new Label("Unpublishing this entry - are you sure?"));
+			confirmationWindowLayout.addComponent(new Label("Unpublishing this entry - are you sure?"));
 		} else { // if status.equals("propose")
-			confirmationWindow.addComponent(new Label("Proposing this entry - are you sure?"));
+			confirmationWindowLayout.addComponent(new Label("Proposing this entry - are you sure?"));
 		}
 		Button confirmButton = new Button("Confirm");
-		confirmationWindow.addComponent(confirmButton);
+		confirmationWindowLayout.addComponent(confirmButton);
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
-					toolRepository.deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
+					toolRepository.deleteDocument(_id, ((BPTApplicationUI)getUI()).isModerated());
 				} else if (status.equals("publish")) {
 					toolRepository.publishDocument(_id);
 				} else if (status.equals("reject")) {
 					toolRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
-					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
+					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplicationUI)getUI()).isModerated());
 				} else { // if status.equals("propose"))
 					boolean fromRejected = false;
 					toolRepository.unpublishDocument(_id, fromRejected);
 				}
 				BPTContainerProvider.getInstance().refreshFromDatabase();
 				applicationUI.refreshAndClean();
-				getWindow().removeWindow(confirmationWindow);
+				getUI().removeWindow(confirmationWindow);
 				if(popupWindow != null){
-					getWindow().removeWindow(popupWindow);
+					getUI().removeWindow(popupWindow);
 				}
 				
 			}
 		});
-		getWindow().addWindow(confirmationWindow);
+		confirmationWindow.setContent(confirmationWindowLayout);
+		getUI().addWindow(confirmationWindow);
 	}
 }
