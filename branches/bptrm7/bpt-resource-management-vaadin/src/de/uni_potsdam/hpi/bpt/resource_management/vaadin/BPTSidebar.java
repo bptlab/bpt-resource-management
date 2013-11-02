@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -101,7 +102,7 @@ public class BPTSidebar extends HorizontalLayout {
 		startButton.setStyleName(BaseTheme.BUTTON_LINK);
 		startButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				applicationUI.getUriFragmentUtility().setFragment("");
+				Page.getCurrent().setUriFragment("");
 				applicationUI.showStartPage();
 			}
 		});
@@ -113,7 +114,7 @@ public class BPTSidebar extends HorizontalLayout {
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
 		findButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				applicationUI.getUriFragmentUtility().setFragment("");
+				Page.getCurrent().setUriFragment("");
 				applicationUI.showAllAndRefreshSidebar();
 			}
 		});
