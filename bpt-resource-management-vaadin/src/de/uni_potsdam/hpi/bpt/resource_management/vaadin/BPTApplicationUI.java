@@ -13,6 +13,9 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.Page;
+import com.vaadin.server.Page.UriFragmentChangedEvent;
+import com.vaadin.server.Page.UriFragmentChangedListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 //import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
@@ -80,7 +83,8 @@ public class BPTApplicationUI extends UI {
 		setContent(custom);
 //		mainWindow.addComponent(uriFu);
 //		custom.addComponent(uriFu, "uriFragmentUtility");
-//		addListenerToUriFragmentUtility();
+		addUriListener();
+		enter(getPage().getUriFragment());
 	}
 	
 	public boolean isLoggedIn() {
@@ -197,7 +201,7 @@ public class BPTApplicationUI extends UI {
 		}
 		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
 		Item item = container.getItem(container.getItemIds().iterator().next());
-		uriFu.setFragment(fragmentForEntry, false);
+		Page.getCurrent().setUriFragment(fragmentForEntry, false);
 //		entry = new BPTShareableEntry(item, this);
 //		mainFrame.add(entry);
 		entryComponent = new BPTShareableEntryContainer(this, entryId);
@@ -206,34 +210,39 @@ public class BPTApplicationUI extends UI {
 		JavaScript.getCurrent().execute("('html,body').scrollTop(0);");
 	}
 	
-	private void addListenerToUriFragmentUtility() {
-		uriFu.addListener(new FragmentChangedListener() {
-            public void fragmentChanged(FragmentChangedEvent source) {
-                String fragment = source.getUriFragmentUtility().getFragment();
-                if (fragment != null) {
-                    if (fragment.startsWith("!")) {
-                    	try {
-                    		fragment = fragment.substring(1);
-	                        int separatorIndex = fragment.indexOf("-");
-	                        String entryId = fragment.substring(0, separatorIndex);
-	                        String formattedNameOfTool = fragment.substring(separatorIndex + 1, fragment.length());
-	                        String nameOfTool = (String) toolRepository.get(entryId).get("name");
-	                		if (formattedNameOfTool.equals(nameOfTool.replaceAll("[^\\w]", "-").toLowerCase())) {
-	                			showSpecificEntry(entryId);
-	                		}
-                    	} catch (IndexOutOfBoundsException e) {
-//                    		e.printStackTrace();
-                    	} catch (NullPointerException e) {
-//                    		e.printStackTrace();
-                    	}
-                        
-
-                    }
-                }
-            }
-        });
+	private void addUriListener() {
+		getPage().addUriFragmentChangedListener(new UriFragmentChangedListener(){
+			public void uriFragmentChanged(
+	                   UriFragmentChangedEvent source) {
+	               enter(source.getUriFragment());
+	            }
+		});
+		
 	}
 	
+	protected void enter(String uriFragment) {
+		if (uriFragment != null) {
+            if (uriFragment.startsWith("!")) {
+            	try {
+            		uriFragment = uriFragment.substring(1);
+                    int separatorIndex = uriFragment.indexOf("-");
+                    String entryId = uriFragment.substring(0, separatorIndex);
+                    String formattedNameOfTool = uriFragment.substring(separatorIndex + 1, uriFragment.length());
+                    String nameOfTool = (String) toolRepository.get(entryId).get("name");
+            		if (formattedNameOfTool.equals(nameOfTool.replaceAll("[^\\w]", "-").toLowerCase())) {
+            			showSpecificEntry(entryId);
+            		}
+            	} catch (IndexOutOfBoundsException e) {
+//            		e.printStackTrace();
+            	} catch (NullPointerException e) {
+//            		e.printStackTrace();
+            	}
+                
+
+            }
+        }
+	}
+
 	public BPTToolRepository getToolRepository() {
 		return toolRepository;
 	}
@@ -244,10 +253,6 @@ public class BPTApplicationUI extends UI {
 	
 	public BPTContainerProvider getContainerProvider() {
 		return containerProvider;
-	}
-
-	public UriFragmentUtility getUriFragmentUtility() {
-		return uriFu;
 	}
 
 	public BPTShowEntryComponent getTable(){
@@ -301,14 +306,14 @@ public class BPTApplicationUI extends UI {
 				System.out.println("----- LOGIN FINISHED -----");
 				getSidebar().login(name, moderated);
 				renderEntries();
-				try {
-					response.sendRedirect(getLogoutURL());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else {
-				System.out.println("----- LOGIN FINISHED -----");
-				return;
+//				try {
+//					response.sendRedirect(getLogoutURL());
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			} else {
+//				System.out.println("----- LOGIN FINISHED -----");
+//				return;
 			}
 		}
 		

@@ -140,7 +140,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 //        System.out.println(association);
         String url = manager.getAuthenticationUrl(endpoint, association);
 //        System.out.println("Copy the authentication URL in browser:\n" + url);
-        ((BPTApplication) getApplication()).getMainWindow().open(new ExternalResource(url), "_self");
+//        getWindow().open(new ExternalResource(url), "_self");
         /*
          *  TODO: this is not a clean solution
          *  if user clicks on login and then goes back to the application
