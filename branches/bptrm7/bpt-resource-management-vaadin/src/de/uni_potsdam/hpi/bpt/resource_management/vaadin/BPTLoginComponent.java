@@ -20,9 +20,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
-public class BPTLoginComponent extends CustomComponent implements Property.ValueChangeListener {
+public class BPTLoginComponent extends VerticalLayout implements Property.ValueChangeListener {
 		
-	private VerticalLayout layout;
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
 	private BPTApplicationUI applicationUI;
@@ -39,11 +38,9 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 		
 		this.applicationUI = applicationUI;
 		this.sidebar = sidebar;
-		layout = new VerticalLayout();
-		setCompositionRoot(layout);
 		navigationBar = new BPTNavigationBar(applicationUI);
 		if (applicationUI.isLoggedIn()) {
-			layout.addComponent(navigationBar);
+			addComponent(navigationBar);
 			addComponentsForLogout();
 		} else {
 			addComponentsForLogin();
@@ -78,16 +75,16 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 			}
 		});
         
-        layout.addComponent(loginButton);
-        layout.addComponent(openIdLayout);
-		layout.setExpandRatio(openIdLayout, 50);
-		layout.setExpandRatio(loginButton, 50);
+        addComponent(loginButton);
+        addComponent(openIdLayout);
+		setExpandRatio(openIdLayout, 50);
+		setExpandRatio(loginButton, 50);
 	}
 	
 	private void addAdministrationButton() {
 		administrationButton = new Button("Administration");
 		administrationButton.setStyleName(BaseTheme.BUTTON_LINK);
-		layout.addComponent(administrationButton);
+		addComponent(administrationButton);
 		
 		administrationButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -100,7 +97,7 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 	private void addComponentsForLogout() {
 		Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
-        layout.addComponent(logoutButton);
+        addComponent(logoutButton);
         
         logoutButton.addListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
@@ -110,19 +107,19 @@ public class BPTLoginComponent extends CustomComponent implements Property.Value
 				applicationUI.setModerated(false);
 				applicationUI.setOpenIdProvider(openIdProviders[0]);
 				applicationUI.renderEntries();
-				layout.removeAllComponents();
+				removeAllComponents();
 				addComponentsForLogin();
 				sidebar.logout();
 			}});
 	}
 	
 	public void login(String name, boolean moderated) {
-		layout.removeAllComponents();
+		removeAllComponents();
 //		System.out.println(name);
 //		navigationBar = new BPTNavigationBar(true);
-		layout.addComponent(navigationBar);
+		addComponent(navigationBar);
 		welcomeLabel = new Label("Hello " + applicationUI.getName() + "!");
-		layout.addComponent(welcomeLabel);
+		addComponent(welcomeLabel);
 		if (moderated) {
 			addAdministrationButton();
 		}

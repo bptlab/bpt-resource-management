@@ -27,25 +27,25 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		availabilitiesLayout = new GridLayout(2,1);
 		availabilitiesLayout.setWidth("100%");
 		availabilitiesLayout.setHeight("100%");
-		baseLayout.addComponent(availabilitiesLayout);
+		addComponent(availabilitiesLayout);
 		
 		modelTypesTags = BPTContainerProvider.getInstance().getUniqueValues("modelTypes");
 		modelTypesLayout = new GridLayout(2,1);
 		modelTypesLayout.setWidth("100%");
 		modelTypesLayout.setHeight("100%");
-		baseLayout.addComponent(modelTypesLayout);
+		addComponent(modelTypesLayout);
 		
 		platformsTags = BPTContainerProvider.getInstance().getUniqueValues("platforms");
 		platformsLayout = new GridLayout(2,1);
 		platformsLayout.setWidth("100%");
 		platformsLayout.setHeight("100%");
-		baseLayout.addComponent(platformsLayout);
+		addComponent(platformsLayout);
 		
 		supportedFunctionalitiesTags = BPTContainerProvider.getInstance().getUniqueValues("supportedFunctionalities");
 		supportedFunctionalitiesLayout = new GridLayout(2,1);
 		supportedFunctionalitiesLayout.setWidth("100%");
 		supportedFunctionalitiesLayout.setHeight("100%");
-		baseLayout.addComponent(supportedFunctionalitiesLayout);
+		addComponent(supportedFunctionalitiesLayout);
 	}
 	
 	@Override
