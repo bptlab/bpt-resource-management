@@ -10,10 +10,9 @@ import com.vaadin.ui.TextField;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 
 @SuppressWarnings("serial")
-public class BPTFullSearchComponent extends CustomComponent {
+public class BPTFullSearchComponent extends HorizontalLayout {
 	
 	private BPTApplicationUI applicationUI;
-	private HorizontalLayout layout;
 	private TextField searchInput;
 	private Button searchButton;
 	private Button resetButton;
@@ -24,14 +23,12 @@ public class BPTFullSearchComponent extends CustomComponent {
 	}
 
 	private void init() {
-		layout = new HorizontalLayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
-		setCompositionRoot(layout);
-		buildMainLayout(layout);
+		setWidth("100%");
+		setHeight("100%");
+		buildMainLayout();
 	}
 
-	private void buildMainLayout(HorizontalLayout layout) {
+	private void buildMainLayout() {
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		
 		searchInput = new TextField();
@@ -56,12 +53,12 @@ public class BPTFullSearchComponent extends CustomComponent {
 			}
 		});
 		
-		layout.addComponent(searchInput);
+		addComponent(searchInput);
 		buttonLayout.addComponent(searchButton);
 		buttonLayout.addComponent(resetButton);
-		layout.addComponent(buttonLayout);
-		layout.setExpandRatio(searchInput, 1);
-		layout.setExpandRatio(buttonLayout, 1);
+		addComponent(buttonLayout);
+		setExpandRatio(searchInput, 1);
+		setExpandRatio(buttonLayout, 1);
 	}
 
 	private void refresh() {

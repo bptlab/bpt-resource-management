@@ -11,9 +11,8 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTBoxContainer;
 
 @SuppressWarnings("serial")
-public class BPTSearchComponent extends CustomComponent {
+public class BPTSearchComponent extends VerticalLayout {
 
-	private VerticalLayout layout;
 	private BPTBoxContainer box;
 	private HorizontalLayout boxLayout;
 	private BPTFullSearchComponent fullSearchComponent;
@@ -28,14 +27,12 @@ public class BPTSearchComponent extends CustomComponent {
 	}
 
 	private void init() {
-		layout = new VerticalLayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
-		setCompositionRoot(layout);
+		setWidth("100%");
+		setHeight("100%");
 		boxLayout = new HorizontalLayout();
-		layout.addComponent(boxLayout);
-		layout.addComponent(fullSearchComponent);
-		layout.addComponent(tagSearchComponent);
+		addComponent(boxLayout);
+		addComponent(fullSearchComponent);
+		addComponent(tagSearchComponent);
 	}
 
 	public BPTFullSearchComponent getFullSearchComponent() {

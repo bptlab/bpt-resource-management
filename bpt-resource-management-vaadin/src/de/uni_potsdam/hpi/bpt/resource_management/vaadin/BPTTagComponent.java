@@ -15,13 +15,12 @@ import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings({ "serial", "unchecked" })
-public class BPTTagComponent extends CustomComponent {
+public class BPTTagComponent extends VerticalLayout {
 	
 	protected BPTSearchInputField searchInput;
 	private ArrayList<String> uniqueValues;
 	private ArrayList<String> unselectedValues;
 	protected BPTTagBox tagBox;
-	protected VerticalLayout layout;
 	protected BPTApplicationUI applicationUI;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
 		
@@ -33,23 +32,21 @@ public class BPTTagComponent extends CustomComponent {
 	private void init(String tagColumns, boolean newTagsAllowed) {
 		// TODO: update unique values on entry addition or deletion
 		uniqueValues = BPTContainerProvider.getInstance().getUniqueValues(tagColumns);
-		layout = new VerticalLayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
-		setCompositionRoot(layout);
+		setWidth("100%");
+		setHeight("100%");
 		addElements(newTagsAllowed);
 	}
 	
 	protected void addElements(boolean newTagsAllowed) {
 		createSearchInputBox(newTagsAllowed);
-		layout.addComponent(searchInput);
+		addComponent(searchInput);
 		addTagBox();
 		addListenerToSearchInputBox();	
 	}
 
 	protected void addTagBox() {
 		tagBox = new BPTTagBox();
-		layout.addComponent(tagBox);
+		addComponent(tagBox);
 	}
 
 	private ComboBox createSearchInputBox(boolean newTagsAllowed){

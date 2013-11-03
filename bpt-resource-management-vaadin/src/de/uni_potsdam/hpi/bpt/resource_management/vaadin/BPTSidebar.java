@@ -24,7 +24,7 @@ public class BPTSidebar extends HorizontalLayout {
 		super();
 		this.applicationUI = applicationUI;
 		setWidth("100%");
-		setHeight("100%");
+//		setHeight("100%");
 		loginComponent = new BPTLoginComponent(applicationUI, this);
 		searchComponent = new BPTSearchComponent(applicationUI, "all", false);
 		init();		

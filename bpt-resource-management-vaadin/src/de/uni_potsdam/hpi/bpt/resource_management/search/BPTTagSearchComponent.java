@@ -32,7 +32,7 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 	@Override
 	protected void addTagBox(){
 		tagBox = new BPTSearchTagBoxes();
-		layout.addComponent(tagBox);
+		addComponent(tagBox);
 	}
 	
 	public boolean isNoTagSelected() {
