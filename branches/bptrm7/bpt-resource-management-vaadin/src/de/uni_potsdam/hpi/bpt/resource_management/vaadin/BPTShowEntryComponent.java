@@ -44,7 +44,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
 		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-//		show(getEntries(statusList));
+		show(getEntries(statusList));
 	}
 	
 	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
