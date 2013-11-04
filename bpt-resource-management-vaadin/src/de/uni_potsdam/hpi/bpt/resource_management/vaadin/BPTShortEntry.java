@@ -1,13 +1,12 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 
@@ -31,7 +30,7 @@ public class BPTShortEntry extends CustomLayout {
 		nameLabel.setContentMode(Label.CONTENT_XHTML);
 		nameLabel.setWidth("200px");
 		addComponent(nameLabel, "Name");
-		Embedded logo = (Embedded) item.getItemProperty("Logo").getValue();
+		Image logo = (Image) item.getItemProperty("Logo").getValue();
 		logo.setWidth("");
 		logo.setHeight("");
 		addComponent(logo, "Logo");

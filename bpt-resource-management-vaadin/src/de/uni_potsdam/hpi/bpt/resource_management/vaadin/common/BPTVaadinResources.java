@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.vaadin.imagefilter.Image;
-
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
@@ -34,10 +34,23 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 @SuppressWarnings({ "serial", "unchecked" })
 public class BPTVaadinResources {
 	
+	private static class ImageStreamSource implements StreamSource {
+		
+		private InputStream stream;
+		
+		private ImageStreamSource(InputStream stream) {
+			this.stream = stream;
+		}
+		
+		public InputStream getStream() {
+			return stream;
+		}
+	}
+	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
-	    	add(new Object[] {"_id", "ID", Integer.class, BPTPropertyValueType.IGNORE, null, false, false, false});
-	    	add(new Object[] {"_attachments", "Logo", Embedded.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
+	    	add(new Object[] {"_id", "ID", String.class, BPTPropertyValueType.IGNORE, null, false, false, false});
+	    	add(new Object[] {"_attachments", "Logo", Image.class, BPTPropertyValueType.IMAGE, "logo", false, true, false});
 	    	add(new Object[] {"name", "Name", String.class, BPTPropertyValueType.IGNORE, null, true, true, false});
 	    	add(new Object[] {"description", "Description", Component.class, BPTPropertyValueType.RICH_TEXT, null, true, false, true});
 	    	add(new Object[] {"description_url", "Description URL", Component.class, BPTPropertyValueType.LINK, null, true, false, true});
@@ -211,25 +224,25 @@ public class BPTVaadinResources {
 	    return richText;
 	}
 	
-	private static Embedded asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
+	private static Image asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
 		
 		if (tool.containsKey("_attachments")) {
 			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
-			Image image = new Image(attachmentInputStream, true);
-			try {
-				attachmentInputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			Image image = new Image(null, new StreamResource(new ImageStreamSource(attachmentInputStream), attachmentName));
+//			try {
+//				attachmentInputStream.close();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			
-			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
+//			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
 
 			// default image size is icon size
 			image.setWidth("15px");
 			image.setHeight("15px");
 		    return image;
 		} else {
-			return new Embedded();
+			return new Image();
 		}
 	}
 	
