@@ -9,7 +9,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -50,10 +50,10 @@ public class BPTEntry extends CustomLayout {
 	private void addToLayout(String id) {
 		if (id.equals("Logo")) {
 			Object value = item.getItemProperty(id).getValue();
-			Embedded image = (Embedded) value;
+			Image image = (Image) value;
 			image.setWidth("");
 			image.setHeight("");
-			this.addComponent(image, id.toString());
+			this.addComponent(image, id);
 			image.addStyleName("bptlogo");
 		} 
 		else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
@@ -67,7 +67,7 @@ public class BPTEntry extends CustomLayout {
 					Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + url + "' target='_blank'>" + url + "</a></span>");
 					label.setContentMode(Label.CONTENT_XHTML);
 					label.setWidth("90%");
-					this.addComponent(label, id.toString());
+					this.addComponent(label, id);
 				}
 			} else {
 				if (id.equals("Provider")) {
@@ -76,11 +76,11 @@ public class BPTEntry extends CustomLayout {
 						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/><span style=\"margin-left: 1em; display: block\">" + (String) value + "</span>");
 						label.setContentMode(Label.CONTENT_XHTML);
 						label.setWidth("90%");
-						this.addComponent(label, id.toString());
+						this.addComponent(label, id);
 					} else {
 						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + providerURL + "' target='_blank'>" + (String) value + "</a></span>");
 						label.setContentMode(Label.CONTENT_XHTML);
-						this.addComponent(label, id.toString());
+						this.addComponent(label, id);
 					}
 				}
 				else {
@@ -140,7 +140,7 @@ public class BPTEntry extends CustomLayout {
 						}
 						label.setContentMode(Label.CONTENT_XHTML);
 						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
-						this.addComponent(label, id.toString());
+						this.addComponent(label, id);
 					}
 				}
 			}

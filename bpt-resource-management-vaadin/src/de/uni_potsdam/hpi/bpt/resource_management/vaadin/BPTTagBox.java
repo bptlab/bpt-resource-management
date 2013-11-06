@@ -83,7 +83,7 @@ public class BPTTagBox extends VerticalLayout{
 		layout.setCursorX(0);
 		layout.setCursorY(0);
 		
-		((BPTTagComponent) getParent().getParent()).addTag(searchTag);
+		((BPTTagComponent) getParent()).addTag(searchTag);
 		refresh();
 	}
 	
@@ -96,7 +96,8 @@ public class BPTTagBox extends VerticalLayout{
 	}
 	
 	protected void refresh() {
-		((BPTTagComponent) getParent().getParent()).refresh();
+//		((BPTTagComponent) getParent().getParent()).refresh();
+		((BPTTagComponent) getParent()).refresh();
 	}
 	
 	public ArrayList<String> getTagValues() {
