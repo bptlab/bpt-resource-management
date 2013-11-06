@@ -28,6 +28,10 @@
 			<param-name>closeIdleSessions</param-name>
 			<param-value>true</param-value>
 		</init-param>
+		<init-param>
+			<param-name>legacyPropertyToString</param-name>
+			<param-value>true</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Bpt_resource_management_vaadin Application</servlet-name>

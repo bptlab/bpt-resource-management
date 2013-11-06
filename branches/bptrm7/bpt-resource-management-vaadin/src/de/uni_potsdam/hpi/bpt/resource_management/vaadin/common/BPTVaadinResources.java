@@ -1,5 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -39,7 +41,17 @@ public class BPTVaadinResources {
 		private InputStream stream;
 		
 		private ImageStreamSource(InputStream stream) {
-			this.stream = stream;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			int n = 0;
+			try {
+				while ((n = stream.read(buf)) >= 0) {
+				    baos.write(buf, 0, n);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.stream = new ByteArrayInputStream(baos.toByteArray());
 		}
 		
 		public InputStream getStream() {
@@ -229,12 +241,11 @@ public class BPTVaadinResources {
 		if (tool.containsKey("_attachments")) {
 			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
 			Image image = new Image(null, new StreamResource(new ImageStreamSource(attachmentInputStream), attachmentName));
-//			try {
-//				attachmentInputStream.close();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-			
+			try {
+				attachmentInputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 //			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
 
 			// default image size is icon size
