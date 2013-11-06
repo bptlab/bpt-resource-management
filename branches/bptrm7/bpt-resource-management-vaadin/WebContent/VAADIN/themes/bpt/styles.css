@@ -1,4 +1,4 @@
-@import "../reindeer/styles.css";
+@import "../reindeer/legacy-styles.css";
 @import "http://bpt.hpi.uni-potsdam.de/pub/TWiki/ConfSkin/style.css";
 
 span.displaynone { 
@@ -241,4 +241,9 @@ div.chart{
 
 iframe{
 	overflow: hidden;
+}
+
+div.v-textfield{
+	background-image: none !important;
+	background: none !important;
 }
