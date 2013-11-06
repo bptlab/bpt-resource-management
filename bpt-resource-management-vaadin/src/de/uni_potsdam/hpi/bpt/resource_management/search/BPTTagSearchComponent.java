@@ -55,4 +55,11 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 		return ((BPTSearchTagBoxes)tagBox).getsupportedFunctionalitiesTypesTagValues();
 	}
 
+	public void selectTag(String valueString) {
+		tagBox.addTag(valueString);
+		unselectedValues.remove(valueString);
+		searchInput.removeAllItems();
+		refresh();
+	}
+
 }

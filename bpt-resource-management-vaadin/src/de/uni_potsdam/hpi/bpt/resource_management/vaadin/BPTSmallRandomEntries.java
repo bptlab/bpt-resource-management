@@ -42,7 +42,23 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"]);" +
         		"var options = {'legend':'none', 'title':'Model types', 'chartArea.width':240, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#222222'], 'reverseCategories': true};" +
 //        		, 'sliceVisibilityThreshold': 1/20, 'pieResidueSliceColor':'#ccc' -- colors:['#00639C','#CC0000', '#FFCC00', '#330099', '', '', '#222222'] , 'slices': {6: {color: '#cccccc'}
-        		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
+        		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);" +
+        		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
+        		"function selectHandler(e) {" +
+        		"var selection = chart.getSelection();" +
+        		"for (var i = 0; i < selection.length; i++) {" +
+        		"var item = selection[i];" +
+        		"if(model_data.getFormattedValue(item.row, 0) == 'Others'){" +
+//            	"alert('test');" +
+        		"de.hpi.showAll(" + ");" +
+    			"}" +
+    			"else{" +
+    			"alert(model_data.getFormattedValue(item.row, 0));" +
+    			"de.hpi.showAll('model_types');" +
+    			"}" +
+            	"}" +
+          		"}" +
+          		"}"+
         		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {

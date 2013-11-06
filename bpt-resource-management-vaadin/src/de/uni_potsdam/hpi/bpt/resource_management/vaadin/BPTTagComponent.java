@@ -19,7 +19,7 @@ public class BPTTagComponent extends VerticalLayout {
 	
 	protected BPTSearchInputField searchInput;
 	private ArrayList<String> uniqueValues;
-	private ArrayList<String> unselectedValues;
+	protected ArrayList<String> unselectedValues;
 	protected BPTTagBox tagBox;
 	protected BPTApplicationUI applicationUI;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
@@ -34,6 +34,7 @@ public class BPTTagComponent extends VerticalLayout {
 		uniqueValues = BPTContainerProvider.getInstance().getUniqueValues(tagColumns);
 		setWidth("100%");
 		setHeight("100%");
+		setSizeFull();
 		addElements(newTagsAllowed);
 	}
 	
@@ -121,5 +122,9 @@ public class BPTTagComponent extends VerticalLayout {
 	
 	public void addChosenTag(String value) {
 		tagBox.addTag(value);
+	}
+	
+	public void setSelection(int selection){
+		searchInput.select(selection);
 	}
 }
