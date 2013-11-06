@@ -9,6 +9,9 @@ import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Item;
@@ -21,8 +24,10 @@ import com.vaadin.ui.Component;
 //import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
+import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 //import com.vaadin.ui.UriFragmentUtility;
 //import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
@@ -62,6 +67,7 @@ public class BPTApplicationUI extends UI {
 	@Override
 	public void init(VaadinRequest request) {
 		
+		addJavaScriptFunctions();
 		toolRepository = BPTToolRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		containerProvider = new BPTContainerProvider(this);
@@ -79,7 +85,7 @@ public class BPTApplicationUI extends UI {
 		layout.addComponent(getSidebar());
 		layout.addComponent(mainFrame);
 		custom.addComponent(layout, "application");
-		custom.addStyleName("scroll");
+//		custom.addStyleName("scroll");
 		setContent(custom);
 //		mainWindow.addComponent(uriFu);
 //		custom.addComponent(uriFu, "uriFragmentUtility");
@@ -87,6 +93,24 @@ public class BPTApplicationUI extends UI {
 		enter(getPage().getUriFragment());
 	}
 	
+	private void addJavaScriptFunctions() {
+		JavaScript.getCurrent().addFunction("de.hpi.showAll", 
+				new JavaScriptFunction() {
+					
+					@Override
+					public void call(final JSONArray arguments) throws JSONException {
+//						Notification.show("Received call");
+						showAllAndRefreshSidebar();
+						String message = arguments.getString(0);
+						selectTag(message);
+					}
+				});
+	}
+
+	protected void selectTag(String message) {
+		getSidebar().getSearchComponent().getTagSearchComponent().selectTag(message);
+	}
+
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}

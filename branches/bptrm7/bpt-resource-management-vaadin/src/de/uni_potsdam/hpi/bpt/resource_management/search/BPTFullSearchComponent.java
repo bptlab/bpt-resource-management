@@ -25,6 +25,7 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 	private void init() {
 		setWidth("100%");
 		setHeight("100%");
+		setSizeFull();
 		buildMainLayout();
 	}
 
@@ -57,8 +58,8 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 		buttonLayout.addComponent(searchButton);
 		buttonLayout.addComponent(resetButton);
 		addComponent(buttonLayout);
-		setExpandRatio(searchInput, 1);
-		setExpandRatio(buttonLayout, 1);
+		setExpandRatio(searchInput, 7);
+		setExpandRatio(buttonLayout, 5);
 	}
 
 	private void refresh() {

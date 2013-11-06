@@ -322,7 +322,8 @@ public class BPTContainerProvider {
 		}
 		
 		for(String key : tagStatisticMap.keySet()){
-			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:alert('" + key + "')\"], ");
+//			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:alert('" + key + "')\"], ");
+			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:de.hpi.showAll('" + key + "')\"], ");
 		}
 		return sb.toString();
 	}
