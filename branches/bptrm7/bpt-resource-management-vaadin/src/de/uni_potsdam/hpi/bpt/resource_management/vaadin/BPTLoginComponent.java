@@ -22,7 +22,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
 public class BPTLoginComponent extends VerticalLayout implements Property.ValueChangeListener {
-		
+	
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
 	private BPTApplicationUI applicationUI;
@@ -138,6 +138,9 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 //        System.out.println(association);
         String url = manager.getAuthenticationUrl(endpoint, association);
 //        System.out.println("Copy the authentication URL in browser:\n" + url);
+        
+        applicationUI.setLoggingIn(true);
+        
         applicationUI.getPage().open(url, "_self", false);
         /*
          *  TODO: this is not a clean solution
