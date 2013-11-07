@@ -1,11 +1,12 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,26 +16,24 @@ import org.json.JSONException;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.DeploymentConfiguration;
+import com.vaadin.server.DeploymentConfiguration.LegacyProperyToStringMode;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
 import com.vaadin.server.Page.UriFragmentChangedListener;
+import com.vaadin.server.RequestHandler;
+import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Component;
-//import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletService;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.JavaScriptFunction;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
-//import com.vaadin.ui.UriFragmentUtility;
-//import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
-//import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
@@ -42,17 +41,43 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListener;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshRequestHandler;
+//import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+//import com.vaadin.ui.UriFragmentUtility;
+//import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
+//import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 
 @SuppressWarnings({ "unchecked", "rawtypes", "serial" })
 @Title("Tools for BPM")
 @Theme("bpt")
 //@Theme("bpmai") change theme name for different platform
-//@PreserveOnRefresh // keeps state like in Vaadin 6
-public class BPTApplicationUI extends UI {
-
+@PreserveOnRefresh // keeps state like in Vaadin 6
+public class BPTApplicationUI extends UI implements PageRefreshListener {
+	
+	@WebServlet(value = "/*", asyncSupported = true)
+    @VaadinServletConfiguration(productionMode = true, ui = BPTApplicationUI.class, closeIdleSessions = true, legacyPropertyToStringMode = LegacyProperyToStringMode.ENABLED)
+    public static class Servlet extends VaadinServlet {
+        @Override
+        protected VaadinServletService createServletService(DeploymentConfiguration deploymentConfiguration) throws ServiceException {
+            VaadinServletService service = new VaadinServletService(this, deploymentConfiguration) {
+                @Override
+                protected List<RequestHandler> createRequestHandlers() throws ServiceException {
+                    List<RequestHandler> handlers = super.createRequestHandlers();
+                    // adds request handler at the beginning of list
+                    // because VaadinService reverses this list
+                    handlers.add(new PageRefreshRequestHandler());
+                    return handlers;
+                }
+            };
+            service.init();
+            return service;
+        }
+    }
+	
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
-	private boolean loggedIn, moderated;
+	private boolean loggedIn, loggingIn, moderated;
 	private String user, name, mailAddress;
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
@@ -83,7 +108,11 @@ public class BPTApplicationUI extends UI {
 	
 		setSidebar(new BPTSidebar(this));
 		layout.addComponent(getSidebar());
-		login(request);
+		
+		Map<String, String[]> map = request.getParameterMap();
+		if (map.containsKey("openid.identity")) {
+			login(map);
+		}
 		entryComponent = new BPTSmallRandomEntries(this);
 //		entryComponent = new BPTEntryCards(this);
 		mainFrame = new BPTMainFrame(entryComponent);
@@ -121,6 +150,14 @@ public class BPTApplicationUI extends UI {
 	
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
+	}
+	
+	public boolean isLoggingIn() {
+		return loggingIn;
+	}
+
+	public void setLoggingIn(boolean loggingIn) {
+		this.loggingIn = loggingIn;
 	}
 
 	public boolean isModerated() {
@@ -169,6 +206,7 @@ public class BPTApplicationUI extends UI {
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
 //		setLogoutURL(applicationURL);
 		setLoggedIn(false);
+		setLoggingIn(false);
 		setModerated(false);
 	}
 
@@ -278,59 +316,57 @@ public class BPTApplicationUI extends UI {
 		return entryComponent;
 	}
 
-	public void login(VaadinRequest request) {
-		Map<String, String[]> map = request.getParameterMap();
-		if (map.containsKey("openid.identity")) {
-			System.out.println("----- LOGIN STARTED -----");
-			System.out.println("The parameter map: ");
-			for (String key: map.keySet()) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("\t" + key + ": ");
-				String[] array = map.get(key);
-				for (int i = 0; i < array.length; i++) {
-					sb.append(array[i]);
-					if (i < array.length - 1) {
-						sb.append(", ");
-					} else {
-						sb.append(";");
-					}
+	public void login(Map <String, String[]> map) {
+		System.out.println("----- LOGIN STARTED -----");
+		System.out.println("The parameter map: ");
+		for (String key: map.keySet()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("\t" + key + ": ");
+			String[] array = map.get(key);
+			for (int i = 0; i < array.length; i++) {
+				sb.append(array[i]);
+				if (i < array.length - 1) {
+					sb.append(", ");
+				} else {
+					sb.append(";");
 				}
-				System.out.println(sb.toString());
 			}
-			// TODO: check nonce for security reasons
+			System.out.println(sb.toString());
+		}
+		// TODO: check nonce for security reasons
 //			checkNonce(request.getParameter("openid.response_nonce"));
-			user = map.get("openid.identity")[0];
-			System.out.println("The OpenID identifier: " + user);
-			if (openIdProvider.equals("Google")) {
-				mailAddress = map.get("openid.ext1.value.email")[0];
-				if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
-					name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
-				} else {
-					name = mailAddress;
-				}
-			} else { // openIdProvider.equals("Yahoo")
-				mailAddress = map.get("openid.ax.value.email")[0];
-				if (map.containsKey("openid.ax.value.fullname")) {
-					name = map.get("openid.ax.value.fullname")[0]; 
-				} else {
-					name = mailAddress;
-				}
+		user = map.get("openid.identity")[0];
+		System.out.println("The OpenID identifier: " + user);
+		if (openIdProvider.equals("Google")) {
+			mailAddress = map.get("openid.ext1.value.email")[0];
+			if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
+				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+			} else {
+				name = mailAddress;
 			}
-			System.out.println("The name: " + name);
-			System.out.println("The mail address: " + mailAddress);
-			moderated = userRepository.isModerator(user, name, mailAddress);
-			loggedIn = true;
-			System.out.println("----- LOGIN FINISHED -----");
-			getSidebar().login(name, moderated);
-//			renderEntries();
-//				try {
-//					response.sendRedirect(getLogoutURL());
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			} else {
-//				System.out.println("----- LOGIN FINISHED -----");
-//				return;
+		} else { // openIdProvider.equals("Yahoo")
+			mailAddress = map.get("openid.ax.value.email")[0];
+			if (map.containsKey("openid.ax.value.fullname")) {
+				name = map.get("openid.ax.value.fullname")[0]; 
+			} else {
+				name = mailAddress;
+			}
+		}
+		System.out.println("The name: " + name);
+		System.out.println("The mail address: " + mailAddress);
+		moderated = userRepository.isModerator(user, name, mailAddress);
+		loggedIn = true;
+		System.out.println("----- LOGIN FINISHED -----");
+		getSidebar().login(name, moderated);
+//		renderEntries();
+//			try {
+//				response.sendRedirect(getLogoutURL());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			System.out.println("----- LOGIN FINISHED -----");
+//			return;
 		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
@@ -345,8 +381,6 @@ public class BPTApplicationUI extends UI {
 //		
 //		System.out.println("-------------------------------END---------------------------------");
 //		System.out.println();
-
-	}
 
 //	private void checkNonce(String nonce) {
 //		// TODO Auto-generated method stub
@@ -451,5 +485,58 @@ public class BPTApplicationUI extends UI {
 
 	private void setSidebar(BPTSidebar sidebar) {
 		this.sidebar = sidebar;
+	}
+
+	@Override
+	public void pageRefreshed(VaadinRequest request) {
+		if (loggingIn) {
+			Map<String, String[]> map = request.getParameterMap();
+//			System.out.println("The parameter map: ");
+//			for (String key: map.keySet()) {
+//				StringBuffer sb = new StringBuffer();
+//				sb.append("\t" + key + ": ");
+//				String[] array = map.get(key);
+//				for (int i = 0; i < array.length; i++) {
+//					sb.append(array[i]);
+//					if (i < array.length - 1) {
+//						sb.append(", ");
+//					} else {
+//						sb.append(";");
+//					}
+//				}
+//				System.out.println(sb.toString());
+//			}
+			if (map.containsKey("openid.identity")) {
+//				System.out.println("----- LOGIN STARTED -----");
+				loggingIn = false;
+				// TODO: check nonce for security reasons
+//				checkNonce(request.getParameter("openid.response_nonce"));
+				setUser(map.get("openid.identity")[0]);
+//				System.out.println("The OpenID identifier: " + (String)getUser());
+				if (openIdProvider.equals("Google")) {
+					mailAddress = map.get("openid.ext1.value.email")[0];
+					if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
+						name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+					} else {
+						name = mailAddress;
+					}
+				} else { // openIdProvider.equals("Yahoo")
+					mailAddress = map.get("openid.ax.value.email")[0];
+					if (map.containsKey("openid.ax.value.fullname")) {
+						name = map.get("openid.ax.value.fullname")[0]; 
+					} else {
+						name = mailAddress;
+					}
+				}
+//				System.out.println("The name: " + name);
+//				System.out.println("The mail address: " + mailAddress);
+				moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
+				loggedIn = true;
+//				System.out.println("----- LOGIN FINISHED -----");
+				getPage().open(applicationURL, "_self");
+				getSidebar().login(name, moderated);
+//				renderEntries();
+			}
+		}
 	}
 }
