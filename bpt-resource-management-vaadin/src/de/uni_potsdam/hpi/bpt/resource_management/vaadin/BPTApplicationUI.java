@@ -55,26 +55,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshReques
 @PreserveOnRefresh // keeps state like in Vaadin 6
 public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
-	@WebServlet(value = "/*", asyncSupported = true)
-    @VaadinServletConfiguration(productionMode = true, ui = BPTApplicationUI.class, closeIdleSessions = true, legacyPropertyToStringMode = LegacyProperyToStringMode.ENABLED)
-    public static class Servlet extends VaadinServlet {
-        @Override
-        protected VaadinServletService createServletService(DeploymentConfiguration deploymentConfiguration) throws ServiceException {
-            VaadinServletService service = new VaadinServletService(this, deploymentConfiguration) {
-                @Override
-                protected List<RequestHandler> createRequestHandlers() throws ServiceException {
-                    List<RequestHandler> handlers = super.createRequestHandlers();
-                    // adds request handler at the beginning of list
-                    // because VaadinService reverses this list
-                    handlers.add(new PageRefreshRequestHandler());
-                    return handlers;
-                }
-            };
-            service.init();
-            return service;
-        }
-    }
-	
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
 	private boolean loggedIn, loggingIn, moderated;
