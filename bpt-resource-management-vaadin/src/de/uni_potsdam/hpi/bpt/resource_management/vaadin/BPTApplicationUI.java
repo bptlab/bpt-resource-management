@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Item;
@@ -46,11 +47,12 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 @Title("Tools for BPM")
 @Theme("bpt")
 //@Theme("bpmai") change theme name for different platform
+//@PreserveOnRefresh // keeps state like in Vaadin 6
 public class BPTApplicationUI extends UI {
-	
+
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
-	private boolean loggedIn, loggingIn, moderated;
+	private boolean loggedIn, moderated;
 	private String user, name, mailAddress;
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
@@ -66,23 +68,25 @@ public class BPTApplicationUI extends UI {
 
 	@Override
 	public void init(VaadinRequest request) {
+
+		setProperties();
 		
 		addJavaScriptFunctions();
 		toolRepository = BPTToolRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		containerProvider = new BPTContainerProvider(this);
-//		setProperties();
 		
 		CustomLayout custom = new CustomLayout("bpt_mainlayout");
 		custom.setHeight("100%");
 		VerticalLayout layout = new VerticalLayout();
 		layout.setWidth("732px");
 	
+		setSidebar(new BPTSidebar(this));
+		layout.addComponent(getSidebar());
+		login(request);
 		entryComponent = new BPTSmallRandomEntries(this);
 //		entryComponent = new BPTEntryCards(this);
 		mainFrame = new BPTMainFrame(entryComponent);
-		setSidebar(new BPTSidebar(this));
-		layout.addComponent(getSidebar());
 		layout.addComponent(mainFrame);
 		custom.addComponent(layout, "application");
 //		custom.addStyleName("scroll");
@@ -117,14 +121,6 @@ public class BPTApplicationUI extends UI {
 	
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
-	}
-	
-	public boolean isLoggingIn() {
-		return loggingIn;
-	}
-
-	public void setLoggingIn(boolean loggingIn) {
-		this.loggingIn = loggingIn;
 	}
 
 	public boolean isModerated() {
@@ -173,7 +169,6 @@ public class BPTApplicationUI extends UI {
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
 //		setLogoutURL(applicationURL);
 		setLoggedIn(false);
-		setLoggingIn(false);
 		setModerated(false);
 	}
 
@@ -283,10 +278,10 @@ public class BPTApplicationUI extends UI {
 		return entryComponent;
 	}
 
-	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
-		if (loggingIn) {
+	public void login(VaadinRequest request) {
+		Map<String, String[]> map = request.getParameterMap();
+		if (map.containsKey("openid.identity")) {
 			System.out.println("----- LOGIN STARTED -----");
-			Map<String, String[]> map = request.getParameterMap();
 			System.out.println("The parameter map: ");
 			for (String key: map.keySet()) {
 				StringBuffer sb = new StringBuffer();
@@ -302,34 +297,32 @@ public class BPTApplicationUI extends UI {
 				}
 				System.out.println(sb.toString());
 			}
-			if (map.containsKey("openid.identity")) {
-				loggingIn = false;
-				// TODO: check nonce for security reasons
-//				checkNonce(request.getParameter("openid.response_nonce"));
-				user = map.get("openid.identity")[0];
-				System.out.println("The OpenID identifier: " + user);
-				if (openIdProvider.equals("Google")) {
-					mailAddress = map.get("openid.ext1.value.email")[0];
-					if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
-						name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
-					} else {
-						name = mailAddress;
-					}
-				} else { // openIdProvider.equals("Yahoo")
-					mailAddress = map.get("openid.ax.value.email")[0];
-					if (map.containsKey("openid.ax.value.fullname")) {
-						name = map.get("openid.ax.value.fullname")[0]; 
-					} else {
-						name = mailAddress;
-					}
+			// TODO: check nonce for security reasons
+//			checkNonce(request.getParameter("openid.response_nonce"));
+			user = map.get("openid.identity")[0];
+			System.out.println("The OpenID identifier: " + user);
+			if (openIdProvider.equals("Google")) {
+				mailAddress = map.get("openid.ext1.value.email")[0];
+				if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
+					name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+				} else {
+					name = mailAddress;
 				}
-				System.out.println("The name: " + name);
-				System.out.println("The mail address: " + mailAddress);
-				moderated = userRepository.isModerator(user, name, mailAddress);
-				loggedIn = true;
-				System.out.println("----- LOGIN FINISHED -----");
-				getSidebar().login(name, moderated);
-				renderEntries();
+			} else { // openIdProvider.equals("Yahoo")
+				mailAddress = map.get("openid.ax.value.email")[0];
+				if (map.containsKey("openid.ax.value.fullname")) {
+					name = map.get("openid.ax.value.fullname")[0]; 
+				} else {
+					name = mailAddress;
+				}
+			}
+			System.out.println("The name: " + name);
+			System.out.println("The mail address: " + mailAddress);
+			moderated = userRepository.isModerator(user, name, mailAddress);
+			loggedIn = true;
+			System.out.println("----- LOGIN FINISHED -----");
+			getSidebar().login(name, moderated);
+//			renderEntries();
 //				try {
 //					response.sendRedirect(getLogoutURL());
 //				} catch (IOException e) {
@@ -338,7 +331,6 @@ public class BPTApplicationUI extends UI {
 //			} else {
 //				System.out.println("----- LOGIN FINISHED -----");
 //				return;
-			}
 		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
