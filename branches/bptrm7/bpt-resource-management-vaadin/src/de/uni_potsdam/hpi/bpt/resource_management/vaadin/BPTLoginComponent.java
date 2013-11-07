@@ -10,6 +10,7 @@ import org.expressme.openid.OpenIdManager;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -137,14 +138,13 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 //        System.out.println(association);
         String url = manager.getAuthenticationUrl(endpoint, association);
 //        System.out.println("Copy the authentication URL in browser:\n" + url);
-//        getWindow().open(new ExternalResource(url), "_self");
+        applicationUI.getPage().open(url, "_self", false);
         /*
          *  TODO: this is not a clean solution
          *  if user clicks on login and then goes back to the application
          *  the user can paste the OpenID return URL with parameters
          *  and may login as another user
          */
-        applicationUI.setLoggingIn(true);
 //        System.out.println("After successfully sign on in browser, enter the URL of address bar in browser:");
 //        String ret = readLine();
 //        HttpServletRequest request = createRequest(ret);
