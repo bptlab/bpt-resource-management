@@ -35,7 +35,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"function drawPieChart() {var model_data = new google.visualization.DataTable();" +  
         		"model_data.addColumn('string', 'Model types'); model_data.addColumn('number', 'Tools');" + 
         		"model_data.addRows([" + 
-        		BPTContainerProvider.getTagStatisticsForJavaScriptFor("model_types") +
+        		BPTContainerProvider.getInstance().getTagStatisticsForJavaScriptFor("model_types") +
         		"]);" +
         		"var options = {'legend':'none', 'title':'Model types', 'chartArea.width':240, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#222222'], 'reverseCategories': true};" +
 //        		, 'sliceVisibilityThreshold': 1/20, 'pieResidueSliceColor':'#ccc' -- colors:['#00639C','#CC0000', '#FFCC00', '#330099', '', '', '#222222'] , 'slices': {6: {color: '#cccccc'}
@@ -72,7 +72,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 				"function drawPieChart() {var model_data = new google.visualization.DataTable();" +  
 				"model_data.addColumn('string', 'Model types'); model_data.addColumn('number', 'Tools');" + 
 				"model_data.addRows([" + 
-				BPTContainerProvider.getTagStatisticsForJavaScriptFor("availabilities") +
+				BPTContainerProvider.getInstance().getTagStatisticsForJavaScriptFor("availabilities") +
 				"]);" +
 				"var options = {'title':'Availabilities of tools', 'width':240, 'height':300, 'legend':'none'};" + 
 				"var chart = new google.visualization.BarChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
@@ -121,7 +121,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 					        		"data.addColumn('number', 'Value');" + 
 					        		"data.addColumn('string', 'Link');" +
 					        		"data.addRows([" +
-					        		BPTContainerProvider.getTagStatisticsWithLinksForJavaScriptFor("supported_functionalities") + 
+					        		BPTContainerProvider.getInstance().getTagStatisticsWithLinksForJavaScriptFor("supported_functionalities") + 
 					        		"]);" +
 					        		"var outputDiv = document.getElementById('tcdiv');" +
 					        		"var tc = new TermCloud(outputDiv);" + 
