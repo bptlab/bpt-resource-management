@@ -10,7 +10,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagBox;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTSearchTag extends CustomComponent{
 	
 	private Label label;

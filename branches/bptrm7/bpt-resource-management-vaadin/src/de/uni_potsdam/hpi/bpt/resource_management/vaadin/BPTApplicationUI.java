@@ -1,12 +1,9 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,39 +13,29 @@ import org.json.JSONException;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.DeploymentConfiguration;
-import com.vaadin.server.DeploymentConfiguration.LegacyProperyToStringMode;
-import com.vaadin.server.Page;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
 import com.vaadin.server.Page.UriFragmentChangedListener;
-import com.vaadin.server.RequestHandler;
-import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinServletService;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListener;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshRequestHandler;
 //import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 //import com.vaadin.ui.UriFragmentUtility;
 //import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
 //import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 
-@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
+@SuppressWarnings({ "unchecked", "serial" })
 @Title("Tools for BPM")
 @Theme("bpt")
 //@Theme("bpmai") change theme name for different platform
@@ -233,8 +220,8 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
 			applicationString = applicationString.substring(0, applicationURL.length() - 1);
 		}
-		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
-		Item item = container.getItem(container.getItemIds().iterator().next());
+//		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
+//		Item item = container.getItem(container.getItemIds().iterator().next());
 		getPage().setUriFragment(fragmentForEntry, false);
 //		entry = new BPTShareableEntry(item, this);
 //		mainFrame.add(entry);

@@ -3,13 +3,12 @@ package de.uni_potsdam.hpi.bpt.resource_management.search;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTFullSearchComponent extends HorizontalLayout {
 	
 	private BPTApplicationUI applicationUI;
@@ -49,7 +48,7 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 		resetButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				searchInput.setValue("");
-				((BPTSearchComponent) getParent().getParent()).getTagSearchComponent().restoreAllTags();
+				((BPTSearchComponent) getParent()).getTagSearchComponent().restoreAllTags();
 				refresh();
 			}
 		});

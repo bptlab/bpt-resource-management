@@ -6,19 +6,15 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.CustomLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "rawtypes", "unchecked"})
 public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 	
-	private String userId;
+//	private String userId;
 	private Item item;
 	private CustomLayout layout;
 	

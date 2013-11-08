@@ -22,7 +22,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
 	protected String _id, entryId;

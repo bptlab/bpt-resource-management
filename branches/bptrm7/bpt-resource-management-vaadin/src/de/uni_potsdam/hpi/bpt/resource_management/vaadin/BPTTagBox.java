@@ -3,14 +3,13 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 
 @SuppressWarnings("serial")
-public class BPTTagBox extends VerticalLayout{
+public class BPTTagBox extends VerticalLayout {
 	
 	private GridLayout layout;
 	protected ArrayList<BPTSearchTag> searchTagList;
@@ -96,8 +95,9 @@ public class BPTTagBox extends VerticalLayout{
 	}
 	
 	protected void refresh() {
-//		((BPTTagComponent) getParent().getParent()).refresh();
-		((BPTTagComponent) getParent()).refresh();
+		if (!(getParent().getParent() instanceof BPTUploader)) {
+			((BPTTagComponent) getParent()).refresh();
+		}
 	}
 	
 	public ArrayList<String> getTagValues() {
