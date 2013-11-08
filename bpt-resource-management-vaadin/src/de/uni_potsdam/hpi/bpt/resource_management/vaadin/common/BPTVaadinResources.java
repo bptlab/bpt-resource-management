@@ -33,7 +33,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
  * @author bu
  * 
  */
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings({ "serial", "unchecked", "deprecation" })
 public class BPTVaadinResources {
 	
 	private static class ImageStreamSource implements StreamSource {

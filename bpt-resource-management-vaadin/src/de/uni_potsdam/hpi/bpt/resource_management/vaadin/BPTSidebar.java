@@ -11,7 +11,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTSidebar extends HorizontalLayout {
 	
 	private BPTApplicationUI applicationUI;

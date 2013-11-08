@@ -9,8 +9,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
-
-
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTShortEntry extends CustomLayout {
 
 	private BPTApplicationUI applicationUI;

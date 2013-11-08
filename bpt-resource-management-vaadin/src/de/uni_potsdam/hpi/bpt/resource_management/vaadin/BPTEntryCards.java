@@ -10,7 +10,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	private CustomLayout layout;

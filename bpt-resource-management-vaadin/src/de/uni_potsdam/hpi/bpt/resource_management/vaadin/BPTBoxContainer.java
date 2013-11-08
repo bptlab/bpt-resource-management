@@ -11,7 +11,7 @@ import com.vaadin.ui.OptionGroup;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTBoxContainer extends CustomComponent {
 	
 	private BPTApplicationUI applicationUI;

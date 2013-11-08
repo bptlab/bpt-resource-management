@@ -17,7 +17,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 
 /**
@@ -40,7 +39,7 @@ public class BPTContainerProvider {
    
     public BPTContainerProvider(BPTApplicationUI bptApplicationUI) {
 //    	this.application = application;
-    	this.toolRepository = bptApplicationUI.getToolRepository();
+//    	this.toolRepository = bptApplicationUI.getToolRepository();
     	this.userRepository = bptApplicationUI.getUserRepository();
     	BPTContainerProvider.instance = this;
 	}

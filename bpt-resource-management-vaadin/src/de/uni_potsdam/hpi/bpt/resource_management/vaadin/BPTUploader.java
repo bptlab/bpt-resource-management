@@ -14,8 +14,7 @@ import com.vaadin.data.Item;
 import com.vaadin.server.FileResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
@@ -37,7 +36,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTUploader extends VerticalLayout implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	private Upload upload;
@@ -182,10 +181,10 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
-        	Embedded image = (Embedded) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
+        	Image image = (Image) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
 			image.setWidth("");
 			image.setHeight("");
-			if (image.getMimeType() != null) { // only if picture exists
+			if (image != null) {
 				addImageToPanel(image);
 			}
         }
@@ -410,13 +409,13 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource imageResource = new FileResource(logo);
-		Embedded image = new Embedded(event.getFilename(), imageResource);
+		Image image = new Image(event.getFilename(), imageResource);
         addImageToPanel(image);
         logoDeleted = false;
         applicationUI.refreshAndClean();
 	}
 
-	private void addImageToPanel(Embedded image) {
+	private void addImageToPanel(Image image) {
 		imagePanelLayout.removeAllComponents();
         imagePanelLayout.addComponent(image);
         removeImageButton = new Button("Remove image");

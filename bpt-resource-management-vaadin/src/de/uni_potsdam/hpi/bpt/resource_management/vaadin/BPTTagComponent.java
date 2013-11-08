@@ -6,7 +6,6 @@ import java.util.Arrays;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -14,7 +13,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchInputField;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings({ "serial", "unchecked", "deprecation" })
 public class BPTTagComponent extends VerticalLayout {
 	
 	protected BPTSearchInputField searchInput;

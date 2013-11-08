@@ -24,7 +24,7 @@ public class BPTAdministrator extends VerticalLayout {
 		addComponent(table);
 		
 		table.setContainerDataSource(BPTContainerProvider.getInstance().getUsers());
-		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPT_RESOURCES_USERS));
+		table.setVisibleColumns((Object[]) BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPT_RESOURCES_USERS));
 	}
 	
 }

@@ -19,7 +19,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTEntry extends CustomLayout {
 	
 	private String entryId;

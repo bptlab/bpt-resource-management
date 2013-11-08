@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import com.vaadin.ui.Button;
@@ -9,9 +10,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTPageSelector extends HorizontalLayout {
 	
-	private static final long serialVersionUID = 4698447540118612350L;
 	private BPTApplicationUI application;
 	private Label entryFromTo;
 	private int numberOfEntries;

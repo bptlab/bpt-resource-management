@@ -3,10 +3,6 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -23,6 +19,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
+@SuppressWarnings({"serial", "deprecation"})
 public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	private HorizontalLayout cardLayout, statisticsLayout;
@@ -86,26 +83,26 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         }
     }
     
-    private static class FlashCloudStreamSource implements StreamSource {
-        
-        private static final byte[] HTML = 
-        		("<html><head><script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>" + 
-        		"<script type=\"text/javascript\" src=\"http://word-cumulus-goog-vis.googlecode.com/svn/trunk/wordcumulus.js\"></script>" + 
-        		"<script type=\"text/javascript\" src=\"http://word-cumulus-goog-vis.googlecode.com/svn/trunk/swfobject.js\"></script>" + 
-        		"<script type=\"text/javascript\">google.load(\"visualization\", \"1\");" + 
-        		"google.setOnLoadCallback(drawVisualization);" + 
-        		"function drawVisualization()" +
-        		" {var data = google.visualization.arrayToDataTable([" + 
-        		BPTContainerProvider.getTagStatisticsForJavaScriptFor("supported_functionalities") + 
-        		"]);" + 
-        		"var vis = new gviz_word_cumulus.WordCumulus(document.getElementById('mydiv'));" + 
-        		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:240, height:300});}" + 
-        		"</script></head><body><div id=\"mydiv\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
-
-        public InputStream getStream() {
-        		return new ByteArrayInputStream(HTML);
-        }
-    }
+//    private static class FlashCloudStreamSource implements StreamSource {
+//        
+//        private static final byte[] HTML = 
+//        		("<html><head><script type=\"text/javascript\" src=\"http://www.google.com/jsapi\"></script>" + 
+//        		"<script type=\"text/javascript\" src=\"http://word-cumulus-goog-vis.googlecode.com/svn/trunk/wordcumulus.js\"></script>" + 
+//        		"<script type=\"text/javascript\" src=\"http://word-cumulus-goog-vis.googlecode.com/svn/trunk/swfobject.js\"></script>" + 
+//        		"<script type=\"text/javascript\">google.load(\"visualization\", \"1\");" + 
+//        		"google.setOnLoadCallback(drawVisualization);" + 
+//        		"function drawVisualization()" +
+//        		" {var data = google.visualization.arrayToDataTable([" + 
+//        		BPTContainerProvider.getTagStatisticsForJavaScriptFor("supported_functionalities") + 
+//        		"]);" + 
+//        		"var vis = new gviz_word_cumulus.WordCumulus(document.getElementById('mydiv'));" + 
+//        		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:240, height:300});}" + 
+//        		"</script></head><body><div id=\"mydiv\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
+//
+//        public InputStream getStream() {
+//        		return new ByteArrayInputStream(HTML);
+//        }
+//    }
     
     private static class StaticCloudStreamSource implements StreamSource {
         
