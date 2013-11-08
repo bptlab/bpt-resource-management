@@ -33,13 +33,13 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 public class BPTContainerProvider {
 	
 	private static BPTContainerProvider instance;
-    private static BPTToolRepository toolRepository;
+    private BPTToolRepository toolRepository;
     private BPTUserRepository userRepository;
 //    private BPTApplication application;
    
     public BPTContainerProvider(BPTApplicationUI bptApplicationUI) {
 //    	this.application = application;
-//    	this.toolRepository = bptApplicationUI.getToolRepository();
+    	this.toolRepository = bptApplicationUI.getToolRepository();
     	this.userRepository = bptApplicationUI.getUserRepository();
     	BPTContainerProvider.instance = this;
 	}
@@ -244,13 +244,13 @@ public class BPTContainerProvider {
 		return generateContainer(toolRepository.getRandomEntries(numberOfEntries), BPTDocumentType.BPT_RESOURCES_TOOLS);
 	}
 
-	public static Map<String, Integer> getTagStatisticFor(String string) {
+	public Map<String, Integer> getTagStatisticFor(String string) {
 		return toolRepository.getTagStatisticFor(string);
 	}
 	
-	public static String getTagStatisticsForJavaScriptFor(String string){
+	public String getTagStatisticsForJavaScriptFor(String string) {
 		StringBuilder sb = new StringBuilder();
-		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
+		Map<String, Integer> tagStatisticMap = getTagStatisticFor(string);
 		if(tagStatisticMap.size() > 7){
 			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
 			List<String> otherKeys = new ArrayList<String>();
@@ -287,9 +287,9 @@ public class BPTContainerProvider {
 		return sb.toString();
 	}
 	
-	public static String getTagStatisticsWithLinksForJavaScriptFor(String string){
+	public String getTagStatisticsWithLinksForJavaScriptFor(String string) {
 		StringBuilder sb = new StringBuilder();
-		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
+		Map<String, Integer> tagStatisticMap = getTagStatisticFor(string);
 		if(tagStatisticMap.size() > 7){
 			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
 			List<String> otherKeys = new ArrayList<String>();
