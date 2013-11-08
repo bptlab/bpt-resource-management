@@ -50,11 +50,13 @@ public class BPTEntry extends CustomLayout {
 	private void addToLayout(String id) {
 		if (id.equals("Logo")) {
 			Object value = item.getItemProperty(id).getValue();
-			Image image = (Image) value;
-			image.setWidth("");
-			image.setHeight("");
-			this.addComponent(image, id);
-			image.addStyleName("bptlogo");
+			if (value != null) {
+				Image image = (Image) value;
+				image.setWidth("");
+				image.setHeight("");
+				this.addComponent(image, id);
+				image.addStyleName("bptlogo");
+			}
 		} 
 		else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
 			Object value = item.getItemProperty(id).getValue();

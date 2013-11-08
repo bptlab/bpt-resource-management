@@ -88,11 +88,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
 		setSidebar(new BPTSidebar(this));
 		layout.addComponent(getSidebar());
-		
-		Map<String, String[]> map = request.getParameterMap();
-		if (map.containsKey("openid.identity")) {
-			login(map);
-		}
+
 		entryComponent = new BPTSmallRandomEntries(this);
 //		entryComponent = new BPTEntryCards(this);
 		mainFrame = new BPTMainFrame(entryComponent);
@@ -214,7 +210,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void showAll() {
-		if (entryComponent instanceof BPTSmallRandomEntries) {
+		if (!(entryComponent instanceof BPTEntryCards)) {
 			entryComponent = new BPTEntryCards(this);
 			mainFrame.add(entryComponent);
 		}
@@ -223,6 +219,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	public void showStartPage() {
 		entryComponent = new BPTSmallRandomEntries(this);
 		mainFrame.add(entryComponent);
+		getSidebar().showAll();
 	}
 	
 	public void showSpecificEntry(String entryId) {
@@ -238,7 +235,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		}
 		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
 		Item item = container.getItem(container.getItemIds().iterator().next());
-		Page.getCurrent().setUriFragment(fragmentForEntry, false);
+		getPage().setUriFragment(fragmentForEntry, false);
 //		entry = new BPTShareableEntry(item, this);
 //		mainFrame.add(entry);
 		entryComponent = new BPTShareableEntryContainer(this, entryId);
@@ -274,9 +271,11 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
             	} catch (NullPointerException e) {
 //            		e.printStackTrace();
             	}
-                
-
             }
+        } else {
+        	if (entryComponent instanceof BPTShareableEntryContainer) {
+        		showStartPage();
+        	}
         }
 	}
 
@@ -292,7 +291,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		return containerProvider;
 	}
 
-	public BPTShowEntryComponent getTable(){
+	public BPTShowEntryComponent getTable() {
 		return entryComponent;
 	}
 

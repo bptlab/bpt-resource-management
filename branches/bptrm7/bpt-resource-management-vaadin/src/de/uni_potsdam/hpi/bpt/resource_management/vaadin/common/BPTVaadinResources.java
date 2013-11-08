@@ -253,7 +253,7 @@ public class BPTVaadinResources {
 			image.setHeight("15px");
 		    return image;
 		} else {
-			return new Image();
+			return null;
 		}
 	}
 	

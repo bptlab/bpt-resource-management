@@ -30,10 +30,14 @@ public class BPTShortEntry extends CustomLayout {
 		nameLabel.setContentMode(Label.CONTENT_XHTML);
 		nameLabel.setWidth("200px");
 		addComponent(nameLabel, "Name");
-		Image logo = (Image) item.getItemProperty("Logo").getValue();
-		logo.setWidth("");
-		logo.setHeight("");
-		addComponent(logo, "Logo");
+		Object value = item.getItemProperty("Logo").getValue();
+		if (value != null) {
+			Image image = (Image) value;
+			image.setWidth("");
+			image.setHeight("");
+			addComponent(image, "Logo");
+			image.addStyleName("bptlogo");
+		}
 		
 		String providerURL = ((Link) item.getItemProperty("Provider URL").getValue()).getCaption();
 		String provider = (item.getItemProperty("Provider").getValue()).toString();
