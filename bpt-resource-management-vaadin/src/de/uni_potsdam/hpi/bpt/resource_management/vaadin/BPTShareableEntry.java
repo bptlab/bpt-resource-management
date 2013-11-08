@@ -9,7 +9,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -50,11 +50,13 @@ public class BPTShareableEntry extends CustomLayout {
 	private void addToLayout(String id) {
 		if (id.equals("Logo")) {
 			Object value = item.getItemProperty(id).getValue();
-			Embedded image = (Embedded) value;
-			image.setWidth("");
-			image.setHeight("");
-			this.addComponent(image, id);
-			image.addStyleName("bptlogo");
+			if (value != null) {
+				Image image = (Image) value;
+				image.setWidth("");
+				image.setHeight("");
+				this.addComponent(image, id);
+				image.addStyleName("bptlogo");
+			}
 		} else if (!id.equals("User ID") && !id.equals("ID") && !id.equals("Description URL") && !id.equals("Provider URL") && !id.equals("Contact mail") && !id.equals("Date created")) {
 			Object value = item.getItemProperty(id).getValue();
 			if(value == null){
