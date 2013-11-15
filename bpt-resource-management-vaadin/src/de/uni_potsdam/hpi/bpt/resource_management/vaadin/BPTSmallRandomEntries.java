@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
@@ -14,6 +15,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
@@ -32,7 +34,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
         		"</script><script type=\"text/javascript\">" + 
         		"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
-        		"function drawPieChart() {var model_data = new google.visualization.DataTable();" +  
+        		"function drawPieChart() {" +
+        		"var model_data = new google.visualization.DataTable();" +  
         		"model_data.addColumn('string', 'Model types'); model_data.addColumn('number', 'Tools');" + 
         		"model_data.addRows([" + 
         		BPTContainerProvider.getInstance().getTagStatisticsForJavaScriptFor("model_types") +
@@ -43,21 +46,25 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
         		"function selectHandler(e) {" +
         		"var selection = chart.getSelection();" +
-        		"for (var i = 0; i < selection.length; i++) {" +
-        		"var item = selection[i];" +
+//        		"for (var i = 0; i < selection.length; i++) {" +
+        		"var item = selection[0];" +
         		"if(model_data.getFormattedValue(item.row, 0) == 'Others'){" +
 //            	"alert('test');" +
-        		"de.hpi.showAll(" + ");" +
+//        		"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
     			"}" +
     			"else{" +
-    			"alert(model_data.getFormattedValue(item.row, 0));" +
-    			"de.hpi.showAll('model_types');" +
-    			"}" +
+//    			"alert(model_data.getFormattedValue(item.row, 0));" +
+//    			"de.hpi.showAll('model_types');" +
+				"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
+//				"document.getElementById('BPMN').click();" +
+//    			"}" +
             	"}" +
           		"}" +
           		"}"+
-        		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
-
+        		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div>" +
+//				" <a id=\"BPMN\" target=\"_top\" href=\"javascript:de.hpi.showAll('verification of model properties')\"> test </a>" +
+          		"</body></html>").getBytes();
+    	
         public InputStream getStream() {
             return new ByteArrayInputStream(HTML);
         }
@@ -75,7 +82,23 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 				BPTContainerProvider.getInstance().getTagStatisticsForJavaScriptFor("availabilities") +
 				"]);" +
 				"var options = {'title':'Availabilities of tools', 'width':240, 'height':300, 'legend':'none'};" + 
-				"var chart = new google.visualization.BarChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);}" +
+				"var chart = new google.visualization.BarChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);" +
+        		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
+        		"function selectHandler() {" +
+        		"var selection = chart.getSelection();" +
+//        		"for (var i = 0; i < selection.length; i++) {" +
+        		"var item = selection[0];" +
+        		"if(model_data.getFormattedValue(item.row, 0) == 'Others'){" +
+        		"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
+    			"}" +
+    			"else{" +
+//    			"alert(model_data.getFormattedValue(item.row, 0));" +
+////    			"de.hpi.showAll('model_types');" +
+				"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
+////				"document.getElementById('BPMN').click();" +
+    			"}" +
+            	"}" +
+          		"}" +
 				"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
