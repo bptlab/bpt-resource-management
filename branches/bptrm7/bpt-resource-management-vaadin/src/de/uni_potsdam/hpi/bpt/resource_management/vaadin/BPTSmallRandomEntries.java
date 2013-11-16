@@ -10,6 +10,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
@@ -40,8 +41,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"model_data.addRows([" + 
         		BPTContainerProvider.getInstance().getTagStatisticsForJavaScriptFor("model_types") +
         		"]);" +
-        		"var options = {'legend':'none', 'title':'Model types', 'chartArea.width':240, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#222222'], 'reverseCategories': true};" +
+        		"var options = {'legend':'none', 'chartArea.width':200, 'pieSliceText': 'label', 'colors':['#00639C','#CC0000', '#FFCC00', '#330099', '#11CC11', '#FFA500', '#222222'], 'reverseCategories': true};" +
 //        		, 'sliceVisibilityThreshold': 1/20, 'pieResidueSliceColor':'#ccc' -- colors:['#00639C','#CC0000', '#FFCC00', '#330099', '', '', '#222222'] , 'slices': {6: {color: '#cccccc'}
+//				" 'title':'Model types',"
         		"var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);" +
         		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
         		"function selectHandler(e) {" +
@@ -61,7 +63,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
             	"}" +
           		"}" +
           		"}"+
-        		"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div>" +
+        		"</script></head><body style=\" overflow:hidden; \">" +
+        		"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Model types </div>" +
+          		"<div id=\"pie_chart_div\" style=\"width: 240px; height: 300px; overflow:hidden;\"></div>" +
 //				" <a id=\"BPMN\" target=\"_top\" href=\"javascript:de.hpi.showAll('verification of model properties')\"> test </a>" +
           		"</body></html>").getBytes();
     	
@@ -81,7 +85,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 				"model_data.addRows([" + 
 				BPTContainerProvider.getInstance().getTagStatisticsForJavaScriptFor("availabilities") +
 				"]);" +
-				"var options = {'title':'Availabilities of tools', 'width':240, 'height':300, 'legend':'none'};" + 
+				"var options = {'width':240, 'height':300, 'legend':'none'};" +
+//				"'title':'Availabilities of tools', "
 				"var chart = new google.visualization.BarChart(document.getElementById('pie_chart_div'));chart.draw(model_data, options);" +
         		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
         		"function selectHandler() {" +
@@ -99,7 +104,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
     			"}" +
             	"}" +
           		"}" +
-				"</script></head><body><div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
+				"</script></head><body style=\" overflow:hidden; \">" +
+				"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Availabilities of tools </div>" +
+          		"<div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
         		return new ByteArrayInputStream(HTML);
@@ -120,7 +127,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 //        		"]);" + 
 //        		"var vis = new gviz_word_cumulus.WordCumulus(document.getElementById('mydiv'));" + 
 //        		"vis.draw(data, {text_color: '#1B699F', speed: 50, width:240, height:300});}" + 
-//        		"</script></head><body><div id=\"mydiv\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
+//        		"</script></head><body style=\" overflow:hidden; \"><div id=\"mydiv\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 //
 //        public InputStream getStream() {
 //        		return new ByteArrayInputStream(HTML);
@@ -146,15 +153,17 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 					        		"data.addRows([" +
 					        		BPTContainerProvider.getInstance().getTagStatisticsWithLinksForJavaScriptFor("supported_functionalities") + 
 					        		"]);" +
+					        		"var options = {'height': 300};" +
 					        		"var outputDiv = document.getElementById('tcdiv');" +
 					        		"var tc = new TermCloud(outputDiv);" + 
-					        		"tc.draw(data, null);" +
+					        		"tc.draw(data, options);" +
 					        	"}" +
 //        		{text_color: '#1B699F', width:240, height:300}
         					"</script>" + 
         			"</head>" + 
-        			"<body>" + 
-        			"<div id=\"tcdiv\" style=\"width: 240px; height: 300px;\"></div>" + 
+        			"<body style=\" overflow:hidden; \">" +
+        			"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Supported functionalities </div>" +
+        			"<div id=\"tcdiv\" style=\"width: 240px; height: 300px; margin-top: 80px; \"></div>" + 
         			"</body>" + 
         		"</html>").getBytes();
 
@@ -182,9 +191,10 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 //		}
 		cardLayout = new HorizontalLayout();
 		layout.addComponent(cardLayout, "cards");
-		addShowAllButton();
 		addCharts();
 		addReloadButton();
+		addShowAllButton();
+		addComponent(new ComboBox());
 	}
 
 	
