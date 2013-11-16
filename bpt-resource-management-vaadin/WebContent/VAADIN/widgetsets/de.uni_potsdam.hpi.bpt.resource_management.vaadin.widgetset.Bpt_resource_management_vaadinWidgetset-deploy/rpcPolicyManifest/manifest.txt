@@ -1,2 +1,0 @@
-# Module de.uni_potsdam.hpi.bpt.resource_management.vaadin.widgetset.Bpt_resource_management_vaadinWidgetset
-# RPC service class, partial path of RPC policy file
