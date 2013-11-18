@@ -4,13 +4,14 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	private CustomLayout layout;
@@ -37,15 +38,15 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		sortSelect.addItem("Date created");
 		sortSelect.setValue("Name");
 		sortSelect.setNullSelectionAllowed(false);
-		sortSelect.addListener(new Property.ValueChangeListener() {
+		sortSelect.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				applicationUI.refreshAndClean();
 			}
 		});
 		sortSelect.setImmediate(true);
-		selectLayout.addComponent(new Label("Sort entries by&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		selectLayout.addComponent(new Label("Sort entries by&nbsp;&nbsp;", ContentMode.HTML));
 		selectLayout.addComponent(sortSelect);
-		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		
 		addComponent(layout);
 		layout.addComponent(getBPTPageSelector(), "pageSelection");

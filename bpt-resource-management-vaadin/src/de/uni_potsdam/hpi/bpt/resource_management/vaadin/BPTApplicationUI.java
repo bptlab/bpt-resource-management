@@ -81,7 +81,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		mainFrame = new BPTMainFrame(entryComponent);
 		layout.addComponent(mainFrame);
 		custom.addComponent(layout, "application");
-//		custom.addStyleName("scroll");
 		setContent(custom);
 //		mainWindow.addComponent(uriFu);
 //		custom.addComponent(uriFu, "uriFragmentUtility");

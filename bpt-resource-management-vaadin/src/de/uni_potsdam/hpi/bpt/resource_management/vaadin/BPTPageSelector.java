@@ -1,16 +1,16 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTPageSelector extends HorizontalLayout {
 	
 	private BPTApplicationUI application;
@@ -27,7 +27,7 @@ public class BPTPageSelector extends HorizontalLayout {
 	public void showNumberOfEntries(int numberOfEntries) {
 		removeAllComponents();
 		pageButtonList.clear();
-		entryFromTo = new Label("", Label.CONTENT_XHTML);
+		entryFromTo = new Label("", ContentMode.HTML);
 		if (numberOfEntries == 0) {
 			entryFromTo.setValue("&nbsp;&nbsp;&nbsp;&nbsp;<b>No entry matches your search parameters</b>");
 			addComponent(entryFromTo);
@@ -43,7 +43,7 @@ public class BPTPageSelector extends HorizontalLayout {
 			entryFromTo.setValue("&nbsp;&nbsp;&nbsp;&nbsp;Entries <b>1 to " + lastentry + "</b> from " + numberOfEntries);
 			entryFromTo.setWidth("175px");
 			entryFromTo.setImmediate(true);
-			entryFromTo.requestRepaint();
+//			entryFromTo.requestRepaint();
 			addComponent(entryFromTo);
 			for (int i = 0; (i* 10) < numberOfEntries; i++) {
 				final int x = i * 10;
@@ -51,7 +51,7 @@ public class BPTPageSelector extends HorizontalLayout {
 				pageButton.setStyleName(BaseTheme.BUTTON_LINK);
 				pageButton.setWidth("12px");
 				pageButtonList.add(pageButton);
-				pageButton.addListener(new Button.ClickListener(){
+				pageButton.addClickListener(new Button.ClickListener(){
 
 					private static final long serialVersionUID = -2746131404133732663L;
 
@@ -84,6 +84,6 @@ public class BPTPageSelector extends HorizontalLayout {
 		} else {
 			entryFromTo.setValue("&nbsp;&nbsp;&nbsp;&nbsp;Entries <b>" + firstEntry + " to " + lastEntry + "</b> from " + numberOfEntries);
 		}
-		entryFromTo.requestRepaint();
+//		entryFromTo.requestRepaint();
 	}
 }

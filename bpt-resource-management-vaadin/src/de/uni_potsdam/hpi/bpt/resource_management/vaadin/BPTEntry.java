@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 
 import com.vaadin.data.Item;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
@@ -19,7 +20,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTEntry extends CustomLayout {
 	
 	private String entryId;
@@ -39,7 +40,7 @@ public class BPTEntry extends CustomLayout {
 		this.applicationUI = applicationUI;
 		entryId = item.getItemProperty("ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
-		this.setDebugId(entryId);
+		this.setId(entryId);
 		
 		addButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
@@ -67,7 +68,7 @@ public class BPTEntry extends CustomLayout {
 				String url = ((Link) value).getCaption();
 				if (!url.isEmpty()) {
 					Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + url + "' target='_blank'>" + url + "</a></span>");
-					label.setContentMode(Label.CONTENT_XHTML);
+					label.setContentMode(ContentMode.HTML);
 					label.setWidth("90%");
 					this.addComponent(label, id);
 				}
@@ -76,12 +77,12 @@ public class BPTEntry extends CustomLayout {
 					String providerURL = ((Link) item.getItemProperty("Provider URL").getValue()).getCaption();
 					if (providerURL.isEmpty()) {
 						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/><span style=\"margin-left: 1em; display: block\">" + (String) value + "</span>");
-						label.setContentMode(Label.CONTENT_XHTML);
+						label.setContentMode(ContentMode.HTML);
 						label.setWidth("90%");
 						this.addComponent(label, id);
 					} else {
 						Label label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i><br/>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + providerURL + "' target='_blank'>" + (String) value + "</a></span>");
-						label.setContentMode(Label.CONTENT_XHTML);
+						label.setContentMode(ContentMode.HTML);
 						this.addComponent(label, id);
 					}
 				}
@@ -117,7 +118,7 @@ public class BPTEntry extends CustomLayout {
 							shortDescription = labelContent;
 						}
 						shortDescriptionLabel = new Label("<span style=\"display: block\">" + shortDescription + "</span><br/>");
-						shortDescriptionLabel.setContentMode(Label.CONTENT_XHTML);
+						shortDescriptionLabel.setContentMode(ContentMode.HTML);
 						shortDescriptionLabel.setWidth("90%");
 						this.addComponent(shortDescriptionLabel, "ShortDescription");
 
@@ -140,7 +141,7 @@ public class BPTEntry extends CustomLayout {
 						} else {
 							label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
 						}
-						label.setContentMode(Label.CONTENT_XHTML);
+						label.setContentMode(ContentMode.HTML);
 						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
 						this.addComponent(label, id);
 					}
@@ -149,7 +150,7 @@ public class BPTEntry extends CustomLayout {
 		} else if (id.equals("User ID") && applicationUI.isModerated()) {
 			String userId = item.getItemProperty(id).getValue().toString();
 			Label label = new Label("<i><span style=\"margin-left: -1em\">OpenID of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + userId + "</span>");
-			label.setContentMode(Label.CONTENT_XHTML);
+			label.setContentMode(ContentMode.HTML);
 			label.setWidth("90%");
 			this.addComponent(label, "OpenID of resource provider");
 			Map<String, Object> document = userRepository.readDocument(userId);
@@ -157,7 +158,7 @@ public class BPTEntry extends CustomLayout {
 			String mailAddress = (String) document.get("mail_address");
 			mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
 			label = new Label("<i><span style=\"margin-left: -1em\">Contact of resource provider</span></i><span style=\"margin-left: 1em; display: block\">" + name + "&nbsp;&lt;" + mailAddress + "&gt;" + "</span>");
-			label.setContentMode(Label.CONTENT_XHTML);
+			label.setContentMode(ContentMode.HTML);
 			label.setWidth("90%");
 			this.addComponent(label, "Contact of resource provider");
 		} 
@@ -165,7 +166,7 @@ public class BPTEntry extends CustomLayout {
 
 	public void addButtons() {
 		Button share = new Button("share");
-		share.addListener(new Button.ClickListener(){
+		share.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				applicationUI.showSpecificEntry(entryId);
 			}
@@ -175,7 +176,7 @@ public class BPTEntry extends CustomLayout {
 		this.addComponent(share, "button share");
 		
 		Button more = new Button("more");
-		more.addListener(new Button.ClickListener(){
+		more.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				addOtherButtons();
 				// TODO: check if JavaScript is correct
@@ -189,7 +190,7 @@ public class BPTEntry extends CustomLayout {
 		this.addComponent(more, "button more");
 		
 		Button less = new Button("less");
-		less.addListener(new Button.ClickListener(){
+		less.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				hideJavaScript();
 				entry.setHeight("");
@@ -205,7 +206,7 @@ public class BPTEntry extends CustomLayout {
 		
 		if(applicationUI.isLoggedIn() && applicationUI.getUser().equals(userId)){
 			Button edit = new Button("edit");
-			edit.addListener(new Button.ClickListener(){
+			edit.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					applicationUI.edit(item);
 				}
@@ -221,7 +222,7 @@ public class BPTEntry extends CustomLayout {
 		
 		if(applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated())){
 			Button delete = new Button("delete");
-			delete.addListener(new Button.ClickListener(){
+			delete.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "delete");
 				}
@@ -240,7 +241,7 @@ public class BPTEntry extends CustomLayout {
 		
 		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Unpublished){
 			Button publish = new Button("publish");
-			publish.addListener(new Button.ClickListener(){
+			publish.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "publish");
 				}
@@ -252,7 +253,7 @@ public class BPTEntry extends CustomLayout {
 			JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
 			
 			Button reject = new Button("reject");
-			reject.addListener(new Button.ClickListener(){
+			reject.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "reject");
 				}
@@ -266,7 +267,7 @@ public class BPTEntry extends CustomLayout {
 		
 		if (applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated()) && actualState == BPTToolStatus.Published){
 			Button unpublish = new Button("unpublish");
-			unpublish.addListener(new Button.ClickListener(){
+			unpublish.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "unpublish");
 				}
@@ -281,7 +282,7 @@ public class BPTEntry extends CustomLayout {
 		
 		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Rejected){
 			Button propose = new Button("propose");
-			propose.addListener(new Button.ClickListener(){
+			propose.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "propose");
 				}

@@ -17,6 +17,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
@@ -33,7 +34,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
  * @author bu
  * 
  */
-@SuppressWarnings({ "serial", "unchecked", "deprecation" })
+@SuppressWarnings({ "serial", "unchecked"})
 public class BPTVaadinResources {
 	
 	private static class ImageStreamSource implements StreamSource {
@@ -232,7 +233,7 @@ public class BPTVaadinResources {
 	
 	private static Label asRichText(String richTextString) {
 		Label richText = new Label(richTextString);
-	    richText.setContentMode(Label.CONTENT_XHTML);
+	    richText.setContentMode(ContentMode.HTML);
 	    return richText;
 	}
 	
@@ -261,7 +262,7 @@ public class BPTVaadinResources {
 		final CheckBox checkbox = new CheckBox();
 		checkbox.setValue(value);
 		checkbox.setImmediate(true);
-		checkbox.addListener(new Property.ValueChangeListener() {
+		checkbox.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				Map<String, Object> newValues = new HashMap<String, Object>();
 				newValues.put("_id", (String) document.get("_id"));
