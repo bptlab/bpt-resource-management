@@ -4,26 +4,28 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Link;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 
 /**
  * Provides data for the table and the search component.
  * 
- * public static IndexedContainer getContainer()
- * public static Set<String> getUniqueValues(String tagColumn)
+ * public IndexedContainer getContainer()
+ * public Set<String> getUniqueValues(String tagColumn)
  * 
  * @author bu
  * @author tw
@@ -33,29 +35,32 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 public class BPTContainerProvider {
 	
 	private static BPTContainerProvider instance;
-    private static BPTToolRepository toolRepository;
-    private BPTUserRepository userRepository;
-//    private BPTApplication application;
-   
-    public BPTContainerProvider(BPTApplication application) {
-//    	this.application = application;
-    	this.toolRepository = application.getToolRepository();
-    	this.userRepository = application.getUserRepository();
-    	BPTContainerProvider.instance = this;
+	private BPTExerciseSetRepository exerciseSetRepository;
+	private BPTExerciseRepository exerciseRepository;
+	private BPTUserRepository userRepository;
+	private BPTApplication application;
+	
+	public BPTContainerProvider(BPTApplication application) {
+		this.application = application;
+		this.exerciseSetRepository = application.getExerciseSetRepository();
+		this.exerciseRepository = application.getExerciseRepository();
+		this.userRepository = application.getUserRepository();
+		BPTContainerProvider.instance = this;
 	}
-    
-	public static BPTContainerProvider getInstance() {      
+	
+	public static BPTContainerProvider getInstance() {	
 		return instance;
 	}
 	
-    private BPTDocumentRepository getRepository(BPTDocumentType type) {
-    	switch (type) {
-    		case BPT_RESOURCES_TOOLS : return toolRepository;
-			case BPT_RESOURCES_USERS : return userRepository;
+	private BPTDocumentRepository getRepository(BPTDocumentType type) {
+		switch (type) {
+			case BPMAI_EXERCISE_SETS : return exerciseSetRepository;
+			case BPMAI_EXERCISES : return exerciseRepository;
+			case BPMAI_USERS : return userRepository;
 			default : return null;
-    	}
-    }
-    
+		}
+	}
+	
 //	/**
 //	 * @return the container for the Vaadin table filled with database entries that are not marked as deleted
 //	 *
@@ -64,7 +69,7 @@ public class BPTContainerProvider {
 //		
 //		IndexedContainer container = createContainerWithProperties();
 //		
-//		List<Map> tools = toolRepository.getAll();
+//		List<Map> tools = exerciseRepository.getAll();
 //		
 //		for (int i = 0; i < tools.size(); i++) {
 //			Map<String, Object> tool = tools.get(i);
@@ -92,237 +97,171 @@ public class BPTContainerProvider {
 	public ArrayList<String> getUniqueValues(String tagColumn) {
 		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
 		// TODO: don't get "all" documents, just the ones with the selected status
-		List<Map> tools = toolRepository.getDocuments("all");
+		List<Map> tools = exerciseSetRepository.getDocuments("all");
 		
 		// TODO: refactor to have it generic
 		
 		Collator comparator = Collator.getInstance();
 		comparator.setStrength(Collator.PRIMARY);
 		
-		if (tagColumn == "all" || tagColumn == "availabilities") {
-			uniqueValues.add("----- Availabilities -----");
-			ArrayList<String> availabilityTags = new ArrayList<String>();
+		if(tagColumn == "all" || tagColumn == "languages"){
+			uniqueValues.add("----- Languages -----");
+			ArrayList<String> languageTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> availabilityTagsOfTool = (ArrayList<String>)tool.get("availabilities");  // cast
-				availabilityTags.addAll(availabilityTagsOfTool);
+				ArrayList<String> languageTagsOfTool = (ArrayList<String>)tool.get("languages");  // cast
+				languageTags.addAll(languageTagsOfTool);
 			}
-			Collections.sort(availabilityTags, comparator);
-			uniqueValues.addAll(availabilityTags);
+			Collections.sort(languageTags, comparator);
+			uniqueValues.addAll(languageTags);
+		}
+		if (tagColumn == "all" || tagColumn == "topics") {
+			if (tagColumn == "all") uniqueValues.add("----- Topics -----");
+			List<String> topicTags = new ArrayList<String>();
+			topicTags = BPTTopic.getValues("English");
+			uniqueValues.addAll(topicTags);
 		}
 		if (tagColumn == "all" || tagColumn == "modelTypes") {
-			uniqueValues.add("----- Model types -----");
+			if (tagColumn == "all") uniqueValues.add("----- Modeling languages -----");
 			ArrayList<String> modelTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("model_types");  // cast
+				ArrayList<String> modelTypeTagsOfTool = (ArrayList<String>)tool.get("modeling_languages");  // cast
 				modelTypeTags.addAll(modelTypeTagsOfTool);
 			}
 			Collections.sort(modelTypeTags, comparator);
 			uniqueValues.addAll(modelTypeTags);
 		}
-		if (tagColumn == "all" || tagColumn == "platforms") {
-			uniqueValues.add("----- Platforms -----");
-			ArrayList<String> platformTags = new ArrayList<String>();
+		if (tagColumn == "all" || tagColumn == "taskTypes") {
+			if (tagColumn == "all") uniqueValues.add("----- Task types -----");
+			ArrayList<String> taskTypeTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> platformTagsOfTool = (ArrayList<String>)tool.get("platforms");  // cast
-				platformTags.addAll(platformTagsOfTool);
+				ArrayList<String> taskTypeTagsOfTool = (ArrayList<String>)tool.get("task_types");  // cast
+				taskTypeTags.addAll(taskTypeTagsOfTool);
 			}
-			Collections.sort(platformTags, comparator);
-			uniqueValues.addAll(platformTags);
+			Collections.sort(taskTypeTags, comparator);
+			uniqueValues.addAll(taskTypeTags);
 		}
-		if (tagColumn == "all" || tagColumn == "supportedFunctionalities") {
-			uniqueValues.add("----- Supported functionalities -----");
-			ArrayList<String> supportedFunctionalityTags = new ArrayList<String>();
+		if (tagColumn == "all" || tagColumn == "otherTags") {
+			if (tagColumn == "all") uniqueValues.add("----- Other tags -----");
+			ArrayList<String> otherTags = new ArrayList<String>();
 			for (Map<String, Object> tool : tools) {
-				ArrayList<String> supportedFunctionalityTagsOfTool = (ArrayList<String>)tool.get("supported_functionalities");  // cast
-				supportedFunctionalityTags.addAll(supportedFunctionalityTagsOfTool);
+				ArrayList<String> otherTagsOfTool = (ArrayList<String>)tool.get("other_tags");  // cast
+				otherTags.addAll(otherTagsOfTool);
 			}
-			Collections.sort(supportedFunctionalityTags, comparator);
-			uniqueValues.addAll(supportedFunctionalityTags);
+			Collections.sort(otherTags, comparator);
+			uniqueValues.addAll(otherTags);
 		}
-		
 		return new ArrayList<String>(uniqueValues);
 	}
 	
 	private IndexedContainer initializeContainerWithProperties(BPTDocumentType type) {
 		IndexedContainer container = new IndexedContainer();
-		for (Object[] entry : BPTVaadinResources.getPropertyArray(type)) {
+		List<Object[]> items = BPTVaadinResources.getPropertyArray(type);
+		for (Object[] entry : items) {
 			container.addContainerProperty(entry[1], (Class<?>)entry[2], null);
 		}
 		return container;
 	}
 	
-	public IndexedContainer generateContainer(List<Map> tools, BPTDocumentType type) {
+	public IndexedContainer generateContainer(List<Map> documents, BPTDocumentType type) {
 		IndexedContainer container = initializeContainerWithProperties(type);
-		for (int i = 0; i < tools.size(); i++) {
-			Map<String, Object> tool = tools.get(i);
+		for (int i = 0; i < documents.size(); i++) {
+			Map<String, Object> document = documents.get(i);
 			Item item = container.addItem(i);
-//			System.out.println("print map here: " + tool);
-			setItemPropertyValues(item, tool, type);
-//			System.out.println("print item here: " + item);
+//				System.out.println("print map here: " + tool);
+			setItemPropertyValues(container, item, document, type);
+//				System.out.println("print item here: " + item);
 		}
 		return container;
 	}
 	
-	private void setItemPropertyValues(Item item, Map<String, Object> document, BPTDocumentType type) {
+	private void setItemPropertyValues(IndexedContainer container, Item item, Map<String, Object> document, BPTDocumentType type) {
+		List<Object[]> entrySets;
 		BPTDocumentRepository repository = getRepository(type);
-		for (Object[] entry : BPTVaadinResources.getPropertyArray(type)) {
-			item.getItemProperty(entry[1]).setValue(BPTVaadinResources.generateComponent(repository, document, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]));
+		entrySets = BPTVaadinResources.getPropertyArray(type);
+		
+		for (Object[] entry : entrySets) {
+			Object component = BPTVaadinResources.generateComponent(repository, document, (String)entry[0], (BPTPropertyValueType)entry[3], application);
+			if (entry[1].equals("Supplementary files")) {
+				ArrayList<Link> links = (ArrayList<Link>) component;
+				for (int i = 1; i <= links.size(); i++) {
+					if (!container.getContainerPropertyIds().contains("Supplementary file" + i)) {
+						container.addContainerProperty("Supplementary file" + i, Link.class, null);
+					}
+					item.getItemProperty("Supplementary file" + i).setValue(links.get(i-1));
+				}
+			} else {
+				item.getItemProperty(entry[1]).setValue(component);
+			}
 		}
 	}
 	
 //	public IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> tags, String query) {
-//		List<Map> tools = toolRepository.getVisibleEntries(statusList, tags, query);
-////		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
+//		List<Map> tools = exerciseRepository.getVisibleEntries(statusList, tags, query);
+////		List<Map> tools = exerciseRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, sortAttribute, ascending)
 //		IndexedContainer container = generateContainer(tools);
 //		return container;
 //	}
-	
-	public IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+
+	public IndexedContainer getVisibleEntrySets(ArrayList<String> languages, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
-		if(sortAttribute.equals("Name")){
-			db_sortAttribute = "name";
+		if(sortAttribute.equals("ID")){
+			db_sortAttribute = "set_id";
 			ascending = true;
 		}
-		else if(sortAttribute.equals("Provider")){
-			db_sortAttribute = "provider";
+		else if(sortAttribute.equals("Title")){
+			db_sortAttribute = "title";
 			ascending = true;
 		}
-		else if(sortAttribute.equals("Last Update")){
+		else{
 			db_sortAttribute = "last_update";
 			ascending = false;
 		}
-		else{
-			db_sortAttribute = "date_created";
-			ascending = false;
-		}
-		List<Map> tools = toolRepository.search(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
-		return generateContainer(tools, BPTDocumentType.BPT_RESOURCES_TOOLS);
+		List<Map> exerciseSets = exerciseSetRepository.search(languages, statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
+		return generateContainer(exerciseSets, BPTDocumentType.BPMAI_EXERCISE_SETS);
 	}
 	
-	public IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
+	public IndexedContainer getVisibleEntriesSetsByUser(ArrayList<String> languages, String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
-		if(sortAttribute.equals("Name")){
-			db_sortAttribute = "name";
+		if(sortAttribute.equals("ID")){
+			db_sortAttribute = "set_id";
 			ascending = true;
 		}
-		else if(sortAttribute.equals("Provider")){
-			db_sortAttribute = "provider";
+		else if(sortAttribute.equals("Title")){
+			db_sortAttribute = "title";
 			ascending = true;
 		}
-		else if(sortAttribute.equals("Last Update")){
+		else{
 			db_sortAttribute = "last_update";
 			ascending = false;
 		}
-		else{
-			db_sortAttribute = "date_created";
-			ascending = false;
-		}
-		List<Map> tools = toolRepository.search(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
-		return generateContainer(tools, BPTDocumentType.BPT_RESOURCES_TOOLS);
-	}
-	
-	public void refreshFromDatabase() {
-		toolRepository.refreshData();
+		List<Map> exerciseSets = exerciseSetRepository.search(languages, Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags, skip, limit, db_sortAttribute, ascending);
+		return generateContainer(exerciseSets, BPTDocumentType.BPMAI_EXERCISE_SETS);
 	}
 	
 	public IndexedContainer getUsers() {
-        List<Map> users = userRepository.getAll();
-        return generateContainer(users, BPTDocumentType.BPT_RESOURCES_USERS);
+		List<Map> users = userRepository.getAll();
+		return generateContainer(users, BPTDocumentType.BPMAI_USERS);
 	}
 	
-	public int getNumberOfEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
-		return toolRepository.getNumberOfEntries(statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+	public int getNumberOfEntries(ArrayList<String> languages, ArrayList<BPTExerciseStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
+		return exerciseSetRepository.getNumberOfEntries(languages, statusList, null, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
-	public int getNumberOfEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
-		return toolRepository.getNumberOfEntries(Arrays.asList(BPTToolStatus.Published, BPTToolStatus.Unpublished, BPTToolStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+	public int getNumberOfEntriesByUser(ArrayList<String> languages, String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString){
+		return exerciseSetRepository.getNumberOfEntries(languages, Arrays.asList(BPTExerciseStatus.Published, BPTExerciseStatus.Unpublished, BPTExerciseStatus.Rejected), user, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
 	}
 	
-	public IndexedContainer getRandomEntries(int numberOfEntries){
-		return generateContainer(toolRepository.getRandomEntries(numberOfEntries), BPTDocumentType.BPT_RESOURCES_TOOLS);
-	}
-
-	public static Map<String, Integer> getTagStatisticFor(String string) {
-		return toolRepository.getTagStatisticFor(string);
-	}
-	
-	public static String getTagStatisticsForJavaScriptFor(String string){
-		StringBuilder sb = new StringBuilder();
-		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
-		if(tagStatisticMap.size() > 7){
-			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
-			List<String> otherKeys = new ArrayList<String>();
-			int others = 0;
-			for(String key : tagStatisticMap.keySet()){
-				if(statisticMap.size() < 6){
-					statisticMap.put(key, tagStatisticMap.get(key));
-				}
-				else{
-					String smallestKey = key;
-					int smallestNumber = tagStatisticMap.get(key);
-					for(String savedKey : statisticMap.keySet()){
-						if(statisticMap.get(savedKey) < smallestNumber){
-							smallestKey = savedKey;
-							smallestNumber = statisticMap.get(savedKey);
-						}
-					}
-					if(statisticMap.keySet().contains(smallestKey)){
-						statisticMap.remove(smallestKey);
-						statisticMap.put(key, tagStatisticMap.get(key));
-					}
-					others = others + smallestNumber;
-					otherKeys.add(smallestKey);
-				}
-			}
-			tagStatisticMap = statisticMap;
-			sb.append("['Others'," + others + "],");
-//			tagStatisticMap.put("Others", others);
+	public ArrayList<String> getUniqueLanguages() {
+		LinkedHashSet<String> uniqueValues = new LinkedHashSet<String>();
+		List<Map> tools = exerciseSetRepository.getDocuments("all");
+		for (Map<String, Object> tool : tools) {
+			String attributeString = (String) tool.get("language");
+			uniqueValues.add(attributeString);
 		}
-		
-		for(String key : tagStatisticMap.keySet()){
-			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
-		}
-		return sb.toString();
-	}
-	
-	public static String getTagStatisticsWithLinksForJavaScriptFor(String string){
-		StringBuilder sb = new StringBuilder();
-		Map<String, Integer> tagStatisticMap = BPTContainerProvider.getTagStatisticFor(string);
-		if(tagStatisticMap.size() > 7){
-			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
-			List<String> otherKeys = new ArrayList<String>();
-			int others = 0;
-			for(String key : tagStatisticMap.keySet()){
-				if(statisticMap.size() < 6){
-					statisticMap.put(key, tagStatisticMap.get(key));
-				}
-				else{
-					String smallestKey = key;
-					int smallestNumber = tagStatisticMap.get(key);
-					for(String savedKey : statisticMap.keySet()){
-						if(statisticMap.get(savedKey) < smallestNumber){
-							smallestKey = savedKey;
-							smallestNumber = statisticMap.get(savedKey);
-						}
-					}
-					if(statisticMap.keySet().contains(smallestKey)){
-						statisticMap.remove(smallestKey);
-						statisticMap.put(key, tagStatisticMap.get(key));
-					}
-					others = others + smallestNumber;
-					otherKeys.add(smallestKey);
-				}
-			}
-			tagStatisticMap = statisticMap;
-			sb.append("['Others', " + others + ", \"javascript:alert('Others')\"],");
-//			tagStatisticMap.put("Others", others);
-		}
-		
-		for(String key : tagStatisticMap.keySet()){
-			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:alert('" + key + "')\"], ");
-		}
-		return sb.toString();
+//		ArrayList<String> uniqueList = new ArrayList<String>(uniqueValues);
+//		Collections.sort(uniqueList, Comparator<T>)
+		return new ArrayList<String>(uniqueValues);
 	}
 }

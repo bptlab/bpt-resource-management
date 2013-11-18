@@ -27,9 +27,9 @@ public class BPTTable extends BPTShowEntryComponent {
 }
 
 	@Override
-	protected void show(IndexedContainer tableEntries) {
-		table.setContainerDataSource(tableEntries);
-		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPT_RESOURCES_TOOLS));
+	protected void show(IndexedContainer sets) {
+		table.setContainerDataSource(sets);
+		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPMAI_EXERCISE_SETS));
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class BPTTable extends BPTShowEntryComponent {
 		table.setColumnReorderingAllowed(true);
         table.setColumnCollapsingAllowed(true);
         table.setWidth("100%");
-//        addComponent(table, "cards");
+        addComponent(table);
         addListenerToTable();
 	}
 

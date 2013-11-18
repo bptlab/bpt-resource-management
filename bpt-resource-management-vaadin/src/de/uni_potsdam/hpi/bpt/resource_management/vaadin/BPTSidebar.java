@@ -1,32 +1,37 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 
 @SuppressWarnings("serial")
-public class BPTSidebar extends HorizontalLayout {
+public class BPTSidebar extends CustomComponent{
 	
+	private HorizontalLayout layout;
 	private BPTApplication application;
 	private BPTLoginComponent loginComponent;
 	private BPTSearchComponent searchComponent;
-	private int numberOfEntries;
 	
 	public BPTSidebar(BPTApplication application) {
-		super();
 		this.application = application;
-		setWidth("100%");
-		setHeight("100%");
+		
+		layout = new HorizontalLayout();
+		layout.setWidth("100%");
+		layout.setHeight("100%");
+		setCompositionRoot(layout);
 		loginComponent = new BPTLoginComponent(application.isLoggedIn(), this);
 		searchComponent = new BPTSearchComponent(application, "all", false);
-		init();		
+		init(layout);		
+	}
+
+	public BPTLoginComponent getLoginComponent() {
+		return loginComponent;
+	}
+
+	public void setLoginComponent(BPTLoginComponent loginComponent) {
+		this.loginComponent = loginComponent;
 	}
 
 	public BPTSearchComponent getSearchComponent() {
@@ -37,11 +42,11 @@ public class BPTSidebar extends HorizontalLayout {
 		this.searchComponent = searchComponent;
 	}
 
-	private void init() {
-		addComponent(searchComponent);
-		addComponent(loginComponent);
-		setExpandRatio(searchComponent, 75);
-		setExpandRatio(loginComponent, 25);
+	private void init(HorizontalLayout layout) {
+		layout.addComponent(searchComponent);
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(searchComponent, 75);
+		layout.setExpandRatio(loginComponent, 25);
 	}
 
 	public void login(String name, boolean moderated) {
@@ -55,79 +60,33 @@ public class BPTSidebar extends HorizontalLayout {
 	}
 	
 	public void renderUploader() {
-		removeAllComponents();
+		layout.removeAllComponents();
+//		layout = new HorizontalLayout();
 		Label label = new Label("required fields marked with *<br/>", Label.CONTENT_XHTML);
-		addComponent(label);
-		addComponent(loginComponent);
-		setExpandRatio(label, 75);
-		setExpandRatio(loginComponent, 25);
+		layout.addComponent(label);
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(label, 75);
+		layout.setExpandRatio(loginComponent, 25);
 	}
 	
 	public void renderAdministrator() {
-		removeAllComponents();
+		layout.removeAllComponents();
+//		layout = new HorizontalLayout();
 		Label label = new Label("Administration page <br/>", Label.CONTENT_XHTML);
-		addComponent(label);
-		addComponent(loginComponent);
-		setExpandRatio(label, 75);
-		setExpandRatio(loginComponent, 25);
-}
+		layout.addComponent(label);
+		layout.addComponent(loginComponent);
+		layout.setExpandRatio(label, 75);
+		layout.setExpandRatio(loginComponent, 25);
+	}
 	
-	public void showAll() {
-		removeAllComponents();
+	public void renderEntries() {
+		layout.removeAllComponents();
+//		layout = new HorizontalLayout();
 		searchComponent = new BPTSearchComponent(application, "all", false);
-		init();
+		init(layout);
 		if (application.isLoggedIn()) {
 			searchComponent.login();
 		}
-	}
-	
-	public void showSpecificEntry(final String urlToEntry) {
-		removeAllComponents();
-		VerticalLayout shareLayout = new VerticalLayout();
-		
-		Label label = new Label("URL to this page:&nbsp;", Label.CONTENT_XHTML);
-		final TextField textField = new TextField();
-		shareLayout.addComponent(label);
-		
-		textField.addStyleName("boldtextfield");
-		textField.setWidth("90%");
-		textField.setValue(urlToEntry);
-		textField.setReadOnly(true);
-		shareLayout.addComponent(textField);
-
-		HorizontalLayout buttonLayout = new HorizontalLayout();
-		
-		Button startButton = new Button("Go back to startpage");
-		startButton.setStyleName(BaseTheme.BUTTON_LINK);
-		startButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).showStartPage();
-			}
-		});
-		buttonLayout.addComponent(startButton);
-		
-		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or &nbsp;&nbsp;", Label.CONTENT_XHTML));
-		
-		Button findButton = new Button("See all " + this.numberOfEntries + " entries of Tools for BPM");
-		findButton.setStyleName(BaseTheme.BUTTON_LINK);
-		findButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).getUriFragmentUtility().setFragment("");
-				((BPTApplication)getApplication()).showAllAndRefreshSidebar();
-			}
-		});
-		buttonLayout.addComponent(findButton);
-		
-		shareLayout.addComponent(buttonLayout);
-		addComponent(shareLayout);
-		addComponent(loginComponent);
-		setExpandRatio(shareLayout, 75);
-		setExpandRatio(loginComponent, 25);
-	}
-
-	public void setNumberOfEntries(int numberOfEntries) {
-		this.numberOfEntries = numberOfEntries;
 	}
 
 }

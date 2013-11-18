@@ -2,7 +2,7 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -12,27 +12,32 @@ import javax.servlet.http.HttpServletResponse;
 import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
-import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
+@SuppressWarnings({ "unchecked", "serial" })
 public class BPTApplication extends Application implements HttpServletRequestListener {
 	
 	// change theme name for different platform
-	private final String themeName = "bpt";
-//	private final String themeName = "bpmai";
+	private final String themeName = "bpmai";
 	
 	private BPTShowEntryComponent entryComponent;
 	private BPTSidebar sidebar;
@@ -41,46 +46,45 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
-	private BPTToolRepository toolRepository;
+
+	private BPTExerciseSetRepository exerciseSetRepository;
+	private BPTExerciseRepository exerciseRepository;
 	private BPTUserRepository userRepository;
 	private BPTContainerProvider containerProvider;
 	private int numberOfEntries;
-	private final UriFragmentUtility uriFu = new UriFragmentUtility();
-
-	private BPTShareableEntry entry;
-	private BPTAdministrator administrator;
-
-	@Override
+	private Button administrationButton;
+	private BPTAdministrator administrator;	@Override
 	public void init() {
-		
-		toolRepository = BPTToolRepository.getInstance();
+		exerciseRepository = BPTExerciseRepository.getInstance();
+		exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 		userRepository = BPTUserRepository.getInstance();
 		containerProvider = new BPTContainerProvider(this);
+		
 		setProperties();
 		
-		final Window mainWindow = new Window("Tools for BPM");
+		final Window mainWindow = new Window("BPM Academic Initiative");
 		mainWindow.setScrollable(true);
 		setMainWindow(mainWindow);
 		setTheme(themeName);
-		CustomLayout custom = new CustomLayout(themeName + "_mainlayout");
+		final CustomLayout custom = new CustomLayout(themeName + "_mainlayout");
 		custom.setHeight("100%");
 		VerticalLayout layout =  new VerticalLayout();
 		layout.setWidth("732px");
-	
-		entryComponent = new BPTSmallRandomEntries(this);
-//		entryComponent = new BPTEntryCards(this);
-		mainFrame = new BPTMainFrame(entryComponent);
+		
 		setSidebar(new BPTSidebar(this));
+		entryComponent = new BPTEntryCards(this);
+//		entryComponent = new BPTTable();
+		mainFrame = new BPTMainFrame(entryComponent);
 		layout.addComponent(getSidebar());
 		layout.addComponent(mainFrame);
+		mainFrame.add(entryComponent);
 		custom.addComponent(layout, "application");
 		custom.addStyleName("scroll");
 		mainWindow.setContent(custom);
-//		mainWindow.addComponent(uriFu);
-		custom.addComponent(uriFu, "uriFragmentUtility");
-		addListenerToUriFragmentUtility();
+		
+		addAdministrationButton(custom);
 	}
-	
+
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
@@ -112,6 +116,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	
 	public String getMailAddress() {
 		return mailAddress;
@@ -146,86 +151,72 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 	
 	public void renderAdministrator() {
-        administrator = new BPTAdministrator(this);
-        mainFrame.add(administrator);
-        getSidebar().renderAdministrator();
+		administrator = new BPTAdministrator(this);
+		mainFrame.add(administrator);
+		getSidebar().renderAdministrator();
 	}
 	
 	public void renderEntries() {
-		if (entryComponent instanceof BPTEntryCards) {
-			refreshAndClean();
-		}
-	}
-	
-	public void showAllAndRefreshSidebar() {
-		getSidebar().showAll();
-		showAll();
-	}
-	
-	public void showAll() {
-		if (!(entryComponent instanceof BPTEntryCards)) {
-			entryComponent = new BPTEntryCards(this);
-			mainFrame.add(entryComponent);
-		}
-	}
-	
-	public void showStartPage() {
-		entryComponent = new BPTSmallRandomEntries(this);
+		getSidebar().renderEntries();
+		refreshAndClean();
 		mainFrame.add(entryComponent);
 	}
-	
-	public void showSpecificEntry(String entryId) {
-		Map<String, Object> tool = toolRepository.get(entryId);
-		StringBuffer sbUriFragment = new StringBuffer();
-		sbUriFragment.append(entryId + "-");
-		String nameOfTool = (String) tool.get("name");
-		String formattedNameOfTool = nameOfTool.replaceAll("[^\\w]", "-").toLowerCase();
-		String fragmentForEntry = "!" + entryId + "-" + formattedNameOfTool;
-		String applicationString = applicationURL;
-		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
-			applicationString = applicationString.substring(0, applicationURL.length() - 1);
-		}
-		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
-		Item item = container.getItem(container.getItemIds().iterator().next());
-		uriFu.setFragment(fragmentForEntry, false);
-//		entry = new BPTShareableEntry(item, this);
-//		mainFrame.add(entry);
-		entryComponent = new BPTShareableEntryContainer(this, entryId);
-		mainFrame.add(entryComponent);
-		getSidebar().showSpecificEntry(applicationURL + "#" + fragmentForEntry);
-		getMainWindow().executeJavaScript("('html,body').scrollTop(0);");
-	}
-	
-	private void addListenerToUriFragmentUtility() {
-		uriFu.addListener(new FragmentChangedListener() {
-            public void fragmentChanged(FragmentChangedEvent source) {
-                String fragment = source.getUriFragmentUtility().getFragment();
-                if (fragment != null) {
-                    if (fragment.startsWith("!")) {
-                    	try {
-                    		fragment = fragment.substring(1);
-	                        int separatorIndex = fragment.indexOf("-");
-	                        String entryId = fragment.substring(0, separatorIndex);
-	                        String formattedNameOfTool = fragment.substring(separatorIndex + 1, fragment.length());
-	                        String nameOfTool = (String) toolRepository.get(entryId).get("name");
-	                		if (formattedNameOfTool.equals(nameOfTool.replaceAll("[^\\w]", "-").toLowerCase())) {
-	                			showSpecificEntry(entryId);
-	                		}
-                    	} catch (IndexOutOfBoundsException e) {
-//                    		e.printStackTrace();
-                    	} catch (NullPointerException e) {
-//                    		e.printStackTrace();
-                    	}
-                        
 
-                    }
-                }
-            }
-        });
+	private void addAdministrationButton(final CustomLayout custom) {
+		administrationButton = new Button("Administration");
+		administrationButton.setStyleName(BaseTheme.BUTTON_LINK);
+		administrationButton.addStyleName("redButton");
+//        administrationButton.addStyleName("greyButton");
+        custom.addComponent(administrationButton, "loginLink");
+		
+        administrationButton.addListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				final Window administrationWindow = new Window("Administration");
+				administrationWindow.setClosable(true);
+				administrationWindow.setDraggable(false);
+				administrationWindow.setImmediate(true);
+				administrationWindow.setModal(true);
+				administrationWindow.setResizable(false);
+				
+				final CustomLayout administrationLayout = new CustomLayout("popup_administration");
+				administrationLayout.setWidth("350px");
+//				administrationLayout.setMargin(true);
+				administrationWindow.setContent(administrationLayout);
+
+				final Label failureLabel = new Label("<font color=\"#FF0000\">Invalid password.</font>", Label.CONTENT_XHTML);
+				failureLabel.setVisible(false);
+				administrationLayout.addComponent(failureLabel, "failureLabel");
+				final PasswordField passwordInput = new PasswordField();
+				passwordInput.setInputPrompt("Password");
+				passwordInput.setWidth("230px");
+				administrationLayout.addComponent(passwordInput, "passwordInput");
+				Button loginButton = new Button("Login");
+				loginButton.setClickShortcut(KeyCode.ENTER);
+				loginButton.setWidth("70px");
+				loginButton.addListener(new Button.ClickListener(){
+						public void buttonClick(ClickEvent event) {
+							if (((String) passwordInput.getValue()).equals("petrinet")) {
+								failureLabel.setVisible(false);
+								sidebar.getLoginComponent().addComponentsForLogin();
+								getMainWindow().removeWindow(administrationWindow);
+								custom.removeComponent(administrationButton);
+							} else {
+								failureLabel.setVisible(true);
+	}
+						}
+					});
+				administrationLayout.addComponent(loginButton, "loginButton");
+				getMainWindow().addWindow(administrationWindow);
+			}
+		});
 	}
 	
-	public BPTToolRepository getToolRepository() {
-		return toolRepository;
+	public BPTExerciseRepository getExerciseRepository() {
+		return exerciseRepository;
+	}
+	
+	public BPTExerciseSetRepository getExerciseSetRepository() {
+		return exerciseSetRepository;
 	}
 	
 	public BPTUserRepository getUserRepository() {
@@ -236,70 +227,37 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 		return containerProvider;
 	}
 
-	public UriFragmentUtility getUriFragmentUtility() {
-		return uriFu;
-	}
-
 	public BPTShowEntryComponent getTable(){
 		return entryComponent;
 	}
 
 	public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
-		if (loggingIn) {
-			System.out.println("----- LOGIN STARTED -----");
-			Map<String, String[]> map = request.getParameterMap();
-			System.out.println("The parameter map: ");
-			for (String key: map.keySet()) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("\t" + key + ": ");
-				String[] array = map.get(key);
-				for (int i = 0; i < array.length; i++) {
-					sb.append(array[i]);
-					if (i < array.length - 1) {
-						sb.append(", ");
-					} else {
-						sb.append(";");
-					}
-				}
-				System.out.println(sb.toString());
+		Map<String, String[]> map = request.getParameterMap();
+		
+		if (loggingIn && map.containsKey("openid.identity")) {
+			loggingIn = false;
+			// TODO: check nonce for security reasons
+//			checkNonce(request.getParameter("openid.response_nonce"));
+			setUser(map.get("openid.identity")[0]);
+			System.out.println("The OpenID identifier: " + (String)getUser());
+			if (openIdProvider.equals("Google")) {
+				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0]; 
+				mailAddress = map.get("openid.ext1.value.email")[0];
+			} else { // openIdProvider.equals("Yahoo")
+				name = map.get("openid.ax.value.fullname")[0]; 
+				mailAddress = map.get("openid.ax.value.email")[0];
 			}
-			if (map.containsKey("openid.identity")) {
-				loggingIn = false;
-				// TODO: check nonce for security reasons
-//				checkNonce(request.getParameter("openid.response_nonce"));
-				setUser(map.get("openid.identity")[0]);
-				System.out.println("The OpenID identifier: " + (String)getUser());
-				if (openIdProvider.equals("Google")) {
-					mailAddress = map.get("openid.ext1.value.email")[0];
-					if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
-						name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
-					} else {
-						name = mailAddress;
-					}
-				} else { // openIdProvider.equals("Yahoo")
-					mailAddress = map.get("openid.ax.value.email")[0];
-					if (map.containsKey("openid.ax.value.fullname")) {
-						name = map.get("openid.ax.value.fullname")[0]; 
-					} else {
-						name = mailAddress;
-					}
-				}
-				System.out.println("The name: " + name);
-				System.out.println("The mail address: " + mailAddress);
-				moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
-				loggedIn = true;
-				System.out.println("----- LOGIN FINISHED -----");
-				getSidebar().login(name, moderated);
-				renderEntries();
-				try {
-					response.sendRedirect(getLogoutURL());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else {
-				System.out.println("----- LOGIN FINISHED -----");
-				return;
+			moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
+			loggedIn = true;
+			getSidebar().login(name, moderated);
+			renderEntries();
+			try {
+				response.sendRedirect(getLogoutURL());
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+		} else {
+			return;
 		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
@@ -318,7 +276,6 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 
 //	private void checkNonce(String nonce) {
-//		// TODO Auto-generated method stub
 //		if (nonce == null || nonce.length() < 20) {
 //            throw new OpenIdException("Verify failed.");
 //		}
@@ -363,8 +320,7 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
-		getSidebar().renderUploader();
-	}
+		getSidebar().renderUploader();	}
 	
 	public void refreshAndClean() {
 		refreshAndClean(0);
@@ -378,47 +334,50 @@ public class BPTApplication extends Application implements HttpServletRequestLis
 	}
 
 	private void refresh(int skip) {
-		IndexedContainer dataSource;
+		IndexedContainer sets;
 		int limit = skip + 10;
 		BPTTagSearchComponent tagSearchComponent = getSidebar().getSearchComponent().getTagSearchComponent();
 		String query = getSidebar().getSearchComponent().getFullSearchComponent().getQuery();
-		if (!tagSearchComponent.isNoTagSelected() || (query != null && !query.isEmpty())) {
-			showAll();
-		}
 		if (loggedIn) {
 			if (!moderated) {
 				if (getSidebar().getSearchComponent().isOwnEntriesOptionSelected()) {
-					showAll();
-					dataSource = containerProvider.getVisibleEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-					numberOfEntries = containerProvider.getNumberOfEntriesByUser((String)getUser(), tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+					sets = containerProvider.getVisibleEntriesSetsByUser(tagSearchComponent.getLanguageTags(), (String)getUser(), tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					numberOfEntries = containerProvider.getNumberOfEntriesByUser(tagSearchComponent.getLanguageTags(), (String)getUser(), tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 				} else {
-					ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-					statusList.add(BPTToolStatus.Published);
-					dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-					numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+					ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+					statusList.add(BPTExerciseStatus.Published);
+					sets = containerProvider.getVisibleEntrySets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+					numberOfEntries = containerProvider.getNumberOfEntries(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 				}
 			} else {
-				ArrayList<BPTToolStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
-				if (statusList.size() != 1 || !statusList.contains(BPTToolStatus.Published)) {
-					showAll();
-				}
-				dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-				numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+				ArrayList<BPTExerciseStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
+				sets = containerProvider.getVisibleEntrySets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+				numberOfEntries = containerProvider.getNumberOfEntries(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 			}
 		} else {
-			ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-			statusList.add(BPTToolStatus.Published);
-			dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
-			numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
+			ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+			statusList.add(BPTExerciseStatus.Published);
+			sets = containerProvider.getVisibleEntrySets(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
+			numberOfEntries = containerProvider.getNumberOfEntries(tagSearchComponent.getLanguageTags(), statusList, tagSearchComponent.getTopicTags(), tagSearchComponent.getModelingLanguagesTags(), tagSearchComponent.getTaskTypesTags(), tagSearchComponent.getOtherTags(), query);
 		}
-		entryComponent.show(dataSource);
+		entryComponent.show(sets);
+	}
+	
+		public String getSelectedLanguage(){
+			ArrayList<String> languageTags = getSidebar().getSearchComponent().getTagSearchComponent().getLanguageTags();
+			if(!languageTags.isEmpty()){
+				return languageTags.get(0);
+			}
+			else{
+				return "Deutsch";
+			}
 	}
 
-	public BPTSidebar getSidebar() {
-		return sidebar;
-	}
+		public BPTSidebar getSidebar() {
+			return sidebar;
+		}
 
-	private void setSidebar(BPTSidebar sidebar) {
-		this.sidebar = sidebar;
-	}
+		public void setSidebar(BPTSidebar sidebar) {
+			this.sidebar = sidebar;
+		}
 }

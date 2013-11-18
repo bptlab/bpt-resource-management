@@ -16,8 +16,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
@@ -25,30 +25,18 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
-	protected String _id, entryId;
+	protected String _id;
 	protected BPTApplication application;
-	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+	protected BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
+	private TextArea reasonForRejectionTextArea;
 	
-	public BPTShowEntryComponent(BPTApplication application, String entryId){
-		this.entryId = entryId;
-		init(application);
-	}
-	
-	public BPTShowEntryComponent(BPTApplication application) {
-		init(application);
-	}
-	
-	protected void init(BPTApplication application){
+	public BPTShowEntryComponent(final BPTApplication application) {
 		this.application = application;
 		buildLayout();
-		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-		statusList.add(BPTToolStatus.Published);
-		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
-		show(getEntries(statusList));
-	}
-	
-	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
-		return BPTContainerProvider.getInstance().getVisibleEntries(statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10);
+		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
+		statusList.add(BPTExerciseStatus.Published);
+		showNumberOfEntries(BPTContainerProvider.getInstance().getNumberOfEntries(new ArrayList<String>(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null));
+		show(BPTContainerProvider.getInstance().getVisibleEntrySets(application.getSidebar().getSearchComponent().getTagSearchComponent().getLanguageTags(), statusList, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, "Name", 0, 10));
 	}
 	
 	protected abstract void buildLayout();
@@ -64,9 +52,9 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	/**
 	 * @abstract to be overwritten by subclass
 	 * 
-	 * @param tableEntries
+	 * @param entryIDs
 	 */
-	protected abstract void show(IndexedContainer tableEntries); 
+	protected abstract void show(IndexedContainer sets); 
 	
 	/**
 	 * default solution (entries will be shown in popup), to be overwritten in subclass
@@ -78,19 +66,19 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		popupWindow.setWidth("600px");
 		
 		_id = item.getItemProperty("ID").getValue().toString();
-		Map<String, Object> tool = toolRepository.readDocument(_id);
+		Map<String, Object> tool = exerciseSetRepository.readDocument(_id);
 		
-		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getPropertyArray(BPTDocumentType.BPT_RESOURCES_TOOLS)).get(1);
-		Object value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], (String)attachmentEntry[4]);
+		Object[] attachmentEntry = ((ArrayList<Object[]>)BPTVaadinResources.getPropertyArray(BPTDocumentType.BPMAI_EXERCISE_SETS)).get(1);
+		Object value = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)attachmentEntry[0], (BPTPropertyValueType)attachmentEntry[3], application);
 		Embedded image = (Embedded)value;
 		image.setWidth("");
 		image.setHeight("");
 		popupWindow.addComponent(image);
 		
-		for (Object[] entry : BPTVaadinResources.getPropertyArray(BPTDocumentType.BPT_RESOURCES_TOOLS)) {
+		for (Object[] entry : BPTVaadinResources.getPropertyArray(BPTDocumentType.BPMAI_EXERCISE_SETS)) {
 			if ((Boolean)entry[7]) {
 				popupWindow.addComponent(new Label(entry[1] + ":"));
-				value = BPTVaadinResources.generateComponent(toolRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], (String)entry[4]);
+				value = BPTVaadinResources.generateComponent(exerciseSetRepository, tool, (String)entry[0], (BPTPropertyValueType)entry[3], application);
 				if (entry[2] == Component.class) {
 					popupWindow.addComponent((Component)value);
 				} else {
@@ -123,9 +111,9 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(editButton);
 			}
-			BPTToolStatus actualState = toolRepository.getDocumentStatus(_id);
+			BPTExerciseStatus actualState = exerciseSetRepository.getDocumentStatus(_id);
 			
-			if (actualState == BPTToolStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
+			if (actualState == BPTExerciseStatus.Unpublished && ((BPTApplication)getApplication()).isModerated()){
 				
 				Button publishButton = new Button("publish");
 				publishButton.addListener(new Button.ClickListener(){
@@ -144,7 +132,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				layout.addComponent(rejectButton);						
 				
 			}
-			else if (actualState == BPTToolStatus.Published) {
+			else if (actualState == BPTExerciseStatus.Published) {
 				Button unpublishButton = new Button("unpublish");
 				unpublishButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -153,7 +141,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				});
 				layout.addComponent(unpublishButton);	
 			}
-			else if (actualState == BPTToolStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
+			else if (actualState == BPTExerciseStatus.Rejected && ((BPTApplication)getApplication()).isModerated()){
 				Button proposeButton = new Button("propose");
 				proposeButton.addListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
@@ -165,10 +153,11 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			
 		}
 		getWindow().addWindow(popupWindow);
+		
+		
 	}
 	
 	protected void addConfirmationWindow(final Window popupWindow, final String status) {
-		final TextArea reasonForRejectionTextArea = new TextArea();
 		final Window confirmationWindow = new Window("Notification");
 		confirmationWindow.setWidth("400px");
 		confirmationWindow.setModal(true);
@@ -178,6 +167,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			confirmationWindow.addComponent(new Label("Publishing this entry - are you sure?"));
 		} else if (status.equals("reject")) {
 			confirmationWindow.addComponent(new Label("Rejecting this entry - are you sure?"));
+			reasonForRejectionTextArea = new TextArea();
 			reasonForRejectionTextArea.setInputPrompt("Please describe the reason for rejecting the entry and/or provide hints for improving it.");
 			reasonForRejectionTextArea.setRows(5);
 			reasonForRejectionTextArea.setWidth("95%");
@@ -193,19 +183,18 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		confirmButton.addListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
-					toolRepository.deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
+					exerciseSetRepository.deleteDocument(_id, ((BPTApplication)getApplication()).isModerated());
 				} else if (status.equals("publish")) {
-					toolRepository.publishDocument(_id);
+					exerciseSetRepository.publishDocument(_id);
 				} else if (status.equals("reject")) {
-					toolRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
+					exerciseSetRepository.rejectDocument(_id, (String) reasonForRejectionTextArea.getValue());
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
-					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
+					exerciseSetRepository.unpublishDocument(_id, fromPublished, ((BPTApplication)getApplication()).isModerated());
 				} else { // if status.equals("propose"))
 					boolean fromRejected = false;
-					toolRepository.unpublishDocument(_id, fromRejected);
+					exerciseSetRepository.unpublishDocument(_id, fromRejected);
 				}
-				BPTContainerProvider.getInstance().refreshFromDatabase();
 				((BPTApplication) getApplication()).refreshAndClean();
 				getWindow().removeWindow(confirmationWindow);
 				if(popupWindow != null){
@@ -215,5 +204,6 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			}
 		});
 		getWindow().addWindow(confirmationWindow);
+		
 	}
 }

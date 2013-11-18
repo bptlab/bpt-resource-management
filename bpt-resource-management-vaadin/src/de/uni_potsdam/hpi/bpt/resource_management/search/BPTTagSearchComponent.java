@@ -6,7 +6,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagComponent;
 
 @SuppressWarnings("serial")
-public class BPTTagSearchComponent extends BPTTagComponent{
+public class BPTTagSearchComponent extends BPTTagComponent {
 	
 	public BPTTagSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
 		super(application, tagColumns, newTagsAllowed);
@@ -35,24 +35,24 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 		layout.addComponent(tagBox);
 	}
 	
-	public boolean isNoTagSelected() {
-		return getAvailabiltyTags().isEmpty() && getModelTypeTags().isEmpty() && getPlatformsTags().isEmpty() && getSupportedFunctionalityTags().isEmpty();
+	public ArrayList<String> getLanguageTags() {
+		return ((BPTSearchTagBoxes)tagBox).getLanguageTagValues();
 	}
 	
-	public ArrayList<String> getAvailabiltyTags() {
-		return ((BPTSearchTagBoxes)tagBox).getAvailabilityTagValues();
+	public ArrayList<String> getTopicTags() {
+		return ((BPTSearchTagBoxes)tagBox).getTopicsTagValues();
 	}
 	
-	public ArrayList<String> getModelTypeTags() {
-		return ((BPTSearchTagBoxes)tagBox).getModelTypesTagValues();
+	public ArrayList<String> getModelingLanguagesTags() {
+		return ((BPTSearchTagBoxes)tagBox).getModelingLanguagesTagValues();
 	}
 	
-	public ArrayList<String> getPlatformsTags() {
-		return ((BPTSearchTagBoxes)tagBox).getPlatformsTypesTagValues();
+	public ArrayList<String> getTaskTypesTags() {
+		return ((BPTSearchTagBoxes)tagBox).getTaskTypesTagValues();
 	}
 	
-	public ArrayList<String> getSupportedFunctionalityTags() {
-		return ((BPTSearchTagBoxes)tagBox).getsupportedFunctionalitiesTypesTagValues();
+	public ArrayList<String> getOtherTags() {
+		return ((BPTSearchTagBoxes)tagBox).getOtherTagValues();
 	}
-
+	
 }

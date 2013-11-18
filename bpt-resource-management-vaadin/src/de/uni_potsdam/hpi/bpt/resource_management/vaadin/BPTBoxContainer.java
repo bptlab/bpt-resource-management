@@ -9,7 +9,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 
 @SuppressWarnings("serial")
 public class BPTBoxContainer extends CustomComponent {
@@ -88,17 +88,17 @@ public class BPTBoxContainer extends CustomComponent {
 		((BPTApplication) getApplication()).refreshAndClean();
 	}
 
-	public ArrayList<BPTToolStatus> getSelectedStates() {
-		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+	public ArrayList<BPTExerciseStatus> getSelectedStates() {
+		ArrayList<BPTExerciseStatus> statusList = new ArrayList<BPTExerciseStatus>();
 		
 		if ((Boolean) publishedCheckBox.getValue()) {
-			statusList.add(BPTToolStatus.Published);
+			statusList.add(BPTExerciseStatus.Published);
 		}
 		if ((Boolean) unpublishedCheckBox.getValue()) {
-			statusList.add(BPTToolStatus.Unpublished);
+			statusList.add(BPTExerciseStatus.Unpublished);
 		}
 		if ((Boolean) rejectedCheckBox.getValue()) {
-			statusList.add(BPTToolStatus.Rejected);
+			statusList.add(BPTExerciseStatus.Rejected);
 		}
 		return statusList;
 	}

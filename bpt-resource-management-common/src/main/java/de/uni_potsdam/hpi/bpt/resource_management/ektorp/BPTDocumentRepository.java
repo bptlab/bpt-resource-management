@@ -57,7 +57,6 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
      * 
      */
 	public String createDocument(Map<String, Object> document) {
-		
 		Map<String, Object> databaseDocument = new HashMap<String, Object>();
 		String _id;
 		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.valueOf(tableName.toUpperCase()));
