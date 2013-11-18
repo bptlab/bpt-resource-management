@@ -95,7 +95,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 					@Override
 					public void call(final JSONArray arguments) throws JSONException {
 //						Notification.show("Received call");
-						showAllAndRefreshSidebar();
+						showAllAndRefreshSidebar(false);
 						String message = arguments.getString(0);
 						selectTag(message);
 					}
@@ -190,14 +190,14 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		}
 	}
 	
-	public void showAllAndRefreshSidebar() {
+	public void showAllAndRefreshSidebar(boolean loadEntries) {
 		getSidebar().showAll();
-		showAll();
+		showAll(loadEntries);
 	}
 	
-	public void showAll() {
+	public void showAll(boolean loadEntries) {
 		if (!(entryComponent instanceof BPTEntryCards)) {
-			entryComponent = new BPTEntryCards(this);
+			entryComponent = new BPTEntryCards(this, loadEntries);
 			mainFrame.add(entryComponent);
 		}
 	}
@@ -413,12 +413,12 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		BPTTagSearchComponent tagSearchComponent = getSidebar().getSearchComponent().getTagSearchComponent();
 		String query = getSidebar().getSearchComponent().getFullSearchComponent().getQuery();
 		if (!tagSearchComponent.isNoTagSelected() || (query != null && !query.isEmpty())) {
-			showAll();
+			showAll(true);
 		}
 		if (loggedIn) {
 			if (!moderated) {
 				if (getSidebar().getSearchComponent().isOwnEntriesOptionSelected()) {
-					showAll();
+					showAll(true);
 					dataSource = containerProvider.getVisibleEntriesByUser(user, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = containerProvider.getNumberOfEntriesByUser(user, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
@@ -430,7 +430,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 			} else {
 				ArrayList<BPTToolStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
 				if (statusList.size() != 1 || !statusList.contains(BPTToolStatus.Published)) {
-					showAll();
+					showAll(true);
 				}
 				dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);

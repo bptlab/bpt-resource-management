@@ -29,6 +29,15 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 	protected BPTApplicationUI applicationUI;
 	protected BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	
+	public BPTShowEntryComponent(BPTApplicationUI applicationUI, boolean loadEntries){
+		if(loadEntries){
+			init(applicationUI);
+		}
+		else {
+			buildLayout();
+		}
+	}
+	
 	public BPTShowEntryComponent(BPTApplicationUI applicationUI, String entryId){
 		this.entryId = entryId;
 		init(applicationUI);

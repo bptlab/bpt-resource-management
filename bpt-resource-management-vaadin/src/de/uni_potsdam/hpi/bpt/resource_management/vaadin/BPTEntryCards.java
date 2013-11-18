@@ -20,8 +20,11 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private VerticalLayout vertical;
 	
 	public BPTEntryCards(final BPTApplicationUI applicationUI) {
-		
 		super(applicationUI);
+	}
+
+	public BPTEntryCards(BPTApplicationUI applicationUI, boolean loadEntries) {
+		super(applicationUI, loadEntries);
 	}
 
 	@Override
