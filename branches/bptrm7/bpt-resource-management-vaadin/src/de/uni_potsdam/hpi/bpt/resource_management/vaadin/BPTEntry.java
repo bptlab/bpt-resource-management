@@ -349,7 +349,7 @@ public class BPTEntry extends CustomLayout {
 		
 	}
 	
-	public void hideJavaScript(){
+	public void hideJavaScript() {
 		JavaScript.getCurrent().execute(getJavaScriptStringHide());
 	}
 	

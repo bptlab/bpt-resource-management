@@ -22,8 +22,6 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 	}
 
 	private void init() {
-		setWidth("100%");
-		setHeight("100%");
 		setSizeFull();
 		buildMainLayout();
 	}
@@ -37,7 +35,7 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 		searchInput.setImmediate(true);
 		
 		searchButton = new Button("Search");
-		searchButton.addClickListener(new Button.ClickListener(){
+		searchButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				refresh();
 			}
@@ -45,7 +43,7 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 		searchButton.setClickShortcut(KeyCode.ENTER);
 		
 		resetButton = new Button("Reset");
-		resetButton.addClickListener(new Button.ClickListener(){
+		resetButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				searchInput.setValue("");
 				((BPTSearchComponent) getParent()).getTagSearchComponent().restoreAllTags();
