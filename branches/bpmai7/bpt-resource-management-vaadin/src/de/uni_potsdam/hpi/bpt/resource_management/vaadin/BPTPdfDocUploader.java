@@ -3,9 +3,9 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.File;
 import java.util.Arrays;
 
-import com.vaadin.terminal.FileResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -16,6 +16,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
 
+@SuppressWarnings("serial")
 public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	
 	private static final long serialVersionUID = -4515804890418012196L;
@@ -28,26 +29,26 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	private String[] supportedDocumentTypes;
 	protected HorizontalLayout pdfLayout, docLayout, pdfInnerLayout, docInnerLayout;
 
-	public BPTPdfDocUploader(BPTApplication application, String captionOfPanel,	String captionOfUploadComponent, BPTUploadPanel uploadPanel) {
-		super(application, captionOfPanel, captionOfUploadComponent, uploadPanel);
+	public BPTPdfDocUploader(BPTApplicationUI applicationUI, String captionOfPanel,	String captionOfUploadComponent, BPTUploadPanel uploadPanel) {
+		super(applicationUI, captionOfPanel, captionOfUploadComponent, uploadPanel);
 		this.supportedDocumentTypes = BPTMimeType.getMimeTypes();
 		pdfLayout = new HorizontalLayout();
-		pdfLayout.addComponent(new Label("PDF file:&nbsp;", Label.CONTENT_XHTML));
+		pdfLayout.addComponent(new Label("PDF file:&nbsp;", ContentMode.HTML));
 		pdfInnerLayout = new HorizontalLayout();
 		pdfInnerLayout.addComponent(new Label("(none)"));
 		pdfLayout.addComponent(pdfInnerLayout);
-		addComponent(pdfLayout);
+		mainLayout.addComponent(pdfLayout);
 		docLayout = new HorizontalLayout();
-		docLayout.addComponent(new Label("DOC file:&nbsp;", Label.CONTENT_XHTML));
+		docLayout.addComponent(new Label("DOC file:&nbsp;", ContentMode.HTML));
 		docInnerLayout = new HorizontalLayout();
 		docInnerLayout.addComponent(new Label("(none)"));
 		docLayout.addComponent(docInnerLayout);
-		addComponent(docLayout);
+		mainLayout.addComponent(docLayout);
 	}
 	
 	public void addPdfLinkToPanel(Link link) {
 		File attachmentFile = convertToFile(link);
-		pdfFile = new FileResource(attachmentFile, application);
+		pdfFile = new FileResource(attachmentFile);
 		nameOfPdfFile = link.getCaption();
 		addPdfLink(link);
 	}
@@ -55,15 +56,13 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	private void addPdfLink(Link link){
 		pdfInnerLayout.removeAllComponents();
 		pdfInnerLayout.addComponent(link);
-		pdfInnerLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		pdfInnerLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		Button deletePdfButton = new Button("x");
 		deletePdfButton.setStyleName(BaseTheme.BUTTON_LINK);
-		deletePdfButton.addListener(new Button.ClickListener(){
+		deletePdfButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (pdfFile != null) {
-					File file = pdfFile.getSourceFile();
-					pdfFile.setSourceFile(null);
-					file.delete();
+					pdfFile.getSourceFile().delete();
 					pdfFile = null;
 					nameOfPdfFile = "";
 					pdfInnerLayout.removeAllComponents();
@@ -77,7 +76,7 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	
 	public void addDocLinkToPanel(Link link) {
 		File attachmentFile = convertToFile(link);
-		docFile = new FileResource(attachmentFile, application);
+		docFile = new FileResource(attachmentFile);
 		nameOfDocFile = link.getCaption();
 		addDocLink(link);
 	}
@@ -85,15 +84,13 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	private void addDocLink(Link link) {
 		docInnerLayout.removeAllComponents();
 		docInnerLayout.addComponent(link);
-		docInnerLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		docInnerLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		Button deleteDocButton = new Button("x");
 		deleteDocButton.setStyleName(BaseTheme.BUTTON_LINK);
-		deleteDocButton.addListener(new Button.ClickListener(){
+		deleteDocButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (docFile != null) {
-					File file = docFile.getSourceFile();
-					docFile.setSourceFile(null);
-					file.delete();
+					docFile.getSourceFile().delete();
 					docFile = null;
 					nameOfDocFile = "";
 					docInnerLayout.removeAllComponents();
@@ -109,7 +106,7 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 	
 	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
-		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
+		final FileResource documentResource = new FileResource(tempAttachment);
 		if (documentResource.getMIMEType().equals(BPTMimeType.PDF.toString())) {
 			nameOfPdfFile = documentResource.getFilename();
 //			if (pdfLink != null) {
@@ -118,7 +115,7 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 			pdfLink = getLinkToAttachment(documentResource);
 			addPdfLink(pdfLink);
 			pdfFile = documentResource;
-	        application.refreshAndClean();
+	        applicationUI.refreshAndClean();
 		} else if (documentResource.getMIMEType().equals(BPTMimeType.DOC.toString()) 
 				|| documentResource.getMIMEType().equals(BPTMimeType.DOCX.toString())
 				/* MIME type of docx files is often application/octet-stream which is not used in BPTMimeTypes */
@@ -130,7 +127,7 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 			docLink = getLinkToAttachment(documentResource);
 			addDocLink(docLink);
 			docFile = documentResource;
-	        application.refreshAndClean();
+	        applicationUI.refreshAndClean();
 		} else {
 			// TODO: do something if uploaded file is neither PDF nor DOC/DOCX
 		}
@@ -163,12 +160,11 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 		File file;
 		if (pdfFile != null) {
 			file = pdfFile.getSourceFile();
-			pdfFile.setSourceFile(null);
-			file.delete();
+			pdfFile.getSourceFile().delete();
 		}
 		if (docFile != null) {
 			file = docFile.getSourceFile();
-			docFile.setSourceFile(null);
+			docFile.getSourceFile().delete();
 			file.delete();
 		}
 	}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.vaadin.ui.GridLayout;
 
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagBox;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 

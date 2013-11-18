@@ -6,23 +6,21 @@ import com.vaadin.ui.NativeSelect;
 
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-public class BPTLanguageSelector extends NativeSelect{
+@SuppressWarnings("serial")
+public class BPTLanguageSelector extends NativeSelect {
 
-	private BPTApplication application;
-
-	public BPTLanguageSelector(final BPTApplication application){
+	public BPTLanguageSelector(final BPTApplicationUI applicationUI) {
 		super();
-		this.application = application;
 		ArrayList<String> languageList = BPTContainerProvider.getInstance().getUniqueLanguages();
 		setImmediate(true);
 		for(String language : languageList){
 			addItem(language);
 		}
 		
-		addListener(new ValueChangeListener() {
+		addValueChangeListener(new ValueChangeListener() {
 
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-				application.refreshAndClean();
+				applicationUI.refreshAndClean();
 			}
         });
 	}

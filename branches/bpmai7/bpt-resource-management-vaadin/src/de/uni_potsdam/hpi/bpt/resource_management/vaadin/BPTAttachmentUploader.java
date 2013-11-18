@@ -7,15 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.StreamResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Button.ClickEvent;
@@ -23,12 +24,11 @@ import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.BaseTheme;
 
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
+@SuppressWarnings("serial")
 public class BPTAttachmentUploader extends Panel implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	protected static final long serialVersionUID = 5970533396623869051L;
@@ -36,25 +36,25 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	protected File tempAttachment;
 	protected List<String> namesOfAttachments = new ArrayList<String>();
 	protected List<FileResource> attachments = new ArrayList<FileResource>();
-	protected BPTApplication application;
+	protected BPTApplicationUI applicationUI;
 	protected String errorMessage = new String();
-	private VerticalLayout mainLayout;
+	protected VerticalLayout mainLayout;
 	protected BPTUploadPanel uploadPanel;
 
-	public BPTAttachmentUploader(BPTApplication application, String captionOfPanel, String captionOfUploadComponent, BPTUploadPanel uploadPanel) {
-		this.application = application;
+	public BPTAttachmentUploader(BPTApplicationUI applicationUI, String captionOfPanel, String captionOfUploadComponent, BPTUploadPanel uploadPanel) {
+		this.applicationUI = applicationUI;
 		setCaption(captionOfPanel);
 		this.mainLayout = new VerticalLayout();
 		mainLayout.setImmediate(true);
-		this.addComponent(mainLayout);
+		setContent(mainLayout);
 		this.uploadPanel = uploadPanel;
 		uploadComponent = new Upload(captionOfUploadComponent, this);
 		uploadComponent.setImmediate(false);
 		uploadComponent.setWidth("-1px");
 		uploadComponent.setHeight("-1px");
-		uploadComponent.addListener((Upload.StartedListener)this);
-		uploadComponent.addListener((Upload.SucceededListener)this);
-		uploadComponent.addListener((Upload.FailedListener)this);
+		uploadComponent.addStartedListener((Upload.StartedListener)this);
+		uploadComponent.addSucceededListener((Upload.SucceededListener)this);
+		uploadComponent.addFailedListener((Upload.FailedListener)this);
 		mainLayout.addComponent(uploadComponent);
 	}
 
@@ -79,21 +79,18 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	}
 	
 	public void uploadFailed(FailedEvent event) {
-		getWindow().showNotification(
-                "Upload failed",
-                errorMessage,
-                Notification.TYPE_ERROR_MESSAGE);
+		Notification.show("Upload failed", errorMessage, Notification.Type.ERROR_MESSAGE);
 	}
 	
 	public void uploadSucceeded(final SucceededEvent event) {
-		final FileResource documentResource = new FileResource(tempAttachment, getApplication());
+		final FileResource documentResource = new FileResource(tempAttachment);
 		namesOfAttachments.add(documentResource.getFilename());
 		final HorizontalLayout layout = new HorizontalLayout();
 		layout.addComponent(getLinkToAttachment(documentResource));
-		layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		layout.addComponent(new Label("&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		Button deleteButton = new Button("x");
 		deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
-		deleteButton.addListener(new Button.ClickListener(){
+		deleteButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				mainLayout.removeComponent(layout);
 				namesOfAttachments.remove(documentResource.getFilename());
@@ -104,7 +101,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 		mainLayout.addComponent(layout);
 		attachments.add(documentResource);
 //		System.out.println(documentResource);
-//        application.refreshAndClean();
+//      applicationUI.refreshAndClean();
 	}
 	
 	protected Link getLinkToAttachment(FileResource documentResource) {
@@ -123,9 +120,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	
 	public void clearFiles() {
 		for (FileResource attachment : attachments) {
-			File file = attachment.getSourceFile();
-			attachment.setSourceFile(null);
-			file.delete();
+			attachment.getSourceFile().delete();
 		}
 		attachments.clear();
 	}
@@ -133,9 +128,9 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	public void addLinksToExistingAttachments(ArrayList<Link> linksToExistingAttachments) {
 		for (Link link : linksToExistingAttachments) {
     		File attachmentFile = convertToFile(link);
-    		attachments.add(new FileResource(attachmentFile, application));
+    		attachments.add(new FileResource(attachmentFile));
     		namesOfAttachments.add(link.getCaption());
-    		addComponent(link);
+    		mainLayout.addComponent(link);
     	}
 	}
 

@@ -1,13 +1,12 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.terminal.FileResource;
+import com.vaadin.server.FileResource;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
@@ -16,11 +15,10 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "unchecked"})
 public class BPTUploadPanel extends VerticalLayout {
 	
 	private VerticalLayout layout;
@@ -37,7 +35,7 @@ public class BPTUploadPanel extends VerticalLayout {
 	private ArrayList<Link> linksToExistingSupplementaryFiles;
 	private Link linkToExistingPdfFile, linkToExistingDocFile;
 	
-	public BPTUploadPanel(Item item, final BPTApplication application, BPTUploader uploader) {
+	public BPTUploadPanel(Item item, final BPTApplicationUI applicationUI, BPTUploader uploader) {
 		super();
 		this.layout = this;
 		this.uploader = uploader;
@@ -56,7 +54,7 @@ public class BPTUploadPanel extends VerticalLayout {
 		languageInput.setNewItemsAllowed(true);
 		languageInput.setImmediate(true);
 		languageInput.setWidth("100%");
-		languageInput.addListener(new Property.ValueChangeListener() {
+		languageInput.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				setLanguageTo(languageInput.getValue().toString());
 			}
@@ -75,28 +73,28 @@ public class BPTUploadPanel extends VerticalLayout {
 		exerciseURLInput.setWidth("100%");
 		layout.addComponent(exerciseURLInput);
 		
-		taskSheetPanel = new BPTPdfDocUploader(application, "Task sheet *", "Upload a PDF or DOC/DOCX document", this);
+		taskSheetPanel = new BPTPdfDocUploader(applicationUI, "Task sheet *", "Upload a PDF or DOC/DOCX document", this);
 		layout.addComponent(taskSheetPanel);
 		
-		supplementaryFilesPanel = new BPTAttachmentUploader(application, "Supplementary files", "Upload a file", this);
+		supplementaryFilesPanel = new BPTAttachmentUploader(applicationUI, "Supplementary files", "Upload a file", this);
         layout.addComponent(supplementaryFilesPanel);
         
         if (item != null) {
         	documentId = item.getItemProperty("ID").toString();
-        	titleInput.setValue(item.getItemProperty("Title").getValue());
+        	titleInput.setValue((String)item.getItemProperty("Title").getValue());
         	descriptionInput.setValue(item.getItemProperty("Description").getValue().toString());
         	if (!item.getItemProperty("Exercise URL").getValue().toString().equals("")) {
             	exerciseURLInput.setValue(((Link)item.getItemProperty("Exercise URL").getValue()).getCaption().toString());
         	}
-        	linkToExistingPdfFile = (Link) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "name_of_pdf_file", BPTPropertyValueType.LINK_ATTACHMENT, application);
-        	linkToExistingDocFile = (Link) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "name_of_doc_file", BPTPropertyValueType.LINK_ATTACHMENT, application);
+        	linkToExistingPdfFile = (Link) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "name_of_pdf_file", BPTPropertyValueType.LINK_ATTACHMENT);
+        	linkToExistingDocFile = (Link) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "name_of_doc_file", BPTPropertyValueType.LINK_ATTACHMENT);
         	if (!linkToExistingPdfFile.getCaption().isEmpty()) {
         		taskSheetPanel.addPdfLinkToPanel(linkToExistingPdfFile);
         	}
         	if (!linkToExistingDocFile.getCaption().isEmpty()) {
         		taskSheetPanel.addDocLinkToPanel(linkToExistingDocFile);
         	}
-        	linksToExistingSupplementaryFiles = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_supplementary_files", BPTPropertyValueType.LINK_ATTACHMENT_LIST, application);
+        	linksToExistingSupplementaryFiles = (ArrayList<Link>) BPTVaadinResources.generateComponent(exerciseRepository, exerciseRepository.readDocument(documentId), "names_of_supplementary_files", BPTPropertyValueType.LINK_ATTACHMENT_LIST);
         	supplementaryFilesPanel.addLinksToExistingAttachments(linksToExistingSupplementaryFiles);      	
         }
 	}
