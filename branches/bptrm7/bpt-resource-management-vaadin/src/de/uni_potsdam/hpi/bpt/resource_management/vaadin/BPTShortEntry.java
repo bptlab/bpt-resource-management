@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.data.Item;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomLayout;
@@ -9,7 +10,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTShortEntry extends CustomLayout {
 
 	private BPTApplicationUI applicationUI;
@@ -26,7 +27,7 @@ public class BPTShortEntry extends CustomLayout {
 	private void addEntryInformation(Item item) {
 		String name = (String) item.getItemProperty("Name").getValue();
 		Label nameLabel = new Label("<span style=\"display: block\">" + name + "</span>");
-		nameLabel.setContentMode(Label.CONTENT_XHTML);
+		nameLabel.setContentMode(ContentMode.HTML);
 		nameLabel.setWidth("200px");
 		addComponent(nameLabel, "Name");
 		Object value = item.getItemProperty("Logo").getValue();
@@ -42,12 +43,12 @@ public class BPTShortEntry extends CustomLayout {
 		String provider = (item.getItemProperty("Provider").getValue()).toString();
 		if (providerURL.isEmpty()) {
 			Label label = new Label("<i><span style=\"margin-left: -1em\">" + "Provider" + "</span></i><br/><span style=\"margin-left: 1em; display: block\">" + provider + "</span>");
-			label.setContentMode(Label.CONTENT_XHTML);
+			label.setContentMode(ContentMode.HTML);
 			label.setWidth("175px");
 			this.addComponent(label, "Provider");
 		} else {
 			Label label = new Label("<i><span style=\"margin-left: -1em\">" + "Provider" + "</span></i><br/>" + "<span style=\"margin-left: 1em; display: block\"><a href='" + providerURL + "' target='_blank'>" + provider + "</a></span>");
-			label.setContentMode(Label.CONTENT_XHTML);
+			label.setContentMode(ContentMode.HTML);
 			label.setWidth("175px");
 			this.addComponent(label, "Provider");
 		}
@@ -56,7 +57,7 @@ public class BPTShortEntry extends CustomLayout {
 	private void addButton() {
 		
 		Button showSingleEntryButton = new Button("Show single entry");
-		showSingleEntryButton.addListener(new Button.ClickListener(){
+		showSingleEntryButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showSpecificEntry(entryId);
 				}

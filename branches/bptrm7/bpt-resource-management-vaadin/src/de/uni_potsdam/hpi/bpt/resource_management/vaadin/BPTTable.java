@@ -6,7 +6,7 @@ import com.vaadin.ui.Table;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTTable extends BPTShowEntryComponent {
 
 	public BPTTable(BPTApplicationUI applicationUI) {
@@ -16,7 +16,7 @@ public class BPTTable extends BPTShowEntryComponent {
 	private Table table;
 	
 	private void addListenerToTable() {
-		table.addListener(new Table.ValueChangeListener() {
+		table.addValueChangeListener(new Table.ValueChangeListener() {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				if ((table.getItem(table.getValue()) != null)){
 					showSelectedEntry(table.getItem(table.getValue()));

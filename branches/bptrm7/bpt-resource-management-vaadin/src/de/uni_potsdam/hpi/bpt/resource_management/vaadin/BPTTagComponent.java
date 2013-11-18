@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -13,7 +14,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchInputField;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings({ "serial", "unchecked", "deprecation" })
+@SuppressWarnings({ "serial", "unchecked"})
 public class BPTTagComponent extends VerticalLayout {
 	
 	protected BPTSearchInputField searchInput;
@@ -55,7 +56,7 @@ public class BPTTagComponent extends VerticalLayout {
 			Label label = new Label(uniqueValue);
 			if(categories.contains(uniqueValue)) {
 //				label = new Label("<b>" + uniqueValue + "</b>");
-				label.setContentMode(Label.CONTENT_XHTML);
+				label.setContentMode(ContentMode.HTML);
 			}
 			searchInput.addItem(label);
 		}
@@ -65,7 +66,7 @@ public class BPTTagComponent extends VerticalLayout {
 	}
 
 	private void addListenerToSearchInputBox() {
-		searchInput.addListener(new Property.ValueChangeListener() {
+		searchInput.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				Object value = searchInput.getValue();
 				if (value == null) return;

@@ -22,7 +22,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProv
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public abstract class BPTShowEntryComponent extends VerticalLayout {
 	
 	protected String _id, entryId;
@@ -107,7 +107,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			popupWindowLayout.addComponent(layout);
 			
 			Button deleteButton = new Button("delete");
-			deleteButton.addListener(new Button.ClickListener(){
+			deleteButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					addConfirmationWindow(popupWindow, "delete");
 				}
@@ -116,7 +116,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			
 			if (applicationUI.isLoggedIn() && applicationUI.getUser().equals(tool.get("user_id"))){
 				Button editButton = new Button("edit");
-				editButton.addListener(new Button.ClickListener(){
+				editButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						getUI().removeWindow(popupWindow);
 						((BPTApplicationUI)getUI()).edit(item);
@@ -129,7 +129,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			if (actualState == BPTToolStatus.Unpublished && applicationUI.isModerated()){
 				
 				Button publishButton = new Button("publish");
-				publishButton.addListener(new Button.ClickListener(){
+				publishButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						addConfirmationWindow(popupWindow, "publish");
 					}
@@ -137,7 +137,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				layout.addComponent(publishButton);
 				
 				Button rejectButton = new Button("reject");
-				rejectButton.addListener(new Button.ClickListener(){
+				rejectButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						addConfirmationWindow(popupWindow, "reject");
 					}
@@ -147,7 +147,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			}
 			else if (actualState == BPTToolStatus.Published) {
 				Button unpublishButton = new Button("unpublish");
-				unpublishButton.addListener(new Button.ClickListener(){
+				unpublishButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						addConfirmationWindow(popupWindow, "unpublish");
 					}
@@ -156,7 +156,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			}
 			else if (actualState == BPTToolStatus.Rejected && ((BPTApplicationUI)getUI()).isModerated()){
 				Button proposeButton = new Button("propose");
-				proposeButton.addListener(new Button.ClickListener(){
+				proposeButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						addConfirmationWindow(popupWindow, "propose");
 					}
@@ -193,7 +193,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 		}
 		Button confirmButton = new Button("Confirm");
 		confirmationWindowLayout.addComponent(confirmButton);
-		confirmButton.addListener(new Button.ClickListener(){
+		confirmButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				if (status.equals("delete")) {
 					toolRepository.deleteDocument(_id, ((BPTApplicationUI)getUI()).isModerated());

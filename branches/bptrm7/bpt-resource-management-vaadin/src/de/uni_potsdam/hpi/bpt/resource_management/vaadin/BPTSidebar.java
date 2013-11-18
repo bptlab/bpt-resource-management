@@ -1,6 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.server.Page;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
@@ -11,7 +12,7 @@ import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTSidebar extends HorizontalLayout {
 	
 	private BPTApplicationUI applicationUI;
@@ -58,7 +59,7 @@ public class BPTSidebar extends HorizontalLayout {
 	
 	public void renderUploader() {
 		removeAllComponents();
-		Label label = new Label("required fields marked with *<br/>", Label.CONTENT_XHTML);
+		Label label = new Label("required fields marked with *<br/>", ContentMode.HTML);
 		addComponent(label);
 		addComponent(loginComponent);
 		setExpandRatio(label, 75);
@@ -67,7 +68,7 @@ public class BPTSidebar extends HorizontalLayout {
 	
 	public void renderAdministrator() {
 		removeAllComponents();
-		Label label = new Label("Administration page <br/>", Label.CONTENT_XHTML);
+		Label label = new Label("Administration page <br/>", ContentMode.HTML);
 		addComponent(label);
 		addComponent(loginComponent);
 		setExpandRatio(label, 75);
@@ -87,7 +88,7 @@ public class BPTSidebar extends HorizontalLayout {
 		removeAllComponents();
 		VerticalLayout shareLayout = new VerticalLayout();
 		
-		Label label = new Label("URL to this page:&nbsp;", Label.CONTENT_XHTML);
+		Label label = new Label("URL to this page:&nbsp;", ContentMode.HTML);
 		final TextField textField = new TextField();
 		shareLayout.addComponent(label);
 		
@@ -101,7 +102,7 @@ public class BPTSidebar extends HorizontalLayout {
 		
 		Button startButton = new Button("Go back to startpage");
 		startButton.setStyleName(BaseTheme.BUTTON_LINK);
-		startButton.addListener(new Button.ClickListener(){
+		startButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				Page.getCurrent().setUriFragment("");
 				applicationUI.showStartPage();
@@ -109,11 +110,11 @@ public class BPTSidebar extends HorizontalLayout {
 		});
 		buttonLayout.addComponent(startButton);
 		
-		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or &nbsp;&nbsp;", Label.CONTENT_XHTML));
+		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or &nbsp;&nbsp;", ContentMode.HTML));
 		
 		Button findButton = new Button("See all " + this.numberOfEntries + " entries of Tools for BPM");
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
-		findButton.addListener(new Button.ClickListener(){
+		findButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				Page.getCurrent().setUriFragment("");
 				applicationUI.showAllAndRefreshSidebar();

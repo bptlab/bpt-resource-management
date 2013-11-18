@@ -26,7 +26,6 @@ public class BPTSearchComponent extends VerticalLayout {
 	}
 
 	private void init() {
-		setHeight("100%");
 		setSizeFull();
 		boxLayout = new HorizontalLayout();
 		addComponent(boxLayout);

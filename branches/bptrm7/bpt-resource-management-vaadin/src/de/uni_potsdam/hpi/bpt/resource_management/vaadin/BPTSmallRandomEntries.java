@@ -6,23 +6,21 @@ import java.util.ArrayList;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
+import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	private HorizontalLayout cardLayout, statisticsLayout;
@@ -200,7 +198,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 	
 	private void addReloadButton() {
 		Button reloadButton = new Button("reload");
-		reloadButton.addListener(new Button.ClickListener(){
+		reloadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 				statusList.add(BPTToolStatus.Published);
@@ -212,37 +210,34 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 	
 	private void addCharts() {
 		
-		 Embedded chart = new Embedded();
-		 chart.setWidth("240px");
-		 chart.setHeight("300px");
-		 chart.setType(Embedded.TYPE_BROWSER);
-		 StreamResource res = new StreamResource(new PieChartStreamSource(), "");
-		 res.setMIMEType("text/html; charset=utf-8");
-		 chart.setSource(res);
-		 layout.addComponent(chart, "piechart");
-		 
-		 Embedded barChart = new Embedded();
-		 barChart.setWidth("240px");
-		 barChart.setHeight("300px");
-		 barChart.setType(Embedded.TYPE_BROWSER);
-		 StreamResource barChartRessource = new StreamResource(new BarChartStreamSource(), "");
-		 barChartRessource.setMIMEType("text/html; charset=utf-8");
-		 barChart.setSource(barChartRessource);
-		 layout.addComponent(barChart, "barchart");
-		 
-		 Embedded chart3 = new Embedded();
-		 chart3.setWidth("240px");
-		 chart3.setHeight("300px");
-		 chart3.setType(Embedded.TYPE_BROWSER);
-		 StreamResource res3 = new StreamResource(new StaticCloudStreamSource(), "");
-		 res3.setMIMEType("text/html; charset=utf-8");
-		 chart3.setSource(res3);
-		 layout.addComponent(chart3, "tagcloud");
+		BrowserFrame barChartFrame = new BrowserFrame();
+		barChartFrame.setWidth("240px");
+		barChartFrame.setHeight("300px");
+		StreamResource barChartRessource = new StreamResource(new BarChartStreamSource(), "");
+		barChartRessource.setMIMEType("text/html; charset=utf-8");
+		barChartFrame.setSource(barChartRessource);
+		layout.addComponent(barChartFrame, "barchart");
+		
+		BrowserFrame pieChartFrame = new BrowserFrame();
+		pieChartFrame.setWidth("240px");
+		pieChartFrame.setHeight("300px");
+		StreamResource res = new StreamResource(new PieChartStreamSource(), "");
+		res.setMIMEType("text/html; charset=utf-8");
+		pieChartFrame.setSource(res);
+		layout.addComponent(pieChartFrame, "piechart");
+				 
+		BrowserFrame tagCloudFrame = new BrowserFrame();
+		tagCloudFrame.setWidth("240px");
+		tagCloudFrame.setHeight("300px");
+		StreamResource res3 = new StreamResource(new StaticCloudStreamSource(), "");
+		res3.setMIMEType("text/html; charset=utf-8");
+		tagCloudFrame.setSource(res3);
+		layout.addComponent(tagCloudFrame, "tagcloud");
 	}
 
 	private void addShowAllButton() {
 		Button showAllButton = new Button("Show all entries");
-		showAllButton.addListener(new Button.ClickListener(){
+		showAllButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showAllAndRefreshSidebar();
 				}

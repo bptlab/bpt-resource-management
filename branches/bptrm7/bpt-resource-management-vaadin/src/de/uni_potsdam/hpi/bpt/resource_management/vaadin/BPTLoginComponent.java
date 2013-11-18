@@ -9,6 +9,7 @@ import org.expressme.openid.OpenIdManager;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,7 +18,7 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTLoginComponent extends VerticalLayout implements Property.ValueChangeListener {
 	
 	private Label welcomeLabel;
@@ -48,7 +49,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 
 	private void addComponentsForLogin() {
         HorizontalLayout openIdLayout = new HorizontalLayout();
-        Label loginLabel = new Label("OpenID provider:&nbsp;", Label.CONTENT_XHTML);
+        Label loginLabel = new Label("OpenID provider:&nbsp;", ContentMode.HTML);
         NativeSelect openIdProviderNativeSelect = new NativeSelect();
         for (String openIdProvider : openIdProviders) {
         	openIdProviderNativeSelect.addItem(openIdProvider);
@@ -56,14 +57,14 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
         openIdProviderNativeSelect.setNullSelectionAllowed(false);
         openIdProviderNativeSelect.setValue(openIdProviders[0]);
         openIdProviderNativeSelect.setImmediate(true);
-        openIdProviderNativeSelect.addListener(this);
+        openIdProviderNativeSelect.addValueChangeListener(this);
         openIdLayout.addComponent(loginLabel);
         openIdLayout.addComponent(openIdProviderNativeSelect);
         
 		Button loginButton = new Button("Login");
         loginButton.setStyleName(BaseTheme.BUTTON_LINK);
         
-        loginButton.addListener(new Button.ClickListener(){
+        loginButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 			        try {
 						redirectToOpenIDProvider();
@@ -84,7 +85,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 		administrationButton.setStyleName(BaseTheme.BUTTON_LINK);
 		addComponent(administrationButton);
 		
-		administrationButton.addListener(new Button.ClickListener() {
+		administrationButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				applicationUI.renderAdministrator();
 			}
@@ -97,7 +98,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         addComponent(logoutButton);
         
-        logoutButton.addListener(new Button.ClickListener() {
+        logoutButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				applicationUI.setName("");
 				applicationUI.setMailAddress("");

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.FileResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Image;
@@ -36,7 +37,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTPropertyValueType;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
-@SuppressWarnings({"serial", "deprecation"})
+@SuppressWarnings({"serial"})
 public class BPTUploader extends VerticalLayout implements Upload.StartedListener, Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 	
 	private Upload upload;
@@ -60,7 +61,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		this.applicationUI = applicationUI;
 		documentId = null;
 		
-        Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
+        Label label = new Label("<br/> <hr/> <br/>", ContentMode.HTML);
         addComponent(label);
 		
 		addComponent(new Label("Tool name *"));
@@ -68,12 +69,12 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		toolNameInput.setWidth("100%");
 		addComponent(toolNameInput);
 		
-		addComponent(new Label("Description text (*) <font color=\"#BBBBBB\">and/or description URL</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Description text (*) <font color=\"#BBBBBB\">and/or description URL</font>", ContentMode.HTML));
 		descriptionInput = new TextArea();
 		descriptionInput.setWidth("100%");
 		addComponent(descriptionInput);
 		
-		addComponent(new Label("Description URL (*) <font color=\"#BBBBBB\">and/or description text</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Description URL (*) <font color=\"#BBBBBB\">and/or description text</font>", ContentMode.HTML));
 		descriptionURLInput = new TextField();
 		descriptionURLInput.setInputPrompt("http://");
 		descriptionURLInput.setWidth("100%");
@@ -134,13 +135,13 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		functionalityTagComponent.setWidth("100%");
 		addComponent(functionalityTagComponent);
 		
-		addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", ContentMode.HTML));
 		contactNameInput = new TextField();
 		contactNameInput.setValue(applicationUI.getName());
 		contactNameInput.setWidth("100%");
 		addComponent(contactNameInput);
 		
-		addComponent(new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML));
+		addComponent(new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", ContentMode.HTML));
 		contactMailInput = new TextField();
 		contactMailInput.setValue(applicationUI.getMailAddress());
 		contactMailInput.setWidth("100%");
@@ -191,31 +192,31 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 
 		finishUploadButton = new Button("Submit");
 		addComponent(finishUploadButton);
-		finishUploadButton.addListener(new Button.ClickListener(){
+		finishUploadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
 				if (((String)toolNameInput.getValue()).isEmpty()) {
-					Notification.show("'Tool name' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Tool name' field is empty", Notification.Type.ERROR_MESSAGE);
 				} else if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
 					addWarningWindow(getUI());
 				} else if (((String)descriptionInput.getValue()).isEmpty() && (((String)descriptionURLInput.getValue()).isEmpty())) {
-					Notification.show("One of the fields 'Description' and 'Description URL' must be filled", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("One of the fields 'Description' and 'Description URL' must be filled", Notification.Type.ERROR_MESSAGE);
 				} else if (!((String)descriptionURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)descriptionURLInput.getValue())) {
-					Notification.show("Invalid URL", "in field 'Description URL': " + (String)descriptionURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Description URL': " + (String)descriptionURLInput.getValue(), Notification.Type.ERROR_MESSAGE);
 				} else if (((String)providerInput.getValue()).isEmpty()) {
-					Notification.show("'Provider' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Provider' field is empty", Notification.Type.ERROR_MESSAGE);
 				} else if (!((String)providerURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)providerURLInput.getValue())) {
-					Notification.show("Invalid URL", "in field 'Provider URL': " + (String)providerURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Provider URL': " + (String)providerURLInput.getValue(), Notification.Type.ERROR_MESSAGE);
 				} else if (!((String)documentationURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)documentationURLInput.getValue())) {
-					Notification.show("Invalid URL", "in field 'Documentation URL': " + (String)documentationURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Documentation URL': " + (String)documentationURLInput.getValue(), Notification.Type.ERROR_MESSAGE);
 				} else if (!((String)screencastURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)screencastURLInput.getValue())) {
-					Notification.show("Invalid URL", "in field 'Screencast URL': " + (String)screencastURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Screencast URL': " + (String)screencastURLInput.getValue(), Notification.Type.ERROR_MESSAGE);
 				} else if (!((String)tutorialURLInput.getValue()).isEmpty() && !BPTValidator.isValidUrl((String)tutorialURLInput.getValue())) {
-					Notification.show("Invalid URL", "in field 'Tutorial URL': " + (String)tutorialURLInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid URL", "in field 'Tutorial URL': " + (String)tutorialURLInput.getValue(), Notification.Type.ERROR_MESSAGE);
 				} else if (((String)contactNameInput.getValue()).isEmpty()) {
-					Notification.show("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Contact name' field is empty", Notification.Type.ERROR_MESSAGE);
 				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
-					Notification.show("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.Type.ERROR_MESSAGE);
 				} else {
 					finishUpload();
 				}
@@ -316,7 +317,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 							+ "If you have any question, please contact"
 							+ "<a href=\"mailto:bptresourcemanagement@gmail.com?subject=[Tools+for+BPM]+Feedback\"> bptresourcemanagement@gmail.com </a>.");
 				}
-				subWindowLabel.setContentMode(Label.CONTENT_XHTML);
+				subWindowLabel.setContentMode(ContentMode.HTML);
 				final Window subwindow = new Window((String)toolNameInput.getValue());
 				subwindow.setWidth("500px");
 				VerticalLayout subWindowLayout = new VerticalLayout();
@@ -346,12 +347,12 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 				warningWindowLayout.addComponent(yesButton);
 				warningWindowLayout.addComponent(noButton);
 				warningWindow.setContent(warningWindowLayout);
-				noButton.addListener(new Button.ClickListener(){
+				noButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						ui.removeWindow(warningWindow);
 					}
 				});
-				yesButton.addListener(new Button.ClickListener(){
+				yesButton.addClickListener(new Button.ClickListener(){
 					public void buttonClick(ClickEvent event) {
 						ui.removeWindow(warningWindow);
 						finishUpload();
@@ -378,9 +379,12 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		upload.setImmediate(false);
 		upload.setWidth("-1px");
 		upload.setHeight("-1px");
-		upload.addListener((Upload.StartedListener)this);
-		upload.addListener((Upload.SucceededListener)this);
-        upload.addListener((Upload.FailedListener)this);
+//		upload.addListener((Upload.StartedListener)this);
+//		upload.addListener((Upload.SucceededListener)this);
+//		upload.addListener((Upload.FailedListener)this);
+		upload.addStartedListener((Upload.StartedListener) this);
+		upload.addSucceededListener((Upload.SucceededListener) this);
+		upload.addFailedListener((Upload.FailedListener)this);
 		imagePanelLayout.addComponent(upload);
 	}
 	
@@ -420,7 +424,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
         imagePanelLayout.addComponent(image);
         removeImageButton = new Button("Remove image");
 		imagePanelLayout.addComponent(removeImageButton);
-		removeImageButton.addListener(new Button.ClickListener(){
+		removeImageButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent clickEvent) {
 				outputStream = null;
 				imagePanelLayout.removeAllComponents();
@@ -442,7 +446,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		Notification.show(
                 "Upload failed",
                 errorMessage,
-                Notification.TYPE_ERROR_MESSAGE);
+                Notification.Type.ERROR_MESSAGE);
 	}
 
 }
