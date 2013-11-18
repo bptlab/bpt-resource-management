@@ -192,7 +192,6 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		addCharts();
 		addReloadButton();
 		addShowAllButton();
-		addComponent(new ComboBox());
 	}
 
 	
@@ -239,7 +238,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		Button showAllButton = new Button("Show all entries");
 		showAllButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					applicationUI.showAllAndRefreshSidebar();
+					applicationUI.showAllAndRefreshSidebar(true);
 				}
 		});
 		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
