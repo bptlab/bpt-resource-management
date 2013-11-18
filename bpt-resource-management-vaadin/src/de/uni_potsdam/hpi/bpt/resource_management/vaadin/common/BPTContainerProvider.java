@@ -19,7 +19,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepositor
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 
 /**
  * Provides data for the table and the search component.
@@ -38,13 +38,11 @@ public class BPTContainerProvider {
 	private BPTExerciseSetRepository exerciseSetRepository;
 	private BPTExerciseRepository exerciseRepository;
 	private BPTUserRepository userRepository;
-	private BPTApplication application;
 	
-	public BPTContainerProvider(BPTApplication application) {
-		this.application = application;
-		this.exerciseSetRepository = application.getExerciseSetRepository();
-		this.exerciseRepository = application.getExerciseRepository();
-		this.userRepository = application.getUserRepository();
+	public BPTContainerProvider(BPTApplicationUI applicationUI) {
+		this.exerciseSetRepository = applicationUI.getExerciseSetRepository();
+		this.exerciseRepository = applicationUI.getExerciseRepository();
+		this.userRepository = applicationUI.getUserRepository();
 		BPTContainerProvider.instance = this;
 	}
 	
@@ -180,7 +178,7 @@ public class BPTContainerProvider {
 		entrySets = BPTVaadinResources.getPropertyArray(type);
 		
 		for (Object[] entry : entrySets) {
-			Object component = BPTVaadinResources.generateComponent(repository, document, (String)entry[0], (BPTPropertyValueType)entry[3], application);
+			Object component = BPTVaadinResources.generateComponent(repository, document, (String)entry[0], (BPTPropertyValueType)entry[3]);
 			if (entry[1].equals("Supplementary files")) {
 				ArrayList<Link> links = (ArrayList<Link>) component;
 				for (int i = 1; i <= links.size(); i++) {

@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.Application;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -184,7 +184,7 @@ public class BPTVaadinResources {
 	 * @return returns the specific Vaadin component or a String if the value type is IGNORE
 	 * 
 	 */
-	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> document, String documentColumnName, BPTPropertyValueType valueType, Application application) {
+	public static Object generateComponent(BPTDocumentRepository repository, Map<String, Object> document, String documentColumnName, BPTPropertyValueType valueType) {
 		Object value = document.get(documentColumnName);
 		switch (valueType) {
 			case LINK : return asLink((String)value);
@@ -193,8 +193,8 @@ public class BPTVaadinResources {
 			case DATE : return asDate((String)value);
 			case RICH_TEXT : return asRichText((String)value);
 //			case IMAGE : return asImage(repository, tool, attachmentName);
-			case LINK_ATTACHMENT : return asAttachmentLink(repository, document, (String)value, application);
-			case LINK_ATTACHMENT_LIST : return asListOfAttachmentLinks(repository, document, (ArrayList<String>)value, application);
+			case LINK_ATTACHMENT : return asAttachmentLink(repository, document, (String)value);
+			case LINK_ATTACHMENT_LIST : return asListOfAttachmentLinks(repository, document, (ArrayList<String>)value);
 			case CHECKBOX : return asCheckBox(repository, document, documentColumnName, (Boolean)value);
 			default : return value;
 		}
@@ -223,7 +223,7 @@ public class BPTVaadinResources {
 	
 	private static Label asRichText(String richTextString) {
 		Label richText = new Label(richTextString);
-	    richText.setContentMode(Label.CONTENT_XHTML);
+	    richText.setContentMode(ContentMode.HTML);
 	    return richText;
 	}
 	
@@ -249,21 +249,21 @@ public class BPTVaadinResources {
 //		}
 //	}
 	
-	private static Link asAttachmentLink(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName, Application application) {
+	private static Link asAttachmentLink(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
 		StreamResource attachment = new StreamResource(new StreamResource.StreamSource() {
 			public InputStream getStream() {
 				return repository.readAttachment((String)tool.get("_id"), attachmentName);
 			}
-		}, attachmentName, application);
+		}, attachmentName);
 		Link link = new Link(attachmentName, attachment);
 		setTargetAndIcon(link);
 		return link;
 	}
 
-	private static ArrayList<Link> asListOfAttachmentLinks(final BPTDocumentRepository repository, final Map<String, Object> tool, ArrayList<String> namesOfAttachments, Application application) {
+	private static ArrayList<Link> asListOfAttachmentLinks(final BPTDocumentRepository repository, final Map<String, Object> tool, ArrayList<String> namesOfAttachments) {
 		ArrayList<Link> links = new ArrayList<Link>();
 		for (final String attachmentName : namesOfAttachments) {
-			Link link = asAttachmentLink(repository, tool, attachmentName, application);
+			Link link = asAttachmentLink(repository, tool, attachmentName);
 			links.add(link);
 		}
 		return links;
@@ -273,7 +273,7 @@ public class BPTVaadinResources {
 		final CheckBox checkbox = new CheckBox();
 		checkbox.setValue(value);
 		checkbox.setImmediate(true);
-		checkbox.addListener(new Property.ValueChangeListener() {
+		checkbox.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				Map<String, Object> newValues = new HashMap<String, Object>();
 				newValues.put("_id", (String) document.get("_id"));

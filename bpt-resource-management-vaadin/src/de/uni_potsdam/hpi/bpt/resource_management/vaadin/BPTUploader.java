@@ -9,17 +9,18 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.FileResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
@@ -35,7 +36,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	
 	private Item item;
 	private String set_id;
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 	private BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private TabSheet tabSheet;
@@ -57,16 +58,16 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private String nameOfExistingPdfFile, nameOfExistingDocFile;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public BPTUploader(Item item, final BPTApplication application) {
+	public BPTUploader(Item item, final BPTApplicationUI applicationUI) {
 		super();
-		this.application = application;
+		this.applicationUI = applicationUI;
 		this.item = item;
-        Label label = new Label("<br/> <hr/> <br/>", Label.CONTENT_XHTML);
+        Label label = new Label("<br/> <hr/> <br/>", ContentMode.HTML);
         addComponent(label);
 		
 		this.tabSheet = new TabSheet();
 		addComponent(tabSheet);
-		tabSheet.addListener(this);
+		tabSheet.addSelectedTabChangeListener(this);
 		addTagComponents();
         
 		addContactInputs();
@@ -82,7 +83,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
         	IndexedContainer entries = BPTContainerProvider.getInstance().generateContainer(map, BPTDocumentType.BPMAI_EXERCISES);
      		for (Object id : entries.getItemIds()) {
  				Item nextItem = entries.getItem(id);
- 				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, application, this);
+ 				BPTUploadPanel nextPanel = new BPTUploadPanel(nextItem, applicationUI, this);
  				this.tabSheet.addComponent(nextPanel);
  				tabSheet.getTab(nextPanel).setClosable(true);
  				nextPanel.putLanguageInput(nextItem.getItemProperty("Language").getValue().toString());
@@ -116,17 +117,17 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	}
 
 	private void addContactInputs() {
-		contactNameLabel = new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", Label.CONTENT_XHTML);
+		contactNameLabel = new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", ContentMode.HTML);
 		addComponent(contactNameLabel);
 		contactNameInput = new TextField();
-		contactNameInput.setValue(application.getName());
+		contactNameInput.setValue(applicationUI.getName());
 		contactNameInput.setWidth("100%");
 		addComponent(contactNameInput);
 		
-		contactMailLabel = new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", Label.CONTENT_XHTML);
+		contactMailLabel = new Label("Contact mail * <font color=\"#BBBBBB\">as shown on the website - notifications will be sent to the mail address you have been using for logon</font>", ContentMode.HTML);
 		addComponent(contactMailLabel);
 		contactMailInput = new TextField();
-		contactMailInput.setValue(application.getMailAddress());
+		contactMailInput.setValue(applicationUI.getMailAddress());
 		contactMailInput.setWidth("100%");
 		addComponent(contactMailInput);
 	}
@@ -153,31 +154,31 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	public void addTagComponents() {
 		topicLabel = new Label("Topics *");
 		addComponent(topicLabel);
-		topic = new BPTTagComponent(application, "topics", false);
+		topic = new BPTTagComponent(applicationUI, "topics", false);
 		topic.setWidth("100%");
 		addComponent(topic);
 		
 		modelingLanguageLabel = new Label("Modeling Languages");
 		addComponent(modelingLanguageLabel);
-		modelingLanguage = new BPTTagComponent(application, "modelTypes", true);
+		modelingLanguage = new BPTTagComponent(applicationUI, "modelTypes", true);
 		modelingLanguage.setWidth("100%");
 		addComponent(modelingLanguage);
 		
 		taskTypeLabel = new Label("Task Types");
 		addComponent(taskTypeLabel);
-		taskType = new BPTTagComponent(application, "taskTypes", true);
+		taskType = new BPTTagComponent(applicationUI, "taskTypes", true);
 		taskType.setWidth("100%");
 		addComponent(taskType);
 		
 		otherTagsLabel = new Label("Additional Tags");
 		addComponent(otherTagsLabel);
-		other = new BPTTagComponent(application, "otherTags", true);
+		other = new BPTTagComponent(applicationUI, "otherTags", true);
 		other.setWidth("100%");
 		addComponent(other);
 	}
 
 	public BPTUploadPanel addNewUploadPanel(String caption) {
-		BPTUploadPanel panel = new BPTUploadPanel(null, application, this);
+		BPTUploadPanel panel = new BPTUploadPanel(null, applicationUI, this);
 		this.tabSheet.addComponent(panel);
 		this.tabSheet.getTab(panel).setCaption(caption);
 		return panel;
@@ -194,19 +195,19 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	private void addSubmitButton() {
 		finishUploadButton = new Button("Submit");
 		addComponent(finishUploadButton);
-		finishUploadButton.addListener(new Button.ClickListener(){
+		finishUploadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				
 //				if (((String)titleInput.getValue()).isEmpty()) {
-//					getWindow().showNotification("'Title' field is empty", Notification.TYPE_ERROR_MESSAGE);
+//					Notification.show("'Title' field is empty", Notification.TYPE_ERROR_MESSAGE);
 //				}
 				if (((String)contactNameInput.getValue()).isEmpty()) {
-					getWindow().showNotification("'Contact name' field is empty", Notification.TYPE_ERROR_MESSAGE);
+					Notification.show("'Contact name' field is empty", Notification.Type.ERROR_MESSAGE);
 				} else if (!BPTValidator.isValidEmail((String)contactMailInput.getValue())) {
-					getWindow().showNotification("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.TYPE_ERROR_MESSAGE);
-					//TODO: welche Felder müssen in jedem Panel gefüllt sein?
+					Notification.show("Invalid e-mail address", "in field 'Contact mail': " + (String)contactMailInput.getValue(), Notification.Type.ERROR_MESSAGE);
+					//TODO: welche Felder muessen in jedem Panel gefuellt sein?
 //				} else if (((String)descriptionInput.getValue()).isEmpty()) {
-//					getWindow().showNotification("One of the fields 'Description' must be filled", Notification.TYPE_ERROR_MESSAGE);
+//					Notification.show("One of the fields 'Description' must be filled", Notification.Type.ERROR_MESSAGE);
 				} else {
 					finishUpload();
 				}
@@ -328,7 +329,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					languages,
 					(String)contactNameInput.getValue(),
 					(String)contactMailInput.getValue(),
-					(String)application.getUser(),
+					(String)applicationUI.getUser(),
 					new Date(),
 					new Date(),
 				}, BPTDocumentType.BPMAI_EXERCISE_SETS));
@@ -349,8 +350,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 			}
 			exerciseSetRepository.updateDocument(newValues);
 		}
-		
-		((BPTApplication)getApplication()).renderEntries();
+		applicationUI.renderEntries();
 	}
 	
 	private Map<String, Object> generateDocument(Object[] values, BPTDocumentType type) {

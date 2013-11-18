@@ -1,16 +1,13 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
 
-public class BPTSubEntry extends CustomLayout{
+@SuppressWarnings("serial")
+public class BPTSubEntry extends CustomLayout {
 	
 	public BPTSubEntry(Item entry) {
 		

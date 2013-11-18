@@ -2,14 +2,14 @@ package de.uni_potsdam.hpi.bpt.resource_management.search;
 
 import java.util.ArrayList;
 
-import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplication;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagComponent;
 
 @SuppressWarnings("serial")
 public class BPTTagSearchComponent extends BPTTagComponent {
 	
-	public BPTTagSearchComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		super(application, tagColumns, newTagsAllowed);
+	public BPTTagSearchComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
+		super(applicationUI, tagColumns, newTagsAllowed);
 		searchInput.setInputPrompt("Tag search");
 //		searchInput.setWidth("70%");
 	}
@@ -17,7 +17,7 @@ public class BPTTagSearchComponent extends BPTTagComponent {
 	@Override
 	public void refresh() {
 		super.refresh();
-		application.refreshAndClean();
+		applicationUI.refreshAndClean();
 	}
 	
 	public ArrayList<String> getSelectedTags() {
@@ -32,7 +32,11 @@ public class BPTTagSearchComponent extends BPTTagComponent {
 	@Override
 	protected void addTagBox(){
 		tagBox = new BPTSearchTagBoxes();
-		layout.addComponent(tagBox);
+		addComponent(tagBox);
+	}
+	
+	public boolean isNoTagSelected() {
+		return getLanguageTags().isEmpty() && getTopicTags().isEmpty() && getModelingLanguagesTags().isEmpty() && getTaskTypesTags().isEmpty();
 	}
 	
 	public ArrayList<String> getLanguageTags() {

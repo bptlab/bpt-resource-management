@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -15,50 +15,46 @@ import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings({ "serial", "unchecked" })
-public class BPTTagComponent extends CustomComponent {
+public class BPTTagComponent extends VerticalLayout {
 	
 	protected BPTSearchInputField searchInput;
 	private ArrayList<String> uniqueValues;
 	private ArrayList<String> unselectedValues;
 	protected BPTTagBox tagBox;
-	protected VerticalLayout layout;
-	protected BPTApplication application;
+	protected BPTApplicationUI applicationUI;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Languages -----", "----- Topics -----", "----- Modeling languages -----", "----- Task types -----", "----- Other tags -----")); 
 		
-	public BPTTagComponent(BPTApplication application, String tagColumns, boolean newTagsAllowed) {
-		this.application = application;
+	public BPTTagComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
+		this.applicationUI = applicationUI;
 		init(tagColumns, newTagsAllowed);
 	}
 	
 	private void init(String tagColumns, boolean newTagsAllowed) {
 		// TODO: update unique values on entry addition or deletion
 		uniqueValues = BPTContainerProvider.getInstance().getUniqueValues(tagColumns);
-		layout = new VerticalLayout();
-		layout.setWidth("100%");
-		layout.setHeight("100%");
-		setCompositionRoot(layout);
+		setSizeFull();
 		addElements(newTagsAllowed);
 	}
 	
 	protected void addElements(boolean newTagsAllowed) {
 		createSearchInputBox(newTagsAllowed);
-		layout.addComponent(searchInput);
+		addComponent(searchInput);
 		addTagBox();
 		addListenerToSearchInputBox();	
 	}
 
 	protected void addTagBox() {
 		tagBox = new BPTTagBox();
-		layout.addComponent(tagBox);
+		addComponent(tagBox);
 	}
 
-	private ComboBox createSearchInputBox(boolean newTagsAllowed){
+	private ComboBox createSearchInputBox(boolean newTagsAllowed) {
 		searchInput = new BPTSearchInputField();
 		for (String uniqueValue: uniqueValues) {
 			Label label = new Label(uniqueValue);
 			if(categories.contains(uniqueValue)) {
 //				label = new Label("<b>" + uniqueValue + "</b>");
-				label.setContentMode(Label.CONTENT_XHTML);
+				label.setContentMode(ContentMode.HTML);
 			}
 			searchInput.addItem(label);
 		}
@@ -68,7 +64,7 @@ public class BPTTagComponent extends CustomComponent {
 	}
 
 	private void addListenerToSearchInputBox() {
-		searchInput.addListener(new Property.ValueChangeListener() {
+		searchInput.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				Object value = searchInput.getValue();
 				if (value == null) return;
@@ -119,7 +115,7 @@ public class BPTTagComponent extends CustomComponent {
 				searchInput.addItem(new Label(uniqueValue));
 			}
 		}
-		application.refreshAndClean();
+		applicationUI.refreshAndClean();
 	}
 	
 	public void addChosenTag(String value) {

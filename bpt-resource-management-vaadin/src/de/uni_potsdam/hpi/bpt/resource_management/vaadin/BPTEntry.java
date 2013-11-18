@@ -7,11 +7,13 @@ import java.util.Map;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
@@ -22,29 +24,30 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepositor
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "rawtypes"})
 public class BPTEntry extends CustomLayout {
 	
 	private String id, setId, userId;
 	private BPTEntry entry;
 	private Item item;
 	private BPTEntryCards entryCards;
-	private BPTApplication application;
+	private BPTApplicationUI applicationUI;
 	private BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 	private BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private HorizontalLayout tabLayout, subEntryLayout;
 	private Map<String, BPTSubEntry> subentries;
 	
-	public BPTEntry(Item item, BPTApplication application, BPTEntryCards entryCards) {
+	public BPTEntry(Item item, BPTApplicationUI applicationUI, BPTEntryCards entryCards) {
 		super("entry");
 		entry = this;
 		this.item = item;
 		this.entryCards = entryCards;
-		this.application = application;
+		this.applicationUI = applicationUI;
 		id = item.getItemProperty("ID").getValue().toString();
 		setId = item.getItemProperty("Exercise Set ID").getValue().toString();
 		userId = item.getItemProperty("User ID").getValue().toString();
-		this.setDebugId(this.setId);
+		this.setId(this.setId);
+		
 		addButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
 			addToLayout(attributeName.toString());
@@ -66,13 +69,13 @@ public class BPTEntry extends CustomLayout {
 					String labelContent = value.toString();
 					Label label = new Label(labelContent);
 					if (id.equals("Contact name")) {
-						label.setContentMode(Label.CONTENT_XHTML);
+						label.setContentMode(ContentMode.HTML);
 						String mailAddress = ((Link)item.getItemProperty("Contact mail").getValue()).getCaption();
 						mailAddress = mailAddress.replace("@", "(at)"); // for obfuscation
 						labelContent = labelContent + "&nbsp;&lt;" + mailAddress + "&gt;";
 						label.setValue(labelContent);
 					}
-					label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+					label.setWidth("90%");
 					if (labelContent.isEmpty()) {
 						addDefaultComponent(id.toString());
 					} else {
@@ -107,7 +110,7 @@ public class BPTEntry extends CustomLayout {
 			subEntry.setWidth("90%");
 			subentries.put(languageOfEntry, subEntry);
 			final Button tabButton = new Button(languageOfEntry);
-			tabButton.addListener(new Button.ClickListener(){
+			tabButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					subEntryLayout.removeAllComponents();
 					subEntryLayout.addComponent(subentries.get(languageOfEntry));
@@ -123,7 +126,7 @@ public class BPTEntry extends CustomLayout {
 			});
 			tabButton.setStyleName(BaseTheme.BUTTON_LINK);
 			tabButton.addStyleName("tab");
-			tabButton.setDebugId(setId + "_" + languageOfEntry);
+			tabButton.setId(setId + "_" + languageOfEntry);
 			tabLayout.addComponent(tabButton);
 		}
 		this.addComponent(tabLayout, "TabButtons");
@@ -149,11 +152,22 @@ public class BPTEntry extends CustomLayout {
 	}
 
 	public void addButtons() {
+		// TODO: implement shareable entry page
+//		Button share = new Button("share");
+//		share.addClickListener(new Button.ClickListener(){
+//			public void buttonClick(ClickEvent event) {
+//				applicationUI.showSpecificEntry(entryId);
+//			}
+//		});
+//		share.setStyleName(BaseTheme.BUTTON_LINK);
+//		share.addStyleName("bpt");
+//		this.addComponent(share, "button share");
+		
 		Button more = new Button("more");
-		more.addListener(new Button.ClickListener(){
+		more.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				addOtherButtons();
-				getWindow().executeJavaScript(getJavaScriptStringShow());
+				JavaScript.getCurrent().execute(getJavaScriptStringShow());
 				entry.setHeight("");
 			}
 
@@ -175,7 +189,7 @@ public class BPTEntry extends CustomLayout {
 		more.addStyleName("whiteButtonHover");
 		this.addComponent(more, "button more");
 		Button less = new Button("less");
-		less.addListener(new Button.ClickListener(){
+		less.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				hideJavaScript();
 				entry.setHeight("");
@@ -190,11 +204,11 @@ public class BPTEntry extends CustomLayout {
 	
 	protected void addOtherButtons() {
 		
-		if(application.isLoggedIn() && application.getUser().equals(userId)){
+		if(applicationUI.isLoggedIn() && applicationUI.getUser().equals(userId)){
 			Button edit = new Button("edit");
-			edit.addListener(new Button.ClickListener(){
+			edit.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					application.edit(item);
+					applicationUI.edit(item);
 				}
 			});
 			
@@ -202,12 +216,12 @@ public class BPTEntry extends CustomLayout {
 			edit.addStyleName("bpt");
 			edit.addStyleName("whiteButtonHover");
 			this.addComponent(edit, "button edit");
-			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
 		}
 		
-		if(application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated())){
+		if(applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated())){
 			Button delete = new Button("delete");
-			delete.addListener(new Button.ClickListener(){
+			delete.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(setId, "delete");
 				}
@@ -217,15 +231,15 @@ public class BPTEntry extends CustomLayout {
 			delete.addStyleName("bpt");
 			delete.addStyleName("whiteButtonHover");
 			this.addComponent(delete, "button delete");
-			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
 			System.out.println("renderDeleteButton" + setId);
 		}
 		
 		BPTExerciseStatus actualState = exerciseSetRepository.getDocumentStatus(id);
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Unpublished){
+		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTExerciseStatus.Unpublished){
 			Button publish = new Button("publish");
-			publish.addListener(new Button.ClickListener(){
+			publish.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(setId, "publish");
 				}
@@ -235,10 +249,10 @@ public class BPTEntry extends CustomLayout {
 			publish.addStyleName("bpt");
 			publish.addStyleName("whiteButtonHover");
 			this.addComponent(publish, "button publish");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
 			
 			Button reject = new Button("reject");
-			reject.addListener(new Button.ClickListener(){
+			reject.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(setId, "reject");
 				}
@@ -248,12 +262,12 @@ public class BPTEntry extends CustomLayout {
 			reject.addStyleName("bpt");
 			reject.addStyleName("whiteButtonHover");
 			this.addComponent(reject, "button reject");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("reject"));
 		}
 		
-		if (application.isLoggedIn() && (application.getUser().equals(userId) || application.isModerated()) && actualState == BPTExerciseStatus.Published){
+		if (applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated()) && actualState == BPTExerciseStatus.Published){
 			Button unpublish = new Button("unpublish");
-			unpublish.addListener(new Button.ClickListener(){
+			unpublish.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(setId, "unpublish");
 				}
@@ -263,13 +277,13 @@ public class BPTEntry extends CustomLayout {
 			unpublish.addStyleName("bpt");
 			unpublish.addStyleName("whiteButtonHover");
 			this.addComponent(unpublish, "button unpublish");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("unpublish"));
 		
 		}
 		
-		if(application.isLoggedIn() && application.isModerated() && actualState == BPTExerciseStatus.Rejected){
+		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTExerciseStatus.Rejected){
 			Button propose = new Button("propose");
-			propose.addListener(new Button.ClickListener(){
+			propose.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(setId, "propose");
 				}
@@ -279,7 +293,7 @@ public class BPTEntry extends CustomLayout {
 			propose.addStyleName("bpt");
 			propose.addStyleName("whiteButtonHover");
 			this.addComponent(propose, "button propose");
-			application.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
 		}
 		
 	}
@@ -314,8 +328,8 @@ public class BPTEntry extends CustomLayout {
 		
 	}
 	
-	public void hideJavaScript(){
-		application.getMainWindow().executeJavaScript(getJavaScriptStringHide());
+	public void hideJavaScript() {
+		JavaScript.getCurrent().execute(getJavaScriptStringHide());
 	}
 	
 }

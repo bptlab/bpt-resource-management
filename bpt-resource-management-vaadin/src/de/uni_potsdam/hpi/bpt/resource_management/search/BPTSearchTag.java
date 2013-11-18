@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.search;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -20,13 +21,13 @@ public class BPTSearchTag extends CustomComponent{
 
 	public BPTSearchTag(final BPTTagBox searchTagBox, String value) {
 		this.value = value;
-        label = new Label("&nbsp;" + value, Label.CONTENT_XHTML);
+        label = new Label("&nbsp;" + value, ContentMode.HTML);
 		addTagToLayout(searchTagBox, value);
 	}
 	
 	public BPTSearchTag(final BPTTagBox searchTagBox, String type, String value) {
 		this.value = value;
-        label = new Label("&nbsp;" + value /* + "&nbsp;(" + type + ")&nbsp;" */, Label.CONTENT_XHTML);
+        label = new Label("&nbsp;" + value /* + "&nbsp;(" + type + ")&nbsp;" */, ContentMode.HTML);
 		addTagToLayout(searchTagBox, value);
 	}
 	
@@ -38,7 +39,7 @@ public class BPTSearchTag extends CustomComponent{
         layout.addComponent(deleteButton);
         layout.addComponent(label);
         
-        deleteButton.addListener(new Button.ClickListener(){
+        deleteButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				searchTagBox.removeTag(searchTag);
 			}

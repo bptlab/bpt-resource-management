@@ -12,7 +12,7 @@ public class BPTAdministrator extends VerticalLayout {
 	
 	private Table table;
 
-	public BPTAdministrator(final BPTApplication application) {
+	public BPTAdministrator() {
 
 		table = new Table();
 		table.setImmediate(true);
@@ -24,7 +24,7 @@ public class BPTAdministrator extends VerticalLayout {
         addComponent(table);
         
         table.setContainerDataSource(BPTContainerProvider.getInstance().getUsers());
-		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPMAI_USERS));
+		table.setVisibleColumns((Object[]) BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPMAI_USERS));
 	}
 
 }

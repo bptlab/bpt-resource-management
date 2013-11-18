@@ -9,27 +9,26 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResourc
 @SuppressWarnings("serial")
 public class BPTTable extends BPTShowEntryComponent {
 
-	public BPTTable(BPTApplication application) {
-		super(application);
+	public BPTTable(BPTApplicationUI applicationUI) {
+		super(applicationUI);
 	}
 
 	private Table table;
 	
 	private void addListenerToTable() {
-		table.addListener(new Table.ValueChangeListener() {
+		table.addValueChangeListener(new Table.ValueChangeListener() {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				if ((table.getItem(table.getValue()) != null)){
 					showSelectedEntry(table.getItem(table.getValue()));
 				}		
 			}
 		});
-			
-}
+	}
 
 	@Override
 	protected void show(IndexedContainer sets) {
 		table.setContainerDataSource(sets);
-		table.setVisibleColumns(BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPMAI_EXERCISE_SETS));
+		table.setVisibleColumns((Object[]) BPTVaadinResources.getVisibleAttributes(BPTDocumentType.BPMAI_EXERCISE_SETS));
 	}
 
 	@Override

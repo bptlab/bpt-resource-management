@@ -3,13 +3,13 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
-import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -22,15 +22,11 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	private CustomLayout layout;
 //	private VerticalLayout vertical;
 //	private ArrayList<BPTEntry> entryList;
-//	private Boolean isInitial;
 	private NativeSelect sortSelect;
 	private BPTPageSelector pageSelector;
 	
-	public BPTEntryCards(final BPTApplication application) {
-		
-		super(application);
-		//TODO: brauchen wir das?
-//		isInitial = false;
+	public BPTEntryCards(final BPTApplicationUI applicationUI) {
+		super(applicationUI);
 	}
 
 	@Override
@@ -39,7 +35,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		VerticalLayout vertical = new VerticalLayout();
 //		entryList = new ArrayList<BPTEntry>();
 //		isInitial = true;
-		setBPTPageSelector(new BPTPageSelector(application));
+		setBPTPageSelector(new BPTPageSelector(applicationUI));
 		
 		HorizontalLayout selectLayout = new HorizontalLayout();
 		sortSelect = new NativeSelect();
@@ -47,15 +43,15 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		sortSelect.addItem("Last update");
 		sortSelect.setValue("ID");
 		sortSelect.setNullSelectionAllowed(false);
-		sortSelect.addListener(new Property.ValueChangeListener() {
+		sortSelect.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
-				application.refreshAndClean();
+				applicationUI.refreshAndClean();
 			}
 		});
 		sortSelect.setImmediate(true);
-		selectLayout.addComponent(new Label("Sort entries by&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		selectLayout.addComponent(new Label("Sort entries by&nbsp;&nbsp;", ContentMode.HTML));
 		selectLayout.addComponent(sortSelect);
-		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML));
+		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		
 		addComponent(layout);
 		layout.addComponent(getBPTPageSelector(), "pageSelection");
@@ -79,7 +75,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		}
 		for(Object id : entrySets.getItemIds()){
 			Item item = entrySets.getItem(id);
-			BPTEntry entry = new BPTEntry(item, application, this);
+			BPTEntry entry = new BPTEntry(item, applicationUI, this);
 			vertical.addComponent(entry);
 		}
 		layout.addComponent(vertical, "cards");

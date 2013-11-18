@@ -1,35 +1,30 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
-@SuppressWarnings("serial")
-public class BPTNavigationBar extends CustomComponent {
+@SuppressWarnings({"serial"})
+public class BPTNavigationBar extends HorizontalLayout {
 	
-	private HorizontalLayout layout;
-	
-	public BPTNavigationBar() {
+	public BPTNavigationBar(final BPTApplicationUI applicationUI) {
+		super();
 		
-		layout = new HorizontalLayout();
-		setCompositionRoot(layout);
 		Button findButton = new Button("Find");
-		layout.addComponent(findButton);
+		findButton.addClickListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				applicationUI.renderEntries();
+			}
+		});
+		addComponent(findButton);
+		
 		Button uploadButton = new Button("Upload");
-		layout.addComponent(uploadButton);
-		
-		findButton.addListener(new Button.ClickListener(){
+		uploadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).renderEntries();
+				applicationUI.renderUploader();
 			}
 		});
-		
-		uploadButton.addListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				((BPTApplication)getApplication()).renderUploader();
-			}
-		});
+		addComponent(uploadButton);
 	}
 
 }
