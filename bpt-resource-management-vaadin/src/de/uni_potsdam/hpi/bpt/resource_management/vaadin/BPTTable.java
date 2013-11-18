@@ -22,9 +22,8 @@ public class BPTTable extends BPTShowEntryComponent {
 					showSelectedEntry(table.getItem(table.getValue()));
 				}		
 			}
-		});
-			
-}
+		});	
+	}
 
 	@Override
 	protected void show(IndexedContainer tableEntries) {
@@ -40,7 +39,7 @@ public class BPTTable extends BPTShowEntryComponent {
 		table.setColumnReorderingAllowed(true);
         table.setColumnCollapsingAllowed(true);
         table.setWidth("100%");
-//        addComponent(table, "cards");
+        // addComponent(table, "cards");
         addListenerToTable();
 	}
 

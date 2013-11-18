@@ -12,7 +12,7 @@ public class BPTAdministrator extends VerticalLayout {
 	
 	private Table table;
 	
-	public BPTAdministrator(final BPTApplicationUI applicationUI) {
+	public BPTAdministrator() {
 		
 		table = new Table();
 		table.setImmediate(true);

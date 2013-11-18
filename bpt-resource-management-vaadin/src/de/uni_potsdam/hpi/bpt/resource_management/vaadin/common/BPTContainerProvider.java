@@ -35,12 +35,10 @@ public class BPTContainerProvider {
 	private static BPTContainerProvider instance;
     private BPTToolRepository toolRepository;
     private BPTUserRepository userRepository;
-//    private BPTApplication application;
    
-    public BPTContainerProvider(BPTApplicationUI bptApplicationUI) {
-//    	this.application = application;
-    	this.toolRepository = bptApplicationUI.getToolRepository();
-    	this.userRepository = bptApplicationUI.getUserRepository();
+    public BPTContainerProvider(BPTApplicationUI applicationUI) {
+    	this.toolRepository = applicationUI.getToolRepository();
+    	this.userRepository = applicationUI.getUserRepository();
     	BPTContainerProvider.instance = this;
 	}
     
