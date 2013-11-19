@@ -34,7 +34,9 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			init(applicationUI);
 		}
 		else {
+			this.applicationUI = applicationUI;
 			buildLayout();
+			showNumberOfEntries(0);
 		}
 	}
 	

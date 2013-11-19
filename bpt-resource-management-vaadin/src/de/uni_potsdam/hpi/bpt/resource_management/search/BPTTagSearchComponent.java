@@ -17,7 +17,6 @@ public class BPTTagSearchComponent extends BPTTagComponent {
 	@Override
 	public void refresh() {
 		super.refresh();
-		applicationUI.refreshAndClean();
 	}
 	
 	public ArrayList<String> getSelectedTags() {

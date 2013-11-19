@@ -5,18 +5,21 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings({"serial"})
 public class BPTEntryCards extends BPTShowEntryComponent {
 	
 	private CustomLayout layout;
 	private NativeSelect sortSelect;
-	private BPTPageSelector pageSelector;
+	private BPTPageSelector topPageSelector, bottomPageSelector;
 	private VerticalLayout vertical;
 	
 	public BPTEntryCards(final BPTApplicationUI applicationUI) {
@@ -31,7 +34,8 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	protected void buildLayout() {
 		layout = new CustomLayout("cards");
 		vertical = new VerticalLayout();
-		setBPTPageSelector(new BPTPageSelector(applicationUI));
+		topPageSelector = new BPTPageSelector(applicationUI);
+		bottomPageSelector = new BPTPageSelector(applicationUI);
 		
 		HorizontalLayout selectLayout = new HorizontalLayout();
 		sortSelect = new NativeSelect();
@@ -52,14 +56,33 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		
 		addComponent(layout);
-		layout.addComponent(getBPTPageSelector(), "pageSelection");
+		layout.addComponent(topPageSelector, "pageSelection");
 		layout.addComponent(selectLayout, "sortSelect");
 		layout.addComponent(vertical, "cards");
+		
+		HorizontalLayout bottomLayout = new HorizontalLayout();
+		bottomLayout.setWidth("100%");
+		
+		Button backToStartButton = new Button("Back to Startpage");
+		backToStartButton.setStyleName(BaseTheme.BUTTON_LINK);
+		backToStartButton.addClickListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				applicationUI.showStartPage();
+			}
+		});
+		bottomLayout.addComponent(backToStartButton);
+		bottomLayout.addComponent(bottomPageSelector);
+		
+		bottomLayout.setExpandRatio(backToStartButton, 1);
+		bottomLayout.setExpandRatio(bottomPageSelector, 1);
+		
+		addComponent(bottomLayout);
 	}
 
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
-		getBPTPageSelector().showNumberOfEntries(numberOfEntries);
+		topPageSelector.showNumberOfEntries(numberOfEntries);
+		bottomPageSelector.showNumberOfEntries(numberOfEntries);
 	}
 	
 	@Override
@@ -85,12 +108,8 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		return (String) sortSelect.getValue();
 	}
 
-	public BPTPageSelector getBPTPageSelector() {
-		return pageSelector;
+	public void switchToPage(int skip) {
+		topPageSelector.switchToPage(skip);
+		bottomPageSelector.switchToPage(skip);
 	}
-
-	private void setBPTPageSelector(BPTPageSelector pageSelector) {
-		this.pageSelector = pageSelector;
-	}
-
 }
