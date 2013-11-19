@@ -91,6 +91,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 						showAllAndRefreshSidebar(false);
 						String message = arguments.getString(0);
 						selectTag(message);
+						JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
 					}
 				});
 	}
@@ -186,6 +187,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	public void showAllAndRefreshSidebar(boolean loadEntries) {
 		getSidebar().renderEntries();
 		showAll(loadEntries);
+		getPage().setUriFragment("showAll", false);
 	}
 	
 	public void showAll(boolean loadEntries) {
@@ -199,6 +201,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		entryComponent = new BPTSmallRandomEntries(this);
 		mainFrame.add(entryComponent);
 		getSidebar().renderEntries();
+		getPage().setUriFragment("", false);
 	}
 	
 	private void addUriListener() {
@@ -211,7 +214,13 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
 	protected void enter(String uriFragment) {
 		if (uriFragment != null) {
-            if (uriFragment.startsWith("!")) {
+			if(uriFragment.equals("")){
+				showStartPage();
+			}
+			else if(uriFragment.equals("showAll")){
+				showAllAndRefreshSidebar(true);
+			}
+			else if (uriFragment.startsWith("!")) {
             	try {
             		uriFragment = uriFragment.substring(1);
                     int separatorIndex = uriFragment.indexOf("-");
@@ -363,13 +372,16 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
 	public void refreshAndClean() {
 		refreshAndClean(0);
-		((BPTEntryCards) entryComponent).getBPTPageSelector().showNumberOfEntries(numberOfEntries);
+		((BPTEntryCards) entryComponent).showNumberOfEntries(numberOfEntries);
 	}
 	
 	public void refreshAndClean(int skip) {
 		refresh(skip);
 		Runtime.getRuntime().gc();
-		((BPTEntryCards) entryComponent).getBPTPageSelector().switchToPage(skip);
+		if(numberOfEntries != 0){
+			((BPTEntryCards) entryComponent).switchToPage(skip);
+		}
+		JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
 	}
 
 	private void refresh(int skip) {
