@@ -32,6 +32,8 @@ public class BPTTagComponent extends VerticalLayout {
 	private void init(String tagColumns, boolean newTagsAllowed) {
 		// TODO: update unique values on entry addition or deletion
 		uniqueValues = BPTContainerProvider.getInstance().getUniqueValues(tagColumns);
+		setWidth("100%");
+		setHeight("100%");
 		setSizeFull();
 		addElements(newTagsAllowed);
 	}
@@ -48,7 +50,7 @@ public class BPTTagComponent extends VerticalLayout {
 		addComponent(tagBox);
 	}
 
-	private ComboBox createSearchInputBox(boolean newTagsAllowed) {
+	private ComboBox createSearchInputBox(boolean newTagsAllowed){
 		searchInput = new BPTSearchInputField();
 		for (String uniqueValue: uniqueValues) {
 			Label label = new Label(uniqueValue);

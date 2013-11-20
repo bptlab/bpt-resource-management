@@ -24,6 +24,8 @@ public class BPTSidebar extends HorizontalLayout {
 		super();
 		this.applicationUI = applicationUI;
 		setSizeFull();
+		setWidth("100%");
+		setHeight("100%");
 		loginComponent = new BPTLoginComponent(applicationUI, this);
 		searchComponent = new BPTSearchComponent(applicationUI, "all", false);
 		init();
@@ -50,9 +52,9 @@ public class BPTSidebar extends HorizontalLayout {
 		loginComponent.login(name, moderated);
 	}
 
-	public void logout() {
+	public void logout(){
 		searchComponent.logout();
-		applicationUI.close();
+//		applicationUI.close();
 	}
 	
 	public void renderUploader() {
@@ -71,9 +73,9 @@ public class BPTSidebar extends HorizontalLayout {
 		addComponent(loginComponent);
 		setExpandRatio(label, 75);
 		setExpandRatio(loginComponent, 25);
-	}
+}
 	
-	public void renderEntries() {
+	public void showAll() {
 		removeAllComponents();
 		searchComponent = new BPTSearchComponent(applicationUI, "all", false);
 		init();
@@ -110,7 +112,7 @@ public class BPTSidebar extends HorizontalLayout {
 		
 		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or &nbsp;&nbsp;", ContentMode.HTML));
 		
-		Button findButton = new Button("See all " + numberOfEntries + " entries of Tools for BPM");
+		Button findButton = new Button("See all " + this.numberOfEntries + " entries of Tools for BPM");
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
 		findButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
@@ -130,4 +132,5 @@ public class BPTSidebar extends HorizontalLayout {
 	public void setNumberOfEntries(int numberOfEntries) {
 		this.numberOfEntries = numberOfEntries;
 	}
+
 }

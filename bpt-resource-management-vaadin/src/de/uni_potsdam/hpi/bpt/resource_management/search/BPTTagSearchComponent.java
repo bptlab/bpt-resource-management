@@ -6,7 +6,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagComponent;
 
 @SuppressWarnings("serial")
-public class BPTTagSearchComponent extends BPTTagComponent {
+public class BPTTagSearchComponent extends BPTTagComponent{
 	
 	public BPTTagSearchComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
 		super(applicationUI, tagColumns, newTagsAllowed);

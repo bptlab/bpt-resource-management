@@ -115,6 +115,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 	public void login(String name, boolean moderated) {
 		removeAllComponents();
 //		System.out.println(name);
+//		navigationBar = new BPTNavigationBar(true);
 		addComponent(navigationBar);
 		welcomeLabel = new Label("Hello " + applicationUI.getName() + "!");
 		addComponent(welcomeLabel);
@@ -137,6 +138,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 //        System.out.println("Copy the authentication URL in browser:\n" + url);
         
         applicationUI.setLoggingIn(true);
+        
         applicationUI.getPage().open(url, "_self", false);
         /*
          *  TODO: this is not a clean solution

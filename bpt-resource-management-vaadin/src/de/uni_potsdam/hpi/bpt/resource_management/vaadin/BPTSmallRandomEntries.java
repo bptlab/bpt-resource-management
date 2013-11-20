@@ -45,25 +45,13 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
         		"function selectHandler(e) {" +
         		"var selection = chart.getSelection();" +
-//        		"for (var i = 0; i < selection.length; i++) {" +
         		"var item = selection[0];" +
-        		"if(model_data.getFormattedValue(item.row, 0) == 'Others'){" +
-//            	"alert('test');" +
-//        		"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
-    			"}" +
-    			"else{" +
-//    			"alert(model_data.getFormattedValue(item.row, 0));" +
-//    			"de.hpi.showAll('model_types');" +
 				"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
-//				"document.getElementById('BPMN').click();" +
-//    			"}" +
-            	"}" +
           		"}" +
           		"}"+
         		"</script></head><body style=\" overflow:hidden; \">" +
         		"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Model types </div>" +
           		"<div id=\"pie_chart_div\" style=\"width: 240px; height: 300px; overflow:hidden;\"></div>" +
-//				" <a id=\"BPMN\" target=\"_top\" href=\"javascript:de.hpi.showAll('verification of model properties')\"> test </a>" +
           		"</body></html>").getBytes();
     	
         public InputStream getStream() {
@@ -88,17 +76,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"google.visualization.events.addListener(chart, 'select', selectHandler);" +
         		"function selectHandler() {" +
         		"var selection = chart.getSelection();" +
-//        		"for (var i = 0; i < selection.length; i++) {" +
         		"var item = selection[0];" +
-        		"if(model_data.getFormattedValue(item.row, 0) == 'Others'){" +
         		"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
-    			"}" +
-    			"else{" +
-//    			"alert(model_data.getFormattedValue(item.row, 0));" +
-////    			"de.hpi.showAll('model_types');" +
-				"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
-////				"document.getElementById('BPMN').click();" +
-    			"}" +
             	"}" +
           		"}" +
 				"</script></head><body style=\" overflow:hidden; \">" +
@@ -178,14 +157,19 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		layout = new CustomLayout("cards");
 		addComponent(layout);
 		statisticsLayout = new HorizontalLayout();
-		layout.addComponent(statisticsLayout, "statisticsRow");
 		numberOfEntriesLabel = new Label();
 		numberOfEntriesLabel.setImmediate(true);
 		statisticsLayout.addComponent(numberOfEntriesLabel);
-//		Map<String, Integer> tagStatistics = BPTContainerProvider.getTagStatisticFor("availabilities");
-//		for(String string : tagStatistics.keySet()){
-//			statistiksLayout.addComponent(new Label(string + ": " + tagStatistics.get(string)));
-//		}
+		Button showAllButton = new Button("Show all entries");
+		showAllButton.addClickListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					applicationUI.showAllAndRefreshSidebar(true);
+				}
+		});
+		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
+		showAllButton.addStyleName("bpt");
+		statisticsLayout.addComponent(showAllButton);
+		layout.addComponent(statisticsLayout, "statisticsRow");
 		cardLayout = new HorizontalLayout();
 		layout.addComponent(cardLayout, "cards");
 		addCharts();
@@ -234,7 +218,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 	}
 
 	private void addShowAllButton() {
-		Button showAllButton = new Button("Show all entries");
+		Button showAllButton = new Button("show all entries.");
 		showAllButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showAllAndRefreshSidebar(true);
@@ -247,7 +231,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
-		numberOfEntriesLabel.setCaption(numberOfEntries + " entries in our database");
+		numberOfEntriesLabel.setCaption("To browse through all " + numberOfEntries + " tools use the searchbar above, click on our interactive charts or ");
 	}
 
 	@Override

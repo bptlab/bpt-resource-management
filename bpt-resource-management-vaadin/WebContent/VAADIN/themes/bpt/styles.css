@@ -219,7 +219,8 @@ body{
 	margin: 0px;
 }
 
-#resource-list .shortEntry .Logo div{
+#resource-list .shortEntry div.Logo{
+	
 }
 
 #resource-list .shortEntry .Logo img{

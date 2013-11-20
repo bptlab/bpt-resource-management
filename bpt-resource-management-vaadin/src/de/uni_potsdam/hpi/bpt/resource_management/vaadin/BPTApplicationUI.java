@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -27,6 +30,10 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListener;
+//import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+//import com.vaadin.ui.UriFragmentUtility;
+//import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
+//import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 
 @SuppressWarnings({ "unchecked", "serial" })
 @Title("Tools for BPM")
@@ -46,10 +53,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	private BPTUserRepository userRepository;
 	private BPTContainerProvider containerProvider;
 	private int numberOfEntries;
-	private BPTAdministrator administrator;
 //	private final UriFragmentUtility uriFu = new UriFragmentUtility();
 
 //	private BPTShareableEntry entry;
+	private BPTAdministrator administrator;
 
 	@Override
 	public void init(VaadinRequest request) {
@@ -88,10 +95,14 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 					@Override
 					public void call(final JSONArray arguments) throws JSONException {
 //						Notification.show("Received call");
-						showAllAndRefreshSidebar(false);
 						String message = arguments.getString(0);
-						selectTag(message);
-						JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
+						if(message.equals("Others")){
+							showAllAndRefreshSidebar(true);
+						}
+						else{
+							showAllAndRefreshSidebar(false);
+							selectTag(message);
+						}
 					}
 				});
 	}
@@ -173,7 +184,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void renderAdministrator() {
-        administrator = new BPTAdministrator();
+        administrator = new BPTAdministrator(this);
         mainFrame.add(administrator);
         getSidebar().renderAdministrator();
 	}
@@ -185,9 +196,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void showAllAndRefreshSidebar(boolean loadEntries) {
-		getSidebar().renderEntries();
+		getSidebar().showAll();
 		showAll(loadEntries);
-		getPage().setUriFragment("showAll", false);
+		getPage().setUriFragment("!showAll", false);
+		JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
 	}
 	
 	public void showAll(boolean loadEntries) {
@@ -200,16 +212,40 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	public void showStartPage() {
 		entryComponent = new BPTSmallRandomEntries(this);
 		mainFrame.add(entryComponent);
-		getSidebar().renderEntries();
+		getSidebar().showAll();
 		getPage().setUriFragment("", false);
+	}
+	
+	public void showSpecificEntry(String entryId) {
+		Map<String, Object> tool = toolRepository.get(entryId);
+		StringBuffer sbUriFragment = new StringBuffer();
+		sbUriFragment.append(entryId + "-");
+		String nameOfTool = (String) tool.get("name");
+		String formattedNameOfTool = nameOfTool.replaceAll("[^\\w]", "-").toLowerCase();
+		String fragmentForEntry = "!" + entryId + "-" + formattedNameOfTool;
+		String applicationString = applicationURL;
+		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
+			applicationString = applicationString.substring(0, applicationURL.length() - 1);
+		}
+//		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
+//		Item item = container.getItem(container.getItemIds().iterator().next());
+		getPage().setUriFragment(fragmentForEntry, false);
+//		entry = new BPTShareableEntry(item, this);
+//		mainFrame.add(entry);
+		entryComponent = new BPTShareableEntryContainer(this, entryId);
+		mainFrame.add(entryComponent);
+		getSidebar().showSpecificEntry(applicationURL + "#" + fragmentForEntry);
+		JavaScript.getCurrent().execute("('html,body').scrollTop(0);");
 	}
 	
 	private void addUriListener() {
 		getPage().addUriFragmentChangedListener(new UriFragmentChangedListener(){
-			public void uriFragmentChanged(UriFragmentChangedEvent source) {
+			public void uriFragmentChanged(
+	                   UriFragmentChangedEvent source) {
 	               enter(source.getUriFragment());
 	            }
 		});
+		
 	}
 	
 	protected void enter(String uriFragment) {
@@ -217,7 +253,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 			if(uriFragment.equals("")){
 				showStartPage();
 			}
-			else if(uriFragment.equals("showAll")){
+			else if(uriFragment.equals("!showAll")){
 				showAllAndRefreshSidebar(true);
 			}
 			else if (uriFragment.startsWith("!")) {
@@ -242,28 +278,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
         	}
         }
 	}
-	
-	public void showSpecificEntry(String entryId) {
-		Map<String, Object> tool = toolRepository.get(entryId);
-		StringBuffer sbUriFragment = new StringBuffer();
-		sbUriFragment.append(entryId + "-");
-		String nameOfTool = (String) tool.get("name");
-		String formattedNameOfTool = nameOfTool.replaceAll("[^\\w]", "-").toLowerCase();
-		String fragmentForEntry = "!" + entryId + "-" + formattedNameOfTool;
-		String applicationString = applicationURL;
-		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
-			applicationString = applicationString.substring(0, applicationURL.length() - 1);
-		}
-//		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
-//		Item item = container.getItem(container.getItemIds().iterator().next());
-		getPage().setUriFragment(fragmentForEntry, false);
-//		entry = new BPTShareableEntry(item, this);
-//		mainFrame.add(entry);
-		entryComponent = new BPTShareableEntryContainer(this, entryId);
-		mainFrame.add(entryComponent);
-		getSidebar().showSpecificEntry(applicationURL + "#" + fragmentForEntry);
-		JavaScript.getCurrent().execute("('html,body').scrollTop(0);");
-	}
 
 	public BPTToolRepository getToolRepository() {
 		return toolRepository;
@@ -277,39 +291,62 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		return containerProvider;
 	}
 
+	public BPTShowEntryComponent getTable() {
+		return entryComponent;
+	}
+
 	public void login(Map <String, String[]> map) {
-		if (map.containsKey("openid.identity")) {
-//			System.out.println("----- LOGIN STARTED -----");
-			loggingIn = false;
-			// TODO: check nonce for security reasons
-//			checkNonce(request.getParameter("openid.response_nonce"));
-			setUser(map.get("openid.identity")[0]);
-//			System.out.println("The OpenID identifier: " + (String)getUser());
-			if (openIdProvider.equals("Google")) {
-				mailAddress = map.get("openid.ext1.value.email")[0];
-				if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
-					name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+		System.out.println("----- LOGIN STARTED -----");
+		System.out.println("The parameter map: ");
+		for (String key: map.keySet()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("\t" + key + ": ");
+			String[] array = map.get(key);
+			for (int i = 0; i < array.length; i++) {
+				sb.append(array[i]);
+				if (i < array.length - 1) {
+					sb.append(", ");
 				} else {
-					name = mailAddress;
-				}
-			} else { // openIdProvider.equals("Yahoo")
-				mailAddress = map.get("openid.ax.value.email")[0];
-				if (map.containsKey("openid.ax.value.fullname")) {
-					name = map.get("openid.ax.value.fullname")[0]; 
-				} else {
-					name = mailAddress;
+					sb.append(";");
 				}
 			}
-//			System.out.println("The name: " + name);
-//			System.out.println("The mail address: " + mailAddress);
-			moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
-			loggedIn = true;
-//			System.out.println("----- LOGIN FINISHED -----");
-			getPage().open(applicationURL, "_self");
-			getSidebar().login(name, moderated);
-//			renderEntries();
+			System.out.println(sb.toString());
 		}
-	}
+		// TODO: check nonce for security reasons
+//			checkNonce(request.getParameter("openid.response_nonce"));
+		user = map.get("openid.identity")[0];
+		System.out.println("The OpenID identifier: " + user);
+		if (openIdProvider.equals("Google")) {
+			mailAddress = map.get("openid.ext1.value.email")[0];
+			if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
+				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+			} else {
+				name = mailAddress;
+			}
+		} else { // openIdProvider.equals("Yahoo")
+			mailAddress = map.get("openid.ax.value.email")[0];
+			if (map.containsKey("openid.ax.value.fullname")) {
+				name = map.get("openid.ax.value.fullname")[0]; 
+			} else {
+				name = mailAddress;
+			}
+		}
+		System.out.println("The name: " + name);
+		System.out.println("The mail address: " + mailAddress);
+		moderated = userRepository.isModerator(user, name, mailAddress);
+		loggedIn = true;
+		System.out.println("----- LOGIN FINISHED -----");
+		getSidebar().login(name, moderated);
+//		renderEntries();
+//			try {
+//				response.sendRedirect(getLogoutURL());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			System.out.println("----- LOGIN FINISHED -----");
+//			return;
+		}
 		
 //		System.out.println("-------------------------------START---------------------------------");
 //		
@@ -363,6 +400,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //            throw new OpenIdException("Bad nonce time.");
 //        }
 //	}
+
+	public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+	}
 
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
@@ -448,7 +488,37 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //				}
 //				System.out.println(sb.toString());
 //			}
-			login(map);
+			if (map.containsKey("openid.identity")) {
+//				System.out.println("----- LOGIN STARTED -----");
+				loggingIn = false;
+				// TODO: check nonce for security reasons
+//				checkNonce(request.getParameter("openid.response_nonce"));
+				setUser(map.get("openid.identity")[0]);
+//				System.out.println("The OpenID identifier: " + (String)getUser());
+				if (openIdProvider.equals("Google")) {
+					mailAddress = map.get("openid.ext1.value.email")[0];
+					if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
+						name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
+					} else {
+						name = mailAddress;
+					}
+				} else { // openIdProvider.equals("Yahoo")
+					mailAddress = map.get("openid.ax.value.email")[0];
+					if (map.containsKey("openid.ax.value.fullname")) {
+						name = map.get("openid.ax.value.fullname")[0]; 
+					} else {
+						name = mailAddress;
+					}
+				}
+//				System.out.println("The name: " + name);
+//				System.out.println("The mail address: " + mailAddress);
+				moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
+				loggedIn = true;
+//				System.out.println("----- LOGIN FINISHED -----");
+				getPage().open(applicationURL, "_self");
+				getSidebar().login(name, moderated);
+//				renderEntries();
+			}
 		}
 	}
 }

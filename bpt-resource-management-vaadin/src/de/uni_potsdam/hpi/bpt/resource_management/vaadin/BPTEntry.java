@@ -165,15 +165,15 @@ public class BPTEntry extends CustomLayout {
 	}
 
 	public void addButtons() {
-		Button share = new Button("share");
-		share.addClickListener(new Button.ClickListener(){
+		Button show = new Button("show");
+		show.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				applicationUI.showSpecificEntry(entryId);
 			}
 		});
-		share.setStyleName(BaseTheme.BUTTON_LINK);
-		share.addStyleName("bpt");
-		this.addComponent(share, "button share");
+		show.setStyleName(BaseTheme.BUTTON_LINK);
+		show.addStyleName("bpt");
+		this.addComponent(show, "button share");
 		
 		Button more = new Button("more");
 		more.addClickListener(new Button.ClickListener(){
@@ -349,7 +349,7 @@ public class BPTEntry extends CustomLayout {
 		
 	}
 	
-	public void hideJavaScript() {
+	public void hideJavaScript(){
 		JavaScript.getCurrent().execute(getJavaScriptStringHide());
 	}
 	
