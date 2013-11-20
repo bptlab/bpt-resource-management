@@ -35,10 +35,12 @@ public class BPTContainerProvider {
 	private static BPTContainerProvider instance;
     private BPTToolRepository toolRepository;
     private BPTUserRepository userRepository;
+//    private BPTApplication application;
    
-    public BPTContainerProvider(BPTApplicationUI applicationUI) {
-    	this.toolRepository = applicationUI.getToolRepository();
-    	this.userRepository = applicationUI.getUserRepository();
+    public BPTContainerProvider(BPTApplicationUI bptApplicationUI) {
+//    	this.application = application;
+    	this.toolRepository = bptApplicationUI.getToolRepository();
+    	this.userRepository = bptApplicationUI.getUserRepository();
     	BPTContainerProvider.instance = this;
 	}
     
@@ -314,7 +316,7 @@ public class BPTContainerProvider {
 				}
 			}
 			tagStatisticMap = statisticMap;
-			sb.append("['Others', " + others + ", \"javascript:alert('Others')\"],");
+			sb.append("['Others', " + others + ", \"javascript:de.hpi.showAll('Others')\"],");
 //			tagStatisticMap.put("Others", others);
 		}
 		
