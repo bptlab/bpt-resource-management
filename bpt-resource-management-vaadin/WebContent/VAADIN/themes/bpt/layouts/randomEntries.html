@@ -6,19 +6,9 @@
 	<div id="piechart" location="piechart" class="chart"></div>
 	<div id="tagcloud" location="tagcloud" class="chart"></div>
 </div> 
-<div>
 <br/>
 <hr/>
 <br/>
-</div>
-
-<table style="width:100%">
-	<tr>
-		<td>
-			<div align="left" location="pageSelection"></div>
-		</td>
-	</tr>
-</table>
 <ul id="resource-list" location="cards"></ul>
 <table style="width:100%">
 	<tr>
@@ -26,13 +16,12 @@
 			<div align="left" location="showAllLink"></div>
 		</td>
 		<td>
-			<div align="right" location="sortSelect"></div>
+			<div align="right" location="moreRandomEntries"></div>
 		</td>
 	</tr>
 </table>
 <br/>
 <hr/>
-<br/>
 <div>
 <h1>Tools for BPM</h1>
 On this page, we collect and promote innovative scientific and industrial tools that support BPM in any of several fields. <br/> 
@@ -92,30 +81,4 @@ if (n && f && s && npos.y) {
 	    }
 	});	
 }
-</script>
-<script>
-
-function showEntry(id){                                         
-        var divId = id + "_extension"
-        document.getElementById(divId).style.display = "block";
-        var button_id = id + "_button_more";
-        document.getElementById(button_id).style.display = "none";
-        var button_id = id + "_button_less";
-        document.getElementById(button_id).style.display = "block";
-        
-}
-</script>
-
-<script>
-
-function hideEntry(id){
-    var divId = id + "_extension"
-    document.getElementById(divId).style.display = "none";
-    var button_id = id + "_button_more";
-    document.getElementById(button_id).style.display = "block";
-    var button_id = id + "_button_less";
-    document.getElementById(button_id).style.display = "none";
-
-}
-
 </script>

@@ -155,7 +155,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	@Override
 	protected void buildLayout() {
-		layout = new CustomLayout("cards");
+		layout = new CustomLayout("randomEntries");
 		addComponent(layout);
 		statisticsLayout = new HorizontalLayout();
 		numberOfEntriesLabel = new Label("", ContentMode.HTML);
@@ -182,7 +182,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	
 	private void addReloadButton() {
-		Button reloadButton = new Button("I want more");
+		Button reloadButton = new Button("Display random entries");
 		reloadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
@@ -190,7 +190,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 				show(getEntries(statusList));
 			}
 		});
-		layout.addComponent(reloadButton, "sortSelect");
+		reloadButton.setStyleName(BaseTheme.BUTTON_LINK);
+		reloadButton.addStyleName("bpt");
+		layout.addComponent(reloadButton, "moreRandomEntries");
 	}
 	
 	private void addCharts() {

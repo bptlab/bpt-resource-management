@@ -100,7 +100,7 @@ public class BPTSidebar extends HorizontalLayout {
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		
-		Button startButton = new Button("Go back to startpage");
+		Button startButton = new Button("back to start page");
 		startButton.setStyleName(BaseTheme.BUTTON_LINK);
 		startButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
@@ -110,7 +110,7 @@ public class BPTSidebar extends HorizontalLayout {
 		});
 		buttonLayout.addComponent(startButton);
 		
-		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or &nbsp;&nbsp;", ContentMode.HTML));
+		buttonLayout.addComponent(new Label("&nbsp;&nbsp; or go &nbsp;&nbsp;", ContentMode.HTML));
 		
 		Button findButton = new Button("See all " + this.numberOfEntries + " entries of Tools for BPM");
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
