@@ -65,7 +65,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		userRepository = BPTUserRepository.getInstance();
 		containerProvider = new BPTContainerProvider(this);
 		
-		CustomLayout custom = new CustomLayout("mainLayout");
+		CustomLayout custom = new CustomLayout("bptMainLayout");
 		custom.setHeight("100%");
 		VerticalLayout layout = new VerticalLayout();
 		layout.setWidth("732px");
