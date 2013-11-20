@@ -51,7 +51,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
           		"}" +
           		"}"+
         		"</script></head><body style=\" overflow:hidden; \">" +
-        		"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Model types </div>" +
+        		"<div style=\" font-family:Arial; font-size:15; font-weight:bold; color:#CC0000; \"> Model types </div>" +
           		"<div id=\"pie_chart_div\" style=\"width: 240px; height: 300px; overflow:hidden;\"></div>" +
           		"</body></html>").getBytes();
     	
@@ -82,7 +82,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
             	"}" +
           		"}" +
 				"</script></head><body style=\" overflow:hidden; \">" +
-				"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Availabilities of tools </div>" +
+				"<div style=\" font-family:Arial; font-size:15; font-weight:bold; color:#CC0000; \"> Availabilities of tools </div>" +
           		"<div id=\"pie_chart_div\" style=\"width: 240px; height: 300px;\"></div></body></html>").getBytes();
 
         public InputStream getStream() {
@@ -139,7 +139,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         					"</script>" + 
         			"</head>" + 
         			"<body style=\" overflow:hidden; \">" +
-        			"<div style=\" font-family:Arial; font-size:10; font-weight:bold; color:#CC0000; \"> Supported functionalities </div>" +
+        			"<div style=\" font-family:Arial; font-size:15; font-weight:bold; color:#CC0000; \"> Supported functionalities </div>" +
         			"<div id=\"tcdiv\" style=\"width: 240px; height: 300px; margin-top: 80px; \"></div>" + 
         			"</body>" + 
         		"</html>").getBytes();
