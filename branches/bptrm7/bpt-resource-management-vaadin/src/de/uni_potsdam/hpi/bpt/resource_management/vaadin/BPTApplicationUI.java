@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -401,9 +398,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //        }
 //	}
 
-	public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
-	}
-
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
@@ -488,37 +482,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //				}
 //				System.out.println(sb.toString());
 //			}
-			if (map.containsKey("openid.identity")) {
-//				System.out.println("----- LOGIN STARTED -----");
-				loggingIn = false;
-				// TODO: check nonce for security reasons
-//				checkNonce(request.getParameter("openid.response_nonce"));
-				setUser(map.get("openid.identity")[0]);
-//				System.out.println("The OpenID identifier: " + (String)getUser());
-				if (openIdProvider.equals("Google")) {
-					mailAddress = map.get("openid.ext1.value.email")[0];
-					if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
-						name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
-					} else {
-						name = mailAddress;
-					}
-				} else { // openIdProvider.equals("Yahoo")
-					mailAddress = map.get("openid.ax.value.email")[0];
-					if (map.containsKey("openid.ax.value.fullname")) {
-						name = map.get("openid.ax.value.fullname")[0]; 
-					} else {
-						name = mailAddress;
-					}
-				}
-//				System.out.println("The name: " + name);
-//				System.out.println("The mail address: " + mailAddress);
-				moderated = userRepository.isModerator((String)getUser(), name, mailAddress);
-				loggedIn = true;
-//				System.out.println("----- LOGIN FINISHED -----");
-				getPage().open(applicationURL, "_self");
-				getSidebar().login(name, moderated);
-//				renderEntries();
-			}
+			login(map);
 		}
 	}
 }
