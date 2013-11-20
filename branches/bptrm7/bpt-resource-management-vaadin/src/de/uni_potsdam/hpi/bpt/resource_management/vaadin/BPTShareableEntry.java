@@ -34,7 +34,7 @@ public class BPTShareableEntry extends CustomLayout {
 	private BPTUserRepository userRepository = BPTUserRepository.getInstance();
 	
 	public BPTShareableEntry(Item item, BPTApplicationUI applicationUI) {
-		super("shareable_entry");
+		super("shareableEntry");
 		this.item = item;
 		this.applicationUI = applicationUI;
 		entryId = item.getItemProperty("ID").getValue().toString();

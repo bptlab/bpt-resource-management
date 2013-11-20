@@ -32,7 +32,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 
 	@Override
 	protected void buildLayout() {
-		layout = new CustomLayout("cards");
+		layout = new CustomLayout("entryCards");
 		vertical = new VerticalLayout();
 		topPageSelector = new BPTPageSelector(applicationUI);
 		bottomPageSelector = new BPTPageSelector(applicationUI);
@@ -56,27 +56,19 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		selectLayout.addComponent(new Label("&nbsp;&nbsp;&nbsp;&nbsp;", ContentMode.HTML));
 		
 		addComponent(layout);
-		layout.addComponent(topPageSelector, "pageSelection");
+		layout.addComponent(topPageSelector, "topPageSelector");
 		layout.addComponent(selectLayout, "sortSelect");
 		layout.addComponent(vertical, "cards");
 		
-		HorizontalLayout bottomLayout = new HorizontalLayout();
-		bottomLayout.setWidth("100%");
-		
-		Button backToStartButton = new Button("Back to Startpage");
+		Button backToStartButton = new Button("Back to start page");
 		backToStartButton.setStyleName(BaseTheme.BUTTON_LINK);
 		backToStartButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				applicationUI.showStartPage();
 			}
 		});
-		bottomLayout.addComponent(backToStartButton);
-		bottomLayout.addComponent(bottomPageSelector);
-		
-		bottomLayout.setExpandRatio(backToStartButton, 1);
-		bottomLayout.setExpandRatio(bottomPageSelector, 1);
-		
-		addComponent(bottomLayout);
+		layout.addComponent(backToStartButton, "linkToStartPage");
+		layout.addComponent(bottomPageSelector, "bottomPageSelector");
 	}
 
 	@Override
