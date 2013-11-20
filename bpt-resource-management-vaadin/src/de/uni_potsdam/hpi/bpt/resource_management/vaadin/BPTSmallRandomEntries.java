@@ -8,6 +8,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
@@ -157,10 +158,10 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		layout = new CustomLayout("cards");
 		addComponent(layout);
 		statisticsLayout = new HorizontalLayout();
-		numberOfEntriesLabel = new Label();
+		numberOfEntriesLabel = new Label("", ContentMode.HTML);
 		numberOfEntriesLabel.setImmediate(true);
 		statisticsLayout.addComponent(numberOfEntriesLabel);
-		Button showAllButton = new Button("Show all entries");
+		Button showAllButton = new Button("show all entries");
 		showAllButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showAllAndRefreshSidebar(true);
@@ -169,6 +170,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
 		showAllButton.addStyleName("bpt");
 		statisticsLayout.addComponent(showAllButton);
+		Label dotLabel = new Label(".");
+		statisticsLayout.addComponent(dotLabel);
 		layout.addComponent(statisticsLayout, "statisticsRow");
 		cardLayout = new HorizontalLayout();
 		layout.addComponent(cardLayout, "cards");
@@ -179,7 +182,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	
 	private void addReloadButton() {
-		Button reloadButton = new Button("reload");
+		Button reloadButton = new Button("I want more");
 		reloadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
@@ -218,7 +221,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 	}
 
 	private void addShowAllButton() {
-		Button showAllButton = new Button("show all entries.");
+		Button showAllButton = new Button("Show all entries");
 		showAllButton.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showAllAndRefreshSidebar(true);
@@ -226,12 +229,12 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		});
 		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
 		showAllButton.addStyleName("bpt");
-		addComponent(showAllButton);
+		layout.addComponent(showAllButton, "showAllLink");
 	}
 
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
-		numberOfEntriesLabel.setCaption("To browse through all " + numberOfEntries + " tools use the searchbar above, click on our interactive charts or ");
+		numberOfEntriesLabel.setValue("To browse through all " + numberOfEntries + " tools use the searchbar above, click on our interactive charts or&nbsp;");
 	}
 
 	@Override
