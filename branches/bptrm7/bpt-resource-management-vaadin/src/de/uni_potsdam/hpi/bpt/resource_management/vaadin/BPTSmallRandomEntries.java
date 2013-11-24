@@ -13,6 +13,7 @@ import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
@@ -178,11 +179,31 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		addCharts();
 		addReloadButton();
 		addShowAllButton();
+		alignEntries();
 	}
 
 	
+	private void alignEntries() {
+		JavaScript.getCurrent().execute("classNames = ['Logo', 'Name', 'Provider'];" +
+										"alert('staph');" +
+										"for(var j = 0; j < classNames.length; j++){" +
+											"var height = 0;" +
+											"elements = document.getElementsByClassName(classNames[j]);" +
+											"for (var i = 0; i < elements.length; i++) {" +
+												"if(height < elements[i].clientHeight){" +
+													"height = elements[i].clientHeight;" +
+												"}" +
+											"}" +
+											"for (var i = 0; i < elements.length; i++) {" +
+												"elements[i].style.height = height + 'px';" +
+											"}" +
+										"}"
+		);
+		
+	}
+
 	private void addReloadButton() {
-		Button reloadButton = new Button("Display random entries");
+		Button reloadButton = new Button("More random entries");
 		reloadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();

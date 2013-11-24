@@ -219,21 +219,22 @@ body{
 	margin: 0px;
 }
 
-#resource-list .shortEntry div.Logo{
-	
-}
-
 #resource-list .shortEntry .Logo img{
 	max-width: 180px;
 	max-height: 80px;
+	margin-top: 10px;
 }
 
 #resource-list .shortEntry *{
 	margin-left: 0px !important;
 }
 
-.shortEntry table tr td.top{
-	vertical-align: top;
+.shortEntry .Name{
+	min-height: 20px;
+}
+
+.shortEntry .Provider{
+	min-height: 20px;
 }
 
 div.chart{
