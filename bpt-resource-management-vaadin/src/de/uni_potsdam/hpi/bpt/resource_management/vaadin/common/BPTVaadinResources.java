@@ -1,9 +1,11 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin.common;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+//import java.io.ByteArrayInputStream;
+//import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+//import java.io.InputStream;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,12 +13,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+
+import org.apache.commons.io.FileUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.StreamResource.StreamSource;
+import com.vaadin.server.FileResource;
+//import com.vaadin.server.StreamResource;
+//import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -37,28 +43,28 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 @SuppressWarnings({ "serial", "unchecked"})
 public class BPTVaadinResources {
 	
-	private static class ImageStreamSource implements StreamSource {
-		
-		private InputStream stream;
-		
-		private ImageStreamSource(InputStream stream) {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
-			int n = 0;
-			try {
-				while ((n = stream.read(buf)) >= 0) {
-				    baos.write(buf, 0, n);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			this.stream = new ByteArrayInputStream(baos.toByteArray());
-		}
-		
-		public InputStream getStream() {
-			return stream;
-		}
-	}
+//	private static class ImageStreamSource implements StreamSource {
+//		
+//		private InputStream stream;
+//		
+//		private ImageStreamSource(InputStream stream) {
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			byte[] buf = new byte[1024];
+//			int n = 0;
+//			try {
+//				while ((n = stream.read(buf)) >= 0) {
+//				    baos.write(buf, 0, n);
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			this.stream = new ByteArrayInputStream(baos.toByteArray());
+//		}
+//		
+//		public InputStream getStream() {
+//			return stream;
+//		}
+//	}
 	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
@@ -240,19 +246,33 @@ public class BPTVaadinResources {
 	private static Image asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
 		
 		if (tool.containsKey("_attachments")) {
-			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
-			Image image = new Image(null, new StreamResource(new ImageStreamSource(attachmentInputStream), attachmentName));
+			ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 			try {
-				attachmentInputStream.close();
+				URL url = new URL("http://" + resourceBundle.getString("DB_USERNAME") + ":" + resourceBundle.getString("DB_PASSWORD") + "@" + resourceBundle.getString("DB_HOST") + ":" + resourceBundle.getString("DB_PORT") + "/bpt_resources_tools/" + tool.get("_id") + "/logo");
+				File file = new File("bptrm_" + (String)tool.get("_id"));
+				FileUtils.copyURLToFile(url, file);
+				Image image = new Image(null, new FileResource(file));
+				image.setWidth("15px");
+				image.setHeight("15px");
+			    return image;
 			} catch (IOException e) {
 				e.printStackTrace();
+				return null;
 			}
+//			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
+//			Image image = new Image(null, new StreamResource(new ImageStreamSource(attachmentInputStream), attachmentName));
+//			try {
+//				attachmentInputStream.close();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 //			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
 
 			// default image size is icon size
-			image.setWidth("15px");
-			image.setHeight("15px");
-		    return image;
+//			Image image = new Image(null, new ExternalResource("http://bpm:petrinet@localhost:5984/bpt_resources_tools/" + tool.get("_id") + "/logo"));
+//			image.setWidth("15px");
+//			image.setHeight("15px");
+//		    return image;
 		} else {
 			return null;
 		}

@@ -164,7 +164,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		this.openIdProvider = openIdProvider;
 	}
 	
-	private void setProperties() { 		
+	private void setProperties() { 
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 		applicationURL = resourceBundle.getString("OPENID_RETURN_TO");
 		openIdProvider = resourceBundle.getString("DEFAULT_OPEN_ID_PROVIDER");
