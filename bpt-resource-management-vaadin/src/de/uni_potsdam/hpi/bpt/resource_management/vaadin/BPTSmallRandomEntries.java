@@ -183,31 +183,30 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	
 	private void alignEntries() {
-		JavaScript.getCurrent().execute(
-										"classNames = ['Logo', 'Name', 'Provider'];" +
-										"for(var j = 0; j < classNames.length; j++){" +
-											"var height = 0;" +
-											"elements = document.getElementsByClassName(classNames[j]);" +
-											"for (var i = 0; i < elements.length; i++) {" +
-												"if(height < elements[i].clientHeight){" +
-													"height = elements[i].clientHeight;" +
-												"}" +
-											"}" +
-											"for (var i = 0; i < elements.length; i++) {" +
-												"elements[i].style.height = height + 'px';" +
-											"}" +
-										"}"
-		);
-		
+		if(JavaScript.getCurrent() != null){
+			JavaScript.getCurrent().execute(
+					"classNames = ['Logo', 'Name', 'Provider'];" +
+					"for(var j = 0; j < classNames.length; j++){" +
+						"var height = 0;" +
+						"elements = document.getElementsByClassName(classNames[j]);" +
+						"for (var i = 0; i < elements.length; i++) {" +
+							"if(height < elements[i].clientHeight){" +
+								"height = elements[i].clientHeight;" +
+							"}" +
+						"}" +
+						"for (var i = 0; i < elements.length; i++) {" +
+							"elements[i].style.height = height + 'px';" +
+						"}" +
+					"}"
+			);
+		}
 	}
 
 	private void addReloadButton() {
 		Button reloadButton = new Button("More random entries");
 		reloadButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-				statusList.add(BPTToolStatus.Published);
-				show(getEntries(statusList));
+				showNewEntries();
 			}
 		});
 		reloadButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -256,7 +255,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
-		numberOfEntriesLabel.setValue("To browse through all " + numberOfEntries + " tools use the searchbar above, click on our interactive charts or&nbsp;");
+		numberOfEntriesLabel.setValue("To browse through all " + numberOfEntries + " tools use the <span class=\"highlighting\"> searchbar </span> above, click on our <span class=\"highlighting\"> interactive charts </span> or&nbsp;");
 	}
 
 	@Override
@@ -273,5 +272,11 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 	@Override
 	protected IndexedContainer getEntries(ArrayList<BPTToolStatus> statusList) {
 		return BPTContainerProvider.getInstance().getRandomEntries(3);
+	}
+	
+	public void showNewEntries(){
+		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
+		statusList.add(BPTToolStatus.Published);
+		show(getEntries(statusList));
 	}
 }
