@@ -193,6 +193,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void showAllAndRefreshSidebar(boolean loadEntries) {
+		setStyleName("select-wait");
 		getSidebar().showAll();
 		showAll(loadEntries);
 		getPage().setUriFragment("!showAll", false);
