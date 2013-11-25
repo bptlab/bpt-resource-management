@@ -31,7 +31,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
     private static class PieChartStreamSource implements StreamSource {
         
         private static final byte[] HTML = 
-        		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
+        		("<html><head>" +
+        		"<style type=\"text/css\"> path { cursor: pointer !important;} </style>" +
+        		"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
         		"</script><script type=\"text/javascript\">" + 
         		"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
         		"function drawPieChart() {" +
@@ -48,6 +50,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"function selectHandler(e) {" +
         		"var selection = chart.getSelection();" +
         		"var item = selection[0];" +
+        		"document.getElementById('pie_chart_div').style.cursor='wait'" +
 				"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
           		"}" +
           		"}"+
@@ -64,7 +67,9 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
     private static class BarChartStreamSource implements StreamSource {
         
         private static final byte[] HTML = 
-        		("<html><head><script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
+        		("<html><head>" +
+        		"<style type=\"text/css\"> g g g rect { cursor: pointer !important;} </style>" +
+        		"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
 				"</script><script type=\"text/javascript\">" + 
 				"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
 				"function drawPieChart() {var model_data = new google.visualization.DataTable();" +  
