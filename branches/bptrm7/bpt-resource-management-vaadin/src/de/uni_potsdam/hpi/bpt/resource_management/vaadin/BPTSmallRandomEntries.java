@@ -179,13 +179,12 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		addCharts();
 		addReloadButton();
 		addShowAllButton();
-		alignEntries();
 	}
 
 	
 	private void alignEntries() {
-		JavaScript.getCurrent().execute("classNames = ['Logo', 'Name', 'Provider'];" +
-										"alert('staph');" +
+		JavaScript.getCurrent().execute(
+										"classNames = ['Logo', 'Name', 'Provider'];" +
 										"for(var j = 0; j < classNames.length; j++){" +
 											"var height = 0;" +
 											"elements = document.getElementsByClassName(classNames[j]);" +
@@ -268,6 +267,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 			BPTShortEntry entry = new BPTShortEntry(item, applicationUI, this);
 			cardLayout.addComponent(entry);
 		}
+		alignEntries();
 	}
 	
 	@Override
