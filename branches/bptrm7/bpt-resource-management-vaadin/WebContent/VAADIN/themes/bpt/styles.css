@@ -216,6 +216,7 @@ body{
 	float: none !important;
 	width: 200px;
 	margin: 0px;
+	height: 90px;
 }
 
 #resource-list .shortEntry .Logo img{
@@ -244,3 +245,14 @@ iframe{
 	overflow: hidden;
 }
 
+.waitCursor{
+	cursor: wait !important;
+}
+
+.waitCursor *{
+	cursor: wait !important;
+}
+
+.highlighting{
+	color: #CC0000;
+}

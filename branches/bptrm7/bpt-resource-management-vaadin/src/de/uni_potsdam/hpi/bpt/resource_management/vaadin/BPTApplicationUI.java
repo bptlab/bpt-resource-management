@@ -14,6 +14,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
 import com.vaadin.server.Page.UriFragmentChangedListener;
+import com.vaadin.server.PaintTarget;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
@@ -193,11 +194,12 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void showAllAndRefreshSidebar(boolean loadEntries) {
-		setStyleName("select-wait");
+		addStyleName("waitCursor");
 		getSidebar().showAll();
 		showAll(loadEntries);
 		getPage().setUriFragment("!showAll", false);
 		JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
+		removeStyleName("waitCursor");
 	}
 	
 	public void showAll(boolean loadEntries) {
@@ -484,6 +486,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //				System.out.println(sb.toString());
 //			}
 			login(map);
+		}
+		if(entryComponent instanceof BPTSmallRandomEntries){
+			((BPTSmallRandomEntries) entryComponent).showNewEntries();
 		}
 	}
 }
