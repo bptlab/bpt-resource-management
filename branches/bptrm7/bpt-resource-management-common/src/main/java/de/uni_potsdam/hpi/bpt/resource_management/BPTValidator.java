@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -60,16 +61,15 @@ public class BPTValidator {
 			httpConnection.setRequestProperty("User-Agent", ""); 
 			httpConnection.connect();
 			String responseCode = (new Integer(httpConnection.getResponseCode())).toString();
-			System.out.println("URL: " + url + " - Code: " + responseCode);
+			System.out.println(new Date() + " - " + url + " - Code: " + responseCode);
 			if (!responseCode.startsWith("2") && !responseCode.startsWith("3")) {
 				isAvailable = false;
 			} else {
 				isAvailable = true;
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println(new Date() + " - " + url + " - Code: UNKNOWN");
+			return false;
 		} finally {
 			if (httpConnection != null) {
 				httpConnection.disconnect();
