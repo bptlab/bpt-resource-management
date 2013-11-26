@@ -195,6 +195,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
 	public void showAllAndRefreshSidebar(boolean loadEntries) {
 		addStyleName("waitCursor");
+		JavaScript.getCurrent().execute("document.getElementById('barchart').firstChild.firstChild.contentWindow.showWaitCursor()");
+		JavaScript.getCurrent().execute("document.getElementById('piechart').firstChild.firstChild.contentWindow.showWaitCursor()");
+		JavaScript.getCurrent().execute("document.getElementById('tagcloud').firstChild.firstChild.contentWindow.showWaitCursor()");
 		getSidebar().showAll();
 		showAll(loadEntries);
 		getPage().setUriFragment("!showAll", false);
@@ -487,8 +490,8 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //			}
 			login(map);
 		}
-		if(entryComponent instanceof BPTSmallRandomEntries){
-			((BPTSmallRandomEntries) entryComponent).showNewEntries();
-		}
+//		if(entryComponent instanceof BPTSmallRandomEntries){
+//			((BPTSmallRandomEntries) entryComponent).showNewEntries();
+//		}
 	}
 }

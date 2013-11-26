@@ -32,7 +32,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         
         private static final byte[] HTML = 
         		("<html><head>" +
-        		"<style type=\"text/css\"> path { cursor: pointer !important;} </style>" +
+//        		"<style type=\"text/css\"> path { cursor: pointer} </style>" +
         		"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
         		"</script><script type=\"text/javascript\">" + 
         		"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
@@ -50,10 +50,17 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"function selectHandler(e) {" +
         		"var selection = chart.getSelection();" +
         		"var item = selection[0];" +
-        		"document.getElementById('pie_chart_div').style.cursor='wait'" +
+//        		"showWaitCursor();" +
 				"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
           		"}" +
           		"}"+
+          		"function showWaitCursor()" +
+          		"{" +
+				"var pathElements = document.getElementsByTagName('*');" +
+          		"for (var i = 0; i < pathElements.length; i++) {" +
+					"pathElements[i].style.cursor='wait';" +
+				"}" +
+          		"}" +
         		"</script></head><body style=\" overflow:hidden; \">" +
         		"<div style=\" font-family:Arial; font-size:15; font-weight:bold; color:#CC0000; \"> Model types </div>" +
           		"<div id=\"pie_chart_div\" style=\"width: 240px; height: 300px; overflow:hidden;\"></div>" +
@@ -68,7 +75,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         
         private static final byte[] HTML = 
         		("<html><head>" +
-        		"<style type=\"text/css\"> g g g rect { cursor: pointer !important;} </style>" +
+//        		"<style type=\"text/css\"> g g g rect { cursor: pointer !important;} </style>" +
         		"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
 				"</script><script type=\"text/javascript\">" + 
 				"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
@@ -86,6 +93,13 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         		"var item = selection[0];" +
         		"parent.de.hpi.showAll(model_data.getFormattedValue(item.row, 0));" +
             	"}" +
+          		"}" +
+          		"function showWaitCursor()" +
+          		"{" +
+				"var pathElements = document.getElementsByTagName('*');" +
+          		"for (var i = 0; i < pathElements.length; i++) {" +
+					"pathElements[i].style.cursor='wait';" +
+				"}" +
           		"}" +
 				"</script></head><body style=\" overflow:hidden; \">" +
 				"<div style=\" font-family:Arial; font-size:15; font-weight:bold; color:#CC0000; \"> Availabilities of tools </div>" +
@@ -141,6 +155,13 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 					        		"var tc = new TermCloud(outputDiv);" + 
 					        		"tc.draw(data, options);" +
 					        	"}" +
+				          		"function showWaitCursor()" +
+				          		"{" +
+								"var pathElements = document.getElementsByTagName('*');" +
+				          		"for (var i = 0; i < pathElements.length; i++) {" +
+									"pathElements[i].style.cursor='wait';" +
+								"}" +
+				          		"}" +
 //        		{text_color: '#1B699F', width:240, height:300}
         					"</script>" + 
         			"</head>" + 
