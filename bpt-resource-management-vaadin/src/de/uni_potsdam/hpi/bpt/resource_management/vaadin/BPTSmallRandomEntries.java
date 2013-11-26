@@ -32,7 +32,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         
         private static final byte[] HTML = 
         		("<html><head>" +
-//        		"<style type=\"text/css\"> path { cursor: pointer} </style>" +
+        		"<style type=\"text/css\"> path { cursor: pointer;} .waitCursor {cursor: wait !important;} .waitCursor * {cursor: wait !important;}</style>" +
         		"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
         		"</script><script type=\"text/javascript\">" + 
         		"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
@@ -58,7 +58,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
           		"{" +
 				"var pathElements = document.getElementsByTagName('*');" +
           		"for (var i = 0; i < pathElements.length; i++) {" +
-					"pathElements[i].style.cursor='wait';" +
+//					"pathElements[i].style.cursor='wait';" +
+				"pathElements[i].className='waitCursor';" +
 				"}" +
           		"}" +
         		"</script></head><body style=\" overflow:hidden; \">" +
@@ -75,7 +76,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
         
         private static final byte[] HTML = 
         		("<html><head>" +
-//        		"<style type=\"text/css\"> g g g rect { cursor: pointer !important;} </style>" +
+        		"<style type=\"text/css\"> g g g rect { cursor: pointer;} .waitCursor {cursor: wait !important;} .waitCursor * {cursor: wait !important;}</style>" +
         		"<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\">" + 
 				"</script><script type=\"text/javascript\">" + 
 				"google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});google.setOnLoadCallback(drawPieChart);" + 
@@ -98,7 +99,8 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
           		"{" +
 				"var pathElements = document.getElementsByTagName('*');" +
           		"for (var i = 0; i < pathElements.length; i++) {" +
-					"pathElements[i].style.cursor='wait';" +
+//					"pathElements[i].style.cursor='wait';" +
+					"pathElements[i].className='waitCursor';" +
 				"}" +
           		"}" +
 				"</script></head><body style=\" overflow:hidden; \">" +
