@@ -201,10 +201,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		JavaScript.getCurrent().execute("document.getElementById('piechart').firstChild.firstChild.contentWindow.showWaitCursor()");
 		JavaScript.getCurrent().execute("document.getElementById('tagcloud').firstChild.firstChild.contentWindow.showWaitCursor()");
 		push();
-//		pusher.push();
-//		getSidebar().showAll();
+		getSidebar().showAll();
 		showAll(loadEntries);
-//		getPage().setUriFragment("!showAll", false);
+		getPage().setUriFragment("!showAll", false);
 		JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
 		removeStyleName("waitCursor");
 	}
