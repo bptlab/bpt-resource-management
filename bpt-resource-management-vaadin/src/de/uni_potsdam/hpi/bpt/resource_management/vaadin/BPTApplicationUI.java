@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.tools.ant.taskdefs.Java;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -13,6 +14,8 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.Page;
+import com.vaadin.server.ClientConnector.AttachEvent;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
 import com.vaadin.server.Page.UriFragmentChangedListener;
 import com.vaadin.server.PaintTarget;
@@ -493,8 +496,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //			}
 			login(map);
 		}
-//		if(entryComponent instanceof BPTSmallRandomEntries){
-//			((BPTSmallRandomEntries) entryComponent).showNewEntries();
-//		}
+		UI.setCurrent(this);
+		
+		if(entryComponent instanceof BPTSmallRandomEntries){
+			((BPTSmallRandomEntries) entryComponent).showNewEntries();
+		}
 	}
 }
