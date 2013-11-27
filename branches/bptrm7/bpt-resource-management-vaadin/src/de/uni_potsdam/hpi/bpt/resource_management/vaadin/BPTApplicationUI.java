@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Item;
@@ -36,6 +37,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListen
 @SuppressWarnings({ "unchecked", "serial" })
 @Title("Tools for BPM")
 @Theme("bpt")
+@Push
 //@Theme("bpmai") change theme name for different platform
 @PreserveOnRefresh // keeps state like in Vaadin 6
 public class BPTApplicationUI extends UI implements PageRefreshListener {
@@ -51,6 +53,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	private BPTUserRepository userRepository;
 	private BPTContainerProvider containerProvider;
 	private int numberOfEntries;
+
 //	private final UriFragmentUtility uriFu = new UriFragmentUtility();
 
 //	private BPTShareableEntry entry;
@@ -98,7 +101,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 							showAllAndRefreshSidebar(true);
 						}
 						else{
-							showAllAndRefreshSidebar(false);
 							selectTag(message);
 						}
 					}
@@ -198,9 +200,11 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		JavaScript.getCurrent().execute("document.getElementById('barchart').firstChild.firstChild.contentWindow.showWaitCursor()");
 		JavaScript.getCurrent().execute("document.getElementById('piechart').firstChild.firstChild.contentWindow.showWaitCursor()");
 		JavaScript.getCurrent().execute("document.getElementById('tagcloud').firstChild.firstChild.contentWindow.showWaitCursor()");
-		getSidebar().showAll();
+		push();
+//		pusher.push();
+//		getSidebar().showAll();
 		showAll(loadEntries);
-		getPage().setUriFragment("!showAll", false);
+//		getPage().setUriFragment("!showAll", false);
 		JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
 		removeStyleName("waitCursor");
 	}
