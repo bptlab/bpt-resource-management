@@ -3,22 +3,19 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 import java.util.ArrayList;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 
 @SuppressWarnings("serial")
-public class BPTTagBox extends CustomComponent{
+public class BPTTagBox extends VerticalLayout{
 	
 	protected VerticalLayout baseLayout;
 	private GridLayout layout;
 	protected ArrayList<BPTSearchTag> searchTagList;
 
 	public BPTTagBox() {
-		baseLayout = new VerticalLayout();
-		setCompositionRoot(baseLayout);
 		addGridsToComponent();
 		searchTagList = new ArrayList<BPTSearchTag>();
 	}
@@ -27,7 +24,7 @@ public class BPTTagBox extends CustomComponent{
 		layout = new GridLayout(2,1);
 		layout.setWidth("100%");
 		layout.setHeight("100%");
-		baseLayout.addComponent(layout);
+		addComponent(layout);
 	};
 	
 	public void addTag(String value){
