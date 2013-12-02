@@ -260,6 +260,7 @@ body{
 h2.Title{
 	margin-top: 0px !important;
 	color: #AA0000;
+	font-variant: normal !important;
 }
 
 div.TabButtons{
