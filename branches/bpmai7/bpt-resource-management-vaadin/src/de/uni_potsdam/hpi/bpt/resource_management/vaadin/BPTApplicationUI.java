@@ -73,7 +73,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		layout.addComponent(getSidebar());
 		
 		entryComponent = new BPTEntryCards(this);
-//		entryComponent = new BPTTable();
 		mainFrame = new BPTMainFrame(entryComponent);
 		layout.addComponent(mainFrame);
 		custom.addComponent(layout, "application");

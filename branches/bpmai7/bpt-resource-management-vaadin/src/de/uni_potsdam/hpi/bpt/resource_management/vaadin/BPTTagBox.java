@@ -11,7 +11,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchTag;
 @SuppressWarnings("serial")
 public class BPTTagBox extends VerticalLayout{
 	
-	protected VerticalLayout baseLayout;
 	private GridLayout layout;
 	protected ArrayList<BPTSearchTag> searchTagList;
 

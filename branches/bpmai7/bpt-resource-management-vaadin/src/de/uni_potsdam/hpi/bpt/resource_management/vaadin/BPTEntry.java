@@ -114,7 +114,7 @@ public class BPTEntry extends CustomLayout {
 				public void buttonClick(ClickEvent event) {
 					subEntryLayout.removeAllComponents();
 					subEntryLayout.addComponent(subentries.get(languageOfEntry));
-					Iterator<Component> iterator = tabLayout.getComponentIterator();
+					Iterator<Component> iterator = tabLayout.iterator();
 					while(iterator.hasNext()){
 						Component component = iterator.next();
 						component.removeStyleName("chosenTab");
