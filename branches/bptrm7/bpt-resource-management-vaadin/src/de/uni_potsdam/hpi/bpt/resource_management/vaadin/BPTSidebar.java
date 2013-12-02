@@ -116,7 +116,7 @@ public class BPTSidebar extends HorizontalLayout {
 		findButton.setStyleName(BaseTheme.BUTTON_LINK);
 		findButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				Page.getCurrent().setUriFragment("");
+//				Page.getCurrent().setUriFragment("");
 				applicationUI.showAllAndRefreshSidebar(true);
 			}
 		});

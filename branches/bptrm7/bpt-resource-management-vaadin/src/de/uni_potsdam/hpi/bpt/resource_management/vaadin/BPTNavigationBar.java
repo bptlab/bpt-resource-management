@@ -13,7 +13,7 @@ public class BPTNavigationBar extends HorizontalLayout {
 		Button findButton = new Button("Find");
 		findButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
-				applicationUI.renderEntries();
+				applicationUI.showAll(true);
 			}
 		});
 		addComponent(findButton);

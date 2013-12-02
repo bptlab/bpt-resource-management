@@ -173,4 +173,12 @@ public class BPTPageSelector extends HorizontalLayout {
 		}
 //		entryFromTo.requestRepaint();
 	}
+
+	public void hide() {
+		this.setVisible(false);
+	}
+	
+	public void show() {
+		this.setVisible(true);
+	}
 }

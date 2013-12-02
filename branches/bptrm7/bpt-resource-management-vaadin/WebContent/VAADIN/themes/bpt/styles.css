@@ -190,7 +190,7 @@ div.scroll{
 }
 
 div{
-	overflow: visible !important;
+	overflow-y: visible !important;
 }
 
 body{
@@ -255,4 +255,8 @@ iframe{
 
 .highlighting{
 	color: #CC0000;
+}
+
+li.singleEntry{
+	padding-bottom: 3.5em !important;
 }

@@ -74,7 +74,14 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	@Override
 	protected void showNumberOfEntries(int numberOfEntries) {
 		topPageSelector.showNumberOfEntries(numberOfEntries);
-		bottomPageSelector.showNumberOfEntries(numberOfEntries);
+		if(numberOfEntries > 1){
+			bottomPageSelector.showNumberOfEntries(numberOfEntries);
+			bottomPageSelector.show();
+		}
+		else{
+			bottomPageSelector.hide();
+		}
+		
 	}
 	
 	@Override

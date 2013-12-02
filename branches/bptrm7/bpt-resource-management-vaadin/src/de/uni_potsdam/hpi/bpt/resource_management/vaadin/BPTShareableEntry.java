@@ -42,7 +42,7 @@ public class BPTShareableEntry extends CustomLayout {
 		this.setId(entryId);
 		
 //		addButtons();
-		addOtherButtons();
+		addAdministrationButtons();
 		for (Object attributeName : item.getItemPropertyIds()) {
 			addToLayout(attributeName.toString());
 		}
@@ -152,7 +152,7 @@ public class BPTShareableEntry extends CustomLayout {
 //		this.addComponent(share, "button share");
 //	}
 	
-	protected void addOtherButtons() {
+	public void addAdministrationButtons() {
 		
 		if(applicationUI.isLoggedIn() && applicationUI.getUser().equals(userId)){
 			Button edit = new Button("edit");
@@ -201,7 +201,7 @@ public class BPTShareableEntry extends CustomLayout {
 			publish.addStyleName("bpt");
 			this.addComponent(publish, "button publish");
 			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("button publish"));
+			JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
 //			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
 			
 			Button reject = new Button("reject");
@@ -256,17 +256,6 @@ public class BPTShareableEntry extends CustomLayout {
 
 	private String getJavaScriptStringShow(String button) {
 		return "document.getElementById('button edit " + button + "').style.display = 'block';";
-//		return "var nodes = document.getElementById('" + entryId +"').childNodes;" +
-//		"for(i=0; i<nodes.length; i+=1){" +
-//			"if(nodes[i].className == 'resource-list'){" +
-//				"var subNodes = nodes[i].childNodes[0].childNodes;" +
-//				"for(j=0; j<subNodes.length; j+=1){" +
-//					"if(subNodes[j].className == 'button edit " + button + "'){" +
-//						"subNodes[j].style.display = 'block';" +
-//						"break;}" +
-//				"}" +
-//			"}" +
-//		"}";
 	}
 	
 	protected void addConfirmationWindow(final String status) {
@@ -312,6 +301,29 @@ public class BPTShareableEntry extends CustomLayout {
 			}
 		});
 		applicationUI.addWindow(confirmationWindow);
+	}
+
+	public void showButtons() {
+		if(applicationUI.isLoggedIn()){
+			if(applicationUI.getUser().equals(userId)){
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
+			}
+			if(applicationUI.isModerated()){
+				BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
+				if(actualState == BPTToolStatus.Unpublished){
+					JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
+					JavaScript.getCurrent().execute(getJavaScriptStringShow("reject"));
+				}
+				else if(actualState == BPTToolStatus.Published){
+					JavaScript.getCurrent().execute(getJavaScriptStringShow("unpublish"));
+				}
+				else if(actualState == BPTToolStatus.Rejected){
+					JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
+				}
+			}
+		}
 	}
 	
 }
