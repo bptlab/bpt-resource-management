@@ -333,7 +333,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		        subWindowLayout.addComponent(closeButton);
 		        subwindow.setContent(subWindowLayout);
 				getUI().addWindow(subwindow);
-				((BPTApplicationUI)getUI()).renderEntries();
+				((BPTApplicationUI)getUI()).showAll(true);;
 			}
 
 			private void addWarningWindow(final UI ui) {

@@ -22,8 +22,8 @@ public class BPTTagComponent extends VerticalLayout {
 	protected ArrayList<String> unselectedValues;
 	protected BPTTagBox tagBox;
 	protected BPTApplicationUI applicationUI;
-	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----")); 
-		
+	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----"));
+	
 	public BPTTagComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
 		this.applicationUI = applicationUI;
 		init(tagColumns, newTagsAllowed);

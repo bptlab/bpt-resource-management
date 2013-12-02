@@ -196,6 +196,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		if (entryComponent instanceof BPTEntryCards) {
 			refreshAndClean();
 		}
+		mainFrame.add(entryComponent);
 	}
 	
 	public void showAllAndRefreshSidebar(boolean loadEntries) {
@@ -204,7 +205,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		JavaScript.getCurrent().execute("document.getElementById('piechart').firstChild.firstChild.contentWindow.showWaitCursor()");
 		JavaScript.getCurrent().execute("document.getElementById('tagcloud').firstChild.firstChild.contentWindow.showWaitCursor()");
 		push();
-		getSidebar().showAll();
+		if(entryComponent instanceof BPTShareableEntryContainer){
+			getSidebar().showAll();			
+		}
 		showAll(loadEntries);
 		getPage().setUriFragment("!showAll", false);
 		JavaScript.getCurrent().execute("window.scrollTo(0, 0);");
@@ -212,10 +215,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void showAll(boolean loadEntries) {
-		if (!(entryComponent instanceof BPTEntryCards)) {
+//		if (!(entryComponent instanceof BPTEntryCards)) {
 			entryComponent = new BPTEntryCards(this, loadEntries);
 			mainFrame.add(entryComponent);
-		}
+//		}
 	}
 	
 	public void showStartPage() {
@@ -282,9 +285,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
             	}
             }
         } else {
-        	if (entryComponent instanceof BPTShareableEntryContainer) {
-        		showStartPage();
-        	}
+//        	XXX
+//        	if (entryComponent instanceof BPTShareableEntryContainer) {
+//        		showStartPage();
+//        	}
         }
 	}
 
@@ -417,6 +421,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void refreshAndClean() {
+		if(entryComponent instanceof BPTSmallRandomEntries){
+			showAllAndRefreshSidebar(false);
+		}
 		refreshAndClean(0);
 		((BPTEntryCards) entryComponent).showNumberOfEntries(numberOfEntries);
 	}
@@ -500,6 +507,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		
 		if(entryComponent instanceof BPTSmallRandomEntries){
 			((BPTSmallRandomEntries) entryComponent).showNewEntries();
+		}
+		
+		else if(entryComponent instanceof BPTShareableEntryContainer){
+			((BPTShareableEntryContainer) entryComponent).showButtons();
 		}
 	}
 }
