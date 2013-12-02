@@ -302,28 +302,4 @@ public class BPTShareableEntry extends CustomLayout {
 		});
 		applicationUI.addWindow(confirmationWindow);
 	}
-
-	public void showButtons() {
-		if(applicationUI.isLoggedIn()){
-			if(applicationUI.getUser().equals(userId)){
-				JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
-				JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
-			}
-			if(applicationUI.isModerated()){
-				BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
-				JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
-				if(actualState == BPTToolStatus.Unpublished){
-					JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
-					JavaScript.getCurrent().execute(getJavaScriptStringShow("reject"));
-				}
-				else if(actualState == BPTToolStatus.Published){
-					JavaScript.getCurrent().execute(getJavaScriptStringShow("unpublish"));
-				}
-				else if(actualState == BPTToolStatus.Rejected){
-					JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
-				}
-			}
-		}
-	}
-	
 }

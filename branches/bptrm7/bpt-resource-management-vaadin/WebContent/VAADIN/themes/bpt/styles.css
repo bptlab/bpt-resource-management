@@ -190,7 +190,7 @@ div.scroll{
 }
 
 div{
-	overflow-y: visible !important;
+	overflow: visible !important;
 }
 
 body{
@@ -259,4 +259,8 @@ iframe{
 
 li.singleEntry{
 	padding-bottom: 3.5em !important;
+}
+
+#defaultbody {
+	overflow: auto !important;
 }
