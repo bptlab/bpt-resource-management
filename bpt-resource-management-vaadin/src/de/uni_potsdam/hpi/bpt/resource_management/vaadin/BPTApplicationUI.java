@@ -348,6 +348,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		System.out.println("The mail address: " + mailAddress);
 		moderated = userRepository.isModerator(user, name, mailAddress);
 		loggedIn = true;
+		sidebar.login(user, moderated);
 //		System.out.println("----- LOGIN FINISHED -----");
 //		getSidebar().login(name, moderated);
 //		renderEntries();
