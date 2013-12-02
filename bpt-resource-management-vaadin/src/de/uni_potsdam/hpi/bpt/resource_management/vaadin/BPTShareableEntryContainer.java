@@ -49,7 +49,7 @@ public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 	}
 
 	public void showButtons() {
-		entry.showButtons();
+		entry.addAdministrationButtons();
 	}
 	
 }
