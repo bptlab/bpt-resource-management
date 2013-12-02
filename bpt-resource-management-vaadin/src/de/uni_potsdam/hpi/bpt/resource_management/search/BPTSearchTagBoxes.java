@@ -29,31 +29,31 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 		languageTagLayout = new GridLayout(2,1);
 		languageTagLayout.setWidth("100%");
 		languageTagLayout.setHeight("100%");
-		baseLayout.addComponent(languageTagLayout);
+		addComponent(languageTagLayout);
 		
 		topicsTags = BPTContainerProvider.getInstance().getUniqueValues("topics");
 		topicssLayout = new GridLayout(2,1);
 		topicssLayout.setWidth("100%");
 		topicssLayout.setHeight("100%");
-		baseLayout.addComponent(topicssLayout);
+		addComponent(topicssLayout);
 		
 		modelingLanguagesTags = BPTContainerProvider.getInstance().getUniqueValues("modelTypes");
 		modelingLanguagesLayout = new GridLayout(2,1);
 		modelingLanguagesLayout.setWidth("100%");
 		modelingLanguagesLayout.setHeight("100%");
-		baseLayout.addComponent(modelingLanguagesLayout);
+		addComponent(modelingLanguagesLayout);
 		
 		taskTypesTags = BPTContainerProvider.getInstance().getUniqueValues("taskTypes");
 		taskTypesLayout = new GridLayout(2,1);
 		taskTypesLayout.setWidth("100%");
 		taskTypesLayout.setHeight("100%");
-		baseLayout.addComponent(taskTypesLayout);
+		addComponent(taskTypesLayout);
 		
 		otherTags = BPTContainerProvider.getInstance().getUniqueValues("otherTags");
 		otherTagsLayout = new GridLayout(2,1);
 		otherTagsLayout.setWidth("100%");
 		otherTagsLayout.setHeight("100%");
-		baseLayout.addComponent(otherTagsLayout);
+		addComponent(otherTagsLayout);
 		
 	}
 	
