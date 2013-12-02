@@ -395,11 +395,15 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 			errorMessage = "The type of the file you have submitted is not supported.";
 			upload.interruptUpload();
 		}
+		if (event.getContentLength() > 204800) {
+			errorMessage = "The image you have submitted is too big - maximum file size: 200 Kilobytes.";
+			upload.interruptUpload();
+		};
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
 //		imageType = mimeType;
-		logo = new File(filename);
+		logo = new File("logo_" + filename);
 		
         try {
     		outputStream = new FileOutputStream(logo);

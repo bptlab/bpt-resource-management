@@ -100,7 +100,7 @@ public class BPTSidebar extends HorizontalLayout {
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		
-		Button startButton = new Button("back to start page");
+		Button startButton = new Button("Back to start page");
 		startButton.setStyleName(BaseTheme.BUTTON_LINK);
 		startButton.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
