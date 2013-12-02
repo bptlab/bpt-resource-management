@@ -309,22 +309,22 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 
 	public void login(Map <String, String[]> map) {
-		System.out.println("----- LOGIN STARTED -----");
-		System.out.println("The parameter map: ");
-		for (String key: map.keySet()) {
-			StringBuffer sb = new StringBuffer();
-			sb.append("\t" + key + ": ");
-			String[] array = map.get(key);
-			for (int i = 0; i < array.length; i++) {
-				sb.append(array[i]);
-				if (i < array.length - 1) {
-					sb.append(", ");
-				} else {
-					sb.append(";");
-				}
-			}
-			System.out.println(sb.toString());
-		}
+//		System.out.println("----- LOGIN STARTED -----");
+//		System.out.println("The parameter map: ");
+//		for (String key: map.keySet()) {
+//			StringBuffer sb = new StringBuffer();
+//			sb.append("\t" + key + ": ");
+//			String[] array = map.get(key);
+//			for (int i = 0; i < array.length; i++) {
+//				sb.append(array[i]);
+//				if (i < array.length - 1) {
+//					sb.append(", ");
+//				} else {
+//					sb.append(";");
+//				}
+//			}
+//			System.out.println(sb.toString());
+//		}
 		// TODO: check nonce for security reasons
 //			checkNonce(request.getParameter("openid.response_nonce"));
 		user = map.get("openid.identity")[0];
@@ -348,8 +348,8 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		System.out.println("The mail address: " + mailAddress);
 		moderated = userRepository.isModerator(user, name, mailAddress);
 		loggedIn = true;
-		System.out.println("----- LOGIN FINISHED -----");
-		getSidebar().login(name, moderated);
+//		System.out.println("----- LOGIN FINISHED -----");
+//		getSidebar().login(name, moderated);
 //		renderEntries();
 //			try {
 //				response.sendRedirect(getLogoutURL());
@@ -501,15 +501,19 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //				}
 //				System.out.println(sb.toString());
 //			}
-			login(map);
+			if (map.get("openid.identity") != null) {
+				login(map);
+			} else {
+				loggingIn = false;
+			}
 		}
 		UI.setCurrent(this);
 		
-		if(entryComponent instanceof BPTSmallRandomEntries){
+		if(entryComponent instanceof BPTSmallRandomEntries) {
 			((BPTSmallRandomEntries) entryComponent).showNewEntries();
 		}
 		
-		else if(entryComponent instanceof BPTShareableEntryContainer){
+		else if(entryComponent instanceof BPTShareableEntryContainer) {
 			((BPTShareableEntryContainer) entryComponent).showButtons();
 		}
 	}
