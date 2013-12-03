@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.tools.ant.taskdefs.Java;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -14,11 +13,8 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.server.Page;
-import com.vaadin.server.ClientConnector.AttachEvent;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
 import com.vaadin.server.Page.UriFragmentChangedListener;
-import com.vaadin.server.PaintTarget;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
@@ -490,6 +486,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 
 	@Override
 	public void pageRefreshed(VaadinRequest request) {
+		boolean wasLoggingIn = false;
 		if (loggingIn) {
 			Map<String, String[]> map = request.getParameterMap();
 //			System.out.println("The parameter map: ");
@@ -509,6 +506,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //			}
 			if (map.get("openid.identity") != null) {
 				login(map);
+				wasLoggingIn = true;
 			} else {
 				loggingIn = false;
 			}
@@ -521,6 +519,13 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		
 		else if(entryComponent instanceof BPTShareableEntryContainer) {
 			((BPTShareableEntryContainer) entryComponent).showButtons();
+		}
+		if (wasLoggingIn) {
+			if (getPage().getUriFragment() != null) {
+				this.getPage().open(applicationURL + "#" + getPage().getUriFragment(), "_self");
+			} else {
+				this.getPage().open(applicationURL, "_self");
+			}
 		}
 	}
 
