@@ -14,12 +14,12 @@ public class GoogleChartsApplicationServlet extends VaadinServlet {
 
 	private static final long serialVersionUID = 9140715679884065420L;
 
-	//    protected void writeAjaxPageHtmlHeader(final BufferedWriter page, String title, String themeUri, HttpServletRequest request) throws IOException {
+//   protected void writeAjaxPageHtmlHeader(final BufferedWriter page, String title, String themeUri, HttpServletRequest request) throws IOException {
 //        page.write("<script type=\"text/javascript\" src=\"googleCharts.js\"></script>");
 //        super.writeAjaxPageHtmlHeader(page, title, themeUri, request);
 //   }
+	
     @Override
-    
     protected VaadinServletService createServletService(DeploymentConfiguration deploymentConfiguration) throws ServiceException {
         VaadinServletService service = new VaadinServletService(this, deploymentConfiguration) {
 			private static final long serialVersionUID = 4002353845450193504L;
