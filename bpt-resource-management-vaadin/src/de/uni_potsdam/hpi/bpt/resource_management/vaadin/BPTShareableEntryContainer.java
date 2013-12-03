@@ -51,5 +51,9 @@ public class BPTShareableEntryContainer extends BPTShowEntryComponent {
 	public void showButtons() {
 		entry.addAdministrationButtons();
 	}
+
+	public void removeButtons() {
+		entry.removeButtons();
+	}
 	
 }

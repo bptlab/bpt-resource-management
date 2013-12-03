@@ -2,12 +2,14 @@ package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchInputField;
@@ -22,11 +24,13 @@ public class BPTTagComponent extends VerticalLayout {
 	protected ArrayList<String> unselectedValues;
 	protected BPTTagBox tagBox;
 	protected BPTApplicationUI applicationUI;
+	private List<BPTTagComponent> otherTagComponents;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----"));
 	
 	public BPTTagComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
 		this.applicationUI = applicationUI;
 		init(tagColumns, newTagsAllowed);
+		otherTagComponents = new ArrayList<BPTTagComponent>();
 	}
 	
 	private void init(String tagColumns, boolean newTagsAllowed) {
@@ -79,11 +83,16 @@ public class BPTTagComponent extends VerticalLayout {
 				}
 				
 				if (!categories.contains(valueString) && !tagBox.getTagValues().contains(valueString)) {
-					tagBox.addTag(valueString);
-					unselectedValues.remove(valueString);
-					searchInput.removeAllItems();
-					
-					refresh();
+					if(tagIsUsed(valueString)){
+						Notification.show("The tag " + valueString + " is already used in another category", Notification.Type.ERROR_MESSAGE);
+					}
+					else{
+						tagBox.addTag(valueString);
+						unselectedValues.remove(valueString);
+						searchInput.removeAllItems();
+						
+						refresh();
+					}
 //					for (String unselectedValue: unselectedValues) {
 //						Label label = new Label(unselectedValue);
 //						if(categories.contains(unselectedValue)) label.addStyleName(unselectedValue);
@@ -93,6 +102,16 @@ public class BPTTagComponent extends VerticalLayout {
 				searchInput.setValue(null);
 			}
 		});
+	}
+
+
+	protected boolean tagIsUsed(String valueString) {
+		for(BPTTagComponent tagComponent : otherTagComponents){
+			if(tagComponent.uniqueValues.contains(valueString) || tagComponent.getTagValues().contains(valueString)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void addTag(BPTSearchTag searchTag) {
@@ -126,5 +145,13 @@ public class BPTTagComponent extends VerticalLayout {
 	
 	public void setSelection(int selection){
 		searchInput.select(selection);
+	}
+
+	private List<BPTTagComponent> getOtherTagComponents() {
+		return otherTagComponents;
+	}
+
+	public void setOtherTagComponents(List<BPTTagComponent> otherTagComponents) {
+		this.otherTagComponents = otherTagComponents;
 	}
 }
