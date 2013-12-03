@@ -184,6 +184,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		uploader = new BPTUploader(null, this);
 		mainFrame.add(uploader);
 		getSidebar().renderUploader();
+		getPage().setUriFragment("!uploader", false);
 	}
 	
 	public void renderAdministrator() {
@@ -267,6 +268,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 			}
 			else if(uriFragment.equals("!showAll")){
 				showAllAndRefreshSidebar(true);
+			}
+			else if(uriFragment.equals("!uploader")){
+				renderUploader();
 			}
 			else if (uriFragment.startsWith("!")) {
             	try {
@@ -419,6 +423,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		uploader = new BPTUploader(item, this);
 		mainFrame.add(uploader);
 		getSidebar().renderUploader();
+		getPage().setUriFragment("!uploader", false);
 	}
 	
 	public void refreshAndClean() {
@@ -516,6 +521,18 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		
 		else if(entryComponent instanceof BPTShareableEntryContainer) {
 			((BPTShareableEntryContainer) entryComponent).showButtons();
+		}
+	}
+
+	public void logout(String[] openIdProviders) {
+		setName("");
+		setMailAddress("");
+		setLoggedIn(false);
+		setModerated(false);
+		setOpenIdProvider(openIdProviders[0]);
+		renderEntries();
+		if(entryComponent instanceof BPTShareableEntryContainer){
+			((BPTShareableEntryContainer) entryComponent).removeButtons();
 		}
 	}
 }

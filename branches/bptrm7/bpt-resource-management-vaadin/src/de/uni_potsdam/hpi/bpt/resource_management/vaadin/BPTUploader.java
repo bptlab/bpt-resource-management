@@ -135,6 +135,11 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		functionalityTagComponent.setWidth("100%");
 		addComponent(functionalityTagComponent);
 		
+		availabilitiesTagComponent.setOtherTagComponents(Arrays.asList(modelTagComponent, platformTagComponent, functionalityTagComponent));
+		modelTagComponent.setOtherTagComponents(Arrays.asList(availabilitiesTagComponent, platformTagComponent, functionalityTagComponent));
+		platformTagComponent.setOtherTagComponents(Arrays.asList(availabilitiesTagComponent, modelTagComponent, functionalityTagComponent));
+		functionalityTagComponent.setOtherTagComponents(Arrays.asList(availabilitiesTagComponent, modelTagComponent, platformTagComponent));
+		
 		addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", ContentMode.HTML));
 		contactNameInput = new TextField();
 		contactNameInput.setValue(applicationUI.getName());
@@ -420,7 +425,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		Image image = new Image(event.getFilename(), imageResource);
         addImageToPanel(image);
         logoDeleted = false;
-        applicationUI.refreshAndClean();
+//        applicationUI.refreshAndClean();
 	}
 
 	private void addImageToPanel(Image image) {

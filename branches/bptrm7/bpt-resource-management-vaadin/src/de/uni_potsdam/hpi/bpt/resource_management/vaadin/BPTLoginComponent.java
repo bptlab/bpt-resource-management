@@ -100,12 +100,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
         
         logoutButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				applicationUI.setName("");
-				applicationUI.setMailAddress("");
-				applicationUI.setLoggedIn(false);
-				applicationUI.setModerated(false);
-				applicationUI.setOpenIdProvider(openIdProviders[0]);
-				applicationUI.renderEntries();
+				applicationUI.logout(openIdProviders);
 				removeAllComponents();
 				addComponentsForLogin();
 				sidebar.logout();

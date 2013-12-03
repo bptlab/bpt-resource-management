@@ -153,105 +153,91 @@ public class BPTShareableEntry extends CustomLayout {
 //	}
 	
 	public void addAdministrationButtons() {
-		
-		if(applicationUI.isLoggedIn() && applicationUI.getUser().equals(userId)){
-			Button edit = new Button("edit");
-			edit.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					applicationUI.edit(item);
-				}
-			});
+		if(applicationUI.isLoggedIn()){
+			if(applicationUI.getUser().equals(userId)){
+				Button edit = new Button("edit");
+				edit.addClickListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						applicationUI.edit(item);
+					}
+				});
+				
+				edit.setStyleName(BaseTheme.BUTTON_LINK);
+				edit.addStyleName("bpt");
+				this.addComponent(edit, "button edit");
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
+			}
 			
-			edit.setStyleName(BaseTheme.BUTTON_LINK);
-			edit.addStyleName("bpt");
-			this.addComponent(edit, "button edit");
-			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
-//			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("edit"));
+			if((applicationUI.getUser().equals(userId) || applicationUI.isModerated())){
+				Button delete = new Button("delete");
+				delete.addClickListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow("delete");
+					}
+				});
+				
+				delete.setStyleName(BaseTheme.BUTTON_LINK);
+				delete.addStyleName("bpt");
+				this.addComponent(delete, "button delete");
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
+			}
+			
+			BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
+			
+			if(applicationUI.isModerated() && actualState == BPTToolStatus.Unpublished){
+				Button publish = new Button("publish");
+				publish.addClickListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow("publish");
+					}
+				});
+			
+				publish.setStyleName(BaseTheme.BUTTON_LINK);
+				publish.addStyleName("bpt");
+				this.addComponent(publish, "button publish");
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
+				
+				Button reject = new Button("reject");
+				reject.addClickListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow("reject");
+					}
+				});
+				
+				reject.setStyleName(BaseTheme.BUTTON_LINK);
+				reject.addStyleName("bpt");
+				this.addComponent(reject, "button reject");
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("reject"));
+			}
+			
+			if ((applicationUI.getUser().equals(userId) || applicationUI.isModerated()) && actualState == BPTToolStatus.Published){
+				Button unpublish = new Button("unpublish");
+				unpublish.addClickListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow("unpublish");
+					}
+				});
+				
+				unpublish.setStyleName(BaseTheme.BUTTON_LINK);
+				unpublish.addStyleName("bpt");
+				this.addComponent(unpublish, "button unpublish");
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("unpublish"));
+			}
+			
+			if(applicationUI.isModerated() && actualState == BPTToolStatus.Rejected){
+				Button propose = new Button("propose");
+				propose.addClickListener(new Button.ClickListener(){
+					public void buttonClick(ClickEvent event) {
+						addConfirmationWindow("propose");
+					}
+				});
+				
+				propose.setStyleName(BaseTheme.BUTTON_LINK);
+				propose.addStyleName("bpt");
+				this.addComponent(propose, "button propose");
+				JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
+			}
 		}
-		
-		if(applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated())){
-			Button delete = new Button("delete");
-			delete.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					addConfirmationWindow("delete");
-				}
-			});
-			
-			delete.setStyleName(BaseTheme.BUTTON_LINK);
-			delete.addStyleName("bpt");
-			this.addComponent(delete, "button delete");
-			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
-//			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("delete"));
-//			System.out.println("renderDeleteButton" + entryId);
-		}
-		
-		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
-		
-		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Unpublished){
-			Button publish = new Button("publish");
-			publish.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					addConfirmationWindow("publish");
-				}
-			});
-		
-			publish.setStyleName(BaseTheme.BUTTON_LINK);
-			publish.addStyleName("bpt");
-			this.addComponent(publish, "button publish");
-			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("publish"));
-//			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("publish"));
-			
-			Button reject = new Button("reject");
-			reject.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					addConfirmationWindow("reject");
-				}
-			});
-			
-			reject.setStyleName(BaseTheme.BUTTON_LINK);
-			reject.addStyleName("bpt");
-			this.addComponent(reject, "button reject");
-			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("reject"));
-//			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("reject"));
-		}
-		
-		if (applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated()) && actualState == BPTToolStatus.Published){
-			Button unpublish = new Button("unpublish");
-			unpublish.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					addConfirmationWindow("unpublish");
-				}
-			});
-			
-			unpublish.setStyleName(BaseTheme.BUTTON_LINK);
-			unpublish.addStyleName("bpt");
-			this.addComponent(unpublish, "button unpublish");
-			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("unpublish"));
-//			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("unpublish"));
-		
-		}
-		
-		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Rejected){
-			Button propose = new Button("propose");
-			propose.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					addConfirmationWindow("propose");
-				}
-			});
-			
-			propose.setStyleName(BaseTheme.BUTTON_LINK);
-			propose.addStyleName("bpt");
-			this.addComponent(propose, "button propose");
-			// TODO: check if JavaScript is correct
-			JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
-//			applicationUI.getMainWindow().executeJavaScript(getJavaScriptStringShow("propose"));
-		}
-		
 	}
 
 	private String getJavaScriptStringShow(String button) {
@@ -301,5 +287,16 @@ public class BPTShareableEntry extends CustomLayout {
 			}
 		});
 		applicationUI.addWindow(confirmationWindow);
+	}
+
+	public void removeButtons() {
+		this.removeComponent("button edit");
+		this.removeComponent("button delete");
+		this.removeComponent("button publish");
+		this.removeComponent("button reject");
+		this.removeComponent("button unpublish");
+		this.removeComponent("button propose");
+		JavaScript.getCurrent().execute("var elements = document.getElementsByClassName('button edit');" +
+				"for(var i = 0; i < elements.length; i++){elements[i].style.display = 'none';}");
 	}
 }
