@@ -1,14 +1,20 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.eclipse.jdt.core.BufferChangedEvent;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.FileResource;
@@ -134,11 +140,6 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		functionalityTagComponent = new BPTTagComponent(applicationUI, "supportedFunctionalities", true);
 		functionalityTagComponent.setWidth("100%");
 		addComponent(functionalityTagComponent);
-		
-		availabilitiesTagComponent.setOtherTagComponents(Arrays.asList(modelTagComponent, platformTagComponent, functionalityTagComponent));
-		modelTagComponent.setOtherTagComponents(Arrays.asList(availabilitiesTagComponent, platformTagComponent, functionalityTagComponent));
-		platformTagComponent.setOtherTagComponents(Arrays.asList(availabilitiesTagComponent, modelTagComponent, functionalityTagComponent));
-		functionalityTagComponent.setOtherTagComponents(Arrays.asList(availabilitiesTagComponent, modelTagComponent, platformTagComponent));
 		
 		addComponent(new Label("Contact name * <font color=\"#BBBBBB\">as shown on the website</font>", ContentMode.HTML));
 		contactNameInput = new TextField();
@@ -400,15 +401,15 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 			errorMessage = "The type of the file you have submitted is not supported.";
 			upload.interruptUpload();
 		}
-		if (event.getContentLength() > 204800) {
-			errorMessage = "The image you have submitted is too big - maximum file size: 200 Kilobytes.";
-			upload.interruptUpload();
-		};
+//		if (event.getContentLength() > 102400) {
+//			errorMessage = "The image you have submitted is too big - maximum file size: 100 Kilobytes.";
+//			upload.interruptUpload();
+//		};
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
 //		imageType = mimeType;
-		logo = new File("logo_" + filename);
+		logo = new File("bptrm_logo_" + filename);
 		
         try {
     		outputStream = new FileOutputStream(logo);
@@ -422,10 +423,28 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource imageResource = new FileResource(logo);
-		Image image = new Image(event.getFilename(), imageResource);
-        addImageToPanel(image);
-        logoDeleted = false;
-//        applicationUI.refreshAndClean();
+		// check image size
+		try {
+			int maximumLength = 600; // pixels
+			BufferedImage bufferedImage = ImageIO.read(imageResource.getStream().getStream());
+//			if (bufferedImage.getHeight() > maximumLength) {
+//				maximumLength = bufferedImage.getHeight();
+//			}
+			if (bufferedImage.getWidth() > maximumLength) {
+				maximumLength = bufferedImage.getWidth();
+			}
+			int heightOfImage = bufferedImage.getHeight() * 600 / maximumLength;
+			int widthOfImage = bufferedImage.getWidth() * 600 / maximumLength;
+			Image image = new Image(event.getFilename(), imageResource);
+			image.setHeight(heightOfImage + "px");
+			image.setWidth(widthOfImage + "px");
+	        addImageToPanel(image);
+	        logoDeleted = false;
+//	        applicationUI.refreshAndClean();
+		} catch (IOException e) {
+			errorMessage = "Error at checking image size.";
+			upload.interruptUpload();
+		}
 	}
 
 	private void addImageToPanel(Image image) {
