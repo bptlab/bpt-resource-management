@@ -17,7 +17,7 @@
 	</context-param>
 	<servlet>
 		<servlet-name>Bpt_resource_management_vaadin Application</servlet-name>
-		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+		<servlet-class>de.uni_potsdam.hpi.bpt.resource_management.vaadin.VaadinApplicationServlet</servlet-class>
 		<init-param>
 			<description>
 			Vaadin application class to start</description>
