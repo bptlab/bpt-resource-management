@@ -95,7 +95,9 @@ public class BPTTagBox extends VerticalLayout{
 	}
 	
 	protected void refresh() {
-		((BPTTagComponent) getParent().getParent()).refresh();
+		if (!(getParent().getParent() instanceof BPTUploader)) {
+			((BPTTagComponent) getParent()).refresh();
+		}
 	}
 	
 	public ArrayList<String> getTagValues() {
