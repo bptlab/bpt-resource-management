@@ -477,6 +477,34 @@ public class BPTMailProvider {
 	}
 	
 	/**
+	 * Notifies a user that his entry has been unpublished since it has been updated more than 180+13 days ago.
+	 * 
+	 * @param toolName name of the entry that has been updated more than 180+13 days ago
+	 * @param documentId id of the entry that has been updated more than 180+13 days ago
+	 * @param userId id of the user whose entry has been updated more than 180+13 days ago
+	 */
+	public void sendEmailForUnpublishedEntrySinceItIsTooOld(String toolName, String documentId, String userId) {
+		if (enabled) {
+			String subject = "[Tools for BPM] Unpublished entry: " + toolName + " (" + documentId + ")";
+
+			Map<String, Object> resourceProvider = userRepository.getUser(userId);
+			
+			String recipient = (String) resourceProvider.get("mail_address");
+			
+			StringBuilder content = new StringBuilder();
+			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
+			content.append("Your entry '" + toolName + "' has been unpublished automatically since it has been last updated more than 193 days ago." + newLine);
+			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
+			content.append("Please update your entry once to let us know that your entry is still up to date." + newLine);
+			content.append("Regards" + newLine);
+			content.append("-- bpm-conference.org" + newLine + newLine);
+			
+			sendMail(recipient, subject, content.toString());
+//			System.out.println(content);
+		}
+	}
+	
+	/**
 	 * Notifies the moderators about entries that have been updated a long time ago.
 	 * 
 	 * @param namesOfOldDocuments list of names of entries that have been updated a long time ago

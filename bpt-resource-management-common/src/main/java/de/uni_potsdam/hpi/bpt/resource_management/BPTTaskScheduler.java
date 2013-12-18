@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
 /**
@@ -176,8 +177,9 @@ public class BPTTaskScheduler {
 								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 3);
 							}
 						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
-							toolRepository.unpublishDocument(documentId, true);
+							document.put("status", BPTToolStatus.Unpublished);							
 							document.put("number_of_mails_for_expiry", 0);
+							mailProvider.sendEmailForUnpublishedEntrySinceItIsTooOld((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 							System.out.println(new Date() + " - Document " + documentId + " has been unpublished.");
 						}
 						toolRepository.update(document);
