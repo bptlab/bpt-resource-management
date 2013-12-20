@@ -59,7 +59,7 @@ public class BPTExcelImporter {
 						return;
 					}
 					languages.add(row.getCell(4).toString());
-					List<String> attachements;
+					List<String> trimmedAttachements = new ArrayList<String>();
 					String pdf, doc, url;
 					
 					if(row.getCell(7) == null){
@@ -83,11 +83,11 @@ public class BPTExcelImporter {
 						doc = row.getCell(9).toString();
 					}
 					
-					if(row.getCell(10) == null){
-						attachements = new ArrayList<String>();
-					}
-					else{
-						attachements = Arrays.asList(row.getCell(10).toString().split(","));
+					if(!(row.getCell(10) == null)){
+						List<String> attachements = Arrays.asList(row.getCell(10).toString().split(","));
+						for(String attachement : attachements){
+							trimmedAttachements.add(attachement.trim());
+						}
 					}
 					String documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
 							// order of parameters MUST accord to the one given in BPTDocumentTypes.java
@@ -96,21 +96,20 @@ public class BPTExcelImporter {
 							row.getCell(4).toString(),
 							row.getCell(6).toString(),
 							url,
-							attachements,
+							trimmedAttachements,
 							pdf,
 							doc
 						}, BPTDocumentType.BPMAI_EXERCISES));
 					
-					Map<String, Object> document = exerciseRepository.readDocument(documentId);
-					String documentRevision = (String)document.get("_rev");
-					System.out.println("pdf: " + pdf);
-					System.out.println("getEntry: " + zipFile.getEntry(pdf));
-					
 					if(!pdf.isEmpty()){
+						Map<String, Object> document = exerciseRepository.readDocument(documentId);
+						String documentRevision = (String)document.get("_rev");
 						InputStream pdfInputStream = zipFile.getInputStream(zipFile.getEntry(pdf));
 						exerciseRepository.createAttachmentFromInputStream(documentId, documentRevision, pdf, pdfInputStream, "application/pdf");
 					}
 					if(!doc.isEmpty()){
+						Map<String, Object> document = exerciseRepository.readDocument(documentId);
+						String documentRevision = (String)document.get("_rev");
 						InputStream docInputStream = zipFile.getInputStream(zipFile.getEntry(doc));
 						String docMimeType;
 						if(doc.endsWith("x")){
@@ -121,7 +120,9 @@ public class BPTExcelImporter {
 						}
 						exerciseRepository.createAttachmentFromInputStream(documentId, documentRevision, doc, docInputStream, docMimeType);
 					}
-					for(String attachement : attachements){
+					for(String attachement : trimmedAttachements){
+						Map<String, Object> document = exerciseRepository.readDocument(documentId);
+						String documentRevision = (String)document.get("_rev");
 						InputStream inputStream = zipFile.getInputStream(zipFile.getEntry(attachement));
 						String mimeType;
 						if(attachement.endsWith("pdf")){
