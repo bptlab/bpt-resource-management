@@ -62,12 +62,23 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		super();
 		this.applicationUI = applicationUI;
 		this.item = item;
-        Label label = new Label("<br/> <hr/> <br/>", ContentMode.HTML);
-        addComponent(label);
 		
+        addComponent(new Label("<br/> <hr/> <br/>", ContentMode.HTML));
+//		if(applicationUI.isModerated()){
+			Button multiUploadButton = new Button("multi-upload");
+			multiUploadButton.addClickListener(new Button.ClickListener(){
+				public void buttonClick(ClickEvent event) {
+					BPTUploader.this.applicationUI.renderMultiUploader();
+				}});
+			addComponent(multiUploadButton);
+			addComponent(new Label("<br/> <hr/> <br/>", ContentMode.HTML));
+//		}
+		
+				
 		this.tabSheet = new TabSheet();
 		addComponent(tabSheet);
 		tabSheet.addSelectedTabChangeListener(this);
+		
 		addTagComponents();
         
 		addContactInputs();
@@ -152,6 +163,7 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 	}
 
 	public void addTagComponents() {
+		
 		topicLabel = new Label("Topics *");
 		addComponent(topicLabel);
 		topic = new BPTTagComponent(applicationUI, "topics", false);
@@ -312,6 +324,9 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 					documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, docFile.getFilename(), docFile.getSourceFile(), docFile.getMIMEType());
 				}
 				for (FileResource attachment : supplementaryFiles) {
+					System.out.println("attachementId: " + attachment.getFilename());
+					System.out.println("sourceFile (file): " + attachment.getSourceFile());
+					System.out.println("mimeType: " + attachment.getMIMEType());
 					documentRevision = exerciseRepository.createAttachment(documentId, documentRevision, attachment.getFilename(), attachment.getSourceFile(), attachment.getMIMEType());
 				}
 				

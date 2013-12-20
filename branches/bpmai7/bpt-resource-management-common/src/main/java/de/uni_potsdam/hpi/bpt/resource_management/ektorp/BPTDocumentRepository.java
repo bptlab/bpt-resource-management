@@ -149,6 +149,21 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		return revision;
 	}
 	
+	public String createAttachmentFromInputStream(String _id, String _rev, String attachmentId, InputStream inputStream, String contentType) {
+		String revision = new String();
+		
+		try {
+			AttachmentInputStream attachmentStream = new AttachmentInputStream(attachmentId, inputStream, contentType);
+			revision = db.createAttachment(_id, _rev, attachmentStream);
+			inputStream.close();
+			attachmentStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return revision;
+	}
+	
 	/**
 	 * Fetches an existing attachment from the database.
 	 * 
