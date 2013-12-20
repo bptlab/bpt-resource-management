@@ -46,6 +46,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	private String applicationURL, openIdProvider;
 	private BPTMainFrame mainFrame;
 	private BPTUploader uploader;
+	private BPTMultiUploader multiUploader;
 	private BPTExerciseSetRepository exerciseSetRepository;
 	private BPTExerciseRepository exerciseRepository;
 	private BPTUserRepository userRepository;
@@ -82,6 +83,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		
 		addUriListener();
 		enter(getPage().getUriFragment());
+		renderMultiUploader();
 	}
 
 	public boolean isLoggedIn() {
@@ -153,6 +155,11 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		uploader = new BPTUploader(null, this);
 		mainFrame.add(uploader);
 		getSidebar().renderUploader();
+	}
+	
+	public void renderMultiUploader() {
+		multiUploader = new BPTMultiUploader(this);
+		mainFrame.add(multiUploader);
 	}
 	
 	public void renderAdministrator() {
