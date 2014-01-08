@@ -283,7 +283,7 @@ public class BPTMailProvider {
 			
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("An entry has been unpublished by its resource provider." + newLine + newLine);
+				content.append("An entry has been unpublished by its resource provider: " + newLine + newLine);
 				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
 				content.append("As a moderator you may publish, reject or delete it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine + newLine);
 				content.append("Regards" + newLine);
@@ -329,7 +329,7 @@ public class BPTMailProvider {
 	 */
 	public void sendEmailForPublishedEntryWithUnavailableUrls(String toolName, String documentId, String userId, Set<String> unavailableURLs) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Entry with broken URLs: " + toolName + " (" + documentId + ")";
+			String subject = "[Tools for BPM] Entry with broken URLs: " + toolName;
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
@@ -349,6 +349,49 @@ public class BPTMailProvider {
 			
 			sendMail(recipient, subject, content.toString());
 //			System.out.println(content);
+		}
+	}
+	
+	public void sendEmailForUnpublishedEntryWithUnavailableURLsToResourceProvider(String toolName, String documentId, String userId) {
+		if (enabled) {
+			String subject = "[Tools for BPM] Unpublished entry: " + toolName;
+
+			Map<String, Object> resourceProvider = userRepository.getUser(userId);
+				
+			String recipient = (String) resourceProvider.get("mail_address");
+			
+			StringBuilder content = new StringBuilder();
+			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
+			content.append("Your entry '" + toolName + "' has been unpublished automatically since it contains one or several URLs pointing to resources that are currently not available." + newLine);
+			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
+			content.append("We would like to keep our site up to date and kindly ask you to update your entry. It will be republished then by one of the moderators as soon as possible." + newLine + newLine);
+			content.append("Regards" + newLine);
+			content.append("-- bpm-conference.org" + newLine + newLine);
+			
+			sendMail(recipient, subject, content.toString());
+		}	
+	}
+	
+	public void sendEmailForUnpublishedEntryWithUnavailableURLsToModerator(String toolName, String documentId, String userId) {
+		if (enabled) {
+			String subject = "[Tools for BPM] Unpublished entry: " + " (" + documentId + ")";
+
+			List<Map> moderators = userRepository.getModerators();
+			
+			for (Map<String, Object> moderator : moderators) {
+				
+				String recipient = (String) moderator.get("mail_address");
+			
+				StringBuilder content = new StringBuilder();
+				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
+				content.append("An entry has been unpublished automatically since it contains one or several URLs pointing to resources that are currently not available: " + newLine + newLine);
+				content.append(toolName + " (" + documentId + ")" + newLine + newLine);
+				content.append("As a moderator you may publish, reject or delete it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine + newLine);
+				content.append("Regards" + newLine);
+				content.append("-- bpm-conference.org" + newLine + newLine);
+				
+				sendMail(recipient, subject, content.toString());
+			}
 		}
 	}
 	
@@ -372,8 +415,8 @@ public class BPTMailProvider {
 				content.append("The following published entries contain URLs pointing to resources that are currently not available:" + newLine + newLine);
 				for (String documentNameAndId : documentsWithUnavailableURLs.keySet()) {
 					int separator = documentNameAndId.indexOf("(");
-					String documentId = documentNameAndId.substring(0, separator - 1);
-					String toolName = documentNameAndId.substring(separator + 1, documentNameAndId.length() - 1);
+					String toolName = documentNameAndId.substring(0, separator - 1);
+					String documentId = documentNameAndId.substring(separator + 1, documentNameAndId.length() - 1);
 					content.append(documentNameAndId + " | " + applicationURL + getFragmentPart(documentId, toolName) + newLine);
 					for (String url : documentsWithUnavailableURLs.get(documentNameAndId)) {
 						content.append("* " + url + newLine);
@@ -401,7 +444,7 @@ public class BPTMailProvider {
 	 */
 	public void sendFirstEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName + " (" + documentId + ")";
+			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName;
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
@@ -428,7 +471,7 @@ public class BPTMailProvider {
 	 */
 	public void sendSecondEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName + " (" + documentId + ")";
+			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName;
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
@@ -484,7 +527,7 @@ public class BPTMailProvider {
 	 */
 	public void sendEmailForUnpublishedEntrySinceItIsTooOld(String toolName, String documentId, String userId) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Unpublished entry: " + toolName + " (" + documentId + ")";
+			String subject = "[Tools for BPM] Unpublished entry: " + toolName;
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			

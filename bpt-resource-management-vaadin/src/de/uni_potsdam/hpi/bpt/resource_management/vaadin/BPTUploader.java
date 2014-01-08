@@ -407,7 +407,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
 //		imageType = mimeType;
-		logo = new File("bptrm_logo_" + filename);
+		logo = new File("temp" + File.separator + "bptrm_logo_" + filename);
 		
         try {
     		outputStream = new FileOutputStream(logo);
