@@ -16,6 +16,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.themes.BaseTheme;
 
+import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
@@ -243,7 +244,11 @@ public class BPTEntry extends CustomLayout {
 			Button publish = new Button("publish");
 			publish.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
-					entryCards.addConfirmationWindowTo(entryId, "publish");
+					if (BPTValidator.isOutOfDate((Date) item.getItemProperty("Last update").getValue())) {
+						entryCards.addConfirmationWindowTo(entryId, "oldEntry");
+					} else {
+						entryCards.addConfirmationWindowTo(entryId, "publish");
+					}
 				}
 			});
 		

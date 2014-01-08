@@ -20,7 +20,12 @@ public class BPTValidator {
 	private static final String[] schemes = new String[] {"http","https","ftp"};
 	private static UrlValidator urlValidator = new UrlValidator(schemes);
 	private static EmailValidator emailValidator = EmailValidator.getInstance();
-
+	
+	public static boolean isOutOfDate(Date lastUpdate) {
+		int differenceInDays = (int) (((lastUpdate.getTime() - (new Date()).getTime())) / (1000 * 60 * 60 * 24));
+		return differenceInDays > 730;
+	}
+	
 	/**
 	 * Checks if an url is valid, i.e. it is well-formed and points to available resources.
 	 * 

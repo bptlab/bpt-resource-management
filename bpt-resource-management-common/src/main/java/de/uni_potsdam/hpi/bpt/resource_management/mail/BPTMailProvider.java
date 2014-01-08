@@ -393,15 +393,15 @@ public class BPTMailProvider {
 	}
 	
 	/**
-	 * Notifies a user that his entry has been updated 180 days ago.
+	 * Notifies a user that his entry has been updated 365 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated 180 days ago
-	 * @param documentId id of the entry that has been updated 180 days ago
-	 * @param userId id of the user whose entry has been updated 180 days ago
+	 * @param toolName name of the entry that has been updated 365 days ago
+	 * @param documentId id of the entry that has been updated 365 days ago
+	 * @param userId id of the user whose entry has been updated 365 days ago
 	 */
 	public void sendFirstEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", first notification)";
+			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName + " (" + documentId + ")";
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
@@ -409,9 +409,8 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 180 days ago." + newLine);
-			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
-			content.append("Please note that your entry will be unpublished in 14 days automatically if the entry is not updated." + newLine + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated one year ago. " + newLine);
+			content.append("We would like to keep our site up to date and encourage you to have a look at your entry on " + applicationURL + getFragmentPart(documentId, toolName) + " and update its content if necessary. Thank you for your cooperation." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
@@ -421,15 +420,15 @@ public class BPTMailProvider {
 	}
 	
 	/**
-	 * Notifies a user that his entry has been updated 180+7 days ago.
+	 * Notifies a user that his entry has been updated 700 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated 180+7 days ago
-	 * @param documentId id of the entry that has been updated 180+7 days ago
-	 * @param userId id of the user whose entry has been updated 180+7 days ago
+	 * @param toolName name of the entry that has been updated 700 days ago
+	 * @param documentId id of the entry that has been updated 700 days ago
+	 * @param userId id of the user whose entry has been updated 700 days ago
 	 */
 	public void sendSecondEmailForOldEntry(String toolName, String documentId, String userId) {
 		if (enabled) {
-			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", second notification)";
+			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName + " (" + documentId + ")";
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
@@ -437,9 +436,9 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 187 days ago." + newLine);
-			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
-			content.append("Please note that your entry will be unpublished in 7 days automatically if the entry is not updated." + newLine + newLine);
+			content.append("Your entry '" + toolName + "' has been last updated 23 months ago" + newLine);
+			content.append("We would like to keep our site up to date and encourage you to have a look at your entry on " + applicationURL + getFragmentPart(documentId, toolName) + " and update its content if necessary." + newLine);
+			content.append("If no content update is necessary, we kindly ask you to open the entry for editing and click on 'Submit' to prevent your entry from becoming unpublished automatically in one month. Thank you for your cooperation." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
@@ -448,40 +447,40 @@ public class BPTMailProvider {
 		}
 	}
 	
-	/**
-	 * Notifies a user that his entry has been updated 180+13 days ago.
-	 * 
-	 * @param toolName name of the entry that has been updated 180+13 days ago
-	 * @param documentId id of the entry that has been updated 180+13 days ago
-	 * @param userId id of the user whose entry has been updated 180+13 days ago
-	 */
-	public void sendThirdEmailForOldEntry(String toolName, String documentId, String userId) {
-		if (enabled) {
-			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", third notification)";
-
-			Map<String, Object> resourceProvider = userRepository.getUser(userId);
-			
-			String recipient = (String) resourceProvider.get("mail_address");
-			
-			StringBuilder content = new StringBuilder();
-			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been last updated 193 days ago." + newLine);
-			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
-			content.append("Please note that your entry will be unpublished in 1 day automatically if the entry is not updated." + newLine + newLine);
-			content.append("Regards" + newLine);
-			content.append("-- bpm-conference.org" + newLine + newLine);
-			
-			sendMail(recipient, subject, content.toString());
-//			System.out.println(content);
-		}
-	}
+//	/**
+//	 * Notifies a user that his entry has been updated 180+13 days ago.
+//	 * 
+//	 * @param toolName name of the entry that has been updated 180+13 days ago
+//	 * @param documentId id of the entry that has been updated 180+13 days ago
+//	 * @param userId id of the user whose entry has been updated 180+13 days ago
+//	 */
+//	public void sendThirdEmailForOldEntry(String toolName, String documentId, String userId) {
+//		if (enabled) {
+//			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", third notification)";
+//
+//			Map<String, Object> resourceProvider = userRepository.getUser(userId);
+//			
+//			String recipient = (String) resourceProvider.get("mail_address");
+//			
+//			StringBuilder content = new StringBuilder();
+//			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
+//			content.append("Your entry '" + toolName + "' has been last updated 193 days ago and might be out of date." + newLine);
+//			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
+//			content.append("To prevent your entry from becoming unpublished automatically in 1 day, we kindly ask you to open the entry for editing, check if its content is still up to date and click on 'Submit'. Thank you for your cooperation." + newLine + newLine);
+//			content.append("Regards" + newLine);
+//			content.append("-- bpm-conference.org" + newLine + newLine);
+//			
+//			sendMail(recipient, subject, content.toString());
+////			System.out.println(content);
+//		}
+//	}
 	
 	/**
-	 * Notifies a user that his entry has been unpublished since it has been updated more than 180+13 days ago.
+	 * Notifies a user that his entry has been unpublished since it has been updated more than 730 days ago.
 	 * 
-	 * @param toolName name of the entry that has been updated more than 180+13 days ago
-	 * @param documentId id of the entry that has been updated more than 180+13 days ago
-	 * @param userId id of the user whose entry has been updated more than 180+13 days ago
+	 * @param toolName name of the entry that has been updated more than 730 days ago
+	 * @param documentId id of the entry that has been updated more than 730 days ago
+	 * @param userId id of the user whose entry has been updated more than 730 days ago
 	 */
 	public void sendEmailForUnpublishedEntrySinceItIsTooOld(String toolName, String documentId, String userId) {
 		if (enabled) {
@@ -493,9 +492,9 @@ public class BPTMailProvider {
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-			content.append("Your entry '" + toolName + "' has been unpublished automatically since it has been last updated more than 193 days ago." + newLine);
+			content.append("Your entry '" + toolName + "' has been unpublished automatically since it has been last updated two years ago." + newLine);
 			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
-			content.append("Please update your entry once to let us know that your entry is still up to date." + newLine);
+			content.append("We would like to keep our site up to date and kindly ask you to open the entry for editing, check if its content is still up to date and click on 'Submit'. The entry will be republished then by one of the moderators as soon as possible." + newLine + newLine);
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
@@ -544,7 +543,7 @@ public class BPTMailProvider {
 					content.append(newLine);
 				}
 				if (!namesOfDocumentsWithSecondNotification.isEmpty()) {
-					content.append("A second notification has been sent to the providers of the following published entries thathave been last updated 187-192 days ago:" + newLine + newLine);
+					content.append("A second notification has been sent to the providers of the following published entries that have been last updated 187-192 days ago:" + newLine + newLine);
 					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
 						content.append(documentNameAndId + newLine);
 					}
