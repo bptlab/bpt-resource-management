@@ -14,8 +14,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import org.eclipse.jdt.core.BufferChangedEvent;
-
 import com.vaadin.data.Item;
 import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -24,6 +22,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -34,7 +33,6 @@ import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Notification;
 
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
@@ -189,9 +187,9 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
         	Image image = (Image) BPTVaadinResources.generateComponent(toolRepository, toolRepository.readDocument(documentId), "_attachments", BPTPropertyValueType.IMAGE, "logo");
-			image.setWidth("");
-			image.setHeight("");
 			if (image != null) {
+				image.setWidth("");
+				image.setHeight("");
 				addImageToPanel(image);
 			}
         }
@@ -333,13 +331,13 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		            // inline click-listener
 		            public void buttonClick(ClickEvent event) {
 		                // close the window by removing it from the parent window
-		            	getUI().removeWindow(subwindow);
+		            	UI.getCurrent().removeWindow(subwindow);
 		            }
 		        });
 		        subWindowLayout.addComponent(closeButton);
 		        subwindow.setContent(subWindowLayout);
-				getUI().addWindow(subwindow);
-				((BPTApplicationUI)getUI()).showAll(true);;
+		        UI.getCurrent().addWindow(subwindow);
+				((BPTApplicationUI)UI.getCurrent()).showAll(true);
 			}
 
 			private void addWarningWindow(final UI ui) {

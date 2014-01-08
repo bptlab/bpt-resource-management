@@ -199,8 +199,10 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 			confirmationWindowLayout.addComponent(reasonForRejectionTextArea);
 		} else if (status.equals("unpublish")) { 
 			confirmationWindowLayout.addComponent(new Label("Unpublishing this entry - are you sure?"));
-		} else { // if status.equals("propose")
+		} else if (status.equals("propose")) {
 			confirmationWindowLayout.addComponent(new Label("Proposing this entry - are you sure?"));
+		} else { // if (status.equals("oldEntry"))
+			confirmationWindowLayout.addComponent(new Label("This entry cannot be published since it has been last updated more than 193 days ago. An update by the resource provider is required."));
 		}
 		Button confirmButton = new Button("Confirm");
 		confirmationWindowLayout.addComponent(confirmButton);
@@ -215,7 +217,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				} else if (status.equals("unpublish")) { 
 					boolean fromPublished = true;
 					toolRepository.unpublishDocument(_id, fromPublished, ((BPTApplicationUI)getUI()).isModerated());
-				} else { // if status.equals("propose"))
+				} else if (status.equals("propose")) { 
 					boolean fromRejected = false;
 					toolRepository.unpublishDocument(_id, fromRejected);
 				}
