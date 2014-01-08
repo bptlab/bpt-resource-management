@@ -83,7 +83,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		
 		addUriListener();
 		enter(getPage().getUriFragment());
-		renderMultiUploader();
+//		renderMultiUploader();
 	}
 
 	public boolean isLoggedIn() {
