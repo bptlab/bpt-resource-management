@@ -36,7 +36,7 @@ public class BPTMultiUploadReceiver implements Upload.Receiver, SucceededListene
 
         try {
             // Open the file for writing.
-            file = new File("C:/Windows/Temp/" + filename);
+            file = new File("temp" + File.separator + filename);
             fos = new FileOutputStream(file);
         } catch (final java.io.FileNotFoundException e) {
             new Notification("Could not open file",
@@ -46,7 +46,7 @@ public class BPTMultiUploadReceiver implements Upload.Receiver, SucceededListene
             return null;
         }
 		if(!filename.endsWith("zip")){
-			new Notification("Please upload a Zip-archive",
+			new Notification("Please upload a *.zip archive",
                     Notification.Type.ERROR_MESSAGE)
 			.show(Page.getCurrent());
 		}
@@ -58,9 +58,9 @@ public class BPTMultiUploadReceiver implements Upload.Receiver, SucceededListene
 		try {
 			ZipFile zipFile = new ZipFile(file);
 			Enumeration entries = zipFile.entries();
-			System.out.println(zipFile.getEntry("ue1.pdf"));
 			 while(entries.hasMoreElements()) {
 				 ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+				 System.out.println(zipEntry);
 				 if(zipEntry.toString().endsWith("xls")){
 					 InputStream inputStream = zipFile.getInputStream(zipEntry);
 					 BPTExcelImporter.createUploadsFromExcelFile(inputStream, applicationUI.getUser(), zipFile);

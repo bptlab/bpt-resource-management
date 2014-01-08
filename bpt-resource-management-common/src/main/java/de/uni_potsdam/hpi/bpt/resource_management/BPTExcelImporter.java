@@ -42,24 +42,37 @@ public class BPTExcelImporter {
 		    List<String> topicTags, modelingLanguageTags, taskTypeTags, otherTags, languages;
 			int rows = sheet.getPhysicalNumberOfRows();
 			
-			System.out.println("numberofrows: " + rows);
+			System.out.println("Excel import - number of rows: " + rows);
 			
-			for(int i = 0; i < rows; i++){
+			for(int i = 1; i < rows; i++){
 				row = sheet.getRow(i);
 				topicTags = Arrays.asList(row.getCell(0).toString().split(","));
+				for (String tag : topicTags) {
+					tag.trim();
+				}
 				modelingLanguageTags = Arrays.asList(row.getCell(1).toString().split(","));
+				for (String tag : modelingLanguageTags) {
+					tag.trim();
+				}
 				taskTypeTags = Arrays.asList(row.getCell(2).toString().split(","));
+				for (String tag : taskTypeTags) {
+					tag.trim();
+				}
 				otherTags = Arrays.asList(row.getCell(3).toString().split(","));
-				set_id = exerciseSetRepository.nextAvailableSetId(BPTTopic.valueOf(topicTags.get(0)));
+				for (String tag : otherTags) {
+					tag.trim();
+				}
+				System.out.println("The first topic is: " + BPTTopic.getValueOf(topicTags.get(0), "English"));
+				set_id = exerciseSetRepository.nextAvailableSetId(BPTTopic.getValueOf(topicTags.get(0), "English"));
 				languages = new ArrayList<String>();
-				while(i+1 < rows && sheet.getRow(i+1).getCell(0) == null){
+				while(i+1 < rows && sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
 					i++;
 					row = sheet.getRow(i);
 					if(i >= rows){
 						return;
 					}
 					languages.add(row.getCell(4).toString());
-					List<String> trimmedAttachements = new ArrayList<String>();
+					List<String> attachments = new ArrayList<String>();
 					String pdf, doc, url;
 					
 					if(row.getCell(7) == null){
@@ -83,10 +96,10 @@ public class BPTExcelImporter {
 						doc = row.getCell(9).toString();
 					}
 					
-					if(!(row.getCell(10) == null)){
-						List<String> attachements = Arrays.asList(row.getCell(10).toString().split(","));
-						for(String attachement : attachements){
-							trimmedAttachements.add(attachement.trim());
+					if(!row.getCell(10).getStringCellValue().isEmpty()){
+						attachments = Arrays.asList(row.getCell(10).toString().split(","));
+						for(String attachment : attachments){
+							attachment.trim();
 						}
 					}
 					String documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
@@ -96,7 +109,7 @@ public class BPTExcelImporter {
 							row.getCell(4).toString(),
 							row.getCell(6).toString(),
 							url,
-							trimmedAttachements,
+							attachments,
 							pdf,
 							doc
 						}, BPTDocumentType.BPMAI_EXERCISES));
@@ -120,7 +133,7 @@ public class BPTExcelImporter {
 						}
 						exerciseRepository.createAttachmentFromInputStream(documentId, documentRevision, doc, docInputStream, docMimeType);
 					}
-					for(String attachement : trimmedAttachements){
+					for(String attachement : attachments){
 						Map<String, Object> document = exerciseRepository.readDocument(documentId);
 						String documentRevision = (String)document.get("_rev");
 						InputStream inputStream = zipFile.getInputStream(zipFile.getEntry(attachement));
