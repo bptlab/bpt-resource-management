@@ -30,23 +30,23 @@ public class BPTTaskScheduler {
 	BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	BPTMailProvider mailProvider = BPTMailProvider.getInstance();
 	public static final int DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH = 14;
-	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 180;
-	public static final int MAXIMUM_PERIOD_OF_FIRST_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 7;
-	public static final int MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 13;
-	public static final int MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 14;
+	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 365;
+	public static final int MAXIMUM_PERIOD_OF_FIRST_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 335;
+	public static final int MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 30;
+//	public static final int MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 14;
 	public static final int DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 	
 	/**
 	 * Constructor. Two tasks are scheduled for execution:
 	 * 
-	 * CheckURLsTask - first execution after one hour, repeated every day
-	 * CheckForOldEntriesTask - first execution after one hour, repeated every day
+	 * CheckURLsTask - first execution after 8 hours, repeated every day
+	 * CheckForOldEntriesTask - first execution after 12 hours, repeated every day
 	 * 
 	 */
 	public BPTTaskScheduler() {
 		System.out.println("About to schedule tasks ...");
-		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / (24 * 60 * 10), DAY_IN_MILLISECONDS);
-		timer.schedule(new CheckForOldEntriesTask(), DAY_IN_MILLISECONDS / (24 * 60 * 10), DAY_IN_MILLISECONDS);
+		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / 3, DAY_IN_MILLISECONDS);
+		timer.schedule(new CheckForOldEntriesTask(), DAY_IN_MILLISECONDS / 2, DAY_IN_MILLISECONDS);
 		System.out.println("Tasks scheduled!");
 	}
 	
@@ -96,13 +96,16 @@ public class BPTTaskScheduler {
 								Date notificationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse((String) document.get("notification_date"));
 								int differenceInDays = (int) ((now.getTime() - notificationDate.getTime()) / DAY_IN_MILLISECONDS);
 								if (differenceInDays >= DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH) {
-									toolRepository.unpublishDocument(documentId, true);
+//									toolRepository.unpublishDocument(documentId, true);
+									document.put("status", BPTToolStatus.Unpublished);
 									document.put("number_of_url_validation_fails", 0);
 									document.put("notification_date", null);
+									mailProvider.sendEmailForUnpublishedEntryWithUnavailableURLsToResourceProvider((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+									mailProvider.sendEmailForUnpublishedEntryWithUnavailableURLsToModerator((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 									toolRepository.update(document);
 									System.out.println(new Date() + " - Document " + documentId + " has been unpublished.");
-								} else {
-									documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
+//								} else {
+//									documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
 								}
 							} catch (ParseException e) {
 								e.printStackTrace();
@@ -132,15 +135,15 @@ public class BPTTaskScheduler {
 	
 	/**
 	 * Checks when the entries have been last updated.
-	 * If an entry has been updated 180 days ago, a first notification is sent to the resource provider.
-	 * If an entry has been updated 187 days ago, a second notification is sent to the resource provider.
-	 * If an entry has been updated 193 days ago, a third and last notification is sent to the resource provider.
-	 * If an entry has been updated 194 days ago, the entry is unpublished automatically.
+	 * If an entry has been updated 365 days ago, a first notification is sent to the resource provider.
+	 * If an entry has been updated 700 days ago, a second and last notification is sent to the resource provider.
+	 * If an entry has been updated 730 days ago, the entry is unpublished automatically.
 	 * A summary listing all entries that have been last updated 90 or more days ago is sent to the moderators after the check.
 	 * 
 	 * @author tw
 	 *
 	 */
+//	 * If an entry has been updated 193 days ago, a third and last notification is sent to the resource provider.
 	class CheckForOldEntriesTask extends TimerTask {
 
 		public void run() {
@@ -170,13 +173,13 @@ public class BPTTaskScheduler {
 								document.put("number_of_mails_for_expiry", 2);
 								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 2);
 							}
-						} else if (differenceInDays < EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
-							if ((Integer) document.get("number_of_mails_for_expiry") <= 2) {
-								mailProvider.sendThirdEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
-								document.put("number_of_mails_for_expiry", 3);
-								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 3);
-							}
-						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
+//						} else if (differenceInDays < EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
+//							if ((Integer) document.get("number_of_mails_for_expiry") <= 2) {
+//								mailProvider.sendThirdEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+//								document.put("number_of_mails_for_expiry", 3);
+//								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 3);
+//							}
+						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							document.put("status", BPTToolStatus.Unpublished);							
 							document.put("number_of_mails_for_expiry", 0);
 							mailProvider.sendEmailForUnpublishedEntrySinceItIsTooOld((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
