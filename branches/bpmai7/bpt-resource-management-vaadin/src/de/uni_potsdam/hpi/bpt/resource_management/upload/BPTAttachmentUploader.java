@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.upload;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,14 +18,16 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTUploadPanel;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTVaadinResources;
 
 @SuppressWarnings("serial")
@@ -67,7 +69,7 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
 		FileOutputStream outputStream = null;
-		tempAttachment = new File(filename);
+		tempAttachment = new File(/* "C:" + File.separator + */ "temp" + File.separator + "bpmai_" + filename);
 		//		System.out.println(filename + ":" + document.canExecute() + document.canRead() + document.canWrite());
         try {
         	outputStream = new FileOutputStream(tempAttachment);
@@ -76,10 +78,6 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
             uploadComponent.interruptUpload();
         }
         return outputStream;
-	}
-	
-	public void uploadFailed(FailedEvent event) {
-		Notification.show("Upload failed", errorMessage, Notification.Type.ERROR_MESSAGE);
 	}
 	
 	public void uploadSucceeded(final SucceededEvent event) {
@@ -102,6 +100,10 @@ public class BPTAttachmentUploader extends Panel implements Upload.StartedListen
 		attachments.add(documentResource);
 //		System.out.println(documentResource);
 //      applicationUI.refreshAndClean();
+	}
+	
+	public void uploadFailed(FailedEvent event) {
+		Notification.show("Upload failed", errorMessage, Notification.Type.ERROR_MESSAGE);
 	}
 	
 	protected Link getLinkToAttachment(FileResource documentResource) {

@@ -29,6 +29,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepositor
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
+import de.uni_potsdam.hpi.bpt.resource_management.upload.BPTMultiUploader;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListener;
 
@@ -157,11 +158,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		getSidebar().renderUploader();
 	}
 	
-	public void renderMultiUploader() {
-		multiUploader = new BPTMultiUploader(this);
-		mainFrame.add(multiUploader);
-	}
-	
 	public void renderAdministrator() {
 		administrator = new BPTAdministrator();
 		mainFrame.add(administrator);
@@ -226,7 +222,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 								custom.removeComponent(administrationButton);
 							} else {
 								failureLabel.setVisible(true);
-	}
+							}
 						}
 					});
 				administrationLayout.addComponent(loginButton, "loginButton");
