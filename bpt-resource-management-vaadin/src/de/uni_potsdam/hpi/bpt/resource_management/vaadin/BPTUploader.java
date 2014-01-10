@@ -62,18 +62,6 @@ public class BPTUploader extends VerticalLayout implements TabSheet.SelectedTabC
 		super();
 		this.applicationUI = applicationUI;
 		this.item = item;
-		
-        addComponent(new Label("<br/> <hr/> <br/>", ContentMode.HTML));
-//		if(applicationUI.isModerated()){
-			Button multiUploadButton = new Button("multi-upload");
-			multiUploadButton.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					BPTUploader.this.applicationUI.renderMultiUploader();
-				}});
-			addComponent(multiUploadButton);
-			addComponent(new Label("<br/> <hr/> <br/>", ContentMode.HTML));
-//		}
-		
 				
 		this.tabSheet = new TabSheet();
 		addComponent(tabSheet);

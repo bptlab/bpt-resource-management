@@ -6,13 +6,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
-import org.apache.http.impl.client.cache.FileResource;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -24,84 +22,47 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTExerciseSetRepositor
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTTopic;
 
 public class BPTExcelImporter {
-
-	private static int numberOfCellsForSet = 5;
-	private static int numberOfCellsForEntry = 5;
+	
 	private static BPTExerciseSetRepository exerciseSetRepository = BPTExerciseSetRepository.getInstance();
 	private static BPTExerciseRepository exerciseRepository = BPTExerciseRepository.getInstance();
 	private static String contactMail = "";
 	private static String contactName = "";
 	
-	public static void createUploadsFromExcelFile(InputStream fileInputStream, String user, ZipFile zipFile){
+	public static int createExercisesFromExcelFile(InputStream fileInputStream, String user, ZipFile zipFile) {
+		int numberOfExerciseSets = 0;
 		try {
-//			POIFSFileSystem fs = new POIFSFileSystem(fileInputStream);
+		    List<String> topicTags, modelingLanguageTags, taskTypeTags, otherTags, languages;
+		    String set_id;
 			HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
 			HSSFSheet sheet = workbook.getSheetAt(0);
 			HSSFRow row;
-		    String set_id;
-		    List<String> topicTags, modelingLanguageTags, taskTypeTags, otherTags, languages;
-			int rows = sheet.getPhysicalNumberOfRows();
+			int numberOfRows = sheet.getPhysicalNumberOfRows();
 			
-			System.out.println("Excel import - number of rows: " + rows);
+			System.out.println("Excel import - number of rows: " + numberOfRows);
 			
-			for(int i = 1; i < rows; i++){
-				row = sheet.getRow(i);
-				topicTags = Arrays.asList(row.getCell(0).toString().split(","));
-				for (String tag : topicTags) {
-					tag.trim();
-				}
-				modelingLanguageTags = Arrays.asList(row.getCell(1).toString().split(","));
-				for (String tag : modelingLanguageTags) {
-					tag.trim();
-				}
-				taskTypeTags = Arrays.asList(row.getCell(2).toString().split(","));
-				for (String tag : taskTypeTags) {
-					tag.trim();
-				}
-				otherTags = Arrays.asList(row.getCell(3).toString().split(","));
-				for (String tag : otherTags) {
-					tag.trim();
-				}
-				System.out.println("The first topic is: " + BPTTopic.getValueOf(topicTags.get(0), "English"));
-				set_id = exerciseSetRepository.nextAvailableSetId(BPTTopic.getValueOf(topicTags.get(0), "English"));
+			for(int i = 1; i < numberOfRows; i++) {
 				languages = new ArrayList<String>();
-				while(i+1 < rows && sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
+				row = sheet.getRow(i);
+				topicTags = splitAndTrimTags(row.getCell(0));
+				modelingLanguageTags = splitAndTrimTags(row.getCell(1));
+				taskTypeTags = splitAndTrimTags(row.getCell(2));
+				otherTags = splitAndTrimTags(row.getCell(3));
+//				System.out.println("The first topic is: " + BPTTopic.getValueOf(topicTags.get(0), "English"));
+				set_id = exerciseSetRepository.nextAvailableSetId(BPTTopic.getValueOf(topicTags.get(0), "English"));
+				while(i+1 < numberOfRows && sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
+					List<String> attachments = new ArrayList<String>();
+					String url, pdf, doc;
 					i++;
 					row = sheet.getRow(i);
-					if(i >= rows){
-						return;
+					if (i >= numberOfRows) {
+						return numberOfExerciseSets;
 					}
 					languages.add(row.getCell(4).toString());
-					List<String> attachments = new ArrayList<String>();
-					String pdf, doc, url;
+					url = copyFromCell(row.getCell(7));
+					pdf = copyFromCell(row.getCell(8));
+					doc = copyFromCell(row.getCell(9));
+					attachments = splitAndTrimTags(row.getCell(10));
 					
-					if(row.getCell(7) == null){
-						url = new String();
-					}
-					else{
-						url = row.getCell(7).toString();
-					}
-					
-					if(row.getCell(8) == null){
-						pdf = new String();
-					}
-					else{
-						pdf = row.getCell(8).toString();
-					}
-					
-					if(row.getCell(9) == null){
-						doc = new String();
-					}
-					else{
-						doc = row.getCell(9).toString();
-					}
-					
-					if(!row.getCell(10).getStringCellValue().isEmpty()){
-						attachments = Arrays.asList(row.getCell(10).toString().split(","));
-						for(String attachment : attachments){
-							attachment.trim();
-						}
-					}
 					String documentId = exerciseRepository.createDocument(generateDocument(new Object[] {
 							// order of parameters MUST accord to the one given in BPTDocumentTypes.java
 							set_id,
@@ -114,23 +75,17 @@ public class BPTExcelImporter {
 							doc
 						}, BPTDocumentType.BPMAI_EXERCISES));
 					
-					if(!pdf.isEmpty()){
+					if (!pdf.isEmpty()) {
 						Map<String, Object> document = exerciseRepository.readDocument(documentId);
 						String documentRevision = (String)document.get("_rev");
 						InputStream pdfInputStream = zipFile.getInputStream(zipFile.getEntry(pdf));
 						exerciseRepository.createAttachmentFromInputStream(documentId, documentRevision, pdf, pdfInputStream, "application/pdf");
 					}
-					if(!doc.isEmpty()){
+					if (!doc.isEmpty()) {
 						Map<String, Object> document = exerciseRepository.readDocument(documentId);
 						String documentRevision = (String)document.get("_rev");
 						InputStream docInputStream = zipFile.getInputStream(zipFile.getEntry(doc));
-						String docMimeType;
-						if(doc.endsWith("x")){
-							docMimeType = "application/octet-stream";
-						}
-						else{
-							docMimeType = "application/msword";
-						}
+						String docMimeType = doc.endsWith(".doc") ? "application/msword" : "application/octet-stream";
 						exerciseRepository.createAttachmentFromInputStream(documentId, documentRevision, doc, docInputStream, docMimeType);
 					}
 					for(String attachement : attachments){
@@ -138,16 +93,13 @@ public class BPTExcelImporter {
 						String documentRevision = (String)document.get("_rev");
 						InputStream inputStream = zipFile.getInputStream(zipFile.getEntry(attachement));
 						String mimeType;
-						if(attachement.endsWith("pdf")){
+						if (attachement.endsWith(".pdf")) {
 							mimeType = "application/pdf";
-						}
-						else if(attachement.endsWith("doc")){
+						} else if (attachement.endsWith(".doc")) {
 							mimeType = "application/msword";
-						}
-						else if(attachement.endsWith("xls")){
+						} else if (attachement.endsWith(".xls")) {
 							mimeType = "application/vnd.ms-excel";
-						}
-						else{
+						} else {
 							mimeType = "application/octet-stream";
 						}
 						exerciseRepository.createAttachmentFromInputStream(documentId, documentRevision, attachement, inputStream, mimeType);
@@ -168,23 +120,42 @@ public class BPTExcelImporter {
 						new Date(),
 						new Date(),
 					}, BPTDocumentType.BPMAI_EXERCISE_SETS));
+				
+				numberOfExerciseSets++;
 					
-				System.out.println("set_id: " + set_id);
-				System.out.println("topics: " + topicTags);
-				System.out.println("modelingLaguages" + modelingLanguageTags);
-				System.out.println("taskType" + taskTypeTags);
-				System.out.println("other" + otherTags);
-				System.out.println("languages: " + languages);
+//				System.out.println("set_id: " + set_id);
+//				System.out.println("topics: " + topicTags);
+//				System.out.println("modelingLaguages" + modelingLanguageTags);
+//				System.out.println("taskType" + taskTypeTags);
+//				System.out.println("other" + otherTags);
+//				System.out.println("languages: " + languages);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return -1;
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return -2;
 		}
+		return numberOfExerciseSets;
 	}
 	
+	private static String copyFromCell(HSSFCell cell) {
+		return cell == null ? new String() : cell.getStringCellValue();
+	}
+
+	private static List<String> splitAndTrimTags(HSSFCell cell) {
+		List<String> resultList = new ArrayList<String>();
+		if (cell != null && !cell.getStringCellValue().isEmpty()) {
+			resultList = Arrays.asList(cell.getStringCellValue().split(","));
+			for (String tag : resultList) {
+				tag.trim();
+			}
+		}
+		return resultList;
+	}
+
 	private static Map<String, Object> generateDocument(Object[] values, BPTDocumentType type) {
 		Map<String, Object> document = new HashMap<String, Object>();
 		String[] keys = BPTDocumentType.getDocumentKeys(type);

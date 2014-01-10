@@ -1,4 +1,4 @@
-package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
+package de.uni_potsdam.hpi.bpt.resource_management.upload;
 
 import java.io.File;
 import java.util.Arrays;
@@ -15,6 +15,8 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTMimeType;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
+import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTUploadPanel;
 
 @SuppressWarnings("serial")
 public class BPTPdfDocUploader extends BPTAttachmentUploader {
@@ -101,8 +103,27 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 		});
 		docInnerLayout.addComponent(deleteDocButton);
 	}
-	
-	
+
+	@Override
+	public void uploadStarted(StartedEvent event) {
+		String documentType = event.getMIMEType();
+    	if (!Arrays.asList(supportedDocumentTypes).contains(documentType)) {
+    		errorMessage = "The type of the file you have submitted is not supported.";
+            uploadComponent.interruptUpload();
+    	}
+    	if(event.getFilename().endsWith(".pdf")){
+    		if(!(uploadPanel.isNameAvailableForDoc(event.getFilename()))){
+        		errorMessage = "You can not upload two files with the same name in one excercise.";
+                uploadComponent.interruptUpload();
+    		}
+    	}
+    	else{
+    		if(!(uploadPanel.isNameAvailableForPdf(event.getFilename()))){
+        		errorMessage = "You can not upload two files with the same name in one excercise.";
+                uploadComponent.interruptUpload();
+    		}
+    	}
+	}
 	
 	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
@@ -167,27 +188,5 @@ public class BPTPdfDocUploader extends BPTAttachmentUploader {
 			docFile.getSourceFile().delete();
 			file.delete();
 		}
-	}
-	
-	@Override
-	public void uploadStarted(StartedEvent event) {
-		String documentType = event.getMIMEType();
-    	if (!Arrays.asList(supportedDocumentTypes).contains(documentType)) {
-    		errorMessage = "The type of the file you have submitted is not supported.";
-            uploadComponent.interruptUpload();
-    	}
-    	if(event.getFilename().endsWith("pdf")){
-    		if(!(uploadPanel.isNameAvailableForDoc(event.getFilename()))){
-        		errorMessage = "You can not upload two files with the same name in one excercise.";
-                uploadComponent.interruptUpload();
-    		}
-    	}
-    	else{
-    		if(!(uploadPanel.isNameAvailableForPdf(event.getFilename()))){
-        		errorMessage = "You can not upload two files with the same name in one excercise.";
-                uploadComponent.interruptUpload();
-    		}
-    	}
-
 	}
 }

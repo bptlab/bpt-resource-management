@@ -8,9 +8,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
+import de.uni_potsdam.hpi.bpt.resource_management.upload.BPTMultiUploader;
 
 @SuppressWarnings("serial")
 public class BPTSidebar extends HorizontalLayout {
@@ -64,14 +66,42 @@ public class BPTSidebar extends HorizontalLayout {
 	
 	public void renderUploader() {
 		removeAllComponents();
-//		layout = new HorizontalLayout();
+		VerticalLayout layout = new VerticalLayout();
 		Label label = new Label("required fields marked with *<br/>", ContentMode.HTML);
-		addComponent(label);
+		layout.addComponent(label);
+		addMultiUploadButton(layout);
+		addComponent(layout);
 		addComponent(loginComponent);
-		setExpandRatio(label, 75);
+		setExpandRatio(layout, 75);
 		setExpandRatio(loginComponent, 25);
 	}
 	
+	private void addMultiUploadButton(VerticalLayout layout) {
+		Button multiUploadButton = new Button("Batch upload of exercises");
+		multiUploadButton.setStyleName(BaseTheme.BUTTON_LINK);
+		multiUploadButton.addStyleName("redButton");
+//	        administrationButton.addStyleName("greyButton");
+        layout.addComponent(multiUploadButton);
+		
+        multiUploadButton.addClickListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				final Window administrationWindow = new Window("Batch upload of exercises");
+				administrationWindow.setClosable(true);
+				administrationWindow.setDraggable(false);
+				administrationWindow.setImmediate(true);
+				administrationWindow.setModal(true);
+				administrationWindow.setResizable(false);
+				
+				VerticalLayout multiUploadLayout = new VerticalLayout();
+//				administrationLayout.setWidth("350px");
+//					administrationLayout.setMargin(true);
+				administrationWindow.setContent(multiUploadLayout);
+				multiUploadLayout.addComponent(new BPTMultiUploader(applicationUI, "Batch upload of exercises", "Upload a ZIP file", null));
+				applicationUI.addWindow(administrationWindow);
+			}
+		});
+	}
+
 	public void renderAdministrator() {
 		removeAllComponents();
 //		layout = new HorizontalLayout();
