@@ -55,14 +55,12 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	private final String[] supportedImageTypes = new String[] {"image/jpeg", "image/gif", "image/png"};
 	private String documentId, imageType;
 	private boolean logoDeleted = true;
-	private BPTApplicationUI applicationUI;
 	private BPTToolRepository toolRepository = BPTToolRepository.getInstance();
 	private String errorMessage;
 	private VerticalLayout imagePanelLayout;
 	
 	public BPTUploader(Item item, final BPTApplicationUI applicationUI) {
 		super();
-		this.applicationUI = applicationUI;
 		documentId = null;
 		
         Label label = new Label("<br/> <hr/> <br/>", ContentMode.HTML);
@@ -168,21 +166,21 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
         	documentationURLInput.setValue(((Link)(item.getItemProperty("Documentation URL").getValue())).getCaption());
         	screencastURLInput.setValue(((Link)(item.getItemProperty("Screencast URL").getValue())).getCaption());
         	tutorialURLInput.setValue(((Link)(item.getItemProperty("Tutorial URL").getValue())).getCaption());
-        	if(!(item.getItemProperty("Availability").getValue().toString().equals(""))){
+        	if (!(item.getItemProperty("Availability").getValue().toString().equals(""))) {
         		String[] availability = ((String) item.getItemProperty("Availability").getValue()).split(",");
-        		for(int i = 0; i < availability.length; i++) availabilitiesTagComponent.addChosenTag(availability[i].trim().replaceAll(" +", " "));
+        		for (int i = 0; i < availability.length; i++) availabilitiesTagComponent.addChosenTag(availability[i].trim().replaceAll(" +", " "));
         	}
-        	if(!(item.getItemProperty("Model type").getValue().toString().equals(""))){
+        	if (!(item.getItemProperty("Model type").getValue().toString().equals(""))) {
         		String[] model_type = ((String) item.getItemProperty("Model type").getValue()).split(",");
-        		for(int i = 0; i < model_type.length; i++) modelTagComponent.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
+        		for (int i = 0; i < model_type.length; i++) modelTagComponent.addChosenTag(model_type[i].trim().replaceAll(" +", " "));
         	}
-        	if(!(item.getItemProperty("Platform").getValue().toString().equals(""))){
+        	if (!(item.getItemProperty("Platform").getValue().toString().equals(""))) {
         		String[] platform = ((String) item.getItemProperty("Platform").getValue()).split(",");
-        		for(int i = 0; i < platform.length; i++) platformTagComponent.addChosenTag(platform[i].trim().replaceAll(" +", " "));
+        		for (int i = 0; i < platform.length; i++) platformTagComponent.addChosenTag(platform[i].trim().replaceAll(" +", " "));
         	}
-        	if(!(item.getItemProperty("Supported functionality").getValue().toString().equals(""))){
+        	if (!(item.getItemProperty("Supported functionality").getValue().toString().equals(""))) {
         		String[] supported_functionality = ((String) item.getItemProperty("Supported functionality").getValue()).split(",");
-        		for(int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i].trim().replaceAll(" +", " "));
+        		for (int i = 0; i < supported_functionality.length; i++) functionalityTagComponent.addChosenTag(supported_functionality[i].trim().replaceAll(" +", " "));
         	}
         	contactNameInput.setValue(item.getItemProperty("Contact name").getValue().toString());
         	contactMailInput.setValue(((Link)item.getItemProperty("Contact mail").getValue()).getCaption());
@@ -197,8 +195,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		finishUploadButton = new Button("Submit");
 		addComponent(finishUploadButton);
 		finishUploadButton.addClickListener(new Button.ClickListener(){
-			public void buttonClick(ClickEvent event) {
-				
+			public void buttonClick(ClickEvent event) {	
 				if (((String)toolNameInput.getValue()).isEmpty()) {
 					Notification.show("'Tool name' field is empty", Notification.Type.ERROR_MESSAGE);
 				} else if (toolRepository.containsName((String)toolNameInput.getValue()) && documentId == null) {
@@ -229,7 +226,6 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 			private void finishUpload() {
 				Label subWindowLabel;
 				if (documentId == null) { 
-				
 					documentId = toolRepository.createDocument(generateDocument(new Object[] {
 						// order of parameters MUST accord to the one given in BPTDocumentTypes.java
 						(String)toolNameInput.getValue(),
@@ -256,13 +252,10 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 						
 					if (!logoDeleted) { // logo.exists()
 						Map<String, Object> document = toolRepository.readDocument(documentId);
-						String documentRevision = (String)document.get("_rev");
-						
+						String documentRevision = (String)document.get("_rev");	
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);
-						
 						logo.delete();
 					}
-					//TODO:
 					subWindowLabel = new Label("Thank you for submitting your tool " 
 							+ "<b>" + (String)toolNameInput.getValue() + "</b>" + ". "
 							+ "Your entry will be reviewed." 
@@ -271,8 +264,6 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 							+ "\"own entries\"  at the entry overview."
 							+ "If you have any question, please contact"
 							+ "<a href=\"mailto:bptresourcemanagement@gmail.com?subject=[Tools+for+BPM]+Feedback\"> bptresourcemanagement@gmail.com </a>.");
-//					Notification.show("New entry submitted: " + (String)toolNameInput.getValue());
-
 				} else {
 					BPTToolStatus oldToolStatus = BPTToolStatus.valueOf((String) toolRepository.readDocument(documentId).get("status"));
 					Map<String, Object> newValues = new HashMap<String, Object>();
@@ -305,12 +296,11 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 					} else if (logo != null) {
 						toolRepository.createAttachment(documentId, documentRevision, "logo", logo, imageType);		
 					}
-					//TODO:
+					
 					String statusString;
-					if(oldToolStatus.equals(BPTToolStatus.Published)){
+					if (oldToolStatus.equals(BPTToolStatus.Published)) {
 						statusString = "Your entry will be reviewed. In the usual case, your entry is published shortly.";
-					}
-					else{
+					} else {
 						statusString = "Your entry will be reviewed but remains published.";
 					}
 					subWindowLabel = new Label("Thank you for updating your tool " 
@@ -328,9 +318,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 				subWindowLayout.addComponent(subWindowLabel);
 				subwindow.setModal(true);
 		        Button closeButton = new Button("Close", new Button.ClickListener() {
-		            // inline click-listener
 		            public void buttonClick(ClickEvent event) {
-		                // close the window by removing it from the parent window
 		            	UI.getCurrent().removeWindow(subwindow);
 		            }
 		        });
@@ -345,18 +333,18 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 				warningWindow.setWidth("400px");
 				warningWindow.setModal(true);
 				VerticalLayout warningWindowLayout = new VerticalLayout();
-				warningWindowLayout.addComponent(new Label("The name you have chosen is already taken - continue?"));
+				warningWindowLayout.addComponent(new Label("A tool with this name already exists in our database - continue?"));
 				Button yesButton = new Button("Yes");
 				Button noButton = new Button("No");
 				warningWindowLayout.addComponent(yesButton);
 				warningWindowLayout.addComponent(noButton);
 				warningWindow.setContent(warningWindowLayout);
-				noButton.addClickListener(new Button.ClickListener(){
+				noButton.addClickListener(new Button.ClickListener() {
 					public void buttonClick(ClickEvent event) {
 						ui.removeWindow(warningWindow);
 					}
 				});
-				yesButton.addClickListener(new Button.ClickListener(){
+				yesButton.addClickListener(new Button.ClickListener() {
 					public void buttonClick(ClickEvent event) {
 						ui.removeWindow(warningWindow);
 						finishUpload();
@@ -383,9 +371,6 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 		upload.setImmediate(false);
 		upload.setWidth("-1px");
 		upload.setHeight("-1px");
-//		upload.addListener((Upload.StartedListener)this);
-//		upload.addListener((Upload.SucceededListener)this);
-//		upload.addListener((Upload.FailedListener)this);
 		upload.addStartedListener((Upload.StartedListener) this);
 		upload.addSucceededListener((Upload.SucceededListener) this);
 		upload.addFailedListener((Upload.FailedListener)this);
@@ -399,14 +384,13 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 			errorMessage = "The type of the file you have submitted is not supported.";
 			upload.interruptUpload();
 		}
-//		if (event.getContentLength() > 102400) {
-//			errorMessage = "The image you have submitted is too big - maximum file size: 100 Kilobytes.";
-//			upload.interruptUpload();
-//		};
+		if (event.getContentLength() > 204800) {
+			errorMessage = "The image you have submitted is too big - maximum file size: 200 Kilobytes.";
+			upload.interruptUpload();
+		};
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
-//		imageType = mimeType;
 		logo = new File("temp" + File.separator + "bptrm_logo_" + filename);
 		
         try {
@@ -421,13 +405,10 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	
 	public void uploadSucceeded(final SucceededEvent event) {
 		final FileResource imageResource = new FileResource(logo);
-		// check image size
+		// check and shrink image size if necessary
 		try {
 			int maximumLength = 600; // pixels
 			BufferedImage bufferedImage = ImageIO.read(imageResource.getStream().getStream());
-//			if (bufferedImage.getHeight() > maximumLength) {
-//				maximumLength = bufferedImage.getHeight();
-//			}
 			if (bufferedImage.getWidth() > maximumLength) {
 				maximumLength = bufferedImage.getWidth();
 			}
@@ -438,7 +419,6 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 			image.setWidth(widthOfImage + "px");
 	        addImageToPanel(image);
 	        logoDeleted = false;
-//	        applicationUI.refreshAndClean();
 		} catch (IOException e) {
 			errorMessage = "Error at checking image size.";
 			upload.interruptUpload();
@@ -450,7 +430,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
         imagePanelLayout.addComponent(image);
         removeImageButton = new Button("Remove image");
 		imagePanelLayout.addComponent(removeImageButton);
-		removeImageButton.addClickListener(new Button.ClickListener(){
+		removeImageButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent clickEvent) {
 				outputStream = null;
 				imagePanelLayout.removeAllComponents();
@@ -469,10 +449,6 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	}
 	
 	public void uploadFailed(FailedEvent event) {
-		Notification.show(
-                "Upload failed",
-                errorMessage,
-                Notification.Type.ERROR_MESSAGE);
+		Notification.show("Upload failed", errorMessage, Notification.Type.ERROR_MESSAGE);
 	}
-
 }

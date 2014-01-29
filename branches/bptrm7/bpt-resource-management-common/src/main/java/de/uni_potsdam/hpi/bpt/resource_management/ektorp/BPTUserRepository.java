@@ -1,6 +1,5 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import org.ektorp.support.View;
 
 /**
  * 
- * Provides access to CouchDB's store for Tools for BPM users.
+ * Provides access to the Tools for BPM users that are stored in the database.
  * There are two roles of users - moderator and resource provider. 
  * A resource provider may submit and update his own entries.
  * In addition, a moderator may change the status of an entry or delete an entry.
@@ -43,6 +42,11 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		instance = null;
 	}
 	
+	/**
+	 * Returns a list of moderators.
+	 * 
+	 * @return list of moderators
+	 */
 	@View(
 			name = "moderators", 
 			map = "function(doc) { if (doc.is_moderator) emit(doc._id, doc); }"
@@ -55,6 +59,11 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		return result;
 	}
 	
+	/**
+	 * Returns a list of resource providers.
+	 * 
+	 * @return list of resource providers
+	 */
 	@View(
 			name = "resource_providers", 
 			map = "function(doc) { if (!doc.is_moderator) emit(doc._id, doc); }"
@@ -68,6 +77,7 @@ public class BPTUserRepository extends BPTDocumentRepository {
 	}
 
 	/**
+	 * Returns the attributes stored for an user.
 	 * 
 	 * @param _id OpenID of the user
 	 * @return database document containing information about the user as java.util.Map
@@ -92,6 +102,14 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
+	/**
+	 * Validates an user and creates an new user if no information is stored for the given OpenID.
+	 * 
+	 * @param _id OpenID of the user
+	 * @param name name of the user
+	 * @param mailAddress email address of the user
+	 * @return true if the user is a moderator
+	 */
 	public boolean isModerator(String _id, String name, String mailAddress) {
 		List<Map> users = getAll();
 		for(Map<String, Object> user : users) {

@@ -45,20 +45,16 @@ public class BPTPageSelector extends HorizontalLayout {
 			entryFromTo.setValue("&nbsp;&nbsp;&nbsp;&nbsp;Entries <b>1 to " + lastentry + "</b> from " + numberOfEntries);
 			entryFromTo.setWidth("175px");
 			entryFromTo.setImmediate(true);
-//			entryFromTo.requestRepaint();
 			addComponent(entryFromTo);
 			
 			firstPageButton = new Button("<<");
 			firstPageButton.setImmediate(true);
 			firstPageButton.setStyleName(BaseTheme.BUTTON_LINK);
-			firstPageButton.addClickListener(new Button.ClickListener(){
-
-					private static final long serialVersionUID = -2746131404133732663L;
-
-					public void buttonClick(ClickEvent event) {
-						application.refreshAndClean(0);
-					}
-				});
+			firstPageButton.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					application.refreshAndClean(0);
+				}
+			});
 			firstPageButton.setEnabled(false);
 			firstPageButton.setWidth("15px");
 			addComponent(firstPageButton);
@@ -66,28 +62,22 @@ public class BPTPageSelector extends HorizontalLayout {
 			previousPageButton = new Button("<");
 			previousPageButton.setImmediate(true);
 			previousPageButton.setStyleName(BaseTheme.BUTTON_LINK);
-			previousPageButton.addClickListener(new Button.ClickListener(){
-
-					private static final long serialVersionUID = -2746131404133732663L;
-
-					public void buttonClick(ClickEvent event) {
-						application.refreshAndClean(skip - 10);
-					}
-				});
+			previousPageButton.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					application.refreshAndClean(skip - 10);
+				}
+			});
 			previousPageButton.setEnabled(false);
 			previousPageButton.setWidth("12px");
 			addComponent(previousPageButton);
 			
-			for (int i = 0; (i* 10) < numberOfEntries; i++) {
+			for (int i = 0; (i * 10) < numberOfEntries; i++) {
 				final int x = i * 10;
 				final Button pageButton = new Button(new Integer(i+1).toString());
 				pageButton.setStyleName(BaseTheme.BUTTON_LINK);
 				pageButton.setWidth("12px");
 				pageButtonList.add(pageButton);
-				pageButton.addClickListener(new Button.ClickListener(){
-
-					private static final long serialVersionUID = -2746131404133732663L;
-
+				pageButton.addClickListener(new Button.ClickListener() {
 					public void buttonClick(ClickEvent event) {
 						application.refreshAndClean(x);
 					}
@@ -98,37 +88,30 @@ public class BPTPageSelector extends HorizontalLayout {
 			nextPageButton = new Button(">");
 			nextPageButton.setImmediate(true);
 			nextPageButton.setStyleName(BaseTheme.BUTTON_LINK);
-			nextPageButton.addClickListener(new Button.ClickListener(){
-
-					private static final long serialVersionUID = -2746131404133732663L;
-
-					public void buttonClick(ClickEvent event) {
-						application.refreshAndClean(skip + 10);
-					}
-				});
+			nextPageButton.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					application.refreshAndClean(skip + 10);
+				}
+			});
 			nextPageButton.setWidth("12px");
 			addComponent(nextPageButton);
 			
 			lastPageButton = new Button(">>");
 			lastPageButton.setImmediate(true);
 			lastPageButton.setStyleName(BaseTheme.BUTTON_LINK);
-			lastPageButton.addClickListener(new Button.ClickListener(){
-
-					private static final long serialVersionUID = -2746131404133732663L;
-
-					public void buttonClick(ClickEvent event) {
-						if(numberOfEntries % 10 == 0){
-							application.refreshAndClean(((numberOfEntries / 10) * 10) - 10);
-						}
-						else{
-							application.refreshAndClean((numberOfEntries / 10) * 10);
-						}
+			lastPageButton.addClickListener(new Button.ClickListener() {
+				public void buttonClick(ClickEvent event) {
+					if (numberOfEntries % 10 == 0) {
+						application.refreshAndClean(((numberOfEntries / 10) * 10) - 10);
+					} else {
+						application.refreshAndClean((numberOfEntries / 10) * 10);
 					}
-				});
+				}
+			});
 			lastPageButton.setWidth("15px");
 			addComponent(lastPageButton);
 			
-			if(numberOfEntries <= 10){
+			if (numberOfEntries <= 10) {
 				nextPageButton.setEnabled(false);
 				lastPageButton.setEnabled(false);
 			}
@@ -137,21 +120,21 @@ public class BPTPageSelector extends HorizontalLayout {
 	}
 	
 	public void switchToPage(int skippedEntries) {
-		
-		if(numberOfEntries == 0) return;
+		if (numberOfEntries == 0) {
+			return;
+		}
 		
 		pageButtonList.get(skip / 10).setEnabled(true);
 		pageButtonList.get(skippedEntries / 10).setEnabled(false);
 		
-		this.skip = skippedEntries;
+		skip = skippedEntries;
 		int lastEntry;
 		int firstEntry = skippedEntries + 1;
 		
-		if(firstEntry == 1){
+		if (firstEntry == 1) {
 			firstPageButton.setEnabled(false);
 			previousPageButton.setEnabled(false);
-		}
-		else{
+		} else {
 			firstPageButton.setEnabled(true);
 			previousPageButton.setEnabled(true);
 		}
@@ -169,9 +152,7 @@ public class BPTPageSelector extends HorizontalLayout {
 			entryFromTo.setValue("&nbsp;&nbsp;&nbsp;&nbsp;Entry <b>" + firstEntry + "</b> from " + numberOfEntries);
 		} else {
 			entryFromTo.setValue("&nbsp;&nbsp;&nbsp;&nbsp;Entries <b>" + firstEntry + " to " + lastEntry + "</b> from " + numberOfEntries);
-			//TODO: add Navigation at bottom
 		}
-//		entryFromTo.requestRepaint();
 	}
 
 	public void hide() {

@@ -4,19 +4,14 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-public class BPTMainFrame extends VerticalLayout{
-
-//	private VerticalLayout layout;
+public class BPTMainFrame extends VerticalLayout {
 	
-	public BPTMainFrame(Component component){
-		
-//		layout = new VerticalLayout();
-//		setCompositionRoot(layout);
+	public BPTMainFrame(Component component) {
 		setWidth("100%");
 		addComponent(component);
 	}
 	
-	public void add(Component component){
+	public void add(Component component) {
 		removeAllComponents();
 		addComponent(component);
 	}

@@ -1,9 +1,7 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
 /**
- * Enum to define document type specific attributes.
- * 
- * public static String[] getDocumentKeys(String type)
+ * Defines the attributes of all available documents.
  *
  * @author tw
  *
@@ -13,10 +11,10 @@ public enum BPTDocumentType {
 	BPT_RESOURCES_TOOLS, BPT_RESOURCES_USERS;
 	
 	/**
-	 * Returns document type specific attributes.
-	 * 
-	 * @param type the document type
-	 * @return attributes of the document type as a String array
+	 * Returns the attributes that are specific to the given document type.
+	 *
+	 * @param type document type
+	 * @return attributes of the document type in a specific order
 	 * 
 	 */
 	public static String[] getDocumentKeys(BPTDocumentType type) {
@@ -36,10 +34,10 @@ public enum BPTDocumentType {
 		}	
 	}
 	/**
-	 * Returns document type specific attributes.
+	 * Returns the attributes that store URLs and that are specific to the given document type.
 	 * 
 	 * @param type the document type
-	 * @return attributes used for storing URLs as a String array
+	 * @return attributes used for storing URLs in a specific order
 	 * 
 	 */
 	public static String[] getDocumentKeysStoringURLs(BPTDocumentType type) {

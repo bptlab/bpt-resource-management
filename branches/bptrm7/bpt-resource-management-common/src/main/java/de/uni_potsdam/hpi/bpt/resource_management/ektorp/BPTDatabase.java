@@ -12,9 +12,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 import com.github.ldriscoll.ektorplucene.LuceneAwareCouchDbConnector;
 
 /**
- * Provides a static method to connect to CouchDB.
- * 
- * public static LuceneAwareCouchDbConnector connect(String table)
+ * Connects to CouchDB.
  *
  * @author tw
  *
@@ -27,10 +25,10 @@ public class BPTDatabase {
 	private static String password;
 
 	/**
-     * Connects to CouchDB.
+     * Connects to a table that is stored in CouchDB.
      * 
-     * @param table the name of the database to connect to
-     * @return the connection to the database
+     * @param table name of the database table
+     * @return connection to the database
      * 
      */
 	public static LuceneAwareCouchDbConnector connect(String table) {
@@ -40,8 +38,8 @@ public class BPTDatabase {
 		HttpClient httpClient = new StdHttpClient.Builder()
 									.host(host)
 									.port(port)
-//									.username(username)
-//									.password(password)
+									.username(username)
+									.password(password)
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);

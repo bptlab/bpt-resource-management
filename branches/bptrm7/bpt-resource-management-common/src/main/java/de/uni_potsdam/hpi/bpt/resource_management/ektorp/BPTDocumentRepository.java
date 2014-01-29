@@ -21,25 +21,17 @@ import com.github.ldriscoll.ektorplucene.CouchDbRepositorySupportWithLucene;
  * Provides querying methods based on CouchDB views for documents and their attachments.
  * Provides methods for CRUD operations based on java.util.Map - may be used directly by front-end.
  * 
- * public String createDocument(String type, Map<String, Object> document)
- * public Map<String, Object> readDocument(String _id)
- * public Map<String, Object> updateDocument(Map<String, Object> document)
- * public Map<String, Object> deleteDocument(String _id)
- * 
- * public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType)
- * public AttachmentInputStream readAttachment(String _id, String attachmentId)
- * public String deleteAttachment(String _id, String _rev, String attachmentId)
- * 
  * @author tw
  *
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-//public abstract class BPTDocumentRepository extends CouchDbRepositorySupport<Map> {
 public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWithLucene<Map> {
 	
 	protected String tableName;
 	
 	/**
+	 * Constructor.
+	 * 
      * @param table the name of the database to connect to
      * 
      */
@@ -73,7 +65,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		db.create(_id, databaseDocument);
 		return _id;
 	}
-
+	
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		return databaseDocument;
 	}
@@ -110,7 +102,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	}
 	
 	/**
-	 * Deletes a document by marking it as deleted but keeping it in the database.
+	 * Marks a document as deleted. The document remains in the database.
 	 * 
      * @param _id id of the document to be deleted
      * @return deleted database document as java.util.Map
@@ -124,13 +116,14 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	}
 	
 	/**
+	 * Adds an attachment to an existing document.
 	 * 
-	 * @param _id id of the document where the attachment has to be added to
-	 * @param _rev trevision of the document where the attachment has to be added to
-	 * @param attachmentId name of the new attachment - must be unique
-	 * @param file attachment as file
-	 * @param contentType content type of the file - also known as MIME type
-	 * @return new revision of the document after adding the attachment
+	 * @param _id id of the document to which the attachment is added
+	 * @param _rev revision of the document to which the attachment is added
+	 * @param attachmentId name of the new attachment, must be unique per document
+	 * @param file attachment
+	 * @param contentType MIME type of the file
+	 * @return new revision of the document
 	 */
 	public String createAttachment(String _id, String _rev, String attachmentId, File file, String contentType) {
 		String revision = new String();
@@ -155,7 +148,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	 * 
 	 * @param _id id of the document where the attachment is stored
 	 * @param attachmentId name of the attachment
-	 * @return file as java.io.InputStream - has to be closed after usage!
+	 * @return file as java.io.InputStream, stream must be closed after usage!
 	 */
 	public AttachmentInputStream readAttachment(String _id, String attachmentId) {
 		AttachmentInputStream inputStream = new AttachmentInputStream("null", null, "image/jpeg"); // default initialization
@@ -174,7 +167,7 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	 * @param _id id of the document where the attachment is stored
 	 * @param _rev revision of the document where the attachment is stored
 	 * @param attachmentId name of the attachment
-	 * @return new revision of the document after deleting the attachment
+	 * @return new revision of the document
 	 */
 	public String deleteAttachment(String _id, String _rev, String attachmentId) {
 		String revision = new String();
@@ -182,6 +175,13 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		return revision;
 	}
 	
+	/**
+	 * Generates a document from an array of values that are in a certain order.
+	 * The order is defined in the enum BPTDocumentType.
+	 * 
+	 * @param values values of the document
+	 * @return document as Map<String, Object>
+	 */
 	public Map<String, Object> generateDocument(Object[] values) {
 		Map<String, Object> document = new HashMap<String, Object>();
 		String[] keys = BPTDocumentType.getDocumentKeys(BPTDocumentType.valueOf(tableName.toUpperCase()));
@@ -192,7 +192,6 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 	}
 	
 	private Integer nextAvailableId() {
-		
 		List<String> allDocIdsString = db.getAllDocIds();
 		List<Integer> allDocIdsConverted = new ArrayList<Integer>();
 		int value, highestId;
@@ -215,10 +214,20 @@ public abstract class BPTDocumentRepository extends CouchDbRepositorySupportWith
 		return highestId + 1;
 	}
 	
+	/**
+	 * Returns the public database address.
+	 * 
+	 * @return the public database address
+	 */
 	public String getDatabaseAddress() {
 		return "http://" + BPTDatabase.getHost() + ":" + BPTDatabase.getPort() + "/";
 	}
 	
+	/**
+	 * Returns the name of the database table.
+	 * 
+	 * @return name of the database table
+	 */
 	public String getTableName() {
 		return tableName;
 	}

@@ -6,7 +6,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTApplicationUI;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagComponent;
 
 @SuppressWarnings("serial")
-public class BPTTagSearchComponent extends BPTTagComponent{
+public class BPTTagSearchComponent extends BPTTagComponent {
 	
 	public BPTTagSearchComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
 		super(applicationUI, tagColumns, newTagsAllowed);
@@ -24,12 +24,12 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 	}
 	
 	@Override
-	public void addChosenTag(String value){
+	public void addChosenTag(String value) {
 		tagBox.addTag(value);
 	}
 	
 	@Override
-	protected void addTagBox(){
+	protected void addTagBox() {
 		tagBox = new BPTSearchTagBoxes();
 		addComponent(tagBox);
 	}
@@ -60,5 +60,4 @@ public class BPTTagSearchComponent extends BPTTagComponent{
 		searchInput.removeAllItems();
 		refresh();
 	}
-
 }

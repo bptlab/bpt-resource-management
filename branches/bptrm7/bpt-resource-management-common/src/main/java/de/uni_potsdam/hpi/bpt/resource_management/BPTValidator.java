@@ -1,8 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -10,7 +8,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 
 /**
- * Class providing methods to validate addresses.
+ * Validates URLs and email addresses.
  * 
  * @author tw
  *
@@ -27,24 +25,19 @@ public class BPTValidator {
 	}
 	
 	/**
-	 * Checks if an url is valid, i.e. it is well-formed and points to available resources.
+	 * Checks if an URL is valid, i.e. if it is well-formed and if it points to available resources.
 	 * 
-	 * @param url the url to be checked as String
-	 * @return true if the given url is valid
+	 * @param url URL to be checked
+	 * @return true if the given URL is valid
 	 */
 	public static boolean isValidUrl(String url) {
-//		for (String protocol : schemes) {
-//			if (url.equals(protocol + "://")) {
-//				return true;
-//			}
-//		}
 		return urlValidator.isValid(url) && pageIsAvailable(url);
 	}
 	
 	/**
 	 * Checks if an email address is well-formed.
 	 * 
-	 * @param email the mail address to be checked as String
+	 * @param email mail address to be checked
 	 * @return true if the mail address is well-formed
 	 */
 	public static boolean isValidEmail(String email) {
@@ -52,11 +45,11 @@ public class BPTValidator {
 	}
 	
 	/**
-	 * Checks if an url points to available resources.
+	 * Checks if an URL points to available resources.
 	 * Sends HTTP GET requests and checks the codes of response.
 	 * 
-	 * @param url the url to be checked as String
-	 * @return true if the given url points to available resources, i.e. the HTTP response code is 2xx oder 3xx
+	 * @param url URL to be checked as String
+	 * @return true if the given URL points to available resources, i.e. the HTTP response code is 2xx oder 3xx
 	 */
 	private static boolean pageIsAvailable(String url) {
 		boolean isAvailable = false;

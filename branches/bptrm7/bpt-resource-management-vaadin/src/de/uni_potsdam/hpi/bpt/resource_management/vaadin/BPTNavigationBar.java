@@ -11,7 +11,7 @@ public class BPTNavigationBar extends HorizontalLayout {
 		super();
 		
 		Button findButton = new Button("Find");
-		findButton.addClickListener(new Button.ClickListener(){
+		findButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				applicationUI.showAllAndRefreshSidebar(true);
 			}
@@ -19,7 +19,7 @@ public class BPTNavigationBar extends HorizontalLayout {
 		addComponent(findButton);
 		
 		Button uploadButton = new Button("Upload");
-		uploadButton.addClickListener(new Button.ClickListener(){
+		uploadButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				applicationUI.renderUploader();
 			}

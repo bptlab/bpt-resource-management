@@ -18,7 +18,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
 /**
  * 
- * Scheduler for tasks to be executed on entries stored in CouchDB.
+ * Schedules tasks to be executed on entries from the database.
  * 
  * @author tw
  *
@@ -33,7 +33,6 @@ public class BPTTaskScheduler {
 	public static final int EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS = 365;
 	public static final int MAXIMUM_PERIOD_OF_FIRST_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 335;
 	public static final int MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 30;
-//	public static final int MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS = 14;
 	public static final int DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 	
 	/**
@@ -96,7 +95,6 @@ public class BPTTaskScheduler {
 								Date notificationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse((String) document.get("notification_date"));
 								int differenceInDays = (int) ((now.getTime() - notificationDate.getTime()) / DAY_IN_MILLISECONDS);
 								if (differenceInDays >= DAYS_AFTER_FIRST_NOTIFICATION_TO_UNPUBLISH) {
-//									toolRepository.unpublishDocument(documentId, true);
 									document.put("status", BPTToolStatus.Unpublished);
 									document.put("number_of_url_validation_fails", 0);
 									document.put("notification_date", null);
@@ -104,8 +102,6 @@ public class BPTTaskScheduler {
 									mailProvider.sendEmailForUnpublishedEntryWithUnavailableURLsToModerator((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
 									toolRepository.update(document);
 									System.out.println(new Date() + " - Document " + documentId + " has been unpublished.");
-//								} else {
-//									documentsWithUnavailableURLs.put(documentName + " (" + documentId + ")", unavailableURLs);
 								}
 							} catch (ParseException e) {
 								e.printStackTrace();
@@ -143,7 +139,6 @@ public class BPTTaskScheduler {
 	 * @author tw
 	 *
 	 */
-//	 * If an entry has been updated 193 days ago, a third and last notification is sent to the resource provider.
 	class CheckForOldEntriesTask extends TimerTask {
 
 		public void run() {
@@ -173,12 +168,6 @@ public class BPTTaskScheduler {
 								document.put("number_of_mails_for_expiry", 2);
 								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 2);
 							}
-//						} else if (differenceInDays < EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_THIRD_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
-//							if ((Integer) document.get("number_of_mails_for_expiry") <= 2) {
-//								mailProvider.sendThirdEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
-//								document.put("number_of_mails_for_expiry", 3);
-//								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 3);
-//							}
 						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							document.put("status", BPTToolStatus.Unpublished);							
 							document.put("number_of_mails_for_expiry", 0);
@@ -202,8 +191,4 @@ public class BPTTaskScheduler {
 			}
 		}
 	}
-	
-//	public static void main(String args[]) {
-//		new BPTTaskScheduler();
-//	}
 }

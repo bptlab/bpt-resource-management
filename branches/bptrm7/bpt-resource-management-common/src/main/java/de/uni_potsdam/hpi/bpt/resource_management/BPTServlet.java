@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServlet;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 
 /**
- * Servlet to initialize resources independent from the web application.
+ * Initializes resources that are independent from the web application.
  * 
  * @author tw
  *

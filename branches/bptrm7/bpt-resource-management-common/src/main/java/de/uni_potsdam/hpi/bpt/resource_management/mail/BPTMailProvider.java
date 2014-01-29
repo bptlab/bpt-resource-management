@@ -12,7 +12,7 @@ import javax.mail.Session;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 
 /**
- * Class to define all mails that may be sent.
+ * Defines all mails to be sent.
  * 
  * @author tw
  *
@@ -104,9 +104,9 @@ public class BPTMailProvider {
 	/**
 	 * Notifies the moderators about an entry update.
 	 * 
-	 * @param toolName name of the updated entry
-	 * @param documentId id of the updated entry
-	 * @param userId id of the user updating the entry
+	 * @param toolName name of the entry that has been updated
+	 * @param documentId id of the entry that has been updated
+	 * @param userId id of the entry that has been updated
 	 */
 	public void sendEmailForUpdatedEntry(String toolName, String documentId, String userId) {
 		// will not be sent if entry is (still) unpublished
@@ -136,7 +136,7 @@ public class BPTMailProvider {
 	/**
 	 * Notifies the user about the deletion of his entry by a moderator.
 	 * 
-	 * @param toolName name of the deleted entry
+	 * @param toolName name of the entry that has been deleted
 	 * @param userId id of the user who submitted the entry
 	 */
 	public void sendEmailForDeletedEntryToResourceProvider(String toolName, String userId) {
@@ -160,8 +160,8 @@ public class BPTMailProvider {
 	/**
 	 * Notifies the moderators about the deletion of an entry by its provider.
 	 * 
-	 * @param toolName name of the deleted entry
-	 * @param documentId id of the deleted entry
+	 * @param toolName name of the entry that has been deleted
+	 * @param documentId id of the entry that has been deleted
 	 * @param userId id of the provider
 	 */
 	public void sendEmailForDeletedEntryToModerator(String toolName, String documentId, String userId) {
@@ -190,6 +190,7 @@ public class BPTMailProvider {
 	 * Notifies a user that his entry has been published by a moderator.
 	 * 
 	 * @param toolName name of the entry that has been published
+	 * @param documentId id of the entry that has been deleted
 	 * @param userId id of the user whose entry has been published
 	 */
 	public void sendEmailForPublishedEntry(String toolName, String documentId, String userId) {
@@ -269,9 +270,8 @@ public class BPTMailProvider {
 	 * 
 	 * @param toolName name of the entry that has been unpublished
 	 * @param documentId id of the entry that has been unpublished
-	 * @param userId id of the provider
 	 */
-	public void sendEmailForUnpublishedEntryFromPublishedToModerator(String toolName, String documentId, String userId) {
+	public void sendEmailForUnpublishedEntryFromPublishedToModerator(String toolName, String documentId) {
 		if (enabled) {
 			String subject = "[Tools for BPM] Unpublished entry: " + " (" + documentId + ")";
 
@@ -348,10 +348,16 @@ public class BPTMailProvider {
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
 			sendMail(recipient, subject, content.toString());
-//			System.out.println(content);
 		}
 	}
 	
+	/**
+	 * Notifies a user that his entry has been unpublished since it contains broken URLs.
+	 * 
+	 * @param toolName name of the entry containing broken URLs
+	 * @param documentId id of the entry containing broken URLs
+	 * @param userId id of the user whose entry contains broken URLs
+	 */
 	public void sendEmailForUnpublishedEntryWithUnavailableURLsToResourceProvider(String toolName, String documentId, String userId) {
 		if (enabled) {
 			String subject = "[Tools for BPM] Unpublished entry: " + toolName;
@@ -372,6 +378,13 @@ public class BPTMailProvider {
 		}	
 	}
 	
+	/**
+	 * Notifies the moderators that an entry has been unpublished since it contains broken URLs.
+	 * 
+	 * @param toolName name of the entry containing broken URLs
+	 * @param documentId id of the entry containing broken URLs
+	 * @param userId id of the user whose entry contains broken URLs
+	 */
 	public void sendEmailForUnpublishedEntryWithUnavailableURLsToModerator(String toolName, String documentId, String userId) {
 		if (enabled) {
 			String subject = "[Tools for BPM] Unpublished entry: " + " (" + documentId + ")";
@@ -412,7 +425,7 @@ public class BPTMailProvider {
 				
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
-				content.append("The following published entries contain URLs pointing to resources that are currently not available:" + newLine + newLine);
+				content.append("One or several entries contain URLs pointing to resources that are currently not available:" + newLine + newLine);
 				for (String documentNameAndId : documentsWithUnavailableURLs.keySet()) {
 					int separator = documentNameAndId.indexOf("(");
 					String toolName = documentNameAndId.substring(0, separator - 1);
@@ -423,14 +436,13 @@ public class BPTMailProvider {
 					}
 					content.append(newLine);
 				}
-				content.append("As a moderator you may have a look at them on " + applicationURL + "." + newLine + newLine);
+				content.append("As a moderator you may have a look at it on " + applicationURL + "." + newLine + newLine);
 				content.append("Please note that an entry will be unpublished automatically " +
 						"after two weeks of the first dectection of an URL pointing to unavailable resources." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
 				
 				sendMail(recipient, subject, content.toString());
-//				System.out.println(content);
 			}
 		}
 	}
@@ -458,7 +470,6 @@ public class BPTMailProvider {
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
 			sendMail(recipient, subject, content.toString());
-//			System.out.println(content);
 		}
 	}
 	
@@ -486,37 +497,8 @@ public class BPTMailProvider {
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
 			sendMail(recipient, subject, content.toString());
-//			System.out.println(content);
 		}
 	}
-	
-//	/**
-//	 * Notifies a user that his entry has been updated 180+13 days ago.
-//	 * 
-//	 * @param toolName name of the entry that has been updated 180+13 days ago
-//	 * @param documentId id of the entry that has been updated 180+13 days ago
-//	 * @param userId id of the user whose entry has been updated 180+13 days ago
-//	 */
-//	public void sendThirdEmailForOldEntry(String toolName, String documentId, String userId) {
-//		if (enabled) {
-//			String subject = "[Tools for BPM] Entry out of date: " + toolName + " (" + documentId + ", third notification)";
-//
-//			Map<String, Object> resourceProvider = userRepository.getUser(userId);
-//			
-//			String recipient = (String) resourceProvider.get("mail_address");
-//			
-//			StringBuilder content = new StringBuilder();
-//			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-//			content.append("Your entry '" + toolName + "' has been last updated 193 days ago and might be out of date." + newLine);
-//			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
-//			content.append("To prevent your entry from becoming unpublished automatically in 1 day, we kindly ask you to open the entry for editing, check if its content is still up to date and click on 'Submit'. Thank you for your cooperation." + newLine + newLine);
-//			content.append("Regards" + newLine);
-//			content.append("-- bpm-conference.org" + newLine + newLine);
-//			
-//			sendMail(recipient, subject, content.toString());
-////			System.out.println(content);
-//		}
-//	}
 	
 	/**
 	 * Notifies a user that his entry has been unpublished since it has been updated more than 730 days ago.
@@ -542,7 +524,6 @@ public class BPTMailProvider {
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
 			sendMail(recipient, subject, content.toString());
-//			System.out.println(content);
 		}
 	}
 	
@@ -604,7 +585,6 @@ public class BPTMailProvider {
 				content.append("-- bpm-conference.org" + newLine + newLine);
 				
 				sendMail(recipient, subject, content.toString());
-//				System.out.println(content);
 			}
 		}
 	}

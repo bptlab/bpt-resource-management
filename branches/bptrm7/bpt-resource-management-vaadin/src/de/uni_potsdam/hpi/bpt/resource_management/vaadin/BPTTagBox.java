@@ -26,21 +26,21 @@ public class BPTTagBox extends VerticalLayout {
 		addComponent(layout);
 	};
 	
-	public void addTag(String value){
+	public void addTag(String value) {
 		addTagToLayout(value, layout);
 	}
 	
-	public void addTagToLayout(String value, GridLayout layout){
+	public void addTagToLayout(String value, GridLayout layout) {
 		BPTSearchTag searchTag = new BPTSearchTag(this, value);
 		addSearchTag(searchTag, layout);
 	}
 
-	public void addTagToLayout(String value, String type, GridLayout layout){
+	public void addTagToLayout(String value, String type, GridLayout layout) {
 		BPTSearchTag searchTag = new BPTSearchTag(this, type, value);
 		addSearchTag(searchTag, layout);
 	}
 	
-	public void addTagToLayout(BPTSearchTag searchTag, GridLayout layout){
+	public void addTagToLayout(BPTSearchTag searchTag, GridLayout layout) {
 		addSearchTag(searchTag, layout);
 	}
 	

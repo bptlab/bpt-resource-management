@@ -8,19 +8,20 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.BPTTagBox;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 
 @SuppressWarnings("serial")
-public class BPTSearchTagBoxes extends BPTTagBox{
+public class BPTSearchTagBoxes extends BPTTagBox {
 
 	private GridLayout availabilitiesLayout, modelTypesLayout, platformsLayout, supportedFunctionalitiesLayout;
 	private ArrayList<String> availabilitiesTags, modelTypesTags, platformsTags, supportedFunctionalitiesTags;
 	private ArrayList<BPTSearchTag> availabilityTagList, modelTypesTagList, platformsTagList, supportedFunctionalitiesTagList;
 
-	public BPTSearchTagBoxes(){
+	public BPTSearchTagBoxes() {
 		super();
 		availabilityTagList = new ArrayList<BPTSearchTag>();
 		modelTypesTagList = new ArrayList<BPTSearchTag>();
 		platformsTagList = new ArrayList<BPTSearchTag>();
 		supportedFunctionalitiesTagList = new ArrayList<BPTSearchTag>();
 	}
+	
 	@Override
 	protected void addGridsToComponent() {
 		availabilitiesTags = BPTContainerProvider.getInstance().getUniqueValues("availabilities");
@@ -51,19 +52,16 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	@Override
 	public void removeTag(BPTSearchTag searchTag) {
 		String value = searchTag.getValue();
-		if(availabilitiesTags.contains(value)){
+		if (availabilitiesTags.contains(value)) {
 			availabilityTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, availabilitiesLayout);
-		}
-		else if (modelTypesTags.contains(value)){
+		} else if (modelTypesTags.contains(value)) {
 			modelTypesTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, modelTypesLayout);
-		}
-		else if (platformsTags.contains(value)){
+		} else if (platformsTags.contains(value)) {
 			platformsTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, platformsLayout);
-		}
-		else if (supportedFunctionalitiesTags.contains(value)){
+		} else if (supportedFunctionalitiesTags.contains(value)) {
 			supportedFunctionalitiesTagList.remove(searchTag);
 			removeTagFromLayout(searchTag, supportedFunctionalitiesLayout);
 		}
@@ -73,22 +71,19 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	@Override
 	public void addTag(String value){
 		BPTSearchTag searchTag;
-		if(availabilitiesTags.contains(value)){
+		if (availabilitiesTags.contains(value)) {
 			searchTag = new BPTSearchTag(this, "Availability", value);
 			availabilityTagList.add(searchTag);
 			addTagToLayout(searchTag, availabilitiesLayout);
-		}
-		else if (modelTypesTags.contains(value)){
+		} else if (modelTypesTags.contains(value)) {
 			searchTag = new BPTSearchTag(this, "Model type", value);
 			modelTypesTagList.add(searchTag);
 			addTagToLayout(searchTag, modelTypesLayout);
-		}
-		else if (platformsTags.contains(value)){
+		} else if (platformsTags.contains(value)) {
 			searchTag = new BPTSearchTag(this, "Platform", value);
 			platformsTagList.add(searchTag);
 			addTagToLayout(searchTag, platformsLayout);
-		}
-		else {//if (supportedFunctionalitiesTags.contains(value)){
+		} else { //if (supportedFunctionalitiesTags.contains(value)) {
 			searchTag = new BPTSearchTag(this, "Supported functionality", value);
 			supportedFunctionalitiesTagList.add(searchTag);
 			addTagToLayout(searchTag, supportedFunctionalitiesLayout);
@@ -113,7 +108,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	
 	public ArrayList<String> getAvailabilityTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : availabilityTagList){
+		for (BPTSearchTag searchTag : availabilityTagList) {
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
@@ -121,7 +116,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	
 	public ArrayList<String> getModelTypesTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : modelTypesTagList){
+		for (BPTSearchTag searchTag : modelTypesTagList) {
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
@@ -129,7 +124,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	
 	public ArrayList<String> getPlatformsTypesTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : platformsTagList){
+		for (BPTSearchTag searchTag : platformsTagList) {
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;
@@ -137,7 +132,7 @@ public class BPTSearchTagBoxes extends BPTTagBox{
 	
 	public ArrayList<String> getsupportedFunctionalitiesTypesTagValues() {
 		ArrayList<String> tagValues = new ArrayList<String>();
-		for (BPTSearchTag searchTag : supportedFunctionalitiesTagList){
+		for (BPTSearchTag searchTag : supportedFunctionalitiesTagList) {
 			tagValues.add(searchTag.getValue());
 		}
 		return tagValues;

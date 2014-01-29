@@ -26,8 +26,7 @@ public class GoogleChartsApplicationServlet extends VaadinServlet {
 			@Override
             protected List<RequestHandler> createRequestHandlers() throws ServiceException {
                 List<RequestHandler> handlers = super.createRequestHandlers();
-                // adds request handler at the beginning of list
-                // because VaadinService reverses this list
+                // adds request handler at the beginning of list because VaadinService reverses this list
                 handlers.add(new PageRefreshRequestHandler());
                 return handlers;
             }

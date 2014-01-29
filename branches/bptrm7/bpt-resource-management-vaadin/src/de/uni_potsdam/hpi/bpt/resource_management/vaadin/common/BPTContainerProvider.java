@@ -35,12 +35,10 @@ public class BPTContainerProvider {
 	private static BPTContainerProvider instance;
     private BPTToolRepository toolRepository;
     private BPTUserRepository userRepository;
-//    private BPTApplication application;
    
-    public BPTContainerProvider(BPTApplicationUI bptApplicationUI) {
-//    	this.application = application;
-    	this.toolRepository = bptApplicationUI.getToolRepository();
-    	this.userRepository = bptApplicationUI.getUserRepository();
+    public BPTContainerProvider(BPTApplicationUI applicationUI) {
+    	this.toolRepository = applicationUI.getToolRepository();
+    	this.userRepository = applicationUI.getUserRepository();
     	BPTContainerProvider.instance = this;
 	}
     
@@ -94,7 +92,7 @@ public class BPTContainerProvider {
 		// TODO: don't get "all" documents, just the ones with the selected status
 		List<Map> tools = toolRepository.getDocuments("all");
 		
-		// TODO: refactor to have it generic
+		// TODO: make it generic
 		
 		Collator comparator = Collator.getInstance();
 		comparator.setStrength(Collator.PRIMARY);
@@ -156,9 +154,7 @@ public class BPTContainerProvider {
 		for (int i = 0; i < tools.size(); i++) {
 			Map<String, Object> tool = tools.get(i);
 			Item item = container.addItem(i);
-//			System.out.println("print map here: " + tool);
 			setItemPropertyValues(item, tool, type);
-//			System.out.println("print item here: " + item);
 		}
 		return container;
 	}
@@ -180,19 +176,16 @@ public class BPTContainerProvider {
 	public IndexedContainer getVisibleEntries(ArrayList<BPTToolStatus> statusList, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
-		if(sortAttribute.equals("Name")){
+		if (sortAttribute.equals("Name")) {
 			db_sortAttribute = "name";
 			ascending = true;
-		}
-		else if(sortAttribute.equals("Provider")){
+		} else if(sortAttribute.equals("Provider")) {
 			db_sortAttribute = "provider";
 			ascending = true;
-		}
-		else if(sortAttribute.equals("Last Update")){
+		} else if(sortAttribute.equals("Last Update")) {
 			db_sortAttribute = "last_update";
 			ascending = false;
-		}
-		else{
+		} else {
 			db_sortAttribute = "date_created";
 			ascending = false;
 		}
@@ -203,19 +196,16 @@ public class BPTContainerProvider {
 	public IndexedContainer getVisibleEntriesByUser(String user, ArrayList<String> availabilityTags, ArrayList<String> modelTypeTags, ArrayList<String> platformTags, ArrayList<String> supportedFunctionalityTags, String fullTextSearchString, String sortAttribute, int skip, int limit) {
 		String db_sortAttribute;
 		boolean ascending;
-		if(sortAttribute.equals("Name")){
+		if (sortAttribute.equals("Name")) {
 			db_sortAttribute = "name";
 			ascending = true;
-		}
-		else if(sortAttribute.equals("Provider")){
+		} else if(sortAttribute.equals("Provider")) {
 			db_sortAttribute = "provider";
 			ascending = true;
-		}
-		else if(sortAttribute.equals("Last Update")){
+		} else if(sortAttribute.equals("Last Update")) {
 			db_sortAttribute = "last_update";
 			ascending = false;
-		}
-		else{
+		} else {
 			db_sortAttribute = "date_created";
 			ascending = false;
 		}
@@ -251,24 +241,23 @@ public class BPTContainerProvider {
 	public String getTagStatisticsForJavaScriptFor(String string) {
 		StringBuilder sb = new StringBuilder();
 		Map<String, Integer> tagStatisticMap = getTagStatisticFor(string);
-		if(tagStatisticMap.size() > 7){
+		if (tagStatisticMap.size() > 7) {
 			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
 			List<String> otherKeys = new ArrayList<String>();
 			int others = 0;
-			for(String key : tagStatisticMap.keySet()){
-				if(statisticMap.size() < 6){
+			for (String key : tagStatisticMap.keySet()) {
+				if (statisticMap.size() < 6) {
 					statisticMap.put(key, tagStatisticMap.get(key));
-				}
-				else{
+				} else {
 					String smallestKey = key;
 					int smallestNumber = tagStatisticMap.get(key);
-					for(String savedKey : statisticMap.keySet()){
-						if(statisticMap.get(savedKey) < smallestNumber){
+					for (String savedKey : statisticMap.keySet()) {
+						if (statisticMap.get(savedKey) < smallestNumber) {
 							smallestKey = savedKey;
 							smallestNumber = statisticMap.get(savedKey);
 						}
 					}
-					if(statisticMap.keySet().contains(smallestKey)){
+					if (statisticMap.keySet().contains(smallestKey)) {
 						statisticMap.remove(smallestKey);
 						statisticMap.put(key, tagStatisticMap.get(key));
 					}
@@ -281,7 +270,7 @@ public class BPTContainerProvider {
 //			tagStatisticMap.put("Others", others);
 		}
 		
-		for(String key : tagStatisticMap.keySet()){
+		for (String key : tagStatisticMap.keySet()) {
 			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + "], ");
 		}
 		return sb.toString();
@@ -290,24 +279,23 @@ public class BPTContainerProvider {
 	public String getTagStatisticsWithLinksForJavaScriptFor(String string) {
 		StringBuilder sb = new StringBuilder();
 		Map<String, Integer> tagStatisticMap = getTagStatisticFor(string);
-		if(tagStatisticMap.size() > 7){
+		if (tagStatisticMap.size() > 7) {
 			Map<String, Integer> statisticMap = new HashMap<String, Integer>();
 			List<String> otherKeys = new ArrayList<String>();
 			int others = 0;
-			for(String key : tagStatisticMap.keySet()){
-				if(statisticMap.size() < 6){
+			for (String key : tagStatisticMap.keySet()) {
+				if (statisticMap.size() < 6) {
 					statisticMap.put(key, tagStatisticMap.get(key));
-				}
-				else{
+				} else {
 					String smallestKey = key;
 					int smallestNumber = tagStatisticMap.get(key);
-					for(String savedKey : statisticMap.keySet()){
-						if(statisticMap.get(savedKey) < smallestNumber){
+					for (String savedKey : statisticMap.keySet()) {
+						if (statisticMap.get(savedKey) < smallestNumber) {
 							smallestKey = savedKey;
 							smallestNumber = statisticMap.get(savedKey);
 						}
 					}
-					if(statisticMap.keySet().contains(smallestKey)){
+					if (statisticMap.keySet().contains(smallestKey)) {
 						statisticMap.remove(smallestKey);
 						statisticMap.put(key, tagStatisticMap.get(key));
 					}
@@ -320,7 +308,7 @@ public class BPTContainerProvider {
 //			tagStatisticMap.put("Others", others);
 		}
 		
-		for(String key : tagStatisticMap.keySet()){
+		for (String key : tagStatisticMap.keySet()) {
 //			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:alert('" + key + "')\"], ");
 			sb.append("['" + key + "', " + tagStatisticMap.get(key).toString() + ", \"javascript:de.hpi.showAll('" + key + "')\"], ");
 		}

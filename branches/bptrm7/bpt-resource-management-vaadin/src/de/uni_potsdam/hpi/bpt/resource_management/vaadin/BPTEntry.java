@@ -143,7 +143,7 @@ public class BPTEntry extends CustomLayout {
 							label = new Label("<i><span style=\"margin-left: -1em\">" + id + "</span></i></br><span style=\"margin-left: 1em; display: block\">" + labelContent + "</span>");
 						}
 						label.setContentMode(ContentMode.HTML);
-						label.setWidth("90%"); // TODO: Korrekte Breite ... 90% geht ganz gut ... 500px war vorher drin
+						label.setWidth("90%"); // works fine, was 500px
 						this.addComponent(label, id);
 					}
 				}
@@ -180,9 +180,7 @@ public class BPTEntry extends CustomLayout {
 		more.addClickListener(new Button.ClickListener(){
 			public void buttonClick(ClickEvent event) {
 				addOtherButtons();
-				// TODO: check if JavaScript is correct
 				JavaScript.getCurrent().execute(getJavaScriptStringShow());
-//				getWindow().executeJavaScript(getJavaScriptStringShow());
 				entry.setHeight("");
 			}
 		});
@@ -216,14 +214,12 @@ public class BPTEntry extends CustomLayout {
 			edit.setStyleName(BaseTheme.BUTTON_LINK);
 			edit.addStyleName("bpt");
 			this.addComponent(edit, "button edit");
-			// TODO: check if JavaScript is correct
 			JavaScript.getCurrent().execute(getJavaScriptStringShow("edit"));
-//			getWindow().executeJavaScript(getJavaScriptStringShow("edit"));
 		}
 		
-		if(applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated())){
+		if (applicationUI.isLoggedIn() && (applicationUI.getUser().equals(userId) || applicationUI.isModerated())) {
 			Button delete = new Button("delete");
-			delete.addClickListener(new Button.ClickListener(){
+			delete.addClickListener(new Button.ClickListener() {
 				public void buttonClick(ClickEvent event) {
 					entryCards.addConfirmationWindowTo(entryId, "delete");
 				}
@@ -232,15 +228,12 @@ public class BPTEntry extends CustomLayout {
 			delete.setStyleName(BaseTheme.BUTTON_LINK);
 			delete.addStyleName("bpt");
 			this.addComponent(delete, "button delete");
-			// TODO: check if JavaScript is correct
 			JavaScript.getCurrent().execute(getJavaScriptStringShow("delete"));
-//			getWindow().executeJavaScript(getJavaScriptStringShow("delete"));
-//			System.out.println("renderDeleteButton" + entryId);
 		}
 		
 		BPTToolStatus actualState = toolRepository.getDocumentStatus(entryId);
 		
-		if(applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Unpublished){
+		if (applicationUI.isLoggedIn() && applicationUI.isModerated() && actualState == BPTToolStatus.Unpublished) {
 			Button publish = new Button("publish");
 			publish.addClickListener(new Button.ClickListener(){
 				public void buttonClick(ClickEvent event) {
@@ -298,7 +291,6 @@ public class BPTEntry extends CustomLayout {
 			this.addComponent(propose, "button propose");
 			JavaScript.getCurrent().execute(getJavaScriptStringShow("propose"));
 		}
-		
 	}
 
 	private String getJavaScriptStringShow(String button) {
@@ -351,11 +343,9 @@ public class BPTEntry extends CustomLayout {
 				"nodes[i].style.display = 'block';}" +
 			"}";
 		return js;
-		
 	}
 	
-	public void hideJavaScript(){
+	public void hideJavaScript() {
 		JavaScript.getCurrent().execute(getJavaScriptStringHide());
 	}
-	
 }
