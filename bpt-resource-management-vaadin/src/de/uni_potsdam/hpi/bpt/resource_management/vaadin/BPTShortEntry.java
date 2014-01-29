@@ -55,17 +55,14 @@ public class BPTShortEntry extends CustomLayout {
 	}
 
 	private void addButton() {
-		
 		Button showSingleEntryButton = new Button("Show single entry");
-		showSingleEntryButton.addClickListener(new Button.ClickListener(){
+		showSingleEntryButton.addClickListener(new Button.ClickListener() {
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showSpecificEntry(entryId);
 				}
 		});
-		
 		showSingleEntryButton.setStyleName(BaseTheme.BUTTON_LINK);
 		showSingleEntryButton.addStyleName("bpt");
 		addComponent(showSingleEntryButton, "button share");
 	}
-
 }

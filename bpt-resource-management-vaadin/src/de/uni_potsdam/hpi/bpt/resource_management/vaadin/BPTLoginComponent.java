@@ -64,7 +64,7 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 		Button loginButton = new Button("Login");
         loginButton.setStyleName(BaseTheme.BUTTON_LINK);
         
-        loginButton.addClickListener(new Button.ClickListener(){
+        loginButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 			        try {
 						redirectToOpenIDProvider();

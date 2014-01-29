@@ -54,14 +54,10 @@ public class BPTTagComponent extends VerticalLayout {
 		addComponent(tagBox);
 	}
 
-	private ComboBox createSearchInputBox(boolean newTagsAllowed){
+	private ComboBox createSearchInputBox(boolean newTagsAllowed) {
 		searchInput = new BPTSearchInputField();
 		for (String uniqueValue: uniqueValues) {
 			Label label = new Label(uniqueValue);
-			if(categories.contains(uniqueValue)) {
-//				label = new Label("<b>" + uniqueValue + "</b>");
-				label.setContentMode(ContentMode.HTML);
-			}
 			searchInput.addItem(label);
 		}
 		searchInput.setNewItemsAllowed(newTagsAllowed);
@@ -73,20 +69,20 @@ public class BPTTagComponent extends VerticalLayout {
 		searchInput.addValueChangeListener(new Property.ValueChangeListener() {
 			public void valueChange(ValueChangeEvent event) {
 				Object value = searchInput.getValue();
-				if (value == null) return;
+				if (value == null) {
+					return;
+				}
 				String valueString;
 				if (value instanceof String) {
 					valueString = ((String) value).trim().replaceAll(" +", " ");
-				}
-				else {
+				} else {
 					valueString = ((Label) value).getValue().toString().trim().replaceAll(" +", " ");
 				}
 				
 				if (!categories.contains(valueString) && !tagBox.getTagValues().contains(valueString)) {
-					if(tagIsUsed(valueString)){
+					if (tagIsUsed(valueString)) {
 						Notification.show("The tag " + valueString + " is already used in another category", Notification.Type.ERROR_MESSAGE);
-					}
-					else{
+					} else{
 						tagBox.addTag(valueString);
 						unselectedValues.remove(valueString);
 						searchInput.removeAllItems();
@@ -106,8 +102,8 @@ public class BPTTagComponent extends VerticalLayout {
 
 
 	protected boolean tagIsUsed(String valueString) {
-		for(BPTTagComponent tagComponent : otherTagComponents){
-			if(tagComponent.uniqueValues.contains(valueString) || tagComponent.getTagValues().contains(valueString)){
+		for (BPTTagComponent tagComponent : otherTagComponents) {
+			if (tagComponent.uniqueValues.contains(valueString) || tagComponent.getTagValues().contains(valueString)) {
 				return true;
 			}
 		}
@@ -131,8 +127,8 @@ public class BPTTagComponent extends VerticalLayout {
 
 	public void refresh() {
 		searchInput.removeAllItems();
-		for (String uniqueValue : uniqueValues){
-			if(unselectedValues.contains(uniqueValue)){
+		for (String uniqueValue : uniqueValues) {
+			if (unselectedValues.contains(uniqueValue)) {
 				searchInput.addItem(new Label(uniqueValue));
 			}
 		}
@@ -143,7 +139,7 @@ public class BPTTagComponent extends VerticalLayout {
 		tagBox.addTag(value);
 	}
 	
-	public void setSelection(int selection){
+	public void setSelection(int selection) {
 		searchInput.select(selection);
 	}
 

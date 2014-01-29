@@ -23,8 +23,7 @@ public class BPTTable extends BPTShowEntryComponent {
 				}		
 			}
 		});
-			
-}
+	}
 
 	@Override
 	protected void show(IndexedContainer tableEntries) {

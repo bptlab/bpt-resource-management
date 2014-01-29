@@ -24,7 +24,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.mail.BPTMailProvider;
 
 /**
  * 
- * Provides access to CouchDB's store for Tools for BPM entries
+ * Provides access to the Tools for BPM entries that are stored in the database.
  * 
  * @see de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository
  * 
@@ -79,7 +79,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	/**
-	 * Deletes a document by marking it as deleted but keeping it in the database.
+	 * Marks a document as deleted. The document remains in the database.
+	 * Depending on the parameter byModerator, the document's resource provider or the moderators are notified.
 	 * 
      * @param _id id of the document to be deleted
 	 * @param byModerator true if the request for deletion originates from the moderator
@@ -98,6 +99,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	/**
+	 * Queries the number of documents in the database table.
+	 * 
      * @return the number of database documents that are not marked as deleted
      * 
      */
@@ -170,7 +173,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	/**
 	 * 
-	 * Full text search in all entries that are stored in CouchDB.
+	 * Does a full text search on all entries that are stored in the database.
 	 * Uses Apache Lucene via couchdb-lucene.
 	 * 
 	 * @param queryString handled by Lucene
@@ -223,6 +226,12 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
+	/**
+	 * Publishes an entry and notifies its resource provider.
+	 * 
+	 * @param _id id of the entry to be published
+	 * @return entry with its status published
+	 */
 	public Map<String, Object> publishDocument(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Published);
@@ -239,8 +248,10 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	/**
+	 * Unpublishes an entry.
+	 * Notifies its resource provider if the entry was rejected previously.
 	 * 
-	 * @param _id id of the document to be unpublished
+	 * @param _id id of the entry to be unpublished
 	 * @param fromPublished true if it was published, false if it was rejected
 	 * @return entry with its status updated
 	 */
@@ -255,9 +266,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
-	/**
+	/** 
+	 * Unpublishes an entry.
+	 * Depending on the parameter byModerator, the document's resource provider or the moderators are notified.
 	 * 
-	 * @param _id id of the document to be unpublished
+	 * @param _id id of the entry to be unpublished
 	 * @param fromPublished true if it was published, false if it was rejected
 	 * @param byModerator true if the request for unpublish originates from the moderator
 	 * @return entry with its status updated
@@ -268,7 +281,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 			if (byModerator) {
 				mailProvider.sendEmailForUnpublishedEntryFromPublishedToResourceProvider((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
 			} else {
-				mailProvider.sendEmailForUnpublishedEntryFromPublishedToModerator((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
+				mailProvider.sendEmailForUnpublishedEntryFromPublishedToModerator((String)databaseDocument.get("name"), _id);
 			}
 		} else { // propose (by moderator if he has previously unpublished an entry by mistake, notify resource provider)
 			mailProvider.sendEmailForUnpublishedEntryFromRejected((String)databaseDocument.get("name"), _id, (String)databaseDocument.get("user_id"));
@@ -276,6 +289,13 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
+	/**
+	 * Rejects an entry.
+	 * 
+	 * @param _id id of the entry to be rejected
+	 * @param reason reason for rejection, provided by the moderator
+	 * @return entry with its status rejected
+	 */
 	public Map<String, Object> rejectDocument(String _id, String reason) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		databaseDocument.put("status", BPTToolStatus.Rejected);
@@ -284,15 +304,21 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		return databaseDocument;
 	}
 	
+	/**
+	 * Queries the status of an entry.
+	 * 
+	 * @param _id id of the entry in question
+	 * @return status of the entry
+	 */
 	public BPTToolStatus getDocumentStatus(String _id) {
 		Map<String, Object> databaseDocument = db.get(Map.class, _id);
 		return BPTToolStatus.valueOf((String) databaseDocument.get("status"));
 	}
 	
 	/**
-	 * Checks if an entry with the given name (not id) exists in CouchDB.
+	 * Checks if a document with the given name (not id) exists in CouchDB.
 	 * 
-	 * @param name name of the entry
+	 * @param name name of the document
 	 * @return true if a document with the name exists in the database
 	 */
 	public Boolean containsName(String name) {
@@ -304,11 +330,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	};
 	
 	/**
-	 * Composite search in entries that are not deleted.
+	 * Executes a composite search in entries that are not marked as deleted.
 	 * 
 	 * @param states search applies to the given states only
 	 * @param tags tags that the entries shall contain
-	 * @param query full text search query handled by Lucene
+	 * @param query full text search query handled by Apache Lucene
 	 * @return list of entries with the given states matching on tag search and full text search
 	 */
 	public List<Map> getVisibleEntries(List<BPTToolStatus> states, ArrayList<String> tags, String query) {
@@ -339,11 +365,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	/**
-	 * Composite search in entries of an user.
+	 * Executes a composite search in entries of an user.
 	 * 
 	 * @param user id of the user
 	 * @param tags tags that the entries shall contain
-	 * @param query full text search query handled by Lucene
+	 * @param query full text search query handled by Apache Lucene
 	 * @return list of entries of the user matching on tag search and full text search
 	 */
 	public List<Map> getVisibleEntriesByUser(String user, ArrayList<String> tags, String query) {
@@ -367,14 +393,11 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	private boolean containsAllTags(Map entry, ArrayList<String> tags, String[] tagAttributes) {
 		ArrayList<String> entryAsArrayList = new ArrayList<String>();
 		for (String propertyId : tagAttributes) {
-//			System.out.println(propertyId);
 			String property = entry.get(propertyId).toString();
 			String cutProperty = property.substring(1, property.length() -1);
 			List<String> attributeTags = Arrays.asList(cutProperty.split("\\s*,\\s*"));
-//			System.out.println("attribut: " + attributeTags);
 			for(int i = 0; i < attributeTags.size(); i++){
 				entryAsArrayList.add(attributeTags.get(i));
-//				System.out.println("all entry tags: " + entryAsArrayList);
 			}
 		}
 		for (int i = 0; i < tags.size(); i++){
@@ -382,19 +405,33 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		}
 		return true;
 	}
-
+	
+	/**
+	 * Checks if the mail provider is enabled.
+	 * 
+	 * @return true if the mail provider is enabled
+	 */
 	public boolean isMailProviderEnabled() {
 		return mailProvider.isEnabled();
 	}
-
+	
+	/**
+	 * Enables the mail provider.
+	 */
 	public void enableMailProvider() {
 		mailProvider.setEnabled(true);
 	}
 	
+	/**
+	 * Disables the mail provider.
+	 */
 	public void disableMailProvider() {
 		mailProvider.setEnabled(false);
 	}
 	
+	/**
+	 * Reloads the documents from the database.
+	 */
 	// TODO: should not get all documents when refreshing
 	public void refreshData() {
 		tableEntries = getDocuments("all");
@@ -580,26 +617,24 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		}
 	}
 	
-	public Map<String, Integer> getTagStatisticFor(String tagCategory){
+	/**
+	 * Calculates the statistics for each tag of the given tag attribute.
+	 * 
+	 * @param tagCategory name of the tag attribute
+	 * @return Map<String, Integer> containing pairs of tags and frequencies, empty if no values are available for the given tag attribute or if the attribute is not a tag attribute
+	 */
+	public Map<String, Integer> getTagStatisticFor(String tagCategory) {
 		List<Map> entries = getDocuments(BPTToolStatus.Published.toString().toLowerCase());
 		Map<String, Integer> tagStatistics = new HashMap<String, Integer>();
-		for(Map entry : entries){
-			for(Object key : entry.keySet()){
-				if(tagCategory.equals((String) key)){
+		for (Map entry : entries) {
+			for (Object key : entry.keySet()) {
+				if (tagCategory.equals((String) key)) {
 					List<String> availability = (List) entry.get(key);
-	        		for(String tag : availability){
-        			tagStatistics = increaseCount(tag, tagStatistics);
-        			}
-//					tagStatistics = increaseCount((String) key, tagStatistics);
-//					tagStatistics.put((String) key, 1)
-					
+	        		for (String tag : availability) {
+	        			tagStatistics = increaseCount(tag, tagStatistics);
+        			}					
 				}
 			}
-				
-//        		List<String> availability = (List) entry.get(tagCategory);
-//        		for(String tag : availability){
-//        			tagStatistics = increaseCount(tag, tagStatistics);
-//        		}
 
 		}
 		return tagStatistics;
@@ -607,34 +642,36 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	
 	private Map<String, Integer> increaseCount(String tag, Map<String, Integer> tagStatistics){
 		String trimmedTag = (tag.trim().replaceAll(" +", " "));
-		if(tagStatistics.keySet().contains(trimmedTag)){
+		if (tagStatistics.keySet().contains(trimmedTag)) {
 			tagStatistics.put(trimmedTag, tagStatistics.get(trimmedTag) + 1);
-		}
-		else{
+		} else {
 			tagStatistics.put(trimmedTag, 1);
 		}
 		return tagStatistics;
 	}
 	
-	public List<Map> getRandomEntries(int numberOfEntries){
+	/**
+	 * Returns a random list of entries.
+	 * @param numberOfEntries number of random entries
+	 * @return entries as list
+	 */
+	public List<Map> getRandomEntries(int numberOfEntries) {
 		Random random = new Random();
 		List<Map> allPublishedEntries = getDocuments("published");
 		int totalDocuments = allPublishedEntries.size();
 		
 		List<Map> randomEntries = new ArrayList<Map>();
-		for(int i = 0; i < numberOfEntries; i++){
+		for (int i = 0; i < numberOfEntries; i++) {
 			Map randomEntry = allPublishedEntries.get(random.nextInt(totalDocuments));
-			if(randomEntries.size() >= totalDocuments){
+			if (randomEntries.size() >= totalDocuments) {
 				return randomEntries;
 			}
-			if(!randomEntries.contains(randomEntry)){
+			if (!randomEntries.contains(randomEntry)) {
 				randomEntries.add(randomEntry);
-			}
-			else{
+			} else {
 				i--;
 			}
 		}
 		return randomEntries;
 	}
-
 }

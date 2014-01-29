@@ -28,7 +28,6 @@ public class BPTBoxContainer extends HorizontalLayout {
 		
 		if (loggedIn) {
 			if (moderated) {
-				
 				publishedCheckBox = new CheckBox("published");
 				publishedCheckBox.setValue(true);
 				publishedCheckBox.setImmediate(true);
@@ -58,25 +57,20 @@ public class BPTBoxContainer extends HorizontalLayout {
 				    	refresh();
 				    }
 				});
-				
 			} else {
-				
 				resourceProviderOptionGroup = new OptionGroup();
 				addComponent(resourceProviderOptionGroup);
 				resourceProviderOptionGroup.setImmediate(true);
 				resourceProviderOptionGroup.addItem("published entries");
 				resourceProviderOptionGroup.addItem("own entries");
 				resourceProviderOptionGroup.select("published entries");
-				
 				resourceProviderOptionGroup.addStyleName("horizontal");
 				resourceProviderOptionGroup.setSizeUndefined();
-				
 				resourceProviderOptionGroup.addValueChangeListener(new Property.ValueChangeListener() {
 					public void valueChange(ValueChangeEvent event) {
 				    	refresh();
 				    }
 				});
-				
 			}
 		}
 	}
@@ -87,7 +81,6 @@ public class BPTBoxContainer extends HorizontalLayout {
 
 	public ArrayList<BPTToolStatus> getSelectedStates() {
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
-		
 		if ((Boolean) publishedCheckBox.getValue()) {
 			statusList.add(BPTToolStatus.Published);
 		}

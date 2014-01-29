@@ -28,16 +28,11 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTTagSearchComponent;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.common.BPTContainerProvider;
 import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListener;
-//import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
-//import com.vaadin.ui.UriFragmentUtility;
-//import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
-//import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 
 @SuppressWarnings({ "unchecked", "serial" })
 @Title("Tools for BPM")
 @Theme("bpt")
 @Push
-//@Theme("bpmai") change theme name for different platform
 @PreserveOnRefresh // keeps state like in Vaadin 6
 public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
@@ -52,10 +47,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	private BPTUserRepository userRepository;
 	private BPTContainerProvider containerProvider;
 	private int numberOfEntries;
-
-//	private final UriFragmentUtility uriFu = new UriFragmentUtility();
-
-//	private BPTShareableEntry entry;
 	private BPTAdministrator administrator;
 
 	@Override
@@ -82,8 +73,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		layout.addComponent(mainFrame);
 		custom.addComponent(layout, "application");
 		setContent(custom);
-//		mainWindow.addComponent(uriFu);
-//		custom.addComponent(uriFu, "uriFragmentUtility");
 		addUriListener();
 		enter(getPage().getUriFragment());
 	}
@@ -234,11 +223,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		if (applicationURL.charAt(applicationURL.length() - 1) == '/') {
 			applicationString = applicationString.substring(0, applicationURL.length() - 1);
 		}
-//		IndexedContainer container = containerProvider.generateContainer(new ArrayList<Map>(Arrays.asList(tool)), BPTDocumentType.BPT_RESOURCES_TOOLS);
-//		Item item = container.getItem(container.getItemIds().iterator().next());
 		getPage().setUriFragment(fragmentForEntry, false);
-//		entry = new BPTShareableEntry(item, this);
-//		mainFrame.add(entry);
 		entryComponent = new BPTShareableEntryContainer(this, entryId);
 		mainFrame.add(entryComponent);
 		getSidebar().showSpecificEntry(applicationURL + "#" + fragmentForEntry);
@@ -247,26 +232,21 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	
 	private void addUriListener() {
 		getPage().addUriFragmentChangedListener(new UriFragmentChangedListener(){
-			public void uriFragmentChanged(
-	                   UriFragmentChangedEvent source) {
-	               enter(source.getUriFragment());
-	            }
+			public void uriFragmentChanged(UriFragmentChangedEvent source) {
+				enter(source.getUriFragment());
+			}
 		});
-		
 	}
 	
 	protected void enter(String uriFragment) {
 		if (uriFragment != null) {
-			if(uriFragment.equals("")){
+			if (uriFragment.equals("")) {
 				showStartPage();
-			}
-			else if(uriFragment.equals("!showAll")){
+			} else if(uriFragment.equals("!showAll")) {
 				showAllAndRefreshSidebar(true);
-			}
-			else if(uriFragment.equals("!uploader")){
+			} else if(uriFragment.equals("!uploader")) {
 				renderUploader();
-			}
-			else if (uriFragment.startsWith("!")) {
+			} else if (uriFragment.startsWith("!")) {
             	try {
             		uriFragment = uriFragment.substring(1);
                     int separatorIndex = uriFragment.indexOf("-");
@@ -536,7 +516,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		setModerated(false);
 		setOpenIdProvider(openIdProviders[0]);
 		renderEntries();
-		if(entryComponent instanceof BPTShareableEntryContainer){
+		if (entryComponent instanceof BPTShareableEntryContainer) {
 			((BPTShareableEntryContainer) entryComponent).removeButtons();
 		}
 	}

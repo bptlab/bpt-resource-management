@@ -62,7 +62,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		
 		Button backToStartButton = new Button("Back to start page");
 		backToStartButton.setStyleName(BaseTheme.BUTTON_LINK);
-		backToStartButton.addClickListener(new Button.ClickListener(){
+		backToStartButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				applicationUI.showStartPage();
 			}
@@ -87,14 +87,12 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 	@Override
 	protected void show(IndexedContainer entries) {
 		vertical.removeAllComponents();
-		
-		if (entries.size() == 0) {
-			return;
-		}
-		for (Object id : entries.getItemIds()) {
-			Item item = entries.getItem(id);
-			BPTEntry entry = new BPTEntry(item, applicationUI, this);
-			vertical.addComponent(entry);
+		if (entries.size() > 0) {
+			for (Object id : entries.getItemIds()) {
+				Item item = entries.getItem(id);
+				BPTEntry entry = new BPTEntry(item, applicationUI, this);
+				vertical.addComponent(entry);
+			}
 		}
 	}
 
@@ -103,7 +101,7 @@ public class BPTEntryCards extends BPTShowEntryComponent {
 		addConfirmationWindow(null, status);
 	}
 	
-	public String getSortValue(){
+	public String getSortValue() {
 		return (String) sortSelect.getValue();
 	}
 

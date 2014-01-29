@@ -43,29 +43,6 @@ import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 @SuppressWarnings({ "serial", "unchecked"})
 public class BPTVaadinResources {
 	
-//	private static class ImageStreamSource implements StreamSource {
-//		
-//		private InputStream stream;
-//		
-//		private ImageStreamSource(InputStream stream) {
-//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//			byte[] buf = new byte[1024];
-//			int n = 0;
-//			try {
-//				while ((n = stream.read(buf)) >= 0) {
-//				    baos.write(buf, 0, n);
-//				}
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			this.stream = new ByteArrayInputStream(baos.toByteArray());
-//		}
-//		
-//		public InputStream getStream() {
-//			return stream;
-//		}
-//	}
-	
 	private static List<Object[]> propertiesOfVisibleItems = new ArrayList<Object[]>() {
 	    { 
 	    	add(new Object[] {"_id", "ID", String.class, BPTPropertyValueType.IGNORE, null, false, false, false});
@@ -244,7 +221,6 @@ public class BPTVaadinResources {
 	}
 	
 	private static Image asImage(final BPTDocumentRepository repository, final Map<String, Object> tool, final String attachmentName) {
-		
 		if (tool.containsKey("_attachments")) {
 			ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 			try {
@@ -260,20 +236,6 @@ public class BPTVaadinResources {
 				e.printStackTrace();
 				return null;
 			}
-//			InputStream attachmentInputStream = repository.readAttachment((String)tool.get("_id"), attachmentName);
-//			Image image = new Image(null, new StreamResource(new ImageStreamSource(attachmentInputStream), attachmentName));
-//			try {
-//				attachmentInputStream.close();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			image.setMimeType((String)((Map<String, Object>)((Map<String, Object>)tool.get("_attachments")).get(attachmentName)).get("content_type"));
-
-			// default image size is icon size
-//			Image image = new Image(null, new ExternalResource("http://bpm:petrinet@localhost:5984/bpt_resources_tools/" + tool.get("_id") + "/logo"));
-//			image.setWidth("15px");
-//			image.setHeight("15px");
-//		    return image;
 		} else {
 			return null;
 		}

@@ -191,7 +191,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		numberOfEntriesLabel.setImmediate(true);
 		statisticsLayout.addComponent(numberOfEntriesLabel);
 		Button showAllButton = new Button("show all entries");
-		showAllButton.addClickListener(new Button.ClickListener(){
+		showAllButton.addClickListener(new Button.ClickListener() {
 				public void buttonClick(ClickEvent event) {
 					applicationUI.showAllAndRefreshSidebar(true);
 				}
@@ -211,7 +211,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	
 	private void alignEntries() {
-		if(JavaScript.getCurrent() != null){
+		if (JavaScript.getCurrent() != null) {
 			JavaScript.getCurrent().execute(
 					"classNames = ['Logo', 'Name', 'Provider'];" +
 					"for(var j = 0; j < classNames.length; j++){" +
@@ -232,7 +232,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	private void addReloadButton() {
 		Button reloadButton = new Button("More random entries");
-		reloadButton.addClickListener(new Button.ClickListener(){
+		reloadButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				showNewEntries();
 			}
@@ -271,10 +271,10 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 
 	private void addShowAllButton() {
 		Button showAllButton = new Button("Show all entries");
-		showAllButton.addClickListener(new Button.ClickListener(){
-				public void buttonClick(ClickEvent event) {
-					applicationUI.showAllAndRefreshSidebar(true);
-				}
+		showAllButton.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				applicationUI.showAllAndRefreshSidebar(true);
+			}
 		});
 		showAllButton.setStyleName(BaseTheme.BUTTON_LINK);
 		showAllButton.addStyleName("bpt");
@@ -302,7 +302,7 @@ public class BPTSmallRandomEntries extends BPTShowEntryComponent {
 		return BPTContainerProvider.getInstance().getRandomEntries(3);
 	}
 	
-	public void showNewEntries(){
+	public void showNewEntries() {
 		ArrayList<BPTToolStatus> statusList = new ArrayList<BPTToolStatus>();
 		statusList.add(BPTToolStatus.Published);
 		show(getEntries(statusList));
