@@ -8,10 +8,10 @@ There are two projects including the source files:
     * Storage and retrievement of CouchDB documents
       * Full search with Lucene
     * Functionality to send e-mail notifications
-    * Servlet to schedule tasks validating URLs
+    * Servlet to schedule tasks that validate URLs
   * *`bpt-resource-management-vaadin`*: Eclipse project
     * Vaadin web application
-    * OpenID login
+    * OpenID login with JOpenID
 
 We recommend to use Eclipse 3.x or higher for development.
 
