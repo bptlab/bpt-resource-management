@@ -1,4 +1,4 @@
-#summary How to run the BPT resource management system.
+#summary How to run the BPT resource management system
 
 = Requirements =
 
