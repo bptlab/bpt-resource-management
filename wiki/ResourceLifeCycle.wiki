@@ -1,4 +1,4 @@
-#summary This page describes the life cycle of one resource and intended actions that can be performed by different roles.
+#summary Describes the life cycle of one resource and intended actions that can be performed by different roles
 
 = Roles =
 
