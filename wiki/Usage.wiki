@@ -29,4 +29,4 @@ Opens the editor to create a new entry. Explanations of how to fill an entry can
 
 == Find ==
 
-Returns to the page where the entries are displayed.
+Returns to the page where all entries are displayed.
