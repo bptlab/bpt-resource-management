@@ -1,4 +1,4 @@
-#summary Features of the BPT resource management system.
+#summary Features of the BPT resource management system
 
 = Search =
 
