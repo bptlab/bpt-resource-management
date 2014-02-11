@@ -17,41 +17,60 @@ We recommend to use Eclipse 3.x or higher for development.
 
 == Frontend architecture ==
 
-The class structure of the user interface (Vaadin web application):
+The main class structure of the user interface is listed below.
 
-http://bpt-resource-management.googlecode.com/files/bptrm-ui-entries.png
-
-Main page
-  * (Window)
-    * (CustomLayout)
-    * (VerticalLayout)
-      * BPTSidebar
-        * (HorizontalLayout)
-          * BPTSearchComponent
-            * (VerticalLayout)
+Basic structure
+  * BPTApplicationUI (UI)
+    * bptMainLayout.html (CustomLayout)
+      * (VerticalLayout)
+        * BPTSidebar (HorizontalLayout)
+          * BPTSearchComponent (VerticalLayout)
               * (HorizontalLayout)
-                * BPTBoxContainer
-              * BPTTagSearchComponent
-                * (VerticalLayout)
-                  * BPTSearchTagBoxes
-              * BPTFullSearchComponent
-                * VerticalLayout (Search, Reset)		
+                * BPTBoxContainer (HorizontalLayout) - only when logged in
+              * BPTTagSearchComponent (VerticalLayout)
+                * BPTSearchTagBoxes (VerticalLayout)
+                  * (GridLayout)
+                    * BPTSearchTag (HorizontalLayout)
+              * BPTFullSearchComponent (HorizontalLayout)	
           * BPTLoginComponent
             * (VerticalLayout)
               * BPTNavigationBar
                 * HorizontalLayout (Find, Upload)
-      * BPTMainFrame
-        * BPTEntryComponent
-          * BPTEntry
+        * BPTMainFrame (VerticalLayout)
 
-Uploader
-  * (Window)
-    * (CustomLayout)
-    * (VerticalLayout)
-      * BPTSidebar
-        * (HorizontalLayout) (Label)
-      * BPTMainFrame
-        * BPTUploader
+The pages differ in the structure that follows after BPTMainFrame:
+
+Home page - [http://bpt-resource-management.googlecode.com/svn/wiki/bptrm-ui-home.png screenshot]
+        * BPTMainFrame (VerticalLayout)
+          * BPTSmallRandomEntries (VerticalLayout)
+            * randomEntries.html (CustomLayout)
+              * statisticsRow (HorizontalLayout)
+              * cards (HorizontalLayout)
+                * shortEntry.html / BPTShortEntry (CustomLayout)
+
+All entries page - [http://bpt-resource-management.googlecode.com/svn/wiki/bptrm-ui-all.png screenshot]
+        * BPTMainFrame (VerticalLayout)
+          * BPTEntryCards (VerticalLayout)
+            * entryCards.html (CustomLayout)
+              * topPageSelector / BPTPageSelector (HorizontalLayout)
+              * selectLayout (HorizontalLayout)
+              * cards (VerticalLayout)
+                * entry.html / BPTEntry (CustomLayout)
+              * bottomPageSelector / BPTPageSelector (HorizontalLayout)
+
+Single entry page - [http://bpt-resource-management.googlecode.com/svn/wiki/bptrm-ui-single.png screenshot]
+        * BPTMainFrame (VerticalLayout)
+          * BPTShareableEntryContainer (VerticalLayout)
+            * shareable (CustomLayout)
+              * shareableEntry.html / BPTShareableEntry (CustomLayout)
+
+Uploader page - [http://bpt-resource-management.googlecode.com/svn/wiki/bptrm-ui-uploader.png screenshot]
+        * BPTMainFrame (VerticalLayout)
+          * BPTUploader (VerticalLayout)
+            * BPTTagComponent (VerticalLayout)
+              * BPTTagBox(VerticalLayout)
+                * (GridLayout)
+                  * BPTSearchTag(HorizontalLayout)
 
 = Modifying the data schema =
 
@@ -62,4 +81,4 @@ DataSchema modification has to be done in two Java classes:
 
 = Vaadin web application =
 
-See `BPTApplication.java` in package `de.uni_potsdam.hpi.bpt.resource_management.vaadin`.
+See `BPTApplicationUI.java` in package `de.uni_potsdam.hpi.bpt.resource_management.vaadin`.
