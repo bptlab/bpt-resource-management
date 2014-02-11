@@ -1,4 +1,4 @@
-#summary Quick start for developers. Further information is provided in the Java code documentation.
+#summary Quick start for developers - further information is provided in the Java code documentation
 
 = Project structure =
 
