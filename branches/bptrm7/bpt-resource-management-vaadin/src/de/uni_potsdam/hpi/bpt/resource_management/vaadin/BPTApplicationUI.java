@@ -326,6 +326,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		System.out.println("The mail address: " + mailAddress);
 		moderated = userRepository.isModerator(user, name, mailAddress);
 		loggedIn = true;
+		getPage().open(applicationURL, "_self");
 		sidebar.login(user, moderated);
 //		System.out.println("----- LOGIN FINISHED -----");
 //		getSidebar().login(name, moderated);
@@ -401,7 +402,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void refreshAndClean() {
-		if(entryComponent instanceof BPTSmallRandomEntries){
+		if (entryComponent instanceof BPTSmallRandomEntries) {
 			showAllAndRefreshSidebar(false);
 		}
 		refreshAndClean(0);

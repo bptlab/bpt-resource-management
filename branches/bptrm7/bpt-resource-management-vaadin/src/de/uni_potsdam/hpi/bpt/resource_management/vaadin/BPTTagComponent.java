@@ -26,6 +26,7 @@ public class BPTTagComponent extends VerticalLayout {
 	protected BPTApplicationUI applicationUI;
 	private List<BPTTagComponent> otherTagComponents;
 	protected final ArrayList<String> categories = new ArrayList<String>(Arrays.asList("----- Availabilities -----", "----- Model types -----", "----- Platforms -----", "----- Supported functionalities -----"));
+	private boolean newTagsAllowed;
 	
 	public BPTTagComponent(BPTApplicationUI applicationUI, String tagColumns, boolean newTagsAllowed) {
 		this.applicationUI = applicationUI;
@@ -34,6 +35,7 @@ public class BPTTagComponent extends VerticalLayout {
 	}
 	
 	private void init(String tagColumns, boolean newTagsAllowed) {
+		this.newTagsAllowed = newTagsAllowed;
 		// TODO: update unique values on entry addition or deletion
 		uniqueValues = BPTContainerProvider.getInstance().getUniqueValues(tagColumns);
 		setWidth("100%");
@@ -99,8 +101,7 @@ public class BPTTagComponent extends VerticalLayout {
 			}
 		});
 	}
-
-
+	
 	protected boolean tagIsUsed(String valueString) {
 		for (BPTTagComponent tagComponent : otherTagComponents) {
 			if (tagComponent.uniqueValues.contains(valueString) || tagComponent.getTagValues().contains(valueString)) {
@@ -132,7 +133,9 @@ public class BPTTagComponent extends VerticalLayout {
 				searchInput.addItem(new Label(uniqueValue));
 			}
 		}
-		applicationUI.refreshAndClean();
+		if (!newTagsAllowed) {
+			applicationUI.refreshAndClean();
+		}
 	}
 	
 	public void addChosenTag(String value) {
