@@ -46,7 +46,7 @@ public class BPTFullSearchComponent extends HorizontalLayout {
 		resetButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				searchInput.setValue("");
-				((BPTSearchComponent) getParent().getParent()).getTagSearchComponent().restoreAllTags();
+				((BPTSearchComponent) getParent()).getTagSearchComponent().restoreAllTags();
 				refresh();
 			}
 		});
