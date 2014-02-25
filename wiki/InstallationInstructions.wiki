@@ -18,7 +18,8 @@ There are two projects including the source files:
       * Full search with Lucene
     * Functionality to send e-mail notifications
     * Servlet to schedule tasks that validate URLs
-  * *`bpt-resource-management-vaadin`*: Eclipse project
+  * *`bpt-resource-management-vaadin`*: Vaadin Eclipse project
+    * Install the Vaadin plugin from http://vaadin.com/eclipse
     * Vaadin web application
     * OpenID login with JOpenID
 
