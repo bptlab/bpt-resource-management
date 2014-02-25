@@ -61,7 +61,7 @@ public class BPTSidebar extends HorizontalLayout {
 
 	public void logout() {
 		searchComponent.logout();
-		applicationUI.close();
+//		applicationUI.close();
 	}
 	
 	public void renderUploader() {
