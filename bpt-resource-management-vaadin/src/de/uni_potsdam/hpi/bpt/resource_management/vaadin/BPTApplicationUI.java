@@ -402,9 +402,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void refreshAndClean() {
-		if (entryComponent instanceof BPTSmallRandomEntries) {
-			showAllAndRefreshSidebar(false);
-		}
+//		if (entryComponent instanceof BPTSmallRandomEntries) {
+//			showAllAndRefreshSidebar(false);
+//		}
 		refreshAndClean(0);
 		((BPTEntryCards) entryComponent).showNumberOfEntries(numberOfEntries);
 	}

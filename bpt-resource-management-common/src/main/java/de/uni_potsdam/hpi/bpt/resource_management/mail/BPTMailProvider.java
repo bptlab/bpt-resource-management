@@ -560,27 +560,27 @@ public class BPTMailProvider {
 				StringBuilder content = new StringBuilder();
 				content.append("Hello " + moderator.get("name") + "!" + newLine + newLine);
 				if (!namesOfDocumentsWithFirstNotification.isEmpty()) {
-					content.append("A first notification has been sent to the providers of the following published entries that have been last updated 180-186 days ago:" + newLine + newLine);
+					content.append("A first notification has been sent to the providers of the following published entries that have been last updated more than one year ago:" + newLine + newLine);
 					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
 						content.append(documentNameAndId + newLine);
 					}
 					content.append(newLine);
 				}
 				if (!namesOfDocumentsWithSecondNotification.isEmpty()) {
-					content.append("A second notification has been sent to the providers of the following published entries that have been last updated 187-192 days ago:" + newLine + newLine);
+					content.append("A second notification has been sent to the providers of the following published entries that have been last updated more than 23 months ago:" + newLine + newLine);
 					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
 						content.append(documentNameAndId + newLine);
 					}
 					content.append(newLine);
 				}
 				if (!namesOfDocumentsWithThirdNotification.isEmpty()) {
-					content.append("A third notification has been sent to the providers of the following published entries that have been last updated 193 days ago:" + newLine + newLine);
+					content.append("A third notification has been sent to the providers of the following published entries that have been last updated more than 2 years ago:" + newLine + newLine);
 					for (String documentNameAndId : namesOfDocumentsWithFirstNotification) {
 						content.append(documentNameAndId + newLine);
 					}
 					content.append(newLine);
 				}
-				content.append("Please note that an entry will be unpublished automatically after 194 days if the entry is not updated." + newLine + newLine);
+				content.append("Please note that an entry will be unpublished automatically after two years if the entry is not updated." + newLine + newLine);
 				content.append("Regards" + newLine);
 				content.append("-- bpm-conference.org" + newLine + newLine);
 				
