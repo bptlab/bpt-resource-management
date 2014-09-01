@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -146,9 +145,9 @@ public class BPTTagComponent extends VerticalLayout {
 		searchInput.select(selection);
 	}
 
-	private List<BPTTagComponent> getOtherTagComponents() {
-		return otherTagComponents;
-	}
+//	private List<BPTTagComponent> getOtherTagComponents() {
+//		return otherTagComponents;
+//	}
 
 	public void setOtherTagComponents(List<BPTTagComponent> otherTagComponents) {
 		this.otherTagComponents = otherTagComponents;

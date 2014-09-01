@@ -34,6 +34,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.uni_potsdam.hpi.bpt.resource_management.BPTUtils;
 import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
@@ -391,7 +392,7 @@ public class BPTUploader extends VerticalLayout implements Upload.StartedListene
 	}
 	
 	public OutputStream receiveUpload(String filename, String mimeType) {
-		logo = new File("temp" + File.separator + "bptrm_logo_" + filename);
+		logo = new File(BPTUtils.getTempFolder() + File.separator + "bptrm_logo_" + filename);
 		
         try {
     		outputStream = new FileOutputStream(logo);
