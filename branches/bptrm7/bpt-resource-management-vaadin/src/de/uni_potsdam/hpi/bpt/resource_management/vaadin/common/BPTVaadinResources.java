@@ -30,6 +30,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 
+import de.uni_potsdam.hpi.bpt.resource_management.BPTUtils;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentType;
 
@@ -225,7 +226,7 @@ public class BPTVaadinResources {
 			ResourceBundle resourceBundle = ResourceBundle.getBundle("de.uni_potsdam.hpi.bpt.resource_management.bptrm");
 			try {
 				URL url = new URL("http://" + resourceBundle.getString("DB_USERNAME") + ":" + resourceBundle.getString("DB_PASSWORD") + "@" + resourceBundle.getString("DB_HOST") + ":" + resourceBundle.getString("DB_PORT") + "/bpt_resources_tools/" + tool.get("_id") + "/logo");
-				File file = new File("temp" + File.separator + "bptrm_logo_" + (String)tool.get("_id"));
+				File file = new File(BPTUtils.getTempFolder() + File.separator + "bptrm_logo_" + (String)tool.get("_id"));
 				file.deleteOnExit();
 				FileUtils.copyURLToFile(url, file);
 				Image image = new Image(null, new FileResource(file));

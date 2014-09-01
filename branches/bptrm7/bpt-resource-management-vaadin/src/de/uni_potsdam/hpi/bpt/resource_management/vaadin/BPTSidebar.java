@@ -1,5 +1,11 @@
 package de.uni_potsdam.hpi.bpt.resource_management.vaadin;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -10,9 +16,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
+import de.uni_potsdam.hpi.bpt.resource_management.BPTExporter;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
+import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.search.BPTSearchComponent;
 
-@SuppressWarnings({"serial"})
+@SuppressWarnings({"serial", "rawtypes"})
 public class BPTSidebar extends HorizontalLayout {
 	
 	private BPTApplicationUI applicationUI;
@@ -68,10 +77,45 @@ public class BPTSidebar extends HorizontalLayout {
 	
 	public void renderAdministrator() {
 		removeAllComponents();
+		VerticalLayout layout = new VerticalLayout();
 		Label label = new Label("Administration page <br/>", ContentMode.HTML);
-		addComponent(label);
+		layout.addComponent(label);
+		
+		HorizontalLayout toolsButtonLayout = new HorizontalLayout();
+		
+		final Button downloadToolsButton = new Button("Download");
+		Button createToolsButton = new Button("Create CSV with published tools");
+		createToolsButton.addClickListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				List<Map> tools = BPTToolRepository.getInstance().search(Arrays.asList(BPTToolStatus.Published), null, null, null, null, null, null, 0, 0, "_id", true);
+				BPTExporter exporter = new BPTExporter();
+				FileDownloader fileDownloader = new FileDownloader(new FileResource(exporter.generateFileWithTools(tools)));
+				fileDownloader.extend(downloadToolsButton);
+			}
+		});
+		toolsButtonLayout.addComponent(createToolsButton);
+		toolsButtonLayout.addComponent(downloadToolsButton);
+		layout.addComponent(toolsButtonLayout);
+		
+HorizontalLayout statiscticsButtonLayout = new HorizontalLayout();
+		
+		final Button downloadStatisticsButton = new Button("Download");
+		Button createStatisticsButton = new Button("Create CSV with statistics");
+		createStatisticsButton.addClickListener(new Button.ClickListener(){
+			public void buttonClick(ClickEvent event) {
+				BPTExporter exporter = new BPTExporter();
+				FileDownloader fileDownloader = new FileDownloader(new FileResource(exporter.generateStatisticsForPublishedTools()));
+				fileDownloader.extend(downloadStatisticsButton);
+			}
+		});
+		statiscticsButtonLayout.addComponent(createStatisticsButton);
+		statiscticsButtonLayout.addComponent(downloadStatisticsButton);
+		layout.addComponent(statiscticsButtonLayout);
+		
+		
+		addComponent(layout);
 		addComponent(loginComponent);
-		setExpandRatio(label, 75);
+		setExpandRatio(layout, 75);
 		setExpandRatio(loginComponent, 25);
 }
 	
