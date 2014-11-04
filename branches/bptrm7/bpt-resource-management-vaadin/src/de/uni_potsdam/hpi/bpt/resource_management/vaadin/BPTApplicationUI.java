@@ -420,7 +420,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 
 	private void refresh(int skip) {
 		IndexedContainer dataSource;
-		int limit = skip + 10;
+//		int limit = skip + 10;
+		// the limit is 10 entries per page
+		int limit = 10;
 		BPTTagSearchComponent tagSearchComponent = getSidebar().getSearchComponent().getTagSearchComponent();
 		String query = getSidebar().getSearchComponent().getFullSearchComponent().getQuery();
 		if (!tagSearchComponent.isNoTagSelected() || (query != null && !query.isEmpty())) {
