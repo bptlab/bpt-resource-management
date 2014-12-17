@@ -402,9 +402,10 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 	}
 	
 	public void refreshAndClean() {
-//		if (entryComponent instanceof BPTSmallRandomEntries) {
+		if (entryComponent instanceof BPTSmallRandomEntries) {
 //			showAllAndRefreshSidebar(false);
-//		}
+			showAll(false);
+		}
 		refreshAndClean(0);
 		((BPTEntryCards) entryComponent).showNumberOfEntries(numberOfEntries);
 	}
@@ -425,9 +426,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		int limit = 10;
 		BPTTagSearchComponent tagSearchComponent = getSidebar().getSearchComponent().getTagSearchComponent();
 		String query = getSidebar().getSearchComponent().getFullSearchComponent().getQuery();
-		if (!tagSearchComponent.isNoTagSelected() || (query != null && !query.isEmpty())) {
-			showAll(true);
-		}
+//		if (!tagSearchComponent.isNoTagSelected() || (query != null && !query.isEmpty())) {
+//			showAll(true);
+//		}
 		if (loggedIn) {
 			if (!moderated) {
 				if (getSidebar().getSearchComponent().isOwnEntriesOptionSelected()) {

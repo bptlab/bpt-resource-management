@@ -135,17 +135,6 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
         applicationUI.setLoggingIn(true);
         
         applicationUI.getPage().open(url, "_self", false);
-        /*
-         *  TODO: this is not a clean solution
-         *  if user clicks on login and then goes back to the application
-         *  the user can paste the OpenID return URL with parameters
-         *  and may login as another user
-         */
-//        System.out.println("After successfully sign on in browser, enter the URL of address bar in browser:");
-//        String ret = readLine();
-//        HttpServletRequest request = createRequest(ret);
-//        Authentication authentication = manager.getAuthentication(request, association.getRawMacKey(), endpoint.getAlias());
-//        System.out.println(authentication);
 
 	}
 	
