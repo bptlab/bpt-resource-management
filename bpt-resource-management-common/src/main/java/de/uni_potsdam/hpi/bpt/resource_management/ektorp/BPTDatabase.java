@@ -38,8 +38,8 @@ public class BPTDatabase {
 		HttpClient httpClient = new StdHttpClient.Builder()
 									.host(host)
 									.port(port)
-//									.username(username)
-//									.password(password)
+									.username(username)
+									.password(password)
 									.build();
 		
 		CouchDbInstance databaseInstance = new StdCouchDbInstance(httpClient);

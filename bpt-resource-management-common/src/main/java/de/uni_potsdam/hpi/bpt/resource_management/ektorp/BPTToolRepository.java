@@ -79,6 +79,18 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	}
 	
 	/**
+	 * As part of the migration to Google Sign-In, user identifiers in tools must be updated accordingly.
+	 * Nothing else is changed.
+	 * 
+	 * @param document
+	 * @return
+	 */
+	public Map<String, Object> updateDocumentInMigration(Map<String, Object> document) {
+		Map<String, Object> databaseDocument = super.updateDocument(document);
+		return databaseDocument;
+	}
+	
+	/**
 	 * Marks a document as deleted. The document remains in the database.
 	 * Depending on the parameter byModerator, the document's resource provider or the moderators are notified.
 	 * 

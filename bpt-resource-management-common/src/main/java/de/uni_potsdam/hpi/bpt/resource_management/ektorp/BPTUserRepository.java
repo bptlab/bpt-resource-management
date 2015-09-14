@@ -1,5 +1,6 @@
 package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +98,13 @@ public class BPTUserRepository extends BPTDocumentRepository {
 	}
 	
 	@Override
+	public Map<String, Object> deleteDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		db.delete(databaseDocument);
+		return databaseDocument;
+	}
+	
+	@Override
 	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
 		databaseDocument.put("is_moderator", false);
 		return databaseDocument;
@@ -113,7 +121,13 @@ public class BPTUserRepository extends BPTDocumentRepository {
 	public boolean isModerator(String _id, String name, String mailAddress) {
 		List<Map> users = getAll();
 		for(Map<String, Object> user : users) {
-			if (_id.equals((String)user.get("_id"))) {
+			if (mailAddress.equals((String)user.get("mail_address"))) {
+				String oldGoogleId = (String)user.get("_id");
+				if (!_id.equals(oldGoogleId)) { // new identifiers due to migration to Google Sign-In
+					createDocument(generateDocument(new Object[] {_id, (Boolean)user.get("is_moderator"), name, mailAddress}));
+					deleteDocument(oldGoogleId);
+					migrateTools(oldGoogleId, _id);
+				}
 				return (Boolean)user.get("is_moderator");
 			}
 		}
@@ -121,5 +135,19 @@ public class BPTUserRepository extends BPTDocumentRepository {
 		createDocument(generateDocument(new Object[] {_id, isModerator, name, mailAddress}));
 		return isModerator;
 	}
+	
+	private void migrateTools(String oldGoogleId, String _id) {
+		BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+		List<Map> tools = toolRepository.getAll();
+		for (Map<String, Object> tool : tools) {
+			if (tool.get("user_id").equals(oldGoogleId)) {
+				HashMap<String, Object> newTool = new HashMap<String, Object>(tool);
+				newTool.put("user_id", _id);
+				toolRepository.updateDocumentInMigration(newTool);
+			}
+		}
+	}
+	
+	
 	
 }

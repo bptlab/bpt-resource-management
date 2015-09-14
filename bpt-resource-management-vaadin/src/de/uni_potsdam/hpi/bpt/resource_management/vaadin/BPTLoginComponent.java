@@ -7,28 +7,23 @@ import org.expressme.openid.Association;
 import org.expressme.openid.Endpoint;
 import org.expressme.openid.OpenIdManager;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings({"serial"})
-public class BPTLoginComponent extends VerticalLayout implements Property.ValueChangeListener {
+public class BPTLoginComponent extends VerticalLayout {
 	
 	private Label welcomeLabel;
 	private BPTNavigationBar navigationBar;
 	private BPTApplicationUI applicationUI;
-	private BPTSidebar sidebar;
-	private static final String[] openIdProviders = new String[] { "Google", "Yahoo" };
 	private String openIdReturnTo;
 	private String openIdRealm;
-	private String openIdProvider = openIdProviders[0];
 	private Button administrationButton;
 	
 	public BPTLoginComponent(BPTApplicationUI applicationUI, BPTSidebar sidebar) {
@@ -36,7 +31,6 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 		setProperties();
 		
 		this.applicationUI = applicationUI;
-		this.sidebar = sidebar;
 		navigationBar = new BPTNavigationBar(applicationUI);
 		if (applicationUI.isLoggedIn()) {
 			addComponent(navigationBar);
@@ -47,37 +41,30 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 		
 	}
 
-	private void addComponentsForLogin() {
+	public void addComponentsForLogin() {
         HorizontalLayout openIdLayout = new HorizontalLayout();
-        Label loginLabel = new Label("OpenID provider:&nbsp;", ContentMode.HTML);
-        NativeSelect openIdProviderNativeSelect = new NativeSelect();
-        for (String openIdProvider : openIdProviders) {
-        	openIdProviderNativeSelect.addItem(openIdProvider);
-        }
-        openIdProviderNativeSelect.setNullSelectionAllowed(false);
-        openIdProviderNativeSelect.setValue(openIdProviders[0]);
-        openIdProviderNativeSelect.setImmediate(true);
-        openIdProviderNativeSelect.addValueChangeListener(this);
-        openIdLayout.addComponent(loginLabel);
-        openIdLayout.addComponent(openIdProviderNativeSelect);
+        Label gsLabel = new Label("<iframe src=\"./VAADIN/themes/bpt/layouts/googleSignIn.html\" style=\"width:160px; height:55px; border: none\"></iframe>", ContentMode.HTML);
+        openIdLayout.addComponent(gsLabel);
         
-		Button loginButton = new Button("Login");
+		Button loginButton = new Button("Sign in with Yahoo");
         loginButton.setStyleName(BaseTheme.BUTTON_LINK);
         
         loginButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 			        try {
-						redirectToOpenIDProvider();
+						redirectToYahooOpenIDProvider();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 			}
 		});
         
-        addComponent(loginButton);
+
         addComponent(openIdLayout);
+        addComponent(loginButton);
 		setExpandRatio(openIdLayout, 50);
 		setExpandRatio(loginButton, 50);
+        setComponentAlignment(loginButton, Alignment.MIDDLE_CENTER);
 	}
 	
 	private void addAdministrationButton() {
@@ -94,20 +81,23 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 
 
 	private void addComponentsForLogout() {
+		if (applicationUI.getOpenIdProvider().equals("Google")) {
+	        Label gsLabel = new Label("<iframe src=\"./VAADIN/themes/bpt/layouts/googleSignOut.html\" style=\"width:160px; height:40px; border: none\"></iframe>", ContentMode.HTML);
+	        addComponent(gsLabel);
+		} else {
 		Button logoutButton = new Button("Logout");
         logoutButton.setStyleName(BaseTheme.BUTTON_LINK);
         addComponent(logoutButton);
         
         logoutButton.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
-				applicationUI.logout(openIdProviders);
-				removeAllComponents();
-				addComponentsForLogin();
-				sidebar.logout();
-			}});
+					applicationUI.logout();
+				}
+			});
+		}
 	}
 	
-	public void login(String name, boolean moderated) {
+	public void login(boolean moderated) {
 		removeAllComponents();
 //		System.out.println(name);
 //		navigationBar = new BPTNavigationBar(true);
@@ -120,12 +110,12 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 		addComponentsForLogout();
 	}
 	
-	private void redirectToOpenIDProvider() throws IOException {
+	private void redirectToYahooOpenIDProvider() throws IOException {
 		OpenIdManager manager = new OpenIdManager();
 		manager.setReturnTo(openIdReturnTo);
         manager.setRealm(openIdRealm);
 		manager.setTimeOut(10000);
-        Endpoint endpoint = manager.lookupEndpoint(openIdProvider);
+        Endpoint endpoint = manager.lookupEndpoint("Yahoo");
 //        System.out.println(endpoint);
         Association association = manager.lookupAssociation(endpoint);
 //        System.out.println(association);
@@ -143,9 +133,4 @@ public class BPTLoginComponent extends VerticalLayout implements Property.ValueC
 		openIdReturnTo = resourceBundle.getString("OPENID_RETURN_TO");
 		openIdRealm = resourceBundle.getString("OPENID_REALM");
 	}
-
-	public void valueChange(ValueChangeEvent event) {
-		openIdProvider = event.getProperty().toString();
-		applicationUI.setOpenIdProvider(openIdProvider);
-	}	
 }

@@ -44,8 +44,8 @@ public class BPTTaskScheduler {
 	 */
 	public BPTTaskScheduler() {
 		System.out.println("About to schedule tasks ...");
-		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / 3, DAY_IN_MILLISECONDS);
-		timer.schedule(new CheckForOldEntriesTask(), DAY_IN_MILLISECONDS / 2, DAY_IN_MILLISECONDS);
+//		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / 3, DAY_IN_MILLISECONDS);
+//		timer.schedule(new CheckForOldEntriesTask(), DAY_IN_MILLISECONDS / 2, DAY_IN_MILLISECONDS);
 		System.out.println("Tasks scheduled!");
 	}
 	

@@ -56,12 +56,14 @@ public class BPTSidebar extends HorizontalLayout {
 	}
 
 
-	public void login(String name, boolean moderated) {
+	public void login(boolean moderated) {
 		searchComponent.login();
-		loginComponent.login(name, moderated);
+		loginComponent.login(moderated);
 	}
 
 	public void logout() {
+		loginComponent.removeAllComponents();
+		loginComponent.addComponentsForLogin();
 		searchComponent.logout();
 //		applicationUI.close();
 	}

@@ -83,7 +83,6 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 					
 					@Override
 					public void call(final JSONArray arguments) throws JSONException {
-//						Notification.show("Received call");
 						String message = arguments.getString(0);
 						if(message.equals("Others")){
 							showAllAndRefreshSidebar(true);
@@ -91,6 +90,23 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 						else{
 							selectTag(message);
 						}
+					}
+				});
+		JavaScript.getCurrent().addFunction("de.hpi.logon", 
+				new JavaScriptFunction() {
+					
+					@Override
+					public void call(final JSONArray arguments) throws JSONException {
+						loginWithGoogle(arguments.getString(0), arguments.getString(1), arguments.getString(2));
+					}
+				});
+
+		JavaScript.getCurrent().addFunction("de.hpi.logout", 
+				new JavaScriptFunction() {
+					
+					@Override
+					public void call(final JSONArray arguments) throws JSONException {
+						logout();
 					}
 				});
 	}
@@ -286,113 +302,38 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		return entryComponent;
 	}
 
-	public void login(Map <String, String[]> map) {
-//		System.out.println("----- LOGIN STARTED -----");
-//		System.out.println("The parameter map: ");
-//		for (String key: map.keySet()) {
-//			StringBuffer sb = new StringBuffer();
-//			sb.append("\t" + key + ": ");
-//			String[] array = map.get(key);
-//			for (int i = 0; i < array.length; i++) {
-//				sb.append(array[i]);
-//				if (i < array.length - 1) {
-//					sb.append(", ");
-//				} else {
-//					sb.append(";");
-//				}
-//			}
-//			System.out.println(sb.toString());
-//		}
-		// TODO: check nonce for security reasons
-//			checkNonce(request.getParameter("openid.response_nonce"));
+	public void loginWithGoogle(String id, String email, String name) {
+		
+		openIdProvider = "Google";
+		System.out.println("The Google identifier: " + id);
+		System.out.println("The name: " + name);
+		System.out.println("The mail address: " + email);
+		moderated = userRepository.isModerator(id, name, email);
+		this.user = id;
+		this.name = name;
+		this.mailAddress = email;
+		loggedIn = true;
+		getPage().open(applicationURL, "_self");
+		sidebar.login(moderated);
+	}
+
+	public void loginWithYahoo(Map<String, String[]> map) {
+		openIdProvider = "Yahoo";
 		user = map.get("openid.identity")[0];
-		System.out.println("The OpenID identifier: " + user);
-		if (openIdProvider.equals("Google")) {
-			mailAddress = map.get("openid.ext1.value.email")[0];
-			if (map.containsKey("openid.ext1.value.firstname") && map.containsKey("openid.ext1.value.lastname")) {
-				name = map.get("openid.ext1.value.firstname")[0] + " " + map.get("openid.ext1.value.lastname")[0];
-			} else {
-				name = mailAddress;
-			}
-		} else { // openIdProvider.equals("Yahoo")
 			mailAddress = map.get("openid.ax.value.email")[0];
 			if (map.containsKey("openid.ax.value.fullname")) {
 				name = map.get("openid.ax.value.fullname")[0]; 
 			} else {
 				name = mailAddress;
 			}
-		}
+		System.out.println("The OpenID identifier: " + user);
 		System.out.println("The name: " + name);
 		System.out.println("The mail address: " + mailAddress);
 		moderated = userRepository.isModerator(user, name, mailAddress);
 		loggedIn = true;
 		getPage().open(applicationURL, "_self");
-		sidebar.login(user, moderated);
-//		System.out.println("----- LOGIN FINISHED -----");
-//		getSidebar().login(name, moderated);
-//		renderEntries();
-//			try {
-//				response.sendRedirect(getLogoutURL());
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		} else {
-//			System.out.println("----- LOGIN FINISHED -----");
-//			return;
-		}
-		
-//		System.out.println("-------------------------------START---------------------------------");
-//		
-//		for (Map.Entry<String, String[]> entry : map.entrySet()) {
-//		    System.out.println("Key = " + entry.getKey());
-//		    System.out.println("Values:");
-//		    for(int i = 0; i < entry.getValue().length; i++){
-//		    	System.out.println(entry.getValue()[i].toString());
-//		    }
-//		}
-//		
-//		System.out.println("-------------------------------END---------------------------------");
-//		System.out.println();
-
-//	private void checkNonce(String nonce) {
-//		// TODO Auto-generated method stub
-//		if (nonce == null || nonce.length() < 20) {
-//            throw new OpenIdException("Verify failed.");
-//		}
-//        long nonceTime = getNonceTime(nonce);
-//        long diff = System.currentTimeMillis() - nonceTime;
-//        if (diff < 0) {
-//            diff = (-diff);
-//        }
-//        if (diff > 3600000L) {// ONE_HOUR
-//            throw new OpenIdException("Bad nonce time.");
-//        }
-//        if (nonceExists(nonce)) {
-//            throw new OpenIdException("Verify nonce failed.");
-//        }
-//        storeNonce(nonce, nonceTime + 7200000L);
-//
-//	}
-//
-//	private void storeNonce(String nonce, long nonceExpiryTime) {
-//		// TODO to store in database
-//		
-//	}
-//
-//	private boolean nonceExists(String nonce) {
-//		// TODO to check from database
-//		return false;
-//	}
-//
-//	private long getNonceTime(String nonce) {
-//		try {
-//            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-//                    .parse(nonce.substring(0, 19) + "+0000")
-//                    .getTime();
-//        } catch (ParseException e) {
-//            throw new OpenIdException("Bad nonce time.");
-//        }
-//	}
+		sidebar.login(moderated);
+	}
 
 	public void edit(Item item) {
 		uploader = new BPTUploader(item, this);
@@ -471,23 +412,8 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		boolean wasLoggingIn = false;
 		if (loggingIn) {
 			Map<String, String[]> map = request.getParameterMap();
-//			System.out.println("The parameter map: ");
-//			for (String key: map.keySet()) {
-//				StringBuffer sb = new StringBuffer();
-//				sb.append("\t" + key + ": ");
-//				String[] array = map.get(key);
-//				for (int i = 0; i < array.length; i++) {
-//					sb.append(array[i]);
-//					if (i < array.length - 1) {
-//						sb.append(", ");
-//					} else {
-//						sb.append(";");
-//					}
-//				}
-//				System.out.println(sb.toString());
-//			}
 			if (map.get("openid.identity") != null) {
-				login(map);
+				loginWithYahoo(map);
 				wasLoggingIn = true;
 			} else {
 				loggingIn = false;
@@ -513,15 +439,16 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		}
 	}
 
-	public void logout(String[] openIdProviders) {
+	public void logout() {
 		setName("");
 		setMailAddress("");
 		setLoggedIn(false);
 		setModerated(false);
-		setOpenIdProvider(openIdProviders[0]);
+		setOpenIdProvider(null);
 		renderEntries();
 		if (entryComponent instanceof BPTShareableEntryContainer) {
 			((BPTShareableEntryContainer) entryComponent).removeButtons();
 		}
+		sidebar.logout();
 	}
 }

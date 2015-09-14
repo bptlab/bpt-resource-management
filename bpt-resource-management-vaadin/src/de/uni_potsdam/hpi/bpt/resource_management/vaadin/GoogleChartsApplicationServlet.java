@@ -53,8 +53,10 @@ public class GoogleChartsApplicationServlet extends VaadinServlet {
 					private static final long serialVersionUID = 5651095681114698532L;
 					@Override
                     public void modifyBootstrapPage(BootstrapPageResponse response) {
-                         response.getDocument().head().append("<script  type=\"text/javascript\" src=\"./VAADIN/themes/bpt/piwik.js\"/>");
-                         response.getDocument().body().append("<noscript><p><img src=\"http://bpt.hpi.uni-potsdam.de/piwik/piwik.php?idsite=2\" style=\"border:0;\" alt=\"\" /></p></noscript>");
+                         response.getDocument().head()
+                         	.append("<script type=\"text/javascript\" src=\"./VAADIN/themes/bpt/piwik.js\"/>");
+                         response.getDocument().body()
+                         	.append("<noscript><p><img src=\"http://bpt.hpi.uni-potsdam.de/piwik/piwik.php?idsite=2\" style=\"border:0;\" alt=\"\" /></p></noscript>");
                     }
                     @Override
                     public void modifyBootstrapFragment(BootstrapFragmentResponse response) {

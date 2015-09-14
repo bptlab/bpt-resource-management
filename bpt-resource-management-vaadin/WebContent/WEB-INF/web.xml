@@ -47,9 +47,9 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 	
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>BPTServlet</servlet-name>
     	<servlet-class>de.uni_potsdam.hpi.bpt.resource_management.BPTServlet</servlet-class>
     	<load-on-startup>1</load-on-startup>
-	</servlet>
+	</servlet> -->
 </web-app>
