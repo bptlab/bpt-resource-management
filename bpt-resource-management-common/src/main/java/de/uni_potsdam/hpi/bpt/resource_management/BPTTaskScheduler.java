@@ -44,7 +44,7 @@ public class BPTTaskScheduler {
 	 */
 	public BPTTaskScheduler() {
 		System.out.println("About to schedule tasks ...");
-//		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / 3, DAY_IN_MILLISECONDS);
+		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / 3, DAY_IN_MILLISECONDS);
 //		timer.schedule(new CheckForOldEntriesTask(), DAY_IN_MILLISECONDS / 2, DAY_IN_MILLISECONDS);
 		System.out.println("Tasks scheduled!");
 	}
@@ -164,14 +164,14 @@ public class BPTTaskScheduler {
 							}
 						} else if (differenceInDays < EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							if ((Integer) document.get("number_of_mails_for_expiry") <= 1) {
-								mailProvider.sendSecondEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+								mailProvider.sendSecondEmailForOldEntry((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"), (String)document.get("contact_mail"));
 								document.put("number_of_mails_for_expiry", 2);
 								namesOfOldDocuments.put(documentName + " (" + documentId + ")", 2);
 							}
 						} else if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
 							document.put("status", BPTToolStatus.Unpublished);							
 							document.put("number_of_mails_for_expiry", 0);
-							mailProvider.sendEmailForUnpublishedEntrySinceItIsTooOld((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"));
+							mailProvider.sendEmailForUnpublishedEntrySinceItIsTooOld((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"), (String)document.get("contact_mail"));
 							System.out.println(new Date() + " - Document " + documentId + " has been unpublished.");
 						}
 						toolRepository.update(document);

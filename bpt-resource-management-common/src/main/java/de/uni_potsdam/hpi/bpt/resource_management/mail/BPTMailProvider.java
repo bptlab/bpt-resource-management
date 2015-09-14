@@ -62,6 +62,14 @@ public class BPTMailProvider {
 		}
 	}
 	
+	private void sendMail(String recipient, String subject, String content, String cc) {
+		try {
+			BPTMailUtils.sendMail(session, recipient, subject, content, cc);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 //	private void sendMultipartTextAndHtmlMail(Session session, String recipient, String subject, String textContent, String htmlContent) {
 //		try {
 //			BPTMailUtils.sendMultipartTextAndHtmlMail(session, recipient, subject, textContent, htmlContent);
@@ -480,13 +488,14 @@ public class BPTMailProvider {
 	 * @param documentId id of the entry that has been updated 700 days ago
 	 * @param userId id of the user whose entry has been updated 700 days ago
 	 */
-	public void sendSecondEmailForOldEntry(String toolName, String documentId, String userId) {
+	public void sendSecondEmailForOldEntry(String toolName, String documentId, String userId, String contactMail) {
 		if (enabled) {
 			String subject = "[Tools for BPM] Your entry might be out of date: " + toolName;
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
 			String recipient = (String) resourceProvider.get("mail_address");
+			String cc = contactMail;
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
@@ -496,7 +505,7 @@ public class BPTMailProvider {
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
-			sendMail(recipient, subject, content.toString());
+			sendMail(recipient, subject, content.toString(), cc);
 		}
 	}
 	
@@ -507,13 +516,14 @@ public class BPTMailProvider {
 	 * @param documentId id of the entry that has been updated more than 730 days ago
 	 * @param userId id of the user whose entry has been updated more than 730 days ago
 	 */
-	public void sendEmailForUnpublishedEntrySinceItIsTooOld(String toolName, String documentId, String userId) {
+	public void sendEmailForUnpublishedEntrySinceItIsTooOld(String toolName, String documentId, String userId, String contactMail) {
 		if (enabled) {
 			String subject = "[Tools for BPM] Unpublished entry: " + toolName;
 
 			Map<String, Object> resourceProvider = userRepository.getUser(userId);
 			
 			String recipient = (String) resourceProvider.get("mail_address");
+			String cc = contactMail;
 			
 			StringBuilder content = new StringBuilder();
 			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
@@ -523,7 +533,7 @@ public class BPTMailProvider {
 			content.append("Regards" + newLine);
 			content.append("-- bpm-conference.org" + newLine + newLine);
 			
-			sendMail(recipient, subject, content.toString());
+			sendMail(recipient, subject, content.toString(), cc);
 		}
 	}
 	

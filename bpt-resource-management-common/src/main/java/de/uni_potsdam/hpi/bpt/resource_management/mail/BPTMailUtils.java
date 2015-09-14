@@ -71,6 +71,30 @@ public class BPTMailUtils {
 	}
 	
 	/**
+	 * Sends a mail in plain text with additional recipient in CC.
+	 * 
+	 * @param session
+	 * @param recipient
+	 * @param subject
+	 * @param content
+	 * @param cc
+	 * @throws MessagingException
+	 */
+	public static void sendMail(Session session, String recipient, String subject, String content, String cc) throws MessagingException {
+		Message message = new MimeMessage(session);
+
+		InternetAddress addressTo = new InternetAddress(recipient);
+		message.setRecipient(Message.RecipientType.TO, addressTo);
+
+		InternetAddress addressCc = new InternetAddress(cc);
+		message.setRecipient(Message.RecipientType.CC, addressCc);
+
+		message.setSubject(subject);
+		message.setContent(content, "text/plain");
+		Transport.send(message);
+	}
+	
+	/**
 	 * Sends a multi-part mail composed from both plain and HTML text.
 	 * 
 	 * @param session
