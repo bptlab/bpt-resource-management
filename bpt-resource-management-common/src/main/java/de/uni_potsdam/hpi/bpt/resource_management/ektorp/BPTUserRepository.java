@@ -1,0 +1,153 @@
+package de.uni_potsdam.hpi.bpt.resource_management.ektorp;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.ektorp.ViewQuery;
+import org.ektorp.support.View;
+
+/**
+ * 
+ * Provides access to the Tools for BPM users that are stored in the database.
+ * There are two roles of users - moderator and resource provider. 
+ * A resource provider may submit and update his own entries.
+ * In addition, a moderator may change the status of an entry or delete an entry.
+ * 
+ * @see de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTDocumentRepository
+ * 
+ * @author tw
+ *
+ */
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class BPTUserRepository extends BPTDocumentRepository {
+	
+	private static BPTUserRepository instance = null;
+	
+	public BPTUserRepository() {
+		super("bpt_resources_users");
+	}
+	
+	public static BPTUserRepository getInstance() {
+		if (instance == null) {
+                instance = new BPTUserRepository();
+            }		
+		return instance;
+	}
+	
+	public static boolean instanceIsCleared() {
+		return instance == null;
+	}
+	
+	public static void clearInstance() {
+		instance = null;
+	}
+	
+	/**
+	 * Returns a list of moderators.
+	 * 
+	 * @return list of moderators
+	 */
+	@View(
+			name = "moderators", 
+			map = "function(doc) { if (doc.is_moderator) emit(doc._id, doc); }"
+	)
+	public List<Map> getModerators() {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("moderators");
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
+	}
+	
+	/**
+	 * Returns a list of resource providers.
+	 * 
+	 * @return list of resource providers
+	 */
+	@View(
+			name = "resource_providers", 
+			map = "function(doc) { if (!doc.is_moderator) emit(doc._id, doc); }"
+	)
+	public List<Map> getResourceProviders() {
+		ViewQuery query = new ViewQuery()
+							  .designDocId("_design/Map")
+							  .viewName("resource_providers");
+		List<Map> result = db.queryView(query, Map.class);
+		return result;
+	}
+
+	/**
+	 * Returns the attributes stored for an user.
+	 * 
+	 * @param _id OpenID of the user
+	 * @return database document containing information about the user as java.util.Map
+	 * 
+	 */
+	public Map<String, Object> getUser(String _id) {
+		Map<String, Object> user = db.get(Map.class, _id);
+		return user;
+	}
+
+	@Override
+	public String createDocument(Map<String, Object> document) {
+		String _id = (String) document.get("_id");
+		document = setDefaultValues(document);
+		db.create(_id, document);
+		return _id;
+	}
+	
+	@Override
+	public Map<String, Object> deleteDocument(String _id) {
+		Map<String, Object> databaseDocument = db.get(Map.class, _id);
+		db.delete(databaseDocument);
+		return databaseDocument;
+	}
+	
+	@Override
+	protected Map<String, Object> setDefaultValues(Map<String, Object> databaseDocument) {
+		databaseDocument.put("is_moderator", false);
+		return databaseDocument;
+	}
+	
+	/**
+	 * Validates an user and creates an new user if no information is stored for the given OpenID.
+	 * 
+	 * @param _id OpenID of the user
+	 * @param name name of the user
+	 * @param mailAddress email address of the user
+	 * @return true if the user is a moderator
+	 */
+	public boolean isModerator(String _id, String name, String mailAddress) {
+		List<Map> users = getAll();
+		for (Map<String, Object> user : users) {
+			if (mailAddress.equals((String)user.get("mail_address"))) {
+				String oldGoogleId = (String)user.get("_id");
+				if (!_id.equals(oldGoogleId)) { // new identifiers due to migration to Google Sign-In
+					createDocument(generateDocument(new Object[] {_id, (Boolean)user.get("is_moderator"), name, mailAddress}));
+					deleteDocument(oldGoogleId);
+					migrateTools(oldGoogleId, _id);
+				}
+				return (Boolean)user.get("is_moderator");
+			}
+		}
+		boolean isModerator = false;
+		createDocument(generateDocument(new Object[] {_id, isModerator, name, mailAddress}));
+		return isModerator;
+	}
+
+	private void migrateTools(String oldGoogleId, String _id) {
+		BPTToolRepository toolRepository = BPTToolRepository.getInstance();
+		List<Map> tools = toolRepository.getAll();
+		for (Map<String, Object> tool : tools) {
+			if (tool.get("user_id").equals(oldGoogleId)) {
+				HashMap<String, Object> newTool = new HashMap<String, Object>(tool);
+				newTool.put("user_id", _id);
+				toolRepository.updateDocumentInMigration(newTool);
+			}
+		}
+	}
+	
+	
+	
+}
