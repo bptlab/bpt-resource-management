@@ -16,6 +16,7 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.Page.UriFragmentChangedEvent;
 import com.vaadin.server.Page.UriFragmentChangedListener;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.JavaScriptFunction;
@@ -32,7 +33,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.vaadin.utils.PageRefreshListen
 @SuppressWarnings({ "unchecked", "serial" })
 @Title("Tools for BPM")
 @Theme("bpt")
-@Push
+@Push(transport = Transport.STREAMING)
 @PreserveOnRefresh // keeps state like in Vaadin 6
 public class BPTApplicationUI extends UI implements PageRefreshListener {
 	

@@ -46,6 +46,7 @@ public class BPTTaskScheduler {
 		System.out.println("About to schedule tasks ...");
 		timer.schedule(new CheckURLsTask(), DAY_IN_MILLISECONDS / 3, DAY_IN_MILLISECONDS);
 //		timer.schedule(new CheckForOldEntriesTask(), DAY_IN_MILLISECONDS / 2, DAY_IN_MILLISECONDS);
+//		timer.schedule(new InformAboutOldEntriesTask(), 30000, DAY_IN_MILLISECONDS);
 		System.out.println("Tasks scheduled!");
 	}
 	
@@ -191,4 +192,39 @@ public class BPTTaskScheduler {
 			}
 		}
 	}
+	
+//	/**
+//	 * 
+//	 * Only for relaunch of e-mail services.
+//	 * TO BE REMOVED in October 2015.
+//	 *
+//	 */
+//	class InformAboutOldEntriesTask extends TimerTask {
+//
+//		public void run() {
+//			System.out.println(new Date() + " - Check for old entries started ...");
+//			List<Map> documents = toolRepository.getDocuments("published");
+//			List<Map> documents2 = toolRepository.getDocuments("unpublished");
+//			documents.addAll(documents2);
+//			try {
+//				for (Map<String, Object> document : documents) {
+//					Date now = new Date();
+//					Date lastUpdate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse((String) document.get("last_update"));
+//					int differenceInDays = (int) ((now.getTime() - lastUpdate.getTime()) / DAY_IN_MILLISECONDS);
+//					if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS) {
+//						String documentName = (String)document.get("name");
+//						String documentId = (String)document.get("_id");
+//						if (differenceInDays >= EXPIRY_PERIOD_FOR_LAST_UPDATE_IN_DAYS + MAXIMUM_PERIOD_OF_SECOND_EMAIL_FOR_LAST_UPDATE_IN_DAYS) {
+//							mailProvider.sendEmailSinceEntryIsTooOld((String)document.get("name"), (String)document.get("_id"), (String)document.get("user_id"), (String)document.get("contact_mail"));
+//							System.out.println(new Date() + " - Document " + documentId + " is too old.");
+//						}
+//					}
+//				}
+//			} catch (ParseException e) {
+//				e.printStackTrace();
+//			} finally {
+//				System.out.println(new Date() + " - Check for old entries finished!");
+//			}
+//		}
+//	}
 }
