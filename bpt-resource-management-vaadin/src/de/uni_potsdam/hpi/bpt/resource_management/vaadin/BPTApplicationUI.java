@@ -219,6 +219,8 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 //		if (!(entryComponent instanceof BPTEntryCards)) {
 			entryComponent = new BPTEntryCards(this, loadEntries);
 			mainFrame.add(entryComponent);
+			getSidebar().showAll();
+			getPage().setUriFragment("#!showAll", false);
 //		}
 	}
 	
@@ -314,8 +316,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		this.name = name;
 		this.mailAddress = email;
 		loggedIn = true;
-		getPage().open(applicationURL, "_self");
+//		getPage().open(applicationURL, "_self");
 		sidebar.login(moderated);
+		enter(getPage().getUriFragment());
 	}
 
 	public void loginWithYahoo(Map<String, String[]> map) {
@@ -332,8 +335,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		System.out.println("The mail address: " + mailAddress);
 		moderated = userRepository.isModerator(user, name, mailAddress);
 		loggedIn = true;
-		getPage().open(applicationURL, "_self");
+//		getPage().open(applicationURL, "_self");
 		sidebar.login(moderated);
+		enter(getPage().getUriFragment());
 	}
 
 	public void edit(Item item) {
@@ -374,7 +378,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		if (loggedIn) {
 			if (!moderated) {
 				if (getSidebar().getSearchComponent().isOwnEntriesOptionSelected()) {
-					showAll(true);
+//					showAll(true);
 					dataSource = containerProvider.getVisibleEntriesByUser(user, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 					numberOfEntries = containerProvider.getNumberOfEntriesByUser(user, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 				} else {
@@ -385,9 +389,9 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 				}
 			} else {
 				ArrayList<BPTToolStatus> statusList = getSidebar().getSearchComponent().getSelectedStates();
-				if (statusList.size() != 1 || !statusList.contains(BPTToolStatus.Published)) {
-					showAll(true);
-				}
+//				if (statusList.size() != 1 || !statusList.contains(BPTToolStatus.Published)) {
+//					showAll(true);
+//				}
 				dataSource = containerProvider.getVisibleEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query, ((BPTEntryCards) entryComponent).getSortValue(), skip, limit);
 				numberOfEntries = containerProvider.getNumberOfEntries(statusList, tagSearchComponent.getAvailabiltyTags(), tagSearchComponent.getModelTypeTags(), tagSearchComponent.getPlatformsTags(), tagSearchComponent.getSupportedFunctionalityTags(), query);
 			}
@@ -447,6 +451,7 @@ public class BPTApplicationUI extends UI implements PageRefreshListener {
 		setModerated(false);
 		setOpenIdProvider(null);
 		renderEntries();
+		
 		if (entryComponent instanceof BPTShareableEntryContainer) {
 			((BPTShareableEntryContainer) entryComponent).removeButtons();
 		}

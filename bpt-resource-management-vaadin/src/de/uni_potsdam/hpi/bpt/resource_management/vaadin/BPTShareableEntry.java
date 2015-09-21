@@ -263,6 +263,7 @@ public class BPTShareableEntry extends CustomLayout {
 				}
 				BPTContainerProvider.getInstance().refreshFromDatabase();
 				applicationUI.removeWindow(confirmationWindow);
+				applicationUI.enter(applicationUI.getPage().getUriFragment());
 			}
 		});
 		applicationUI.addWindow(confirmationWindow);

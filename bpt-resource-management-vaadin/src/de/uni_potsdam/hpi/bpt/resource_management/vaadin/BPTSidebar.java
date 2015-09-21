@@ -41,6 +41,7 @@ public class BPTSidebar extends HorizontalLayout {
 	}
 	
 	private void init() {
+		removeAllComponents();
 		addComponent(searchComponent);
 		addComponent(loginComponent);
 		setExpandRatio(searchComponent, 75);
@@ -65,6 +66,10 @@ public class BPTSidebar extends HorizontalLayout {
 		loginComponent.removeAllComponents();
 		loginComponent.addComponentsForLogin();
 		searchComponent.logout();
+		
+		applicationUI.enter(applicationUI.getPage().getUriFragment());
+		
+//		
 //		applicationUI.close();
 	}
 	
@@ -99,7 +104,7 @@ public class BPTSidebar extends HorizontalLayout {
 		toolsButtonLayout.addComponent(downloadToolsButton);
 		layout.addComponent(toolsButtonLayout);
 		
-HorizontalLayout statiscticsButtonLayout = new HorizontalLayout();
+		HorizontalLayout statisticsButtonLayout = new HorizontalLayout();
 		
 		final Button downloadStatisticsButton = new Button("Download");
 		Button createStatisticsButton = new Button("Create CSV with statistics");
@@ -110,9 +115,9 @@ HorizontalLayout statiscticsButtonLayout = new HorizontalLayout();
 				fileDownloader.extend(downloadStatisticsButton);
 			}
 		});
-		statiscticsButtonLayout.addComponent(createStatisticsButton);
-		statiscticsButtonLayout.addComponent(downloadStatisticsButton);
-		layout.addComponent(statiscticsButtonLayout);
+		statisticsButtonLayout.addComponent(createStatisticsButton);
+		statisticsButtonLayout.addComponent(downloadStatisticsButton);
+		layout.addComponent(statisticsButtonLayout);
 		
 		
 		addComponent(layout);

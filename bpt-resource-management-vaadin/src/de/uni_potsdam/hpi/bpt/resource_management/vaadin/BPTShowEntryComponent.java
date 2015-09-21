@@ -222,6 +222,7 @@ public abstract class BPTShowEntryComponent extends VerticalLayout {
 				if (popupWindow != null) {
 					getUI().removeWindow(popupWindow);
 				}
+				applicationUI.enter(applicationUI.getPage().getUriFragment());
 			}
 		});
 		confirmationWindow.setContent(confirmationWindowLayout);
