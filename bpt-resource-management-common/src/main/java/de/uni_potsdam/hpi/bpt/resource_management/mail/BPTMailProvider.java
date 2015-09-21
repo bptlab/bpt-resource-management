@@ -602,35 +602,4 @@ public class BPTMailProvider {
 	private String getFragmentPart(String documentId, String toolName) {
 		return  "#!" + documentId + "-" + toolName.replaceAll("[^\\w]", "-").toLowerCase();
 	}
-	
-//	/**
-//	 * Only for relaunch of e-mail services.
-//	 * TO BE REMOVED in October 2015.
-//	 * 
-//	 * @param toolName
-//	 * @param documentId
-//	 * @param userId
-//	 * @param contactMail
-//	 */
-//	@Deprecated
-//	public void sendEmailSinceEntryIsTooOld(String toolName, String documentId, String userId, String contactMail) {
-//		if (enabled) {
-//			String subject = "[Tools for BPM] Your entry is out of date: " + toolName;
-//
-//			Map<String, Object> resourceProvider = userRepository.getUser(userId);
-//			
-//			String recipient = (String) resourceProvider.get("mail_address");
-//			String cc = contactMail;
-//			
-//			StringBuilder content = new StringBuilder();
-//			content.append("Hello " + resourceProvider.get("name") + "!" + newLine + newLine);
-//			content.append("Your entry '" + toolName + "' has been last updated two years ago." + newLine);
-//			content.append("As a resource provider you may have a look at it on " + applicationURL + getFragmentPart(documentId, toolName) + "." + newLine);
-//			content.append("We would like to keep our site up to date and kindly ask you to open the entry for editing, check if its content is still up to date and click on 'Submit'. The entry will be unpublished on September 30, 2015 if no action is taken." + newLine + newLine);
-//			content.append("Regards" + newLine);
-//			content.append("-- bpm-conference.org" + newLine + newLine);
-//			
-//			sendMail(recipient, subject, content.toString(), cc);
-//		}
-//	}
 }
