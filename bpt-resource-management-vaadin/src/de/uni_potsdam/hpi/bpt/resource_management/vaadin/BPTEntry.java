@@ -20,7 +20,7 @@ import de.uni_potsdam.hpi.bpt.resource_management.BPTValidator;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolRepository;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTToolStatus;
 import de.uni_potsdam.hpi.bpt.resource_management.ektorp.BPTUserRepository;
-
+// Einzlnereintrag in der Ansicht von mehreren
 @SuppressWarnings({"serial"})
 public class BPTEntry extends CustomLayout {
 	
