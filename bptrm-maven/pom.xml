@@ -214,6 +214,18 @@
 					<scanIntervalSeconds>2</scanIntervalSeconds>
 				</configuration>
 			</plugin>
+
+			<!-- deploying to tomcat as defined by profiles -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>${tomcat.url}</url>
+					<server>${tomcat.server}</server>
+					<path>${tomcat.path}</path>
+				</configuration>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
@@ -254,5 +266,37 @@
 		</pluginManagement>
 
 	</build>
+
+	<profiles>
+		<profile>
+			<id>development</id>
+			<properties>
+				<tomcat.url>http://172.16.64.107:8080/manager/text</tomcat.url>
+				<tomcat.path>bptrm</tomcat.path>
+				<tomcat.server>bptrm-dev</tomcat.server>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>environment</name>
+					<value>dev</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<tomcat.url>http://141.89.225.54:8080/manager/text</tomcat.url>
+				<tomcat.path>bpt-resource-management</tomcat.path>
+				<tomcat.server>bptrm-prod</tomcat.server>
+			</properties>
+			<activation>
+				<property>
+					<name>environment</name>
+					<value>prod</value>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
 
 </project>
