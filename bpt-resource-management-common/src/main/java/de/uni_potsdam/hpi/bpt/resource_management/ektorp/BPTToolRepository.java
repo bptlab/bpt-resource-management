@@ -225,6 +225,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	        }
 	        return result;
 		} catch (DbAccessException e) {
+            System.err.println(e);
 			return new ArrayList<Map>();
 		}
 	}
@@ -625,7 +626,8 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	        }
 	        return result;
 		} catch (DbAccessException e) {
-			return new ArrayList<Map>();
+			System.err.println(e);
+            return new ArrayList<Map>();
 		}
 	}
 	
