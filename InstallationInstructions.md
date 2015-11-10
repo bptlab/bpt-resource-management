@@ -25,6 +25,8 @@ We recommend to use Eclipse 3.x or higher for development.
 
 # Run and deploy #
 
+  * Deploy [CouchDB Lucene](https://github.com/rnewson/couchdb-lucene) your Tomcat
+  * In the CouchDB Configuration add to the section httpd_global_handlers the option _fti with the value {couch_httpd_proxy, handle_proxy_req, <<„http://127.0.0.1:8080">>} , the port in the url have to be the port on which your tomcat with the Lucene war file is running.
   * Modify the `bptrm.properties` in package `de.uni_potsdam.hpi.bpt.resource_management`
     * _DB\_HOST_ - host of your CouchDB
     * _DB\_PORT_ - port of your CouchDB
@@ -41,4 +43,3 @@ We recommend to use Eclipse 3.x or higher for development.
   * Run the project `bpt-resource-management-vaadin` in Eclipse locally or create a WAR file from this project to deploy it on a Tomcat server
     * You may modify the `web.xml` in `\bpt-resource-management-vaadin\WebContent\WEB-INF`
       * Use templates `web_deployment.xml` and `web_development.xml`
-    * Make sure that [CouchDB Lucene](https://github.com/rnewson/couchdb-lucene) is deployed on your Tomcat
