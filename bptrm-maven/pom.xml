@@ -272,7 +272,7 @@
 			<id>development</id>
 			<properties>
 				<tomcat.url>http://172.16.64.107:8080/manager/text</tomcat.url>
-				<tomcat.path>bptrm</tomcat.path>
+				<tomcat.path>/bptrm</tomcat.path>
 				<tomcat.server>bptrm-dev</tomcat.server>
 			</properties>
 			<activation>

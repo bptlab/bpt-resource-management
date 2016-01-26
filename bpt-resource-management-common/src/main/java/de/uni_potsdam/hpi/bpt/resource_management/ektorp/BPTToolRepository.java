@@ -463,6 +463,7 @@ public class BPTToolRepository extends BPTDocumentRepository {
 	 */
 	public int getNumberOfEntries(List<BPTToolStatus> statusList, String userId, String fullTextSearchString, List<String> availabilityTags, List<String> modelTypeTags, List<String> platformTags, List<String> supportedFunctionalityTags) {
 		String queryString = buildQueryString(statusList, userId, fullTextSearchString, availabilityTags, modelTypeTags, platformTags, supportedFunctionalityTags);
+		System.err.println("Debug: " + queryString);
 		if (queryString.isEmpty()) {
 			return 0;
 		}
@@ -470,7 +471,9 @@ public class BPTToolRepository extends BPTDocumentRepository {
 		query.setStaleOk(false);
 		query.setIncludeDocs(true);
 		query.setQuery(queryString);
-		return search(query).size();
+		int size = search(query).size();
+		System.err.println("Debug: Size= " + size);
+		return size;
 	}
 	
 	/**
