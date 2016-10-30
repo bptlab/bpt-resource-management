@@ -1,0 +1,5 @@
+out/
+.idea
+deploy.sh
+*.iml
+bpt-resource-management-common/target

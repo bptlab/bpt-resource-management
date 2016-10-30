@@ -126,9 +126,11 @@ public class BPTSidebar extends HorizontalLayout {
 		setExpandRatio(loginComponent, 25);
 }
 	
-	public void showAll() {
+	public void showAll(final boolean resetSearch) {
 		removeAllComponents();
-		searchComponent = new BPTSearchComponent(applicationUI, "all", false);
+		if(resetSearch){
+			searchComponent = new BPTSearchComponent(applicationUI, "all", false);
+		}
 		init();
 		if (applicationUI.isLoggedIn()) {
 			searchComponent.login();
